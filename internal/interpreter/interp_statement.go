@@ -6,29 +6,28 @@ import (
 	"guppy/internal/parser/ast"
 )
 
-func (i *Interpreter) VisitStatementAssert(sa ast.StatementAssert) any {
+func (i *Interpreter) VisitStatementAssert(sa ast.StatementAssert) (any, error) {
 	defer i.trace()()
 
 	panic("StatementAssert")
 }
 
-func (i *Interpreter) VisitStatementDecorated(sd ast.StatementDecorated) any {
+func (i *Interpreter) VisitStatementDecorated(sd ast.StatementDecorated) (any, error) {
 	defer i.trace()()
 
 	panic("StatementDecorated")
 }
 
-func (i *Interpreter) VisitStatementExpression(se ast.StatementExpression) any {
+func (i *Interpreter) VisitStatementExpression(se ast.StatementExpression) (any, error) {
 	defer i.trace()()
 
-	resultValues := r(se.Expr.Accept(i))
-	if !resultValues.Ok() {
-		return resultValues.Err()
+	valuesAny, err := se.Expr.Accept(i)
+	if err != nil {
+		return nil, err
 	}
-	values := resultValues.Value().(*ObjectList)
-
+	values := valuesAny.(*ObjectList)
 	if len(se.Assign) == 0 { // Do nothing
-		return nil
+		return nil, nil
 	}
 
 	// Signalflow grammar doesn't do arbitrary tuple unpacking.  ie, it can handle:
@@ -45,7 +44,7 @@ func (i *Interpreter) VisitStatementExpression(se ast.StatementExpression) any {
 	// TODO: The grammar can handle it, but it may not be supported in reality.
 	if len(values.Items) != len(se.Assign) {
 		if len(se.Assign) != 1 {
-			return fmt.Errorf("assigning invalid count (assign %d, return %d)", len(se.Assign), len(values.Items))
+			return nil, fmt.Errorf("assigning invalid count (assign %d, return %d)", len(se.Assign), len(values.Items))
 		}
 
 		i.Scope.DeclareSet(se.Assign[0], values)
@@ -54,46 +53,46 @@ func (i *Interpreter) VisitStatementExpression(se ast.StatementExpression) any {
 			i.Scope.DeclareSet(se.Assign[idx], values.Items[idx])
 		}
 	}
-	return nil
+	return nil, nil
 }
 
-func (i *Interpreter) VisitStatementFunction(sf ast.StatementFunction) any {
+func (i *Interpreter) VisitStatementFunction(sf ast.StatementFunction) (any, error) {
 	defer i.trace()()
 
 	panic("StatementFunction")
 }
 
-func (i *Interpreter) VisitStatementIf(si ast.StatementIf) any {
+func (i *Interpreter) VisitStatementIf(si ast.StatementIf) (any, error) {
 	defer i.trace()()
 
 	panic("StatementIf")
 }
 
-func (i *Interpreter) VisitStatementImport(si ast.StatementImport) any {
+func (i *Interpreter) VisitStatementImport(si ast.StatementImport) (any, error) {
 	defer i.trace()()
 
 	panic("StatementImport")
 }
 
-func (i *Interpreter) VisitStatementList(sl ast.StatementList) any {
+func (i *Interpreter) VisitStatementList(sl ast.StatementList) (any, error) {
 	defer i.trace()()
 
 	for _, stmt := range sl.Statements {
-		err, ok := stmt.Accept(i).(error)
-		if ok && err != nil {
-			return err
+		_, err := stmt.Accept(i)
+		if err != nil {
+			return nil, err
 		}
 	}
-	return nil
+	return nil, nil
 }
 
-func (i *Interpreter) VisitStatementProgram(sp ast.StatementProgram) any {
+func (i *Interpreter) VisitStatementProgram(sp ast.StatementProgram) (any, error) {
 	defer i.trace()()
 
 	return sp.Statements.Accept(i)
 }
 
-func (i *Interpreter) VisitStatementReturn(sr ast.StatementReturn) any {
+func (i *Interpreter) VisitStatementReturn(sr ast.StatementReturn) (any, error) {
 	defer i.trace()()
 
 	panic("StatementReturn")

@@ -22,5 +22,6 @@ func main() {
 		}
 		os.Exit(1)
 	}
-	fmt.Printf("%s", program.Accept(ast.DebugWriter{}).(string))
+	s, _ := program.Accept(ast.DebugWriter{})
+	fmt.Printf("%s", s.(string))
 }

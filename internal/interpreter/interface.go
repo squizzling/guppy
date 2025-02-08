@@ -2,20 +2,18 @@ package interpreter
 
 import (
 	"fmt"
-
-	"github.com/squizzling/types/pkg/result"
 )
 
-func (i *Interpreter) doAnd(left Object, right Object) result.Result[Object] {
-	if resultAnd := left.Member(i, left, "__binary_and__"); !resultAnd.Ok() {
-		return resultAnd
+func (i *Interpreter) doAnd(left Object, right Object) (Object, error) {
+	if and, err := left.Member(i, left, "__binary_and__"); err != nil {
+		return nil, err
 	} else {
 		i.pushScope()
 		defer i.popScope()
 
 		i.Scope.DeclareSet("self", left)
 		i.Scope.DeclareSet("right", right)
-		return i.doCall(resultAnd.Value())
+		return i.doCall(and)
 	}
 }
 
@@ -25,60 +23,64 @@ type ArgData struct {
 }
 
 type FlowCall interface {
-	Args(i *Interpreter) result.Result[[]ArgData]
-	Call(i *Interpreter) result.Result[Object]
+	Args(i *Interpreter) ([]ArgData, error)
+	Call(i *Interpreter) (Object, error)
 }
 
-func (i *Interpreter) doArgs(fo Object) result.Result[[]ArgData] {
+func (i *Interpreter) doArgs(fo Object) ([]ArgData, error) {
 	if fc, ok := fo.(FlowCall); ok {
 		return fc.Args(i)
 	} else {
 		// TODO: Test this
-		return result.Err[[]ArgData](fmt.Errorf("%T is not callable", fo))
+		return nil, fmt.Errorf("%T is not callable", fo)
 	}
 }
 
-func (i *Interpreter) doCall(fo Object) result.Result[Object] {
+func (i *Interpreter) doCall(fo Object) (Object, error) {
 	if fc, ok := fo.(FlowCall); ok {
 		return fc.Call(i)
 	} else {
 		// TODO: Test this
-		return result.Err[Object](fmt.Errorf("%T is not callable", fo))
+		return nil, fmt.Errorf("%T is not callable", fo)
 	}
 }
 
 type FlowStringable interface {
-	String(i *Interpreter) result.Result[string]
+	String(i *Interpreter) (string, error)
 }
 
-func (i *Interpreter) doString(o Object) result.Result[string] {
+func (i *Interpreter) doString(o Object) (string, error) {
 	if s, ok := o.(FlowStringable); !ok {
-		return result.Err[string](fmt.Errorf("%T is not stringable", &s))
+		return "", fmt.Errorf("%T is not stringable", &s)
 	} else {
 		return s.String(i)
 	}
 }
 
-func ArgAsString(i *Interpreter, argName string) result.Result[string] {
-	if resultObjArg := i.Scope.Get(argName); !resultObjArg.Ok() {
-		return result.Err[string](resultObjArg.Err())
-	} else if objArg := i.doString(resultObjArg.Value()); !objArg.Ok() {
-		return result.Err[string](objArg.Err())
+func ArgAsString(i *Interpreter, argName string) (string, error) {
+	if objArg, err := i.Scope.Get(argName); err != nil {
+		return "", err
+	} else if strArg, err := i.doString(objArg); err != nil {
+		return "", err
 	} else {
-		return result.Ok(objArg.Value())
+		return strArg, nil
 	}
 }
 
-func ArgAs[T any](i *Interpreter, name string) result.Result[T] {
-	if resultV := i.Scope.Get(name); !resultV.Ok() {
-		return result.Err[T](resultV.Err())
-	} else if v, ok := resultV.Value().(T); !ok {
-		return result.Err[T](fmt.Errorf("arg %s is %T not %T", name, resultV.Value(), &v))
+func ArgAs[T any](i *Interpreter, name string) (T, error) {
+	var zero T
+	if v, err := i.Scope.Get(name); err != nil {
+		return zero, err
+	} else if o, ok := v.(T); !ok {
+		return zero, fmt.Errorf("arg %s is %T not %T", name, o, &v)
 	} else {
-		return result.Ok[T](v)
+		return o, nil
 	}
 }
 
-func r(a any) result.Result[Object] {
-	return a.(result.Result[Object])
+func r(a any, err error) (Object, error) {
+	if err != nil {
+		return nil, err
+	}
+	return a.(Object), nil
 }

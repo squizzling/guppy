@@ -3,8 +3,6 @@ package filter
 import (
 	"fmt"
 
-	"github.com/squizzling/types/pkg/result"
-
 	"guppy/internal/interpreter"
 )
 
@@ -12,21 +10,21 @@ type FFIFilter struct {
 	interpreter.Object
 }
 
-func (f FFIFilter) Args(i *interpreter.Interpreter) result.Result[[]interpreter.ArgData] {
-	return result.Ok([]interpreter.ArgData{
+func (f FFIFilter) Args(i *interpreter.Interpreter) ([]interpreter.ArgData, error) {
+	return []interpreter.ArgData{
 		{Name: "key"},
 		{Name: "value"},
-	})
+	}, nil
 }
 
-func (f FFIFilter) Call(i *interpreter.Interpreter) result.Result[interpreter.Object] {
-	if resultKey := interpreter.ArgAsString(i, "key"); !resultKey.Ok() {
-		return result.Err[interpreter.Object](resultKey.Err())
-	} else if resultValue := interpreter.ArgAsString(i, "value"); !resultValue.Ok() {
+func (f FFIFilter) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
+	if key, err := interpreter.ArgAsString(i, "key"); err != nil {
+		return nil, err
+	} else if value, err := interpreter.ArgAsString(i, "value"); err != nil {
 		// TODO: value should read an array as `*value`
-		return result.Err[interpreter.Object](resultValue.Err())
+		return nil, err
 	} else {
-		return result.Ok[interpreter.Object](NewKV(resultKey.Value(), []string{resultValue.Value()}))
+		return NewKV(key, []string{value}), nil
 	}
 }
 

@@ -5,11 +5,11 @@ import (
 )
 
 type VisitorData interface {
-	VisitDataArgument(da DataArgument) any
+	VisitDataArgument(da DataArgument) (any, error)
 }
 
 type Data interface {
-	Accept(vd VisitorData) any
+	Accept(vd VisitorData) (any, error)
 }
 
 type DataArgument struct {
@@ -27,24 +27,24 @@ func NewDataArgument(
 	}
 }
 
-func (da DataArgument) Accept(vd VisitorData) any {
+func (da DataArgument) Accept(vd VisitorData) (any, error) {
 	return vd.VisitDataArgument(da)
 }
 
 type VisitorStatement interface {
-	VisitStatementProgram(sp StatementProgram) any
-	VisitStatementExpression(se StatementExpression) any
-	VisitStatementReturn(sr StatementReturn) any
-	VisitStatementImport(si StatementImport) any
-	VisitStatementAssert(sa StatementAssert) any
-	VisitStatementIf(si StatementIf) any
-	VisitStatementFunction(sf StatementFunction) any
-	VisitStatementDecorated(sd StatementDecorated) any
-	VisitStatementList(sl StatementList) any
+	VisitStatementProgram(sp StatementProgram) (any, error)
+	VisitStatementExpression(se StatementExpression) (any, error)
+	VisitStatementReturn(sr StatementReturn) (any, error)
+	VisitStatementImport(si StatementImport) (any, error)
+	VisitStatementAssert(sa StatementAssert) (any, error)
+	VisitStatementIf(si StatementIf) (any, error)
+	VisitStatementFunction(sf StatementFunction) (any, error)
+	VisitStatementDecorated(sd StatementDecorated) (any, error)
+	VisitStatementList(sl StatementList) (any, error)
 }
 
 type Statement interface {
-	Accept(vs VisitorStatement) any
+	Accept(vs VisitorStatement) (any, error)
 }
 
 type StatementProgram struct {
@@ -59,7 +59,7 @@ func NewStatementProgram(
 	}
 }
 
-func (sp StatementProgram) Accept(vs VisitorStatement) any {
+func (sp StatementProgram) Accept(vs VisitorStatement) (any, error) {
 	return vs.VisitStatementProgram(sp)
 }
 
@@ -78,7 +78,7 @@ func NewStatementExpression(
 	}
 }
 
-func (se StatementExpression) Accept(vs VisitorStatement) any {
+func (se StatementExpression) Accept(vs VisitorStatement) (any, error) {
 	return vs.VisitStatementExpression(se)
 }
 
@@ -94,7 +94,7 @@ func NewStatementReturn(
 	}
 }
 
-func (sr StatementReturn) Accept(vs VisitorStatement) any {
+func (sr StatementReturn) Accept(vs VisitorStatement) (any, error) {
 	return vs.VisitStatementReturn(sr)
 }
 
@@ -105,7 +105,7 @@ func NewStatementImport() Statement {
 	return StatementImport{}
 }
 
-func (si StatementImport) Accept(vs VisitorStatement) any {
+func (si StatementImport) Accept(vs VisitorStatement) (any, error) {
 	return vs.VisitStatementImport(si)
 }
 
@@ -124,7 +124,7 @@ func NewStatementAssert(
 	}
 }
 
-func (sa StatementAssert) Accept(vs VisitorStatement) any {
+func (sa StatementAssert) Accept(vs VisitorStatement) (any, error) {
 	return vs.VisitStatementAssert(sa)
 }
 
@@ -146,7 +146,7 @@ func NewStatementIf(
 	}
 }
 
-func (si StatementIf) Accept(vs VisitorStatement) any {
+func (si StatementIf) Accept(vs VisitorStatement) (any, error) {
 	return vs.VisitStatementIf(si)
 }
 
@@ -165,7 +165,7 @@ func NewStatementFunction(
 	}
 }
 
-func (sf StatementFunction) Accept(vs VisitorStatement) any {
+func (sf StatementFunction) Accept(vs VisitorStatement) (any, error) {
 	return vs.VisitStatementFunction(sf)
 }
 
@@ -176,7 +176,7 @@ func NewStatementDecorated() Statement {
 	return StatementDecorated{}
 }
 
-func (sd StatementDecorated) Accept(vs VisitorStatement) any {
+func (sd StatementDecorated) Accept(vs VisitorStatement) (any, error) {
 	return vs.VisitStatementDecorated(sd)
 }
 
@@ -192,25 +192,25 @@ func NewStatementList(
 	}
 }
 
-func (sl StatementList) Accept(vs VisitorStatement) any {
+func (sl StatementList) Accept(vs VisitorStatement) (any, error) {
 	return vs.VisitStatementList(sl)
 }
 
 type VisitorExpression interface {
-	VisitExpressionList(el ExpressionList) any
-	VisitExpressionBinary(eb ExpressionBinary) any
-	VisitExpressionGrouping(eg ExpressionGrouping) any
-	VisitExpressionLiteral(el ExpressionLiteral) any
-	VisitExpressionLogical(el ExpressionLogical) any
-	VisitExpressionUnary(eu ExpressionUnary) any
-	VisitExpressionVariable(ev ExpressionVariable) any
-	VisitExpressionMember(em ExpressionMember) any
-	VisitExpressionSubscript(es ExpressionSubscript) any
-	VisitExpressionCall(ec ExpressionCall) any
+	VisitExpressionList(el ExpressionList) (any, error)
+	VisitExpressionBinary(eb ExpressionBinary) (any, error)
+	VisitExpressionGrouping(eg ExpressionGrouping) (any, error)
+	VisitExpressionLiteral(el ExpressionLiteral) (any, error)
+	VisitExpressionLogical(el ExpressionLogical) (any, error)
+	VisitExpressionUnary(eu ExpressionUnary) (any, error)
+	VisitExpressionVariable(ev ExpressionVariable) (any, error)
+	VisitExpressionMember(em ExpressionMember) (any, error)
+	VisitExpressionSubscript(es ExpressionSubscript) (any, error)
+	VisitExpressionCall(ec ExpressionCall) (any, error)
 }
 
 type Expression interface {
-	Accept(ve VisitorExpression) any
+	Accept(ve VisitorExpression) (any, error)
 }
 
 type ExpressionList struct {
@@ -228,7 +228,7 @@ func NewExpressionList(
 	}
 }
 
-func (el ExpressionList) Accept(ve VisitorExpression) any {
+func (el ExpressionList) Accept(ve VisitorExpression) (any, error) {
 	return ve.VisitExpressionList(el)
 }
 
@@ -250,7 +250,7 @@ func NewExpressionBinary(
 	}
 }
 
-func (eb ExpressionBinary) Accept(ve VisitorExpression) any {
+func (eb ExpressionBinary) Accept(ve VisitorExpression) (any, error) {
 	return ve.VisitExpressionBinary(eb)
 }
 
@@ -266,7 +266,7 @@ func NewExpressionGrouping(
 	}
 }
 
-func (eg ExpressionGrouping) Accept(ve VisitorExpression) any {
+func (eg ExpressionGrouping) Accept(ve VisitorExpression) (any, error) {
 	return ve.VisitExpressionGrouping(eg)
 }
 
@@ -282,7 +282,7 @@ func NewExpressionLiteral(
 	}
 }
 
-func (el ExpressionLiteral) Accept(ve VisitorExpression) any {
+func (el ExpressionLiteral) Accept(ve VisitorExpression) (any, error) {
 	return ve.VisitExpressionLiteral(el)
 }
 
@@ -304,7 +304,7 @@ func NewExpressionLogical(
 	}
 }
 
-func (el ExpressionLogical) Accept(ve VisitorExpression) any {
+func (el ExpressionLogical) Accept(ve VisitorExpression) (any, error) {
 	return ve.VisitExpressionLogical(el)
 }
 
@@ -323,7 +323,7 @@ func NewExpressionUnary(
 	}
 }
 
-func (eu ExpressionUnary) Accept(ve VisitorExpression) any {
+func (eu ExpressionUnary) Accept(ve VisitorExpression) (any, error) {
 	return ve.VisitExpressionUnary(eu)
 }
 
@@ -339,7 +339,7 @@ func NewExpressionVariable(
 	}
 }
 
-func (ev ExpressionVariable) Accept(ve VisitorExpression) any {
+func (ev ExpressionVariable) Accept(ve VisitorExpression) (any, error) {
 	return ve.VisitExpressionVariable(ev)
 }
 
@@ -358,7 +358,7 @@ func NewExpressionMember(
 	}
 }
 
-func (em ExpressionMember) Accept(ve VisitorExpression) any {
+func (em ExpressionMember) Accept(ve VisitorExpression) (any, error) {
 	return ve.VisitExpressionMember(em)
 }
 
@@ -377,7 +377,7 @@ func NewExpressionSubscript(
 	}
 }
 
-func (es ExpressionSubscript) Accept(ve VisitorExpression) any {
+func (es ExpressionSubscript) Accept(ve VisitorExpression) (any, error) {
 	return ve.VisitExpressionSubscript(es)
 }
 
@@ -402,6 +402,6 @@ func NewExpressionCall(
 	}
 }
 
-func (ec ExpressionCall) Accept(ve VisitorExpression) any {
+func (ec ExpressionCall) Accept(ve VisitorExpression) (any, error) {
 	return ve.VisitExpressionCall(ec)
 }

@@ -3,8 +3,6 @@ package stream
 import (
 	"fmt"
 
-	"github.com/squizzling/types/pkg/result"
-
 	"guppy/internal/flow/filter"
 	"guppy/internal/interpreter"
 )
@@ -13,33 +11,39 @@ type FFIData struct {
 	interpreter.Object
 }
 
-func (f FFIData) Args(i *interpreter.Interpreter) result.Result[[]interpreter.ArgData] {
-	return result.Ok([]interpreter.ArgData{
+func (f FFIData) Args(i *interpreter.Interpreter) ([]interpreter.ArgData, error) {
+	return []interpreter.ArgData{
 		{Name: "metric"},
 		{Name: "filter", Default: interpreter.NewObjectNone()},
 		//{Name: "rollup", Default: interpreter.NewObjectNone()},
 		//{Name: "extrapolation", Default: interpreter.NewObjectString("null")},
 		//{Name: "maxExtrapolations", Default: interpreter.NewObjectNone()}, // TODO: Check what this has for a default
 		//{Name: "resolution", Default: interpreter.NewObjectNone()},
-	})
+	}, nil
 }
 
-func (f FFIData) Call(i *interpreter.Interpreter) result.Result[interpreter.Object] {
-	if resultMetricName := interpreter.ArgAsString(i, "metric"); !resultMetricName.Ok() {
-		return result.Err[interpreter.Object](resultMetricName.Err())
-	} else if resultObjFilter := i.Scope.Get("filter"); !resultObjFilter.Ok() {
-		return result.Err[interpreter.Object](resultObjFilter.Err())
+func resolveFilter(i *interpreter.Interpreter) (filter.Filter, error) {
+	if fltr, err := i.Scope.Get("filter"); err != nil {
+		return nil, err
 	} else {
-		var actualFilter filter.Filter
-		switch fltr := resultObjFilter.Value().(type) {
+		switch fltr := fltr.(type) {
 		case *interpreter.ObjectNone:
-			actualFilter = nil
+			return nil, nil
 		case filter.Filter:
-			actualFilter = fltr
+			return fltr, nil
 		default:
-			return result.Err[interpreter.Object](fmt.Errorf("filter is %T not *interpreter.ObjectNone, or filter.Filter", fltr))
+			return nil, fmt.Errorf("filter is %T not *interpreter.ObjectNone, or filter.Filter", fltr)
 		}
-		return result.Ok[interpreter.Object](NewData(resultMetricName.Value(), actualFilter))
+	}
+}
+
+func (f FFIData) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
+	if metricName, err := interpreter.ArgAsString(i, "metric"); err != nil {
+		return nil, err
+	} else if fltr, err := resolveFilter(i); err != nil {
+		return nil, err
+	} else {
+		return NewData(metricName, fltr), nil
 	}
 }
 

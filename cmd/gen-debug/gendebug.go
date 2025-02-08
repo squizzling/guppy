@@ -36,6 +36,10 @@ func defineAst(packageName string, interfaces []gen.Interface) {
 	fmt.Printf("func (dw *DebugWriter) o() {\n")
 	fmt.Printf("\tdw.depth--\n")
 	fmt.Printf("}\n")
+	fmt.Printf("\n")
+	fmt.Printf("func s(a any, err error) string {\n")
+	fmt.Printf("\treturn a.(string)\n")
+	fmt.Printf("}\n")
 
 	for _, iface := range interfaces {
 		for _, t := range iface.Nodes {
@@ -45,19 +49,19 @@ func defineAst(packageName string, interfaces []gen.Interface) {
 				typeName = typeName + "2"
 			}
 			receiverName := genReceiverName(typeName)
-			fmt.Printf("func (dw DebugWriter) Visit%s(%s %s) any {\n", typeName, receiverName, typeName)
+			fmt.Printf("func (dw DebugWriter) Visit%s(%s %s) (any, error) {\n", typeName, receiverName, typeName)
 			//fmt.Printf("\tfmt.Printf(\"Entering %s\\n\")\n", typeName)
 			fmt.Printf("\t_s := \"%s(\\n\"\n", typeName)
 			fmt.Printf("\tdw.i()\n")
 			for idx, field := range t.Fields {
 				if gen.IsInterface(field.Type) {
 					fmt.Printf("\tif %s.%s != nil {\n", receiverName, field.Name)
-					fmt.Printf("\t\t_s += dw.p() + \"%s: \" + %s.%s.Accept(dw).(string) // IsInterface\n", field.Name, receiverName, field.Name)
+					fmt.Printf("\t\t_s += dw.p() + \"%s: \" + s(%s.%s.Accept(dw)) // IsInterface\n", field.Name, receiverName, field.Name)
 					fmt.Printf("\t} else {\n")
 					fmt.Printf("\t\t_s += dw.p() + \"%s: nil\\n\"\n", field.Name)
 					fmt.Printf("\t}\n")
 				} else if gen.IsConcrete(field.Type) {
-					fmt.Printf("\t_s += dw.p() + \"%s: \" + %s.%s.Accept(dw).(string) // IsConcrete\n", field.Name, receiverName, field.Name)
+					fmt.Printf("\t_s += dw.p() + \"%s: \" + s(%s.%s.Accept(dw)) // IsConcrete\n", field.Name, receiverName, field.Name)
 				} else if gen.IsInterfaceArray(field.Type) || gen.IsConcreteArray(field.Type) { // Done
 					fmt.Printf("\tif %s.%s == nil {\n", receiverName, field.Name)
 					fmt.Printf("\t\t_s += dw.p() + \"%s: nil\\n\"\n", field.Name)
@@ -67,7 +71,7 @@ func defineAst(packageName string, interfaces []gen.Interface) {
 					fmt.Printf("\t\t_s += dw.p() + \"%s: [\\n\"\n", field.Name)
 					fmt.Printf("\t\tdw.i()\n")
 					fmt.Printf("\t\tfor _, _r := range %s.%s {\n", receiverName, field.Name)
-					fmt.Printf("\t\t\t_s += dw.p() + _r.Accept(dw).(string) // IsInterfaceArray\n")
+					fmt.Printf("\t\t\t_s += dw.p() + s(_r.Accept(dw)) // IsInterfaceArray\n")
 					fmt.Printf("\t\t}\n")
 					fmt.Printf("\t\tdw.o()\n")
 					fmt.Printf("\t\t_s += dw.p() + \"]\\n\"\n")
@@ -98,7 +102,7 @@ func defineAst(packageName string, interfaces []gen.Interface) {
 			fmt.Printf("\tdw.o()\n")
 			fmt.Printf("\t_s += dw.p() + \")\\n\"\n")
 			//fmt.Printf("\tfmt.Printf(\"Leaving %s: %%s\\n\", _s)\n", typeName)
-			fmt.Printf("\treturn _s\n")
+			fmt.Printf("\treturn _s, nil\n")
 			fmt.Printf("}\n")
 		}
 	}

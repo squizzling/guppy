@@ -1,9 +1,5 @@
 package interpreter
 
-import (
-	"github.com/squizzling/types/pkg/result"
-)
-
 type ObjectString struct {
 	Object
 
@@ -16,8 +12,8 @@ func NewObjectString(s string) Object {
 	}
 }
 
-func (os *ObjectString) String(i *Interpreter) result.Result[string] {
-	return result.Ok(os.s)
+func (os *ObjectString) String(i *Interpreter) (string, error) {
+	return os.s, nil
 }
 
 var _ = FlowStringable(&ObjectString{})

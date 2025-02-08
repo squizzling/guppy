@@ -3,8 +3,6 @@ package filter
 import (
 	"fmt"
 
-	"github.com/squizzling/types/pkg/result"
-
 	"guppy/internal/interpreter"
 )
 
@@ -12,20 +10,20 @@ type methodBinaryAnd struct {
 	interpreter.Object
 }
 
-func (mba methodBinaryAnd) Args(i *interpreter.Interpreter) result.Result[[]interpreter.ArgData] {
-	return result.Ok([]interpreter.ArgData{
+func (mba methodBinaryAnd) Args(i *interpreter.Interpreter) ([]interpreter.ArgData, error) {
+	return []interpreter.ArgData{
 		{Name: "self"},
 		{Name: "right"},
-	})
+	}, nil
 }
 
-func (mba methodBinaryAnd) Call(i *interpreter.Interpreter) result.Result[interpreter.Object] {
-	if resultSelf := interpreter.ArgAs[Filter](i, "self"); !resultSelf.Ok() {
-		return result.Err[interpreter.Object](resultSelf.Err())
-	} else if resultRight := interpreter.ArgAs[Filter](i, "right"); !resultRight.Ok() {
-		return result.Err[interpreter.Object](resultRight.Err())
+func (mba methodBinaryAnd) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
+	if self, err := interpreter.ArgAs[Filter](i, "self"); err != nil {
+		return nil, err
+	} else if right, err := interpreter.ArgAs[Filter](i, "right"); err != nil {
+		return nil, err
 	} else {
-		return result.Ok[interpreter.Object](NewAnd(resultSelf.Value(), resultRight.Value()))
+		return NewAnd(self, right), nil
 	}
 }
 

@@ -17,24 +17,16 @@ func NewParser(tokens *tokenizer.Tokenizer) *Parser {
 }
 
 func (p *Parser) peekMatch(n int, tokenTypes ...tokenizer.TokenType) bool {
-	tok := p.tokens.Peek(n)
-	if !tok.Ok() {
-		return false
-	}
-	return slices.Contains(tokenTypes, tok.Value().Type)
+	return slices.Contains(tokenTypes, p.tokens.Peek(n).Type)
 }
 
 func (p *Parser) match(tokenType tokenizer.TokenType) bool {
-	if tokenType == tokenizer.TokenTypeEOF && p.isAtEnd() {
+	nextToken := p.tokens.Peek(0)
+	if nextToken.Type == tokenType {
+		p.tokens.Advance()
 		return true
-	} else if nextToken := p.tokens.Peek(0); !nextToken.Ok() {
-		return false
-	} else if nextToken.Value().Type == tokenType {
-		_ = p.tokens.Get()
-		return true
-	} else {
-		return false
 	}
+	return false
 }
 
 func (p *Parser) capture(tts ...tokenizer.TokenType) (tokenizer.Token, bool) {
@@ -43,23 +35,18 @@ func (p *Parser) capture(tts ...tokenizer.TokenType) (tokenizer.Token, bool) {
 	}
 
 	nextToken := p.tokens.Peek(0)
-	if !nextToken.Ok() {
-		return tokenizer.Token{}, false
-	}
 	for _, tt := range tts {
-		if nextToken.Value().Type == tt {
-			return p.tokens.Get().Value(), true
+		if nextToken.Type == tt {
+			p.tokens.Advance()
+			return nextToken, true
 		}
 	}
 	return tokenizer.Token{}, false
 }
 
 func (p *Parser) isAtEnd() bool {
-	if nextToken := p.tokens.Peek(0); !nextToken.Ok() {
-		return true
-	} else {
-		return nextToken.Value().Type == tokenizer.TokenTypeEOF
-	}
+	nextToken := p.tokens.Peek(0)
+	return nextToken.Type == tokenizer.TokenTypeEOF || nextToken.Type == tokenizer.TokenTypeError
 }
 
 /*func (p *Parser) dumpTokens(n int) {

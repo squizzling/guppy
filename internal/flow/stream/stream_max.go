@@ -1,8 +1,6 @@
 package stream
 
 import (
-	"github.com/squizzling/types/pkg/result"
-
 	"guppy/internal/interpreter"
 )
 
@@ -10,11 +8,11 @@ type methodMax struct {
 	interpreter.Object
 }
 
-func (mm methodMax) Args(i *interpreter.Interpreter) result.Result[[]interpreter.ArgData] {
+func (mm methodMax) Args(i *interpreter.Interpreter) ([]interpreter.ArgData, error) {
 	return argsAggregate(i)
 }
 
-func (mm methodMax) Call(i *interpreter.Interpreter) result.Result[interpreter.Object] {
+func (mm methodMax) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
 	return callAggregate(i, NewMax)
 }
 

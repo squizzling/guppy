@@ -25,12 +25,12 @@ func defineAst(packageName string, interfaces []gen.Interface) {
 		fmt.Printf("type Visitor%s interface {\n", iface.Name)
 		for _, t := range iface.Nodes {
 			typeName := iface.Name + t.Name
-			fmt.Printf("\tVisit%s(%s %s) any\n", typeName, genReceiverName(typeName), typeName)
+			fmt.Printf("\tVisit%s(%s %s) (any, error)\n", typeName, genReceiverName(typeName), typeName)
 		}
 		fmt.Printf("}\n")
 		fmt.Printf("\n")
 		fmt.Printf("type %s interface {\n", iface.Name)
-		fmt.Printf("\tAccept(v%s Visitor%s) any\n", genReceiverName(iface.Name), iface.Name)
+		fmt.Printf("\tAccept(v%s Visitor%s) (any, error)\n", genReceiverName(iface.Name), iface.Name)
 		fmt.Printf("}\n")
 		for _, t := range iface.Nodes {
 			defineType(iface.Name, t)
@@ -83,7 +83,7 @@ func defineType(interfaceName string, t gen.ASTNode) {
 	if parameterName == receiverName {
 		parameterName = parameterName[:1] + parameterName
 	}
-	fmt.Printf("func (%s %s) Accept(%s %s) any {\n", receiverName, structName, parameterName, parameterType)
+	fmt.Printf("func (%s %s) Accept(%s %s) (any, error) {\n", receiverName, structName, parameterName, parameterType)
 	fmt.Printf("\treturn %s.Visit%s(%s)\n", parameterName, structName, receiverName)
 	fmt.Printf("}\n")
 }

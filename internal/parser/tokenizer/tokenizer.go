@@ -3,8 +3,6 @@ package tokenizer
 import (
 	"errors"
 	"fmt"
-
-	"github.com/squizzling/types/pkg/result"
 )
 
 type TokenType int
@@ -85,6 +83,7 @@ var doubles = map[int]TokenType{
 
 const (
 	TokenTypeEOF = TokenType(iota + 1)
+	TokenTypeError
 
 	TokenTypeDedent
 	TokenTypeIndent
@@ -152,6 +151,8 @@ func (tt TokenType) String() string {
 	switch tt {
 	case TokenTypeEOF:
 		return "EOF"
+	case TokenTypeError:
+		return "ERROR"
 
 	case TokenTypeDedent:
 		return "DEDENT"
@@ -275,6 +276,7 @@ type Token struct {
 	Lexeme         string
 	LiteralString  string
 	LiteralInteger int
+	Err            error
 
 	Type TokenType
 }
@@ -290,7 +292,7 @@ type Tokenizer struct {
 	indents       []int
 	dedentPending int
 
-	tokensPending []result.Result[Token]
+	tokensPending []Token
 }
 
 func (t *Tokenizer) newToken(tt TokenType) Token {
@@ -309,6 +311,13 @@ func (t *Tokenizer) newTokenIdentifier() Token {
 	return Token{
 		Lexeme: lexeme,
 		Type:   tt,
+	}
+}
+
+func (t *Tokenizer) newTokenError(err error) Token {
+	return Token{
+		Type: TokenTypeError,
+		Err:  err,
 	}
 }
 
@@ -423,30 +432,36 @@ func (t *Tokenizer) lastIndent() int {
 	}
 }
 
-func (t *Tokenizer) Peek(n int) result.Result[Token] {
-	for len(t.tokensPending) <= n {
+func (t *Tokenizer) Peek(n int) Token {
+	for len(t.tokensPending) <= n { // We need to read more.
+		// If we have anything in the buffer, and the last thing we read was an EOF or error, return it
 		if len(t.tokensPending) > 0 {
-			lastToken := t.tokensPending[len(t.tokensPending)-1]
-			if !lastToken.Ok() || lastToken.Value().Type == TokenTypeEOF {
+			if lastToken := t.tokensPending[len(t.tokensPending)-1]; lastToken.Type == TokenTypeEOF || lastToken.Type == TokenTypeError {
 				return lastToken
 			}
 		}
+		// Read the next thing, if it's an EOF or error, we'll catch it next iteration
 		t.tokensPending = append(t.tokensPending, t.getNext())
 	}
 	return t.tokensPending[n]
 }
 
-func (t *Tokenizer) Get() result.Result[Token] {
-	t.Peek(0)
-	firstToken := t.tokensPending[0]
-	if !firstToken.Ok() || firstToken.Value().Type == TokenTypeEOF {
-		return firstToken
+func (t *Tokenizer) Get() Token {
+	firstToken := t.Peek(0)
+	if firstToken.Type != TokenTypeEOF && firstToken.Type != TokenTypeError {
+		t.tokensPending = t.tokensPending[1:]
 	}
-	t.tokensPending = t.tokensPending[1:]
 	return firstToken
 }
 
-func (t *Tokenizer) getNext() result.Result[Token] {
+func (t *Tokenizer) Advance() {
+	firstToken := t.Peek(0)
+	if firstToken.Type != TokenTypeEOF && firstToken.Type != TokenTypeError {
+		t.tokensPending = t.tokensPending[1:]
+	}
+}
+
+func (t *Tokenizer) getNext() Token {
 	// If it's start of the line, measure our spaces
 	if t.inGroup == 0 {
 		if t.startOfLine {
@@ -475,10 +490,10 @@ func (t *Tokenizer) getNext() result.Result[Token] {
 
 			t.startOfLine = false
 			if indent > t.lastIndent() {
-				return result.Ok(t.newTokenIndent(indent))
+				return t.newTokenIndent(indent)
 			} else if indent < t.lastIndent() {
 				if err := t.calculateIndent(indent); err != nil {
-					return result.Err[Token](err)
+					return t.newTokenError(err)
 				}
 
 			}
@@ -510,15 +525,15 @@ func (t *Tokenizer) getNext() result.Result[Token] {
 	// We must be at the start of the line, after indents, but there may be pending dedents, so handle them if necessary.
 	if t.dedentPending > 0 {
 		t.dedentPending--
-		return result.Ok(Token{Type: TokenTypeDedent})
+		return Token{Type: TokenTypeDedent}
 	}
 
 	if !t.more() { // We're at EOF.  Deal with any dedents
 		t.dedentPending = len(t.indents)
 		if t.dedentPending == 0 {
-			return result.Ok(t.newEOF())
+			return t.newEOF()
 		} else {
-			return result.Ok(Token{Type: TokenTypeDedent})
+			return Token{Type: TokenTypeDedent}
 		}
 	}
 
@@ -536,26 +551,26 @@ func (t *Tokenizer) getNext() result.Result[Token] {
 		} else if dedent[ch] {
 			t.inGroup--
 		}
-		return result.Ok(t.newToken(tt))
+		return t.newToken(tt)
 	} else if ttSingle, ok := doubles[ch]; ok {
 		chNext := t.peek(0)
 		chDouble := ch<<8 | chNext
 		if ttDouble, ok := doubles[chDouble]; ok {
-			return result.Ok(t.newToken(ttDouble))
+			return t.newToken(ttDouble)
 		} else {
-			return result.Ok(t.newToken(ttSingle))
+			return t.newToken(ttSingle)
 		}
 	}
 
 	switch ch {
 	case '\n': // Empty lines are already ignored and filtered out
 		t.startOfLine = true
-		return result.Ok(t.newToken(TokenTypeNewLine))
+		return t.newToken(TokenTypeNewLine)
 	case '#': // This is a comment after a token, so we want to emit a new line after processing it
 		for t.more() && t.next() != '\n' {
 		}
 		t.startOfLine = true
-		return result.Ok(t.newToken(TokenTypeNewLine))
+		return t.newToken(TokenTypeNewLine)
 	case '\\':
 		panic("deal with line wrapping")
 	case '"', '\'':
@@ -564,15 +579,15 @@ func (t *Tokenizer) getNext() result.Result[Token] {
 		}
 		for t.more() {
 			if t.next() == ch {
-				return result.Ok(t.newTokenString(t.data[t.start+1 : t.offset-1]))
+				return t.newTokenString(t.data[t.start+1 : t.offset-1])
 			}
 		}
 
-		return result.Err[Token](errors.New("unterminated string"))
+		return t.newTokenError(errors.New("unterminated string"))
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.':
 		// Easy path: check for '.' followed by a non-number
 		if ch == '.' && !isNum(t.peek(0)) {
-			return result.Ok(t.newToken(TokenTypeDot))
+			return t.newToken(TokenTypeDot)
 		}
 		t.reset()
 
@@ -583,7 +598,7 @@ func (t *Tokenizer) getNext() result.Result[Token] {
 			val = val*10 + (n - '0')
 		}
 		// if it's not a dot, then we have an int
-		return result.Ok(t.newTokenInt(val))
+		return t.newTokenInt(val)
 
 		/*
 			INT
@@ -604,27 +619,31 @@ func (t *Tokenizer) getNext() result.Result[Token] {
 					t.offset++
 					continue
 				}
-				return result.Ok(t.newTokenIdentifier())
+				return t.newTokenIdentifier()
 			}
 		} else {
 			start := max(0, t.start)
 			end := min(t.offset+5, len(t.data))
-			return result.Err[Token](fmt.Errorf("lex error: [%s]", t.data[start:end]))
+			return t.newTokenError(fmt.Errorf("lex error: [%s]", t.data[start:end]))
 		}
 	}
 }
 
 func (t *Tokenizer) Debug(s string, n int) {
 	fmt.Printf("%s [", s)
+	defer fmt.Printf("]\n")
 	for i := 0; i < n; i++ {
 		tok := t.Peek(i)
-		if tok.Ok() {
-			fmt.Printf("%s(%s) ", tok.Value().Type, tok.Value().Lexeme)
+		if tok.Type == TokenTypeError {
+			fmt.Printf("%s(%s) ", tok.Type, tok.Err)
 		} else {
-			fmt.Printf("(%s) ", tok.Err())
+			fmt.Printf("%s(%s) ", tok.Type, tok.Lexeme)
+		}
+
+		if tok.Type == TokenTypeEOF || tok.Type == TokenTypeError {
+			return
 		}
 	}
-	fmt.Printf("]\n")
 }
 
 func isAlpha(ch int) bool {

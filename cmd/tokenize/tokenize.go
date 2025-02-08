@@ -17,13 +17,8 @@ func main() {
 	t := tokenizer.NewTokenizer(string(d))
 	for {
 		token := t.Get()
-		if token.Ok() {
-			fmt.Printf("%s %s\n", token.Value().Type, escape(token.Value().Lexeme))
-			if token.Value().Type == tokenizer.TokenTypeEOF {
-				break
-			}
-		} else {
-			fmt.Printf("Err: %s\n", token.Err())
+		fmt.Printf("%s %s\n", token.Type, escape(token.Lexeme))
+		if token.Type == tokenizer.TokenTypeEOF || token.Type == tokenizer.TokenTypeError {
 			break
 		}
 	}

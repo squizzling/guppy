@@ -7,8 +7,6 @@ import (
 	"runtime/debug"
 	"strings"
 
-	"github.com/squizzling/types/pkg/result"
-
 	"guppy/internal/parser/ast"
 )
 
@@ -104,19 +102,19 @@ func (s *scope) DeclareSet(key string, value Object) {
 	s.Set(key, value)
 }
 
-func (s *scope) Get(key string) result.Result[Object] {
+func (s *scope) Get(key string) (Object, error) {
 	if val, ok := s.vars[key]; ok {
-		return result.Ok(val)
+		return val, nil
 	}
 	if s.lookupChain == nil {
-		return result.Err[Object](fmt.Errorf("unknown variable %s", key))
+		return nil, fmt.Errorf("unknown variable %s", key)
 	}
 	return s.lookupChain.Get(key)
 }
 
 func (i *Interpreter) Execute(sp ast.StatementProgram) {
-	err, ok := sp.Accept(i).(error)
-	if ok {
+	_, err := sp.Accept(i)
+	if err != nil {
 		fmt.Printf("err: %v\n", err)
 	}
 }

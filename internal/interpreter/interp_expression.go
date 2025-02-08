@@ -4,52 +4,45 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/squizzling/types/pkg/result"
-
 	"guppy/internal/parser/ast"
 	"guppy/internal/parser/tokenizer"
 )
 
-func (i *Interpreter) VisitExpressionBinary(eb ast.ExpressionBinary) any {
+func (i *Interpreter) VisitExpressionBinary(eb ast.ExpressionBinary) (any, error) {
 	defer i.trace()()
 
-	resultLeft := r(eb.Left.Accept(i))
-	if !resultLeft.Ok() {
-		return result.Err[Object](resultLeft.Err())
+	left, err := r(eb.Left.Accept(i))
+	if err != nil {
+		return nil, err
 	}
-	left := resultLeft.Value()
 
-	resultRight := r(eb.Right.Accept(i))
-	if !resultRight.Ok() {
-		return result.Err[Object](resultRight.Err())
+	right, err := r(eb.Right.Accept(i))
+	if err != nil {
+		return nil, err
 	}
-	right := resultRight.Value()
 
 	switch eb.Op.Type {
 	case tokenizer.TokenTypeAnd:
 		return i.doAnd(left, right)
 	default:
-		return result.Err[Object](fmt.Errorf("unhandled binary op: %s", eb.Op.Type))
+		return nil, fmt.Errorf("unhandled binary op: %s", eb.Op.Type)
 	}
 }
 
-func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) any {
+func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (any, error) {
 	defer i.trace()()
 
-	exprResult := r(ec.Expr.Accept(i))
-	if !exprResult.Ok() {
-		return exprResult
+	expr, err := r(ec.Expr.Accept(i))
+	if err != nil {
+		return nil, err
 	}
-	expr := exprResult.Value()
 
 	i.pushScope()
 	defer i.popScope()
 
-	var argData []ArgData
-	if argDataResult := i.doArgs(expr); !argDataResult.Ok() {
-		return result.Err[Object](argDataResult.Err())
-	} else {
-		argData = argDataResult.Value()
+	argData, err := i.doArgs(expr)
+	if err != nil {
+		return nil, err
 	}
 
 	ecArgs := ec.Args
@@ -60,29 +53,29 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) any {
 	}
 
 	if len(ecArgs) > len(argData) {
-		return result.Err[Object](fmt.Errorf("too many args provided (provided=%d, expected=%d)", len(ecArgs), len(argData)))
+		return nil, fmt.Errorf("too many args provided (provided=%d, expected=%d)", len(ecArgs), len(argData))
 	}
 
 	providedArgs := make(map[string]bool)
 	for idx, exprArg := range ecArgs {
 		if exprArg.Assign == "" {
-			if argResult := r(exprArg.Expr.Accept(i)); !argResult.Ok() {
-				return result.Err[Object](argResult.Err())
+			if arg, err := r(exprArg.Expr.Accept(i)); err != nil {
+				return nil, err
 			} else {
-				i.Scope.DeclareSet(argData[idx].Name, argResult.Value())
+				i.Scope.DeclareSet(argData[idx].Name, arg)
 				providedArgs[argData[idx].Name] = true
 			}
 		} else if _, ok := providedArgs[exprArg.Assign]; ok {
 			// Everything after this will be provided, so we don't need to track the
 			// index anymore.  Instead we just need to make sure there's no duplicates
-			return result.Err[Object](fmt.Errorf("duplicate argument %s", exprArg.Assign))
+			return nil, fmt.Errorf("duplicate argument %s", exprArg.Assign)
 		} else {
 			// Set it
 			// TODO: This is duplicated of the first arm
-			if argResult := r(exprArg.Expr.Accept(i)); !argResult.Ok() {
-				return result.Err[Object](argResult.Err())
+			if arg, err := r(exprArg.Expr.Accept(i)); err != nil {
+				return nil, err
 			} else {
-				i.Scope.DeclareSet(argData[idx].Name, argResult.Value())
+				i.Scope.DeclareSet(argData[idx].Name, arg)
 				providedArgs[argData[idx].Name] = true
 			}
 		}
@@ -103,83 +96,83 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) any {
 
 	if len(argData) != len(providedArgs) {
 		// TODO: Make this better
-		return result.Err[Object](fmt.Errorf("arg count wrong %d vs %d", len(argData), len(providedArgs)))
+		return nil, fmt.Errorf("arg count wrong %d vs %d", len(argData), len(providedArgs))
 	}
 
 	if ec.StarArgs != nil {
-		return result.Err[Object](errors.New("star arguments are not supported"))
+		return nil, errors.New("star arguments are not supported")
 	}
 	if ec.KeywordArgs != nil {
-		return result.Err[Object](errors.New("keyword arguments are not supported"))
+		return nil, errors.New("keyword arguments are not supported")
 	}
 
 	return i.doCall(expr)
 }
 
-func (i *Interpreter) VisitExpressionGrouping(eg ast.ExpressionGrouping) any {
+func (i *Interpreter) VisitExpressionGrouping(eg ast.ExpressionGrouping) (any, error) {
 	defer i.trace()()
 
 	panic("ExpressionGrouping")
 }
 
-func (i *Interpreter) VisitExpressionList(el ast.ExpressionList) any {
+func (i *Interpreter) VisitExpressionList(el ast.ExpressionList) (any, error) {
 	defer i.trace()()
 
 	var o []Object
 	for _, expr := range el.Expressions {
-		exprResult := r(expr.Accept(i))
-		if !exprResult.Ok() {
-			return result.Err[Object](exprResult.Err())
+		exprResult, err := expr.Accept(i)
+		if err != nil {
+			return nil, err
 		}
-		o = append(o, exprResult.Value())
+		o = append(o, exprResult.(Object))
 	}
-	return result.Ok(NewObjectList(o...))
+	return NewObjectList(o...), nil
 }
 
-func (i *Interpreter) VisitExpressionLiteral(el ast.ExpressionLiteral) any {
+func (i *Interpreter) VisitExpressionLiteral(el ast.ExpressionLiteral) (any, error) {
 	defer i.trace("Value: %v", el.Value)()
 
 	switch v := el.Value.(type) {
 	case string:
-		return result.Ok(NewObjectString(v))
+		return NewObjectString(v), nil
 	case nil:
-		return result.Ok(NewObjectNone())
+		return NewObjectNone(), nil
 	case Object:
-		return result.Ok(v)
+		return v, nil
 	default:
-		return result.Err[Object](fmt.Errorf("unknown literal type: %T", v))
+		return nil, fmt.Errorf("unknown literal type: %T", v)
 	}
 }
 
-func (i *Interpreter) VisitExpressionLogical(el ast.ExpressionLogical) any {
+func (i *Interpreter) VisitExpressionLogical(el ast.ExpressionLogical) (any, error) {
 	defer i.trace()()
 
 	panic("ExpressionLogical")
 }
 
-func (i *Interpreter) VisitExpressionMember(em ast.ExpressionMember) any {
+func (i *Interpreter) VisitExpressionMember(em ast.ExpressionMember) (any, error) {
 	defer i.trace("Member: %s", em.Identifier)()
 
-	if exprResult := r(em.Expr.Accept(i)); !exprResult.Ok() {
-		return exprResult
+	if expr, err := r(em.Expr.Accept(i)); err != nil {
+		return nil, err
 	} else {
-		return exprResult.Value().Member(i, exprResult.Value(), em.Identifier)
+		return expr.Member(i, expr, em.Identifier)
 	}
 }
 
-func (i *Interpreter) VisitExpressionSubscript(es ast.ExpressionSubscript) any {
+func (i *Interpreter) VisitExpressionSubscript(es ast.ExpressionSubscript) (any, error) {
 	defer i.trace()()
 
 	panic("ExpressionSubscript")
 }
 
-func (i *Interpreter) VisitExpressionUnary(eu ast.ExpressionUnary) any {
+func (i *Interpreter) VisitExpressionUnary(eu ast.ExpressionUnary) (any, error) {
 	defer i.trace()()
 
 	panic("ExpressionUnary")
 }
 
-func (i *Interpreter) VisitExpressionVariable(ev ast.ExpressionVariable) any {
+func (i *Interpreter) VisitExpressionVariable(ev ast.ExpressionVariable) (any, error) {
 	defer i.trace("Identifier: %s", ev.Identifier)()
 
 	return i.Scope.Get(ev.Identifier)

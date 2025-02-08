@@ -1,8 +1,6 @@
 package stream
 
 import (
-	"github.com/squizzling/types/pkg/result"
-
 	"guppy/internal/interpreter"
 )
 
@@ -10,11 +8,11 @@ type methodSum struct {
 	interpreter.Object
 }
 
-func (ms methodSum) Args(i *interpreter.Interpreter) result.Result[[]interpreter.ArgData] {
+func (ms methodSum) Args(i *interpreter.Interpreter) ([]interpreter.ArgData, error) {
 	return argsAggregate(i)
 }
 
-func (ms methodSum) Call(i *interpreter.Interpreter) result.Result[interpreter.Object] {
+func (ms methodSum) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
 	return callAggregate(i, NewSum)
 }
 

@@ -2,13 +2,11 @@ package interpreter
 
 import (
 	"fmt"
-
-	"github.com/squizzling/types/pkg/result"
 )
 
 type Object interface {
 	// We include the root Object so the default behavior knows its object type, instead of just *flowObject
-	Member(i *Interpreter, obj Object, memberName string) result.Result[Object]
+	Member(i *Interpreter, obj Object, memberName string) (Object, error)
 }
 
 type flowObject struct {
@@ -21,12 +19,12 @@ func NewObject(attributes map[string]Object) Object {
 	}
 }
 
-func (f *flowObject) Member(i *Interpreter, obj Object, memberName string) result.Result[Object] {
+func (f *flowObject) Member(i *Interpreter, obj Object, memberName string) (Object, error) {
 	if f.members == nil {
-		return result.Err[Object](fmt.Errorf("object of type %T does not support member lookup for %s", obj, memberName))
+		return nil, fmt.Errorf("object of type %T does not support member lookup for %s", obj, memberName)
 	} else if member, ok := f.members[memberName]; !ok {
-		return result.Err[Object](fmt.Errorf("object of type %T does not contain member %s", obj, memberName))
+		return nil, fmt.Errorf("object of type %T does not contain member %s", obj, memberName)
 	} else {
-		return result.Ok(NewLValue(obj, member))
+		return NewLValue(obj, member), nil
 	}
 }

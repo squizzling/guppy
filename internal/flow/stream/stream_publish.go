@@ -3,8 +3,6 @@ package stream
 import (
 	"fmt"
 
-	"github.com/squizzling/types/pkg/result"
-
 	"guppy/internal/interpreter"
 )
 
@@ -12,20 +10,20 @@ type methodPublish struct {
 	interpreter.Object
 }
 
-func (mp methodPublish) Args(i *interpreter.Interpreter) result.Result[[]interpreter.ArgData] {
-	return result.Ok([]interpreter.ArgData{
+func (mp methodPublish) Args(i *interpreter.Interpreter) ([]interpreter.ArgData, error) {
+	return []interpreter.ArgData{
 		{Name: "self"},
 		{Name: "label"},
-	})
+	}, nil
 }
 
-func (mp methodPublish) Call(i *interpreter.Interpreter) result.Result[interpreter.Object] {
-	if resultSelf := interpreter.ArgAs[Stream](i, "self"); !resultSelf.Ok() {
-		return result.Err[interpreter.Object](resultSelf.Err())
-	} else if resultLabel := interpreter.ArgAsString(i, "label"); !resultLabel.Ok() {
-		return result.Err[interpreter.Object](resultLabel.Err())
+func (mp methodPublish) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
+	if self, err := interpreter.ArgAs[Stream](i, "self"); err != nil {
+		return nil, err
+	} else if label, err := interpreter.ArgAsString(i, "label"); err != nil {
+		return nil, err
 	} else {
-		return result.Ok[interpreter.Object](NewPublish(resultSelf.Value(), resultLabel.Value()))
+		return NewPublish(self, label), nil
 	}
 }
 

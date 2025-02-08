@@ -1,9 +1,5 @@
 package interpreter
 
-import (
-	"github.com/squizzling/types/pkg/result"
-)
-
 type ObjectLValue struct {
 	left  Object
 	right Object
@@ -16,14 +12,14 @@ func NewLValue(left Object, right Object) Object {
 	}
 }
 
-func (lv *ObjectLValue) Args(i *Interpreter) result.Result[[]ArgData] {
+func (lv *ObjectLValue) Args(i *Interpreter) ([]ArgData, error) {
 	return i.doArgs(lv.right)
 }
 
-func (lv *ObjectLValue) Call(i *Interpreter) result.Result[Object] {
+func (lv *ObjectLValue) Call(i *Interpreter) (Object, error) {
 	return i.doCall(lv.right)
 }
 
-func (lv *ObjectLValue) Member(i *Interpreter, obj Object, memberName string) result.Result[Object] {
+func (lv *ObjectLValue) Member(i *Interpreter, obj Object, memberName string) (Object, error) {
 	return lv.right.Member(i, lv.right, memberName)
 }

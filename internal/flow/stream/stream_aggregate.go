@@ -4,45 +4,51 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/squizzling/types/pkg/result"
-
 	"guppy/internal/interpreter"
 )
 
-func argsAggregate(i *interpreter.Interpreter) result.Result[[]interpreter.ArgData] {
-	return result.Ok([]interpreter.ArgData{
+func argsAggregate(i *interpreter.Interpreter) ([]interpreter.ArgData, error) {
+	return []interpreter.ArgData{
 		{Name: "self"},
 		{Name: "by", Default: interpreter.NewObjectNone()},
-	})
+	}, nil
 }
 
-func callAggregate(i *interpreter.Interpreter, new func(source Stream, by []string) Stream) result.Result[interpreter.Object] {
-	if resultSelf := interpreter.ArgAs[Stream](i, "self"); !resultSelf.Ok() {
-		return result.Err[interpreter.Object](resultSelf.Err())
-	} else if resultBy := i.Scope.Get("by"); !resultBy.Ok() {
-		return resultBy
+func resolveBy(i *interpreter.Interpreter) ([]string, error) {
+	if by, err := i.Scope.Get("by"); err != nil {
+		return nil, err
 	} else {
-		var actualBy []string
-		switch by := resultBy.Value().(type) {
+		switch by := by.(type) {
 		case *interpreter.ObjectNone:
-			actualBy = nil // explicitly nil
+			return nil, nil // explicitly nil
 		case *interpreter.ObjectString:
-			actualBy = []string{by.String(i).Value()}
+			s, _ := by.String(i)
+			return []string{s}, nil
 		case *interpreter.ObjectList:
-			actualBy = make([]string, 0, len(by.Items)) // explicitly not nil
+			actualBy := make([]string, 0, len(by.Items)) // explicitly not nil
 			for idx, item := range by.Items {
 				if s, ok := item.(*interpreter.ObjectString); ok {
-					actualBy = append(actualBy, s.String(i).Value())
+					s, _ := s.String(i)
+					actualBy = append(actualBy, s)
 				} else {
-					return result.Err[interpreter.Object](fmt.Errorf("by element %d is %T not *interpreter.ObjectString", idx, item))
+					return nil, fmt.Errorf("by element %d is %T not *interpreter.ObjectString", idx, item)
 				}
 			}
+			return actualBy, nil
 		default:
-			return result.Err[interpreter.Object](fmt.Errorf("by is %T not *interpreter.ObjectNone, *interpreter.ObjectString, or *interpreter.ObjectList", resultBy.Value()))
+			return nil, fmt.Errorf("by is %T not *interpreter.ObjectNone, *interpreter.ObjectString, or *interpreter.ObjectList", by)
 		}
-		return result.Ok[interpreter.Object](new(resultSelf.Value(), actualBy))
 	}
+}
 
+func callAggregate(i *interpreter.Interpreter, new func(source Stream, by []string) Stream) (interpreter.Object, error) {
+	if self, err := interpreter.ArgAs[Stream](i, "self"); err != nil {
+		return nil, err
+	} else if by, err := resolveBy(i); err != nil {
+		return nil, err
+	} else {
+		return new(self, by), nil
+	}
 }
 
 func renderAggregate(source Stream, aggr string, by []string) string {

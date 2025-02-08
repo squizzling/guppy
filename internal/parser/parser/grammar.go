@@ -523,8 +523,8 @@ func (p *Parser) parseTrailer(expr ast.Expression) (ast.Expression, *ParseError)
 		} else {
 			expr = ast.NewExpressionCall(expr, nil, nil, nil)
 		}
-		if !p.match(tokenizer.TokenTypeRightParen) {
-			return nil, failMsgf("expecting ')' after args found %s", p.tokens.Peek(0).Value().Type)
+		if t, ok := p.capture(tokenizer.TokenTypeRightParen); !ok {
+			return nil, failMsgf("expecting ')' after args found %s", t.Type)
 		} else {
 			return expr, nil
 		}
@@ -713,8 +713,7 @@ func (p *Parser) parseAtom() (ast.Expression, *ParseError) {
 	} else if p.match(tokenizer.TokenTypeFalse) {
 		return ast.NewExpressionLiteral(false), nil
 	} else {
-		t := p.tokens.Peek(0).Value()
-		return nil, failMsgf("atom not supported: %s", t.Type)
+		return nil, failMsgf("atom not supported: %s", p.tokens.Peek(0).Type)
 	}
 }
 
