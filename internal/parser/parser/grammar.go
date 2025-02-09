@@ -674,6 +674,11 @@ func (p *Parser) parseArgument() (ast.DataArgument, *ParseError) {
 }
 
 func (p *Parser) parseCompFor(expr ast.Expression) (ast.Expression, *ParseError) {
+	/*
+		comp_for
+		  : FOR id_list IN or_test (comp_iter)?
+		  ;
+	*/
 	return nil, failMsgf("compFor not implemented")
 }
 
@@ -704,7 +709,7 @@ func (p *Parser) parseAtom() (ast.Expression, *ParseError) {
 	*/
 	if p.match(tokenizer.TokenTypeLeftSquare) {
 		return wrap(p.parseListExpr())
-	} else if p.match(tokenizer.TokenTypeLeftParen) {
+	} else if p.peekMatch(0, tokenizer.TokenTypeLeftParen) {
 		return wrap(p.parseTupleExpr())
 	} else if p.match(tokenizer.TokenTypeLeftBrace) {
 		return wrap(p.parseDictExpr())
@@ -775,7 +780,66 @@ func (p *Parser) parseListMaker() (ast.Expression, *ParseError) {
 }
 
 func (p *Parser) parseTupleExpr() (ast.Expression, *ParseError) {
-	return nil, failMsgf("tupleExpr not supported")
+	/*
+		tuple_expr
+		  : OPEN_PAREN testlist_comp? CLOSE_PAREN
+		  ;
+	*/
+	if !p.match(tokenizer.TokenTypeLeftParen) {
+		return nil, failMsgf("expecting '(' in tupleExpr")
+	}
+
+	if p.match(tokenizer.TokenTypeRightParen) {
+		return ast.NewExpressionList([]ast.Expression{}, true), nil
+	}
+
+	if expr, err := p.parseTestListComp(); err != nil {
+		return nil, failErr(err)
+	} else if !p.match(tokenizer.TokenTypeRightParen) {
+		return nil, failMsgf("expecting ')' after tupleExpr")
+	} else {
+		return expr, nil
+	}
+}
+
+func (p *Parser) parseTestListComp() (ast.Expression, *ParseError) {
+	// TODO: I need to check the exact semantics of python2,
+	//       but I believe this should be treated like:
+	// () -> tuple of 0 (handled elsewhere)
+	// (a) -> brackets, not a tuple
+	// (a, ) -> tuple of 1
+	// (a, b, ...) -> tuple of 2+
+	/*
+		testlist_comp
+		  : test (comp_for | (COMMA test)* COMMA?)
+		  ;
+	*/
+	expr, err := p.parseTest()
+	if err != nil {
+		return nil, failErr(err)
+	}
+
+	if p.peekMatch(0, tokenizer.TokenTypeFor) {
+		if expr, err = p.parseCompFor(expr); err != nil {
+			return nil, failErr(err)
+		} else {
+			return expr, nil
+		}
+	}
+
+	exprList := []ast.Expression{expr}
+	for p.match(tokenizer.TokenTypeComma) { // Read a comma
+		if p.isAtomStart() { // If there's an expression after it...
+			if expr, err = p.parseExpression(); err == nil {
+				exprList = append(exprList, expr) // Keep it
+			} else {
+				return nil, failErr(err) // Or fail
+			}
+		} else { // There was no expression, so it was a dangling comma
+			break
+		}
+	}
+	return ast.NewExpressionList(exprList, true), nil
 }
 
 func (p *Parser) parseDictExpr() (ast.Expression, *ParseError) {
