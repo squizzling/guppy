@@ -1,5 +1,11 @@
 x
 -----
+ExpressionVariable(
+  Identifier: string(x)
+)
+=====
+x,
+-----
 ExpressionList(
   Expressions: [
     ExpressionVariable(
@@ -22,6 +28,24 @@ ExpressionList(
   ]
   Tuple: bool(true)
 )
+=====
+x, y,
+-----
+ExpressionList(
+  Expressions: [
+    ExpressionVariable(
+      Identifier: string(x)
+    )
+    ExpressionVariable(
+      Identifier: string(y)
+    )
+  ]
+  Tuple: bool(true)
+)
+=====
+x, (for)
+-----
+atom not supported: FOR
 =====
 for x
 -----

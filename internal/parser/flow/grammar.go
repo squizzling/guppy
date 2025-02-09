@@ -806,17 +806,17 @@ func parseTupleExpr(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 }
 
 func parseTestListComp(p *parser.Parser) (ast.Expression, *parser.ParseError) {
-	// TODO: I need to check the exact semantics of python2,
-	//       but I believe this should be treated like:
-	// () -> tuple of 0 (handled elsewhere)
-	// (a) -> brackets, not a tuple
-	// (a, ) -> tuple of 1
-	// (a, b, ...) -> tuple of 2+
 	/*
 		testlist_comp
 		  : test (comp_for | (COMMA test)* COMMA?)
 		  ;
 	*/
+
+	// () -> tuple of 0 (handled elsewhere)
+	// (a) -> grouping, not a tuple
+	// (a, ) -> tuple of 1
+	// (a, b, ...) -> tuple of 2+
+
 	expr, err := parseTest(p)
 	if err != nil {
 		return nil, parser.FailErr(err)
@@ -831,7 +831,9 @@ func parseTestListComp(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 	}
 
 	exprList := []ast.Expression{expr}
+	isTuple := false
 	for p.Match(tokenizer.TokenTypeComma) { // Read a comma
+		isTuple = true
 		if isAtomStart(p) { // If there's an expression after it...
 			if expr, err = parseExpression(p); err == nil {
 				exprList = append(exprList, expr) // Keep it
@@ -842,7 +844,11 @@ func parseTestListComp(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 			break
 		}
 	}
-	return ast.NewExpressionList(exprList, true), nil
+	if len(exprList) == 1 && !isTuple {
+		// This is a grouping, not a tuple
+		return exprList[0], nil
+	}
+	return ast.NewExpressionList(exprList, isTuple), nil
 }
 
 func parseDictExpr(p *parser.Parser) (ast.Expression, *parser.ParseError) {
