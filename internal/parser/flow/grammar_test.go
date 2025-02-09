@@ -32,17 +32,22 @@ func testExpressionFromFile(t *testing.T, fullFilename string, parse func(p *par
 	for _, test := range tests {
 		parts := strings.Split(test, "-----\n")
 		input, output := parts[0], parts[1]
+		t.Run(input, func(t *testing.T) {
+			t.Parallel()
 
-		if actual, err := parse(parser.NewParser(tokenizer.NewTokenizer(input))); err != nil {
-			assert.Equal(t, strings.TrimRight(output, "\n"), err.Error())
-		} else {
-			actualTree := must1(actual.Accept(ast.DebugWriter{}))
-			assert.Equal(t, output, actualTree)
-		}
+			if actual, err := parse(parser.NewParser(tokenizer.NewTokenizer(input))); err != nil {
+				assert.Equal(t, strings.TrimRight(output, "\n"), err.Error())
+			} else {
+				actualTree := must1(actual.Accept(ast.DebugWriter{}))
+				assert.Equal(t, output, actualTree)
+			}
+		})
 	}
 }
 
 func TestExpressions(t *testing.T) {
+	t.Parallel()
+
 	testExpressionFromFile(t, "testdata/expressions/parseTestListComp.txt", parseTestListComp)
 }
 
