@@ -823,11 +823,7 @@ func parseTestListComp(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 	}
 
 	if p.PeekMatch(0, tokenizer.TokenTypeFor) {
-		if expr, err = parseCompFor(p, expr); err != nil {
-			return nil, parser.FailErr(err)
-		} else {
-			return expr, nil
-		}
+		return parser.Wrap(parseCompFor(p, expr))
 	}
 
 	exprList := []ast.Expression{expr}
