@@ -16,11 +16,11 @@ func NewParser(tokens *tokenizer.Tokenizer) *Parser {
 	}
 }
 
-func (p *Parser) peekMatch(n int, tokenTypes ...tokenizer.TokenType) bool {
+func (p *Parser) PeekMatch(n int, tokenTypes ...tokenizer.TokenType) bool {
 	return slices.Contains(tokenTypes, p.tokens.Peek(n).Type)
 }
 
-func (p *Parser) match(tokenType tokenizer.TokenType) bool {
+func (p *Parser) Match(tokenType tokenizer.TokenType) bool {
 	nextToken := p.tokens.Peek(0)
 	if nextToken.Type == tokenType {
 		p.tokens.Advance()
@@ -29,7 +29,7 @@ func (p *Parser) match(tokenType tokenizer.TokenType) bool {
 	return false
 }
 
-func (p *Parser) capture(tts ...tokenizer.TokenType) (tokenizer.Token, bool) {
+func (p *Parser) Capture(tts ...tokenizer.TokenType) (tokenizer.Token, bool) {
 	if p.isAtEnd() {
 		return tokenizer.Token{}, false
 	}
@@ -48,11 +48,3 @@ func (p *Parser) isAtEnd() bool {
 	nextToken := p.tokens.Peek(0)
 	return nextToken.Type == tokenizer.TokenTypeEOF || nextToken.Type == tokenizer.TokenTypeError
 }
-
-/*func (p *Parser) dumpTokens(n int) {
-	n = min(len(p.tokens), p.next+n)
-	for i := p.next; i < n; i++ {
-		_, _ = fmt.Fprintf(os.Stderr, "[%d] - %v\n", i, p.tokens[i])
-	}
-	_, _ = fmt.Fprintf(os.Stderr, "------\n")
-}*/

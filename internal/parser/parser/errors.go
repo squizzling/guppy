@@ -42,7 +42,7 @@ func caller(skip int) (string, string, int) {
 	return frame.Function, frame.File, frame.Line
 }
 
-func failErrSkip(err error, msg string, skip int) *ParseError {
+func FailErrSkip(err error, msg string, skip int) *ParseError {
 	fn, fl, l := caller(skip)
 	return &ParseError{
 		Location: fmt.Sprintf("%s:%d [%s]", fl, l, fn),
@@ -51,19 +51,19 @@ func failErrSkip(err error, msg string, skip int) *ParseError {
 	}
 }
 
-func failErr(err *ParseError) *ParseError {
-	return failErrSkip(err, "", 1)
+func FailErr(err *ParseError) *ParseError {
+	return FailErrSkip(err, "", 1)
 }
 
-func failMsgf(f string, args ...any) *ParseError {
+func FailMsgf(f string, args ...any) *ParseError {
 	msg := fmt.Sprintf(f, args...)
-	return failErrSkip(errors.New(msg), msg, 1)
+	return FailErrSkip(errors.New(msg), msg, 1)
 }
 
-func wrap[T any](t T, err *ParseError) (T, *ParseError) {
+func Wrap[T any](t T, err *ParseError) (T, *ParseError) {
 	if err != nil {
 		var zero T
-		return zero, failErrSkip(err, "", 1)
+		return zero, FailErrSkip(err, "", 1)
 	} else {
 		return t, nil
 	}
