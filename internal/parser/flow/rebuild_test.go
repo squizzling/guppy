@@ -53,4 +53,5 @@ func rebuildExpressionForFile(
 
 func TestRebuild(t *testing.T) {
 	rebuildExpressionForFile("testdata/expressions/parseTestListComp.txt", parseTestListComp)
+	rebuildExpressionForFile("testdata/expressions/parseTupleExpr.txt", parseTupleExpr)
 }

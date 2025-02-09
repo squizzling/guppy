@@ -1,0 +1,71 @@
+()
+-----
+ExpressionList(
+  Expressions: []
+  Tuple: bool(true)
+)
+=====
+(x)
+-----
+ExpressionVariable(
+  Identifier: string(x)
+)
+=====
+(x,)
+-----
+ExpressionList(
+  Expressions: [
+    ExpressionVariable(
+      Identifier: string(x)
+    )
+  ]
+  Tuple: bool(true)
+)
+=====
+(x, y)
+-----
+ExpressionList(
+  Expressions: [
+    ExpressionVariable(
+      Identifier: string(x)
+    )
+    ExpressionVariable(
+      Identifier: string(y)
+    )
+  ]
+  Tuple: bool(true)
+)
+=====
+(x, y,)
+-----
+ExpressionList(
+  Expressions: [
+    ExpressionVariable(
+      Identifier: string(x)
+    )
+    ExpressionVariable(
+      Identifier: string(y)
+    )
+  ]
+  Tuple: bool(true)
+)
+=====
+(x, (for))
+-----
+atom not supported: FOR
+=====
+(for x)
+-----
+atom not supported: FOR
+=====
+(x for x in [])
+-----
+compFor not implemented
+=====
+x
+-----
+expecting '(' in tupleExpr
+=====
+(10,
+-----
+expecting ')' after tupleExpr

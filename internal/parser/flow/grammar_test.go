@@ -49,6 +49,7 @@ func TestExpressions(t *testing.T) {
 	t.Parallel()
 
 	testExpressionFromFile(t, "testdata/expressions/parseTestListComp.txt", parseTestListComp)
+	testExpressionFromFile(t, "testdata/expressions/parseTupleExpr.txt", parseTupleExpr)
 }
 
 func TestParseIdList(t *testing.T) {
