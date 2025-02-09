@@ -15,7 +15,7 @@ func (f FFIData) Args(i *interpreter.Interpreter) ([]interpreter.ArgData, error)
 	return []interpreter.ArgData{
 		{Name: "metric"},
 		{Name: "filter", Default: interpreter.NewObjectNone()},
-		//{Name: "rollup", Default: interpreter.NewObjectNone()},
+		{Name: "rollup", Default: interpreter.NewObjectNone()},
 		//{Name: "extrapolation", Default: interpreter.NewObjectString("null")},
 		//{Name: "maxExtrapolations", Default: interpreter.NewObjectNone()}, // TODO: Check what this has for a default
 		//{Name: "resolution", Default: interpreter.NewObjectNone()},
@@ -37,13 +37,30 @@ func resolveFilter(i *interpreter.Interpreter) (filter.Filter, error) {
 	}
 }
 
+func resolveRollup(i *interpreter.Interpreter) (string, error) {
+	if rollup, err := i.Scope.Get("rollup"); err != nil {
+		return "", err
+	} else {
+		switch rollup := rollup.(type) {
+		case *interpreter.ObjectNone:
+			return "", nil
+		case interpreter.FlowStringable:
+			return rollup.String(i)
+		default:
+			return "", fmt.Errorf("rollup is %T not *interpreter.ObjectNone, or interpreter.FlowStringable", rollup)
+		}
+	}
+}
+
 func (f FFIData) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
 	if metricName, err := interpreter.ArgAsString(i, "metric"); err != nil {
 		return nil, err
 	} else if fltr, err := resolveFilter(i); err != nil {
 		return nil, err
+	} else if rollup, err := resolveRollup(i); err != nil {
+		return nil, err
 	} else {
-		return NewData(metricName, fltr), nil
+		return NewData(metricName, fltr, rollup), nil
 	}
 }
 
@@ -54,13 +71,15 @@ type data struct {
 
 	metricName string
 	filter     filter.Filter
+	rollup     string
 }
 
-func NewData(metricName string, filter filter.Filter) Stream {
+func NewData(metricName string, filter filter.Filter, rollup string) Stream {
 	return &data{
 		Object:     newStreamObject(),
 		metricName: metricName,
 		filter:     filter,
+		rollup:     rollup,
 	}
 }
 
@@ -69,5 +88,9 @@ func (d *data) RenderStream() string {
 	if d.filter != nil {
 		filterStr = fmt.Sprintf(", filter=%s", d.filter.RenderFilter())
 	}
-	return fmt.Sprintf("data('%s'%s)", d.metricName, filterStr)
+	rollupStr := ""
+	if d.rollup != "" {
+		rollupStr = fmt.Sprintf(", rollup='%s'", d.rollup)
+	}
+	return fmt.Sprintf("data('%s'%s%s)", d.metricName, filterStr, rollupStr)
 }
