@@ -16,6 +16,14 @@ func NewParser(tokens *tokenizer.Tokenizer) *Parser {
 	}
 }
 
+func (p *Parser) RemainingTokens() int {
+	return p.tokens.RemainingTokens()
+}
+
+func (p *Parser) Peek(n int) tokenizer.Token {
+	return p.tokens.Peek(n)
+}
+
 func (p *Parser) PeekMatch(n int, tokenTypes ...tokenizer.TokenType) bool {
 	return slices.Contains(tokenTypes, p.tokens.Peek(n).Type)
 }

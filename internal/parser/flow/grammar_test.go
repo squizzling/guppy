@@ -1,4 +1,4 @@
-package parser
+package flow
 
 import (
 	"testing"
@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"guppy/internal/parser/parser"
 	"guppy/internal/parser/tokenizer"
 )
 
@@ -31,15 +32,15 @@ func TestParseIdList(t *testing.T) {
 		t.Run(tc.input, func(t *testing.T) {
 			t.Parallel()
 
-			p := NewParser(tokenizer.NewTokenizer(tc.input))
-			ids, err := p.parseIdList()
+			p := parser.NewParser(tokenizer.NewTokenizer(tc.input))
+			ids, err := parseIdList(p)
 			if tc.expectedError != "" {
 				require.NotNil(t, err)
 				assert.Equal(t, tc.expectedError, err.Message)
 			} else {
 				require.Nil(t, err)
 			}
-			assert.Equal(t, tc.remainingTokens, p.tokens.RemainingTokens())
+			assert.Equal(t, tc.remainingTokens, p.RemainingTokens())
 			assert.Equal(t, tc.expectedIds, ids)
 		})
 	}

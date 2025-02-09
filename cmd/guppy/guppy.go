@@ -7,6 +7,7 @@ import (
 	"guppy/internal/flow/filter"
 	"guppy/internal/flow/stream"
 	"guppy/internal/interpreter"
+	"guppy/internal/parser/flow"
 	"guppy/internal/parser/parser"
 	"guppy/internal/parser/tokenizer"
 )
@@ -15,7 +16,7 @@ func main() {
 	d, _ := os.ReadFile(os.Args[1])
 	t := tokenizer.NewTokenizer(string(d))
 	p := parser.NewParser(t)
-	program, err := p.ParseProgram()
+	program, err := flow.ParseProgram(p)
 	if err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "%s\n", err.Error())
 		ss := err.Stack()
