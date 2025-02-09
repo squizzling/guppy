@@ -187,7 +187,7 @@ func (p *Parser) parseIdList() ([]string, *ParseError) {
 	*/
 	t, ok := p.capture(tokenizer.TokenTypeIdentifier)
 	if !ok {
-		return nil, failMsgf("expecting ID in idList")
+		return nil, failMsgf("expecting ID, found %s", p.tokens.Peek(0).Type)
 	}
 	idList := []string{t.Lexeme}
 	for p.match(tokenizer.TokenTypeComma) { // Read a comma

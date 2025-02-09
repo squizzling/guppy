@@ -432,6 +432,12 @@ func (t *Tokenizer) lastIndent() int {
 	}
 }
 
+func (t *Tokenizer) RemainingTokens() int {
+	// Should only be used in tests, it peeks to the end of the buffer and returns the pending size.
+	_ = t.Peek(len(t.data))
+	return len(t.tokensPending)
+}
+
 func (t *Tokenizer) Peek(n int) Token {
 	for len(t.tokensPending) <= n { // We need to read more.
 		// If we have anything in the buffer, and the last thing we read was an EOF or error, return it

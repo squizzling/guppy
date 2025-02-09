@@ -6,3 +6,8 @@ gen:
 .PHONY: imports
 imports:
 	goimports -d -local guppy .
+
+.PHONY: test
+test:
+	go test -coverprofile profile.out ./...
+	go tool cover -html profile.out -o profile.html
