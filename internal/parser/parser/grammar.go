@@ -162,7 +162,7 @@ func (p *Parser) parseExpressionStatement() (ast.Statement, *ParseError) {
 		  ;
 	*/
 	var assignList []string
-	if p.peekMatch(0, tokenizer.TokenTypeIdentifier) && p.peekMatch(1, tokenizer.TokenTypeComma, tokenizer.TokenTypeEqual) {
+	if p.peekMatch(0, tokenizer.TokenTypeIdentifier) {
 		var err *ParseError
 		if assignList, err = p.parseIdList(); err != nil {
 			return nil, failErr(err)
@@ -180,14 +180,24 @@ func (p *Parser) parseExpressionStatement() (ast.Statement, *ParseError) {
 }
 
 func (p *Parser) parseIdList() ([]string, *ParseError) {
-	// TODO
 	/*
 		id_list
 		  : ID (',' ID)* ','?
 		  ;
 	*/
-	t, _ := p.capture(tokenizer.TokenTypeIdentifier)
-	return []string{t.Lexeme}, nil
+	t, ok := p.capture(tokenizer.TokenTypeIdentifier)
+	if !ok {
+		return nil, failMsgf("expecting ID in idList")
+	}
+	idList := []string{t.Lexeme}
+	for p.match(tokenizer.TokenTypeComma) { // Read a comma
+		if t, ok := p.capture(tokenizer.TokenTypeIdentifier); ok { // If there's an identifier after it,
+			idList = append(idList, t.Lexeme) // Keep it
+		} else { // If there's no identifier...
+			break // It was a dangling comma and that's ok
+		}
+	}
+	return idList, nil
 }
 
 func (p *Parser) isAtomStart() bool {
