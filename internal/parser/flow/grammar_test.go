@@ -1,14 +1,50 @@
 package flow
 
 import (
+	"os"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"guppy/internal/parser/ast"
 	"guppy/internal/parser/parser"
 	"guppy/internal/parser/tokenizer"
 )
+
+func must(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+
+func must1[T any](t T, err error) T {
+	if err != nil {
+		panic(err)
+	}
+	return t
+}
+
+func testExpressionFromFile(t *testing.T, fullFilename string, parse func(p *parser.Parser) (ast.Expression, *parser.ParseError)) {
+	f := string(must1(os.ReadFile(fullFilename)))
+	tests := strings.Split(f, "=====\n")
+	for _, test := range tests {
+		parts := strings.Split(test, "-----\n")
+		input, output := parts[0], parts[1]
+
+		if actual, err := parse(parser.NewParser(tokenizer.NewTokenizer(input))); err != nil {
+			assert.Equal(t, strings.TrimRight(output, "\n"), err.Error())
+		} else {
+			actualTree := must1(actual.Accept(ast.DebugWriter{}))
+			assert.Equal(t, output, actualTree)
+		}
+	}
+}
+
+func TestExpressions(t *testing.T) {
+	testExpressionFromFile(t, "testdata/expressions/parseTestListComp.txt", parseTestListComp)
+}
 
 func TestParseIdList(t *testing.T) {
 	t.Parallel()

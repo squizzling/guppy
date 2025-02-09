@@ -11,3 +11,7 @@ imports:
 test:
 	go test -coverprofile profile.out ./...
 	go tool cover -html profile.out -o profile.html
+
+.PHONY: rebuild-tests
+rebuild-tests:
+	go test -run TestRebuild -tags rebuild ./internal/parser/flow -v
