@@ -16,7 +16,7 @@ func (f FFIData) Args(i *interpreter.Interpreter) ([]interpreter.ArgData, error)
 		{Name: "metric"},
 		{Name: "filter", Default: interpreter.NewObjectNone()},
 		{Name: "rollup", Default: interpreter.NewObjectNone()},
-		//{Name: "extrapolation", Default: interpreter.NewObjectString("null")},
+		{Name: "extrapolation", Default: interpreter.NewObjectString("null")},
 		//{Name: "maxExtrapolations", Default: interpreter.NewObjectNone()}, // TODO: Check what this has for a default
 		//{Name: "resolution", Default: interpreter.NewObjectNone()},
 	}, nil

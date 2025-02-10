@@ -30,6 +30,8 @@ func (i *Interpreter) VisitExpressionBinary(eb ast.ExpressionBinary) (any, error
 }
 
 func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (any, error) {
+	// TODO: I think there's some weirdness happening with calls and self, but
+	//       because flow doesn't support classes, it might not be a problem?
 	defer i.trace()()
 
 	expr, err := r(ec.Expr.Accept(i))
@@ -52,8 +54,35 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (any, error) {
 		ecArgs = append([]ast.DataArgument{{Expr: ast.NewExpressionLiteral(lv.left)}}, ecArgs...)
 	}
 
+	var sProvidedArgs []string
+	var expectedArgs []string
+
+	for _, a := range ecArgs {
+		sProvidedArgs = append(sProvidedArgs, a.Assign)
+	}
+	for _, a := range argData {
+		expectedArgs = append(expectedArgs, a.Name)
+	}
+
 	if len(ecArgs) > len(argData) {
-		return nil, fmt.Errorf("too many args provided (provided=%d, expected=%d)", len(ecArgs), len(argData))
+		// calculate ecArgs - argData
+		var extraArgs []string
+		for _, a1 := range ecArgs {
+			if a1.Assign == "" {
+				continue
+			}
+			found := false
+			for _, a2 := range argData {
+				if a1.Assign == a2.Name {
+					found = true
+					break
+				}
+			}
+			if !found {
+				extraArgs = append(extraArgs, a1.Assign)
+			}
+		}
+		return nil, fmt.Errorf("too many args provided (provided=%s, expected=%s, extra=%s)", sProvidedArgs, expectedArgs, extraArgs)
 	}
 
 	providedArgs := make(map[string]bool)
