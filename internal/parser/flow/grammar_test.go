@@ -1,6 +1,7 @@
 package flow
 
 import (
+	"fmt"
 	"os"
 	"strings"
 	"testing"
@@ -45,11 +46,36 @@ func testExpressionFromFile(t *testing.T, fullFilename string, parse func(p *par
 	}
 }
 
+func testStatementFromFile(t *testing.T, fullFilename string, parse func(p *parser.Parser) (ast.Statement, *parser.ParseError)) {
+	f := string(must1(os.ReadFile(fullFilename)))
+	tests := strings.Split(f, "=====\n")
+	for _, test := range tests {
+		parts := strings.Split(test, "-----\n")
+		input, output := parts[0], parts[1]
+		t.Run(input, func(t *testing.T) {
+			t.Parallel()
+
+			if actual, err := parse(parser.NewParser(tokenizer.NewTokenizer(input))); err != nil {
+				if !assert.Equal(t, strings.TrimRight(output, "\n"), err.Error()) {
+					ss := err.Stack()
+					for _, s := range ss {
+						_, _ = fmt.Fprintf(os.Stderr, "%s %s\n", s.Location, s.Message)
+					}
+				}
+			} else {
+				actualTree := must1(actual.Accept(ast.DebugWriter{}))
+				assert.Equal(t, output, actualTree)
+			}
+		})
+	}
+}
+
 func TestExpressions(t *testing.T) {
 	t.Parallel()
 
 	testExpressionFromFile(t, "testdata/expressions/parseTestListComp.txt", parseTestListComp)
 	testExpressionFromFile(t, "testdata/expressions/parseTupleExpr.txt", parseTupleExpr)
+	testStatementFromFile(t, "testdata/statements/parseExpressionStatement.txt", parseExpressionStatement)
 }
 
 func TestParseIdList(t *testing.T) {

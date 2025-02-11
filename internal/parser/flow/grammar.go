@@ -163,7 +163,7 @@ func parseExpressionStatement(p *parser.Parser) (ast.Statement, *parser.ParseErr
 		  ;
 	*/
 	var assignList []string
-	if p.PeekMatch(0, tokenizer.TokenTypeIdentifier) {
+	if p.PeekMatch(1, tokenizer.TokenTypeComma, tokenizer.TokenTypeEqual) {
 		var err *parser.ParseError
 		if assignList, err = parseIdList(p); err != nil {
 			return nil, parser.FailErr(err)

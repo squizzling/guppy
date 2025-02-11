@@ -1,0 +1,51 @@
+a()
+-----
+StatementExpression(
+  Assign: nil
+  Expr: ExpressionList(
+    Expressions: [
+      ExpressionCall(
+        Expr: ExpressionVariable(
+          Identifier: string(a)
+        )
+        Args: nil
+        StarArgs: nil
+        KeywordArgs: nil
+      )
+    ]
+    Tuple: bool(false)
+  )
+)
+=====
+a = b()
+-----
+StatementExpression(
+  Assign: [
+    a
+  ]
+  Expr: ExpressionList(
+    Expressions: [
+      ExpressionCall(
+        Expr: ExpressionVariable(
+          Identifier: string(b)
+        )
+        Args: nil
+        StarArgs: nil
+        KeywordArgs: nil
+      )
+    ]
+    Tuple: bool(false)
+  )
+)
+=====
+a,b ?
+-----
+expecting '=' after identifier
+=====
+for =
+-----
+expecting ID, found FOR
+=====
+=
+-----
+atom not supported: EQUAL
