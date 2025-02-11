@@ -49,6 +49,36 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (any, error) {
 
 	ecArgs := ec.Args
 
+	/*
+	  If keyword arguments are present, they are first converted to positional arguments, as follows.
+	  First, a list of unfilled slots is created for the formal parameters.
+	  If there are N positional arguments,
+	    they are placed in the first N slots.
+	  Next, for each keyword argument, the identifier is used to determine the corresponding slot (if the identifier is the same as the first formal parameter name, the first slot is used, and so on).
+	  If the slot is already filled,
+	    a TypeError exception is raised.
+	  Otherwise,
+	    the value of the argument is placed in the slot, filling it (even if the expression is None, it fills the slot).
+	  When all arguments have been processed, the slots that are still unfilled are filled with the corresponding default value from the function definition.
+	  (Default values are calculated, once, when the function is defined; thus, a mutable object such as a list or dictionary used as default value will be shared by all calls that don’t specify an argument value for the corresponding slot; this should usually be avoided.)
+	  If there are any unfilled slots for which no default value is specified,
+	    a TypeError exception is raised.
+	  Otherwise,
+	   the list of filled slots is used as the argument list for the call.
+	*/
+	/*
+	  If there are more positional arguments than there are formal parameter slots,
+	    a TypeError exception is raised,
+	  unless a formal parameter using the syntax *identifier is present; in this case,
+	    that formal parameter receives a tuple containing the excess positional arguments (or an empty tuple if there were no excess positional arguments).
+	*/
+	/*
+	  If any keyword argument does not correspond to a formal parameter name,
+	    a TypeError exception is raised,
+	  unless a formal parameter using the syntax **identifier is present; in this case,
+	    that formal parameter receives a dictionary containing the excess keyword arguments (using the keywords as keys and the argument values as corresponding values), or a (new) empty dictionary if there were no excess keyword arguments.
+	*/
+
 	if lv, ok := expr.(*ObjectLValue); ok {
 		// We have an lvalue, push lv.left on to the start of ecArgs
 		ecArgs = append([]ast.DataArgument{{Expr: ast.NewExpressionLiteral(lv.left)}}, ecArgs...)
