@@ -268,6 +268,29 @@ func (dw DebugWriter) VisitExpressionLogical(el ExpressionLogical) (any, error) 
 	return _s, nil
 }
 
+func (dw DebugWriter) VisitExpressionTernary(et ExpressionTernary) (any, error) {
+	_s := "ExpressionTernary(\n"
+	dw.i()
+	if et.Left != nil {
+		_s += dw.p() + "Left: " + s(et.Left.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "Left: nil\n"
+	}
+	if et.Cond != nil {
+		_s += dw.p() + "Cond: " + s(et.Cond.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "Cond: nil\n"
+	}
+	if et.Right != nil {
+		_s += dw.p() + "Right: " + s(et.Right.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "Right: nil\n"
+	}
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
 func (dw DebugWriter) VisitExpressionUnary(eu ExpressionUnary) (any, error) {
 	_s := "ExpressionUnary(\n"
 	dw.i()

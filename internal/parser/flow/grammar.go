@@ -252,12 +252,22 @@ func parseTest(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 		  | lambdef
 		  ;
 	*/
-	if p.Match(tokenizer.TokenTypeLambda) {
+	if p.PeekMatch(0, tokenizer.TokenTypeLambda) {
 		return parser.Wrap(parseLambda(p))
 	} else if exprLeft, err := parseOrTest(p); err != nil {
 		return nil, parser.FailErr(err)
 	} else if p.Match(tokenizer.TokenTypeIf) {
-		return nil, parser.FailMsgf("expr IF not supported")
+
+		if exprCond, err := parseOrTest(p); err != nil {
+			return nil, parser.FailErr(err)
+		} else if !p.Match(tokenizer.TokenTypeElse) {
+			return nil, parser.FailMsgf("expecting 'ELSE' in test clause, found %s", p.Peek(0).Type)
+		} else if exprRight, err := parseTest(p); err != nil {
+			return nil, parser.FailErr(err)
+		} else {
+			return ast.NewExpressionTernary(exprLeft, exprCond, exprRight), nil
+		}
+
 	} else {
 		return exprLeft, nil
 	}

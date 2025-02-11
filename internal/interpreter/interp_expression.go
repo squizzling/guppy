@@ -225,6 +225,12 @@ func (i *Interpreter) VisitExpressionSubscript(es ast.ExpressionSubscript) (any,
 	panic("ExpressionSubscript")
 }
 
+func (i *Interpreter) VisitExpressionTernary(et ast.ExpressionTernary) (any, error) {
+	defer i.trace()()
+
+	panic("ExpressionTernary")
+}
+
 func (i *Interpreter) VisitExpressionUnary(eu ast.ExpressionUnary) (any, error) {
 	defer i.trace()()
 

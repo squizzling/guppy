@@ -71,6 +71,11 @@ var Interfaces = []Interface{
 			{"Op", "tokenizer.Token"},
 			{"Right", "Expression"},
 		}},
+		{"Ternary", false, []Field{
+			{"Left", "Expression"},
+			{"Cond", "Expression"},
+			{"Right", "Expression"},
+		}},
 		{"Unary", false, []Field{
 			{"Op", "tokenizer.TokenType"},
 			{"Right", "Expression"},

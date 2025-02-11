@@ -202,6 +202,7 @@ type VisitorExpression interface {
 	VisitExpressionGrouping(eg ExpressionGrouping) (any, error)
 	VisitExpressionLiteral(el ExpressionLiteral) (any, error)
 	VisitExpressionLogical(el ExpressionLogical) (any, error)
+	VisitExpressionTernary(et ExpressionTernary) (any, error)
 	VisitExpressionUnary(eu ExpressionUnary) (any, error)
 	VisitExpressionVariable(ev ExpressionVariable) (any, error)
 	VisitExpressionMember(em ExpressionMember) (any, error)
@@ -306,6 +307,28 @@ func NewExpressionLogical(
 
 func (el ExpressionLogical) Accept(ve VisitorExpression) (any, error) {
 	return ve.VisitExpressionLogical(el)
+}
+
+type ExpressionTernary struct {
+	Left  Expression
+	Cond  Expression
+	Right Expression
+}
+
+func NewExpressionTernary(
+	Left Expression,
+	Cond Expression,
+	Right Expression,
+) Expression {
+	return ExpressionTernary{
+		Left:  Left,
+		Cond:  Cond,
+		Right: Right,
+	}
+}
+
+func (et ExpressionTernary) Accept(ve VisitorExpression) (any, error) {
+	return ve.VisitExpressionTernary(et)
 }
 
 type ExpressionUnary struct {

@@ -1,0 +1,29 @@
+a if b else c
+-----
+ExpressionTernary(
+  Left: ExpressionVariable(
+    Identifier: string(a)
+  )
+  Cond: ExpressionVariable(
+    Identifier: string(b)
+  )
+  Right: ExpressionVariable(
+    Identifier: string(c)
+  )
+)
+=====
+lambda
+-----
+lambda not supported
+=====
+a if ?
+-----
+atom not supported: ERROR
+=====
+a if b c
+-----
+expecting 'ELSE' in test clause, found IDENTIFIER
+=====
+a if b else ?
+-----
+atom not supported: ERROR
