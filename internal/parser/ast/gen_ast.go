@@ -199,6 +199,7 @@ func (sl StatementList) Accept(vs VisitorStatement) (any, error) {
 type VisitorExpression interface {
 	VisitExpressionList(el ExpressionList) (any, error)
 	VisitExpressionBinary(eb ExpressionBinary) (any, error)
+	VisitExpressionDict(ed ExpressionDict) (any, error)
 	VisitExpressionGrouping(eg ExpressionGrouping) (any, error)
 	VisitExpressionLiteral(el ExpressionLiteral) (any, error)
 	VisitExpressionLogical(el ExpressionLogical) (any, error)
@@ -253,6 +254,25 @@ func NewExpressionBinary(
 
 func (eb ExpressionBinary) Accept(ve VisitorExpression) (any, error) {
 	return ve.VisitExpressionBinary(eb)
+}
+
+type ExpressionDict struct {
+	Keys   []Expression
+	Values []Expression
+}
+
+func NewExpressionDict(
+	Keys []Expression,
+	Values []Expression,
+) Expression {
+	return ExpressionDict{
+		Keys:   Keys,
+		Values: Values,
+	}
+}
+
+func (ed ExpressionDict) Accept(ve VisitorExpression) (any, error) {
+	return ve.VisitExpressionDict(ed)
 }
 
 type ExpressionGrouping struct {

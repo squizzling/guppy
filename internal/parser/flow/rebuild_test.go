@@ -89,6 +89,7 @@ func rebuildStatementForFile(
 }
 
 func TestRebuild(t *testing.T) {
+	rebuildExpressionForFile("testdata/expressions/parseDictExpr.txt", parseDictExpr)
 	rebuildExpressionForFile("testdata/expressions/parseTest.txt", parseTest)
 	rebuildExpressionForFile("testdata/expressions/parseTestListComp.txt", parseTestListComp)
 	rebuildExpressionForFile("testdata/expressions/parseTupleExpr.txt", parseTupleExpr)

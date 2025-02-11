@@ -73,6 +73,7 @@ func testStatementFromFile(t *testing.T, fullFilename string, parse func(p *pars
 func TestExpressions(t *testing.T) {
 	t.Parallel()
 
+	testExpressionFromFile(t, "testdata/expressions/parseDictExpr.txt", parseDictExpr)
 	testExpressionFromFile(t, "testdata/expressions/parseTest.txt", parseTest)
 	testExpressionFromFile(t, "testdata/expressions/parseTestListComp.txt", parseTestListComp)
 	testExpressionFromFile(t, "testdata/expressions/parseTupleExpr.txt", parseTupleExpr)

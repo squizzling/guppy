@@ -1,0 +1,94 @@
+{}
+-----
+ExpressionDict(
+  Keys: nil
+  Values: nil
+)
+=====
+{a:b}
+-----
+ExpressionDict(
+  Keys: [
+    ExpressionVariable(
+      Identifier: string(a)
+    )
+  ]
+  Values: [
+    ExpressionVariable(
+      Identifier: string(b)
+    )
+  ]
+)
+=====
+{a:b,}
+-----
+ExpressionDict(
+  Keys: [
+    ExpressionVariable(
+      Identifier: string(a)
+    )
+  ]
+  Values: [
+    ExpressionVariable(
+      Identifier: string(b)
+    )
+  ]
+)
+=====
+{a:b,c:d}
+-----
+ExpressionDict(
+  Keys: [
+    ExpressionVariable(
+      Identifier: string(a)
+    )
+    ExpressionVariable(
+      Identifier: string(c)
+    )
+  ]
+  Values: [
+    ExpressionVariable(
+      Identifier: string(b)
+    )
+    ExpressionVariable(
+      Identifier: string(d)
+    )
+  ]
+)
+=====
+{a:b,c:d,}
+-----
+ExpressionDict(
+  Keys: [
+    ExpressionVariable(
+      Identifier: string(a)
+    )
+    ExpressionVariable(
+      Identifier: string(c)
+    )
+  ]
+  Values: [
+    ExpressionVariable(
+      Identifier: string(b)
+    )
+    ExpressionVariable(
+      Identifier: string(d)
+    )
+  ]
+)
+=====
+{?
+-----
+atom not supported: ERROR
+=====
+{a?
+-----
+expecting ':' in dictExpr, found: ERROR
+=====
+{a:?
+-----
+atom not supported: ERROR
+=====
+a
+-----
+expecting '{' in dictExpr, found: IDENTIFIER

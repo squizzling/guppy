@@ -724,7 +724,7 @@ func parseAtom(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 		return parser.Wrap(parseListExpr(p))
 	} else if p.PeekMatch(0, tokenizer.TokenTypeLeftParen) {
 		return parser.Wrap(parseTupleExpr(p))
-	} else if p.Match(tokenizer.TokenTypeLeftBrace) {
+	} else if p.PeekMatch(0, tokenizer.TokenTypeLeftBrace) {
 		return parser.Wrap(parseDictExpr(p))
 	} else if t, ok := p.Capture(tokenizer.TokenTypeIdentifier); ok {
 		return ast.NewExpressionVariable(t.Lexeme), nil
@@ -858,5 +858,38 @@ func parseTestListComp(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 }
 
 func parseDictExpr(p *parser.Parser) (ast.Expression, *parser.ParseError) {
-	return nil, parser.FailMsgf("dictExpr not supported")
+	/*
+		dict_expr
+		  : OPEN_BRACE (test ':' test ( ',' test ':' test )* ','?)? CLOSE_BRACE
+		  ;
+	*/
+
+	// {}
+	// {a:a}
+	// {a:a,}
+	// {a:a,a:a}
+	// {a:a,a:a,}
+
+	if !p.Match(tokenizer.TokenTypeLeftBrace) {
+		return nil, parser.FailMsgf("expecting '{' in dictExpr, found: %s", p.Peek(0).Type)
+	} else {
+		var exprKeys []ast.Expression
+		var exprValues []ast.Expression
+		for !p.Match(tokenizer.TokenTypeRightBrace) {
+			if exprKey, err := parseExpression(p); err != nil {
+				return nil, parser.FailErr(err)
+			} else if !p.Match(tokenizer.TokenTypeColon) {
+				return nil, parser.FailMsgf("expecting ':' in dictExpr, found: %s", p.Peek(0).Type)
+			} else if exprValue, err := parseExpression(p); err != nil {
+				return nil, parser.FailErr(err)
+			} else {
+				exprKeys = append(exprKeys, exprKey)
+				exprValues = append(exprValues, exprValue)
+				if p.Match(tokenizer.TokenTypeComma) {
+					continue
+				}
+			}
+		}
+		return ast.NewExpressionDict(exprKeys, exprValues), nil
+	}
 }

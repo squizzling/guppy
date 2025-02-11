@@ -60,6 +60,10 @@ var Interfaces = []Interface{
 			{"Op", "tokenizer.Token"},
 			{"Right", "Expression"},
 		}},
+		{"Dict", false, []Field{
+			{"Keys", "[]Expression"},
+			{"Values", "[]Expression"},
+		}},
 		{"Grouping", false, []Field{
 			{"Expr", "Expression"},
 		}},

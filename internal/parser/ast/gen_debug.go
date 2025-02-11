@@ -225,6 +225,40 @@ func (dw DebugWriter) VisitExpressionBinary(eb ExpressionBinary) (any, error) {
 	return _s, nil
 }
 
+func (dw DebugWriter) VisitExpressionDict(ed ExpressionDict) (any, error) {
+	_s := "ExpressionDict(\n"
+	dw.i()
+	if ed.Keys == nil {
+		_s += dw.p() + "Keys: nil\n"
+	} else if len(ed.Keys) == 0 {
+		_s += dw.p() + "Keys: []\n"
+	} else {
+		_s += dw.p() + "Keys: [\n"
+		dw.i()
+		for _, _r := range ed.Keys {
+			_s += dw.p() + s(_r.Accept(dw)) // IsInterfaceArray
+		}
+		dw.o()
+		_s += dw.p() + "]\n"
+	}
+	if ed.Values == nil {
+		_s += dw.p() + "Values: nil\n"
+	} else if len(ed.Values) == 0 {
+		_s += dw.p() + "Values: []\n"
+	} else {
+		_s += dw.p() + "Values: [\n"
+		dw.i()
+		for _, _r := range ed.Values {
+			_s += dw.p() + s(_r.Accept(dw)) // IsInterfaceArray
+		}
+		dw.o()
+		_s += dw.p() + "]\n"
+	}
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
 func (dw DebugWriter) VisitExpressionGrouping(eg ExpressionGrouping) (any, error) {
 	_s := "ExpressionGrouping(\n"
 	dw.i()

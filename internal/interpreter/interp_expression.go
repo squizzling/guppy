@@ -168,6 +168,12 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (any, error) {
 	return i.doCall(expr)
 }
 
+func (i *Interpreter) VisitExpressionDict(ed ast.ExpressionDict) (any, error) {
+	defer i.trace()()
+
+	panic("ExpressionDict")
+}
+
 func (i *Interpreter) VisitExpressionGrouping(eg ast.ExpressionGrouping) (any, error) {
 	defer i.trace()()
 
