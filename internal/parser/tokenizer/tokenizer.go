@@ -526,6 +526,10 @@ func (t *Tokenizer) getNext() Token {
 					}
 					indent = 0 // Reset the indent
 					continue   // Re-enter the SOL loop
+				} else if t.peek(0) == '\r' && t.peek(1) == '\n' {
+					t.offset += 2
+					indent = 0
+					continue
 				} else if t.match('\n') {
 					indent = 0
 					continue
@@ -610,6 +614,11 @@ func (t *Tokenizer) getNext() Token {
 	}
 
 	switch ch {
+	case '\r':
+		if !t.match('\n') {
+			return t.newTokenError(errors.New("CR without LF"))
+		}
+		fallthrough
 	case '\n': // Empty lines are already ignored and filtered out
 		t.startOfLine = true
 		return t.newToken(TokenTypeNewLine)
