@@ -488,7 +488,22 @@ func (t *Tokenizer) Peek(n int) Token {
 			}
 		}
 		// Read the next thing, if it's an EOF or error, we'll catch it next iteration
-		t.tokensPending = append(t.tokensPending, t.getNext())
+		tok := t.getNext()
+		if tok.Type == TokenTypeString {
+			// Eat all the strings we can find
+			for {
+				tokNext := t.getNext()
+				if tokNext.Type == TokenTypeString {
+					tok.LiteralString += tokNext.LiteralString
+					tok.Lexeme = tok.Lexeme + " " + tokNext.Lexeme
+				} else {
+					t.tokensPending = append(t.tokensPending, tok)     // Add the string
+					t.tokensPending = append(t.tokensPending, tokNext) // Add the next token
+					return t.tokensPending[0]                          // Return the string
+				}
+			}
+		}
+		t.tokensPending = append(t.tokensPending, tok)
 	}
 	return t.tokensPending[n]
 }
