@@ -322,8 +322,9 @@ func (t *Tokenizer) newTokenIdentifier() Token {
 
 func (t *Tokenizer) newTokenError(err error) Token {
 	return Token{
-		Type: TokenTypeError,
-		Err:  err,
+		Type:   TokenTypeError,
+		Lexeme: err.Error(),
+		Err:    err,
 	}
 }
 
