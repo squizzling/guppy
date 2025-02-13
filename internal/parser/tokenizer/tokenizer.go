@@ -328,14 +328,9 @@ func (t *Tokenizer) newTokenError(err error) Token {
 }
 
 func (t *Tokenizer) newTokenInt(n int) Token {
-	lexeme := t.data[t.start:t.offset]
-	tt, ok := keywords[lexeme]
-	if !ok {
-		tt = TokenTypeInt
-	}
 	return Token{
-		Lexeme:         lexeme,
-		Type:           tt,
+		Lexeme:         t.data[t.start:t.offset],
+		Type:           TokenTypeInt,
 		LiteralInteger: n,
 	}
 }
