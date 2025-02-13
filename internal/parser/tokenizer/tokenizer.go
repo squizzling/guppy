@@ -3,6 +3,7 @@ package tokenizer
 import (
 	"errors"
 	"fmt"
+	"strconv"
 )
 
 type TokenType int
@@ -280,6 +281,7 @@ type Token struct {
 	Lexeme         string
 	LiteralString  string
 	LiteralInteger int
+	LiteralFloat   float64
 	Err            error
 
 	Type TokenType
@@ -338,15 +340,42 @@ func (t *Tokenizer) newTokenInt(n int) Token {
 	}
 }
 
-func (t *Tokenizer) newTokenFloat() Token {
-	lexeme := t.data[t.start:t.offset]
-	tt, ok := keywords[lexeme]
-	if !ok {
-		tt = TokenTypeFloat
+func (t *Tokenizer) newTokenNumber(preDot string, postDot string, exponentNegative bool, exponent string) Token {
+	if postDot == "" && exponent == "" {
+		if n, err := strconv.ParseInt(preDot, 10, 64); err != nil {
+			return t.newTokenError(err)
+		} else {
+			return t.newTokenInt(int(n))
+		}
 	}
-	return Token{
-		Lexeme: lexeme,
-		Type:   tt,
+
+	lexeme := t.data[t.start:t.offset]
+
+	parseInput := lexeme
+	if false {
+		// For fuzz testing and to see if it behaviors are close
+		// enough to pass the raw lexeme to parseFloat
+		parseInput = preDot
+		if postDot != "" {
+			parseInput += "." + postDot
+		}
+		if exponent != "" {
+			parseInput += "e"
+			if exponentNegative {
+				parseInput += "-"
+			}
+			parseInput += exponent
+		}
+	}
+
+	if f, err := strconv.ParseFloat(parseInput, 64); err != nil {
+		return t.newTokenError(err)
+	} else {
+		return Token{
+			Lexeme:       lexeme,
+			Type:         TokenTypeFloat,
+			LiteralFloat: f,
+		}
 	}
 }
 
@@ -419,6 +448,18 @@ func (t *Tokenizer) peek(n int) int {
 		return -1
 	}
 	return int(t.data[t.offset+n])
+}
+
+func (t *Tokenizer) readDigits() string {
+	start := t.offset
+	for t.more() {
+		if isNum(t.peek(0)) {
+			t.offset++
+		} else {
+			break
+		}
+	}
+	return t.data[start:t.offset]
 }
 
 func NewTokenizer(data string) *Tokenizer {
@@ -601,26 +642,60 @@ func (t *Tokenizer) getNext() Token {
 		}
 		t.reset()
 
-		// consume 0-9 until we hit something else
-		val := 0
-		for isNum(t.peek(0)) {
-			n := t.next()
-			val = val*10 + (n - '0')
+		preDot := ""
+		postDot := ""
+		if ch != '.' { // If we didn't start with a dot
+			// Read digits (preDot)
+			preDot = t.readDigits()
+			ch = t.peek(0)
 		}
-		// if it's not a dot, then we have an int
-		return t.newTokenInt(val)
 
-		/*
-			INT
-			  : [0-9]+
-			  ;
+		if ch == '.' { // If we hit a dot
+			// Read digits (postDot)
+			t.offset++
+			postDot = t.readDigits()
+			if postDot == "" {
+				// The lexer doesn't allow "1.", so this is parsed as INT DOT.
+				// We need to unread the dot.
+				t.offset--
+				return t.newTokenNumber(preDot, "", false, "")
+			}
+			ch = t.peek(0)
+		}
 
-			FLOAT
-			  : [0-9]* '.'? [0-9]+ ([eE][+-]?[0-9]+)?
-			  ;
-		*/
-		// TODO: This can probably be done more consistently with the spec
-		panic("deal with floats")
+		// If we didn't hit an e or E
+		if ch != 'e' && ch != 'E' {
+			// Done
+			return t.newTokenNumber(preDot, postDot, false, "")
+		}
+
+		// Remember where we are
+		curOffset := t.offset
+		t.offset++ // skip the e
+
+		// If we hit a + or -, record it
+		ch = t.peek(0)
+		exponentNegative := false
+		if ch == '-' || ch == '+' {
+			if ch == '-' {
+				exponentNegative = true
+			}
+			t.offset++
+			ch = t.peek(0)
+		}
+
+		if !isNum(ch) {
+			// If we hit a non-digit, rollback
+			t.offset = curOffset
+			return t.newTokenNumber(preDot, postDot, false, "")
+		}
+
+		exponent := t.readDigits()
+		if exponent == "" { // rewind
+			t.offset = curOffset
+			return t.newTokenNumber(preDot, postDot, false, "")
+		}
+		return t.newTokenNumber(preDot, postDot, exponentNegative, exponent)
 	default:
 		if isAlpha(ch) || ch == '_' {
 			for {
