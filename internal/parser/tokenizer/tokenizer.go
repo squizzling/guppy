@@ -602,6 +602,7 @@ func (t *Tokenizer) getNext() Token {
 		chNext := t.peek(0)
 		chDouble := ch<<8 | chNext
 		if ttDouble, ok := doubles[chDouble]; ok {
+			t.offset++
 			return t.newToken(ttDouble)
 		} else {
 			return t.newToken(ttSingle)
