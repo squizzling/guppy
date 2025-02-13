@@ -595,6 +595,11 @@ func (t *Tokenizer) getNext() Token {
 	t.start = t.offset
 
 	// We are at the start of a fresh token.
+
+	if !t.more() {
+		return t.newTokenError(errors.New("EOF"))
+	}
+
 	ch := t.next()
 	if tt, ok := singles[ch]; ok {
 		if indent[ch] {
