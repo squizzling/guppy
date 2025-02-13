@@ -11,7 +11,7 @@ type TokenType int
 var keywords = map[string]TokenType{
 	"and":    TokenTypeAnd,
 	"assert": TokenTypeAssert,
-	"def":    TokenTypeFrom,
+	"def":    TokenTypeDef,
 	"else":   TokenTypeElse,
 	"for":    TokenTypeFor,
 	"from":   TokenTypeFrom,
