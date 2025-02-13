@@ -483,7 +483,7 @@ func (t *Tokenizer) getNext() Token {
 				} else if t.match('\t') {
 					indent = ((indent / 8) + 1) * 8
 				} else if t.match('\\') {
-					panic("'\\' in indentation is not supported")
+					return t.newTokenError(errors.New("'\\' in indentation is not supported"))
 				} else if t.match('#') {
 					// Ignore the line entirely
 					for t.more() && t.next() != '\n' { // Scan to EOL
@@ -515,7 +515,7 @@ func (t *Tokenizer) getNext() Token {
 			if t.match(' ') {
 			} else if t.match('\t') {
 			} else if t.match('\\') {
-				panic("'\\' in indentation is not supported")
+				return t.newTokenError(errors.New("'\\' in indentation is not supported"))
 			} else if t.match('#') {
 				// Ignore the line entirely
 				for t.more() && t.next() != '\n' { // Scan to EOL
@@ -582,10 +582,10 @@ func (t *Tokenizer) getNext() Token {
 		t.startOfLine = true
 		return t.newToken(TokenTypeNewLine)
 	case '\\':
-		panic("deal with line wrapping")
+		return t.newTokenError(errors.New("deal with line wrapping"))
 	case '"', '\'':
 		if t.peek(0) == ch && t.peek(1) == ch {
-			panic("deal with docstrings")
+			return t.newTokenError(errors.New("deal with line docstrings"))
 		}
 		for t.more() {
 			if t.next() == ch {
