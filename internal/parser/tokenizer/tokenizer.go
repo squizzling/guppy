@@ -613,6 +613,23 @@ func (t *Tokenizer) getNext() Token {
 		}
 	}
 
+	for ch == '\\' {
+		if t.peek(0) == '\n' {
+			t.offset++
+		} else if t.peek(0) == '\r' && t.peek(1) == '\n' {
+			t.offset += 2
+		} else {
+			return t.newTokenError(errors.New("'\\' without new line"))
+		}
+
+		// Eat any whitespace
+		for t.more() && (t.match(' ') || t.match('\t')) {
+		}
+
+		t.start = t.offset
+		ch = t.next()
+	}
+
 	switch ch {
 	case '\r':
 		if !t.match('\n') {
@@ -627,8 +644,6 @@ func (t *Tokenizer) getNext() Token {
 		}
 		t.startOfLine = true
 		return t.newToken(TokenTypeNewLine)
-	case '\\':
-		return t.newTokenError(errors.New("deal with line wrapping"))
 	case '"', '\'':
 		if t.peek(0) == ch && t.peek(1) == ch {
 			return t.newTokenError(errors.New("deal with line docstrings"))
