@@ -50,14 +50,14 @@ func parseStatement(p *parser.Parser) (ast.Statement, *parser.ParseError) {
 	     | compound_statement
 	     ;
 	*/
-	if t, ok := p.Capture(tokenizer.TokenTypeIf, tokenizer.TokenTypeDef, tokenizer.TokenTypeAt); ok {
-		return parser.Wrap(parseCompoundStatement(p, t.Type))
+	if p.PeekMatch(0, tokenizer.TokenTypeIf, tokenizer.TokenTypeDef, tokenizer.TokenTypeAt) {
+		return parser.Wrap(parseCompoundStatement(p))
 	} else {
 		return parser.Wrap(parseSimpleStatement(p))
 	}
 }
 
-func parseCompoundStatement(p *parser.Parser, tt tokenizer.TokenType) (ast.Statement, *parser.ParseError) {
+func parseCompoundStatement(p *parser.Parser) (ast.Statement, *parser.ParseError) {
 	/*
 		compound_statement
 		  : if_statement
@@ -65,11 +65,11 @@ func parseCompoundStatement(p *parser.Parser, tt tokenizer.TokenType) (ast.State
 		  | decorated
 		  ;
 	*/
-	switch tt {
+	switch p.Peek(0).Type {
 	case tokenizer.TokenTypeIf:
 		return parser.Wrap(parseIf(p))
 	case tokenizer.TokenTypeDef:
-		return parser.Wrap(parseDef(p))
+		return parser.Wrap(parseFunctionDefinition(p))
 	case tokenizer.TokenTypeAt:
 		return parser.Wrap(parseDecorator(p))
 	default:
@@ -136,8 +136,92 @@ func parseIf(p *parser.Parser) (ast.Statement, *parser.ParseError) {
 	return nil, parser.FailMsgf("if not supported")
 }
 
-func parseDef(p *parser.Parser) (ast.Statement, *parser.ParseError) {
-	return nil, parser.FailMsgf("def not supported")
+func parseFunctionDefinition(p *parser.Parser) (ast.Statement, *parser.ParseError) {
+	/*
+		function_definition
+		  : DEF ID parameters ':' suite
+		  ;
+	*/
+	return nil, parser.FailMsgf("parseFunctionDefinition not supported")
+}
+
+func parseParameters(p *parser.Parser) (*ast.DataParameterList, *parser.ParseError) {
+	/*
+		parameters
+		  : OPEN_PAREN var_args_list? CLOSE_PAREN
+		  ;
+	*/
+	return nil, parser.FailMsgf("parameters not supported")
+}
+
+func parseVarArgsList(p *parser.Parser) (*ast.DataParameterList, *parser.ParseError) {
+	/*
+		var_args_list
+		  : var_args_list_param_def ( ',' var_args_list_param_def )* ( ','  ( (var_args_star_param (',' var_args_list_param_def)* (',' var_args_kws_param)?)
+		                                                                    | var_args_kws_param
+		                                                                    )?
+		                                                             )?
+		  | var_args_star_param (',' var_args_list_param_def)* (',' var_args_kws_param)?
+		  | var_args_kws_param
+		  ;
+	*/
+	return nil, parser.FailMsgf("parseVarArgsList not supported")
+}
+
+func parseVarArgsListParamDef(p *parser.Parser) (*ast.DataParameter, *parser.ParseError) {
+	/*
+		var_args_list_param_def
+		  : var_args_list_param_name ( '=' test)?
+		  ;
+	*/
+	return nil, parser.FailMsgf("parseVarArgsListParamDef not supported")
+}
+
+func parseVarArgsListParamName(p *parser.Parser) (*ast.DataParameter, *parser.ParseError) {
+	/*
+	   var_args_list_param_name
+	     : ID param_type?
+	     ;
+	*/
+	return nil, parser.FailMsgf("parseVarArgsListParamName not supported")
+}
+
+func parseParamType(p *parser.Parser) (*ast.DataParameter, *parser.ParseError) {
+	/*
+	   param_type
+	     : ':' ID
+	     ;
+	*/
+	return nil, parser.FailMsgf("parseParamType not supported")
+}
+
+func parseVarArgsStarParam() (*ast.DataParameter, *parser.ParseError) {
+	/*
+
+		var_args_star_param
+		  :  STAR var_args_list_param_name?
+		  ;
+	*/
+	return nil, parser.FailMsgf("parseVarArgsStarParam not supported")
+}
+
+func parseVarArgsKwsParam() (*ast.DataParameter, *parser.ParseError) {
+	/*
+		var_args_kws_param
+		  : POWER var_args_list_param_name
+		  ;
+	*/
+	return nil, parser.FailMsgf("parseVarArgsKwsParam not supported")
+}
+
+func parseSuite(p *parser.Parser) (ast.Statement, *parser.ParseError) {
+	/*
+		suite
+		  : simple_statement
+		  | NEWLINE INDENT statement+ DEDENT
+		  ;
+	*/
+	return nil, parser.FailMsgf("suite not supported")
 }
 
 func parseDecorator(p *parser.Parser) (ast.Statement, *parser.ParseError) {

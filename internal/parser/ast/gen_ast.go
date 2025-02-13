@@ -6,6 +6,8 @@ import (
 
 type VisitorData interface {
 	VisitDataArgument(da DataArgument) (any, error)
+	VisitDataParameterList(dpl DataParameterList) (any, error)
+	VisitDataParameter(dp DataParameter) (any, error)
 }
 
 type Data interface {
@@ -29,6 +31,50 @@ func NewDataArgument(
 
 func (da DataArgument) Accept(vd VisitorData) (any, error) {
 	return vd.VisitDataArgument(da)
+}
+
+type DataParameterList struct {
+	List []DataParameter
+}
+
+func NewDataParameterList(
+	List []DataParameter,
+) DataParameterList {
+	return DataParameterList{
+		List: List,
+	}
+}
+
+func (dpl DataParameterList) Accept(vd VisitorData) (any, error) {
+	return vd.VisitDataParameterList(dpl)
+}
+
+type DataParameter struct {
+	Name       string
+	Type       string
+	Default    Expression
+	StarArg    bool
+	KeywordArg bool
+}
+
+func NewDataParameter(
+	Name string,
+	Type string,
+	Default Expression,
+	StarArg bool,
+	KeywordArg bool,
+) DataParameter {
+	return DataParameter{
+		Name:       Name,
+		Type:       Type,
+		Default:    Default,
+		StarArg:    StarArg,
+		KeywordArg: KeywordArg,
+	}
+}
+
+func (dp DataParameter) Accept(vd VisitorData) (any, error) {
+	return vd.VisitDataParameter(dp)
 }
 
 type VisitorStatement interface {
@@ -151,17 +197,20 @@ func (si StatementIf) Accept(vs VisitorStatement) (any, error) {
 }
 
 type StatementFunction struct {
-	Token string
-	Body  StatementList
+	Token  string
+	Params DataParameterList
+	Body   Statement
 }
 
 func NewStatementFunction(
 	Token string,
-	Body StatementList,
+	Params DataParameterList,
+	Body Statement,
 ) Statement {
 	return StatementFunction{
-		Token: Token,
-		Body:  Body,
+		Token:  Token,
+		Params: Params,
+		Body:   Body,
 	}
 }
 

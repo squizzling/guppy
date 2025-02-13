@@ -39,6 +39,44 @@ func (dw DebugWriter) VisitDataArgument(da DataArgument) (any, error) {
 	return _s, nil
 }
 
+func (dw DebugWriter) VisitDataParameterList(dpl DataParameterList) (any, error) {
+	_s := "DataParameterList(\n"
+	dw.i()
+	if dpl.List == nil {
+		_s += dw.p() + "List: nil\n"
+	} else if len(dpl.List) == 0 {
+		_s += dw.p() + "List: []\n"
+	} else {
+		_s += dw.p() + "List: [\n"
+		dw.i()
+		for _, _r := range dpl.List {
+			_s += dw.p() + s(_r.Accept(dw)) // IsInterfaceArray
+		}
+		dw.o()
+		_s += dw.p() + "]\n"
+	}
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
+func (dw DebugWriter) VisitDataParameter(dp DataParameter) (any, error) {
+	_s := "DataParameter(\n"
+	dw.i()
+	_s += dw.p() + "Name: string(" + dp.Name + ")\n"
+	_s += dw.p() + "Type: string(" + dp.Type + ")\n"
+	if dp.Default != nil {
+		_s += dw.p() + "Default: " + s(dp.Default.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "Default: nil\n"
+	}
+	_s += dw.p() + "StarArg: bool(" + fmt.Sprintf("%t", dp.StarArg) + ")\n"
+	_s += dw.p() + "KeywordArg: bool(" + fmt.Sprintf("%t", dp.KeywordArg) + ")\n"
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
 func (dw DebugWriter) VisitStatementProgram(sp StatementProgram) (any, error) {
 	_s := "StatementProgram(\n"
 	dw.i()
@@ -148,7 +186,12 @@ func (dw DebugWriter) VisitStatementFunction(sf StatementFunction) (any, error) 
 	_s := "StatementFunction(\n"
 	dw.i()
 	_s += dw.p() + "Token: string(" + sf.Token + ")\n"
-	_s += dw.p() + "Body: " + s(sf.Body.Accept(dw)) // IsConcrete
+	_s += dw.p() + "Params: " + s(sf.Params.Accept(dw)) // IsConcrete
+	if sf.Body != nil {
+		_s += dw.p() + "Body: " + s(sf.Body.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "Body: nil\n"
+	}
 	dw.o()
 	_s += dw.p() + ")\n"
 	return _s, nil

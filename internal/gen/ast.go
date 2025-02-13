@@ -12,6 +12,16 @@ var Interfaces = []Interface{
 			{"Assign", "string"},
 			{"Expr", "Expression"},
 		}},
+		{"ParameterList", true, []Field{
+			{"List", "[]DataParameter"},
+		}},
+		{"Parameter", true, []Field{
+			{"Name", "string"},
+			{"Type", "string"},
+			{"Default", "Expression"},
+			{"StarArg", "bool"},
+			{"KeywordArg", "bool"},
+		}},
 	}},
 	{"Statement", []ASTNode{
 		{"Program", true, []Field{
@@ -39,8 +49,8 @@ var Interfaces = []Interface{
 
 		{"Function", false, []Field{
 			{"Token", "string"},
-			// {"Params", "[]tokenizer.Token"}, // TODO
-			{"Body", "StatementList"},
+			{"Params", "DataParameterList"},
+			{"Body", "Statement"},
 		}},
 		{"Decorated", false, []Field{
 			// TODO
