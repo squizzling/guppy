@@ -1,0 +1,17 @@
+: a
+-----
+DataParameter(
+  Name: string()
+  Type: string(a)
+  Default: nil
+  StarArg: bool(false)
+  KeywordArg: bool(false)
+)
+=====
+?
+-----
+expecting ':' in parseParamType, found: ERROR
+=====
+: ?
+-----
+expecting IDENTIFIER in parseParamType, found: ERROR

@@ -183,7 +183,20 @@ func parseVarArgsListParamName(p *parser.Parser) (*ast.DataParameter, *parser.Pa
 	     : ID param_type?
 	     ;
 	*/
-	return nil, parser.FailMsgf("parseVarArgsListParamName not supported")
+	if t, ok := p.Capture(tokenizer.TokenTypeIdentifier); !ok {
+		return nil, parser.FailMsgf("expecting IDENTIFIER in parseVarArgsListParamName, found: %s", p.Peek(0).Type)
+	} else if p.PeekMatch(0, tokenizer.TokenTypeColon) {
+		if param, err := parseParamType(p); err != nil {
+			return nil, parser.FailErr(err)
+		} else {
+			param.Name = t.Lexeme
+			return param, nil
+		}
+	} else {
+		return &ast.DataParameter{
+			Name: t.Lexeme,
+		}, nil
+	}
 }
 
 func parseParamType(p *parser.Parser) (*ast.DataParameter, *parser.ParseError) {
@@ -192,7 +205,15 @@ func parseParamType(p *parser.Parser) (*ast.DataParameter, *parser.ParseError) {
 	     : ':' ID
 	     ;
 	*/
-	return nil, parser.FailMsgf("parseParamType not supported")
+	if !p.Match(tokenizer.TokenTypeColon) {
+		return nil, parser.FailMsgf("expecting ':' in parseParamType, found: %s", p.Peek(0).Type)
+	} else if t, ok := p.Capture(tokenizer.TokenTypeIdentifier); !ok {
+		return nil, parser.FailMsgf("expecting IDENTIFIER in parseParamType, found: %s", p.Peek(0).Type)
+	} else {
+		return &ast.DataParameter{
+			Type: t.Lexeme,
+		}, nil
+	}
 }
 
 func parseVarArgsStarParam() (*ast.DataParameter, *parser.ParseError) {
