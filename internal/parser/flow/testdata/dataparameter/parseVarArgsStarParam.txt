@@ -1,0 +1,47 @@
+*
+-----
+DataParameter(
+  Name: string()
+  Type: string()
+  Default: nil
+  StarArg: bool(true)
+  KeywordArg: bool(false)
+)
+=====
+*1
+-----
+DataParameter(
+  Name: string()
+  Type: string()
+  Default: nil
+  StarArg: bool(true)
+  KeywordArg: bool(false)
+)
+=====
+*a
+-----
+DataParameter(
+  Name: string(a)
+  Type: string()
+  Default: nil
+  StarArg: bool(true)
+  KeywordArg: bool(false)
+)
+=====
+*a:b
+-----
+DataParameter(
+  Name: string(a)
+  Type: string(b)
+  Default: nil
+  StarArg: bool(true)
+  KeywordArg: bool(false)
+)
+=====
+?
+-----
+expecting '*' in parseVarArgsStarParam, found: ERROR
+=====
+*a:?
+-----
+expecting IDENTIFIER in parseParamType, found: ERROR

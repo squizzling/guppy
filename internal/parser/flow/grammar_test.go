@@ -103,7 +103,10 @@ func TestExpressions(t *testing.T) {
 	testExpressionFromFile(t, "testdata/expressions/parseTupleExpr.txt", parseTupleExpr)
 	testStatementFromFile(t, "testdata/statements/parseExpressionStatement.txt", parseExpressionStatement)
 	testDataParameterFromFile(t, "testdata/dataparameter/parseParamType.txt", parseParamType)
+	testDataParameterFromFile(t, "testdata/dataparameter/parseVarArgsKwsParam.txt", parseVarArgsKwsParam)
+	testDataParameterFromFile(t, "testdata/dataparameter/parseVarArgsListParamDef.txt", parseVarArgsListParamDef)
 	testDataParameterFromFile(t, "testdata/dataparameter/parseVarArgsListParamName.txt", parseVarArgsListParamName)
+	testDataParameterFromFile(t, "testdata/dataparameter/parseVarArgsStarParam.txt", parseVarArgsStarParam)
 }
 
 func TestParseIdList(t *testing.T) {

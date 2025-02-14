@@ -1,0 +1,29 @@
+a
+-----
+DataParameter(
+  Name: string(a)
+  Type: string()
+  Default: nil
+  StarArg: bool(false)
+  KeywordArg: bool(false)
+)
+=====
+a = ?
+-----
+atom not supported: ERROR
+=====
+a = b
+-----
+DataParameter(
+  Name: string(a)
+  Type: string()
+  Default: ExpressionVariable(
+    Identifier: string(b)
+  )
+  StarArg: bool(false)
+  KeywordArg: bool(false)
+)
+=====
+?
+-----
+expecting IDENTIFIER in parseVarArgsListParamName, found: ERROR

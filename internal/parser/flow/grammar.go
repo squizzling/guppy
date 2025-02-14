@@ -174,7 +174,16 @@ func parseVarArgsListParamDef(p *parser.Parser) (*ast.DataParameter, *parser.Par
 		  : var_args_list_param_name ( '=' test)?
 		  ;
 	*/
-	return nil, parser.FailMsgf("parseVarArgsListParamDef not supported")
+	if param, err := parseVarArgsListParamName(p); err != nil {
+		return nil, parser.FailErr(err)
+	} else if !p.Match(tokenizer.TokenTypeEqual) {
+		return param, nil
+	} else if expr, err := parseTest(p); err != nil {
+		return nil, parser.FailErr(err)
+	} else {
+		param.Default = expr
+		return param, nil
+	}
 }
 
 func parseVarArgsListParamName(p *parser.Parser) (*ast.DataParameter, *parser.ParseError) {
@@ -185,17 +194,15 @@ func parseVarArgsListParamName(p *parser.Parser) (*ast.DataParameter, *parser.Pa
 	*/
 	if t, ok := p.Capture(tokenizer.TokenTypeIdentifier); !ok {
 		return nil, parser.FailMsgf("expecting IDENTIFIER in parseVarArgsListParamName, found: %s", p.Peek(0).Type)
-	} else if p.PeekMatch(0, tokenizer.TokenTypeColon) {
-		if param, err := parseParamType(p); err != nil {
-			return nil, parser.FailErr(err)
-		} else {
-			param.Name = t.Lexeme
-			return param, nil
-		}
-	} else {
+	} else if !p.PeekMatch(0, tokenizer.TokenTypeColon) {
 		return &ast.DataParameter{
 			Name: t.Lexeme,
 		}, nil
+	} else if param, err := parseParamType(p); err != nil {
+		return nil, parser.FailErr(err)
+	} else {
+		param.Name = t.Lexeme
+		return param, nil
 	}
 }
 
@@ -216,23 +223,41 @@ func parseParamType(p *parser.Parser) (*ast.DataParameter, *parser.ParseError) {
 	}
 }
 
-func parseVarArgsStarParam() (*ast.DataParameter, *parser.ParseError) {
+func parseVarArgsStarParam(p *parser.Parser) (*ast.DataParameter, *parser.ParseError) {
 	/*
 
 		var_args_star_param
 		  :  STAR var_args_list_param_name?
 		  ;
 	*/
-	return nil, parser.FailMsgf("parseVarArgsStarParam not supported")
+	if !p.Match(tokenizer.TokenTypeStar) {
+		return nil, parser.FailMsgf("expecting '*' in parseVarArgsStarParam, found: %s", p.Peek(0).Type)
+	} else if p.PeekMatch(0, tokenizer.TokenTypeIdentifier) {
+		if param, err := parseVarArgsListParamName(p); err != nil {
+			return nil, parser.FailErr(err)
+		} else {
+			param.StarArg = true
+			return param, nil
+		}
+	} else {
+		return &ast.DataParameter{StarArg: true}, nil
+	}
 }
 
-func parseVarArgsKwsParam() (*ast.DataParameter, *parser.ParseError) {
+func parseVarArgsKwsParam(p *parser.Parser) (*ast.DataParameter, *parser.ParseError) {
 	/*
 		var_args_kws_param
 		  : POWER var_args_list_param_name
 		  ;
 	*/
-	return nil, parser.FailMsgf("parseVarArgsKwsParam not supported")
+	if !p.Match(tokenizer.TokenTypeStarStar) {
+		return nil, parser.FailMsgf("expecting STARSTAR in parseVarArgsKwsParam, found: %s", p.Peek(0).Type)
+	} else if param, err := parseVarArgsListParamName(p); err != nil {
+		return nil, parser.FailErr(err)
+	} else {
+		param.KeywordArg = true
+		return param, nil
+	}
 }
 
 func parseSuite(p *parser.Parser) (ast.Statement, *parser.ParseError) {

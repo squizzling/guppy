@@ -132,5 +132,8 @@ func TestRebuild(t *testing.T) {
 	rebuildExpressionForFile("testdata/expressions/parseTupleExpr.txt", parseTupleExpr)
 	rebuildStatementForFile("testdata/statements/parseExpressionStatement.txt", parseExpressionStatement)
 	rebuildDataParameterForFile("testdata/dataparameter/parseParamType.txt", parseParamType)
+	rebuildDataParameterForFile("testdata/dataparameter/parseVarArgsKwsParam.txt", parseVarArgsKwsParam)
+	rebuildDataParameterForFile("testdata/dataparameter/parseVarArgsListParamDef.txt", parseVarArgsListParamDef)
 	rebuildDataParameterForFile("testdata/dataparameter/parseVarArgsListParamName.txt", parseVarArgsListParamName)
+	rebuildDataParameterForFile("testdata/dataparameter/parseVarArgsStarParam.txt", parseVarArgsStarParam)
 }
