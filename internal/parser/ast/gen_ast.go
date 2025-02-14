@@ -34,11 +34,11 @@ func (da DataArgument) Accept(vd VisitorData) (any, error) {
 }
 
 type DataParameterList struct {
-	List []DataParameter
+	List []*DataParameter
 }
 
 func NewDataParameterList(
-	List []DataParameter,
+	List []*DataParameter,
 ) DataParameterList {
 	return DataParameterList{
 		List: List,

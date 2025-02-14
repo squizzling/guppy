@@ -13,7 +13,7 @@ var Interfaces = []Interface{
 			{"Expr", "Expression"},
 		}},
 		{"ParameterList", true, []Field{
-			{"List", "[]DataParameter"},
+			{"List", "[]*DataParameter"},
 		}},
 		{"Parameter", true, []Field{
 			{"Name", "string"},
@@ -147,6 +147,7 @@ func IsInterfaceArray(name string) bool {
 }
 
 func IsConcrete(name string) bool {
+	name = strings.TrimLeft(name, "*")
 	for _, i := range Interfaces {
 		for _, t := range i.Nodes {
 			if i.Name+t.Name == name {

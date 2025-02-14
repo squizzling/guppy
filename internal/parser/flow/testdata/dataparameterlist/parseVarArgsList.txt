@@ -1,0 +1,149 @@
+*
+-----
+DataParameterList(
+  List: [
+    DataParameter(
+      Name: string()
+      Type: string()
+      Default: nil
+      StarArg: bool(true)
+      KeywordArg: bool(false)
+    )
+  ]
+)
+=====
+*a
+-----
+DataParameterList(
+  List: [
+    DataParameter(
+      Name: string(a)
+      Type: string()
+      Default: nil
+      StarArg: bool(true)
+      KeywordArg: bool(false)
+    )
+  ]
+)
+=====
+*,a
+-----
+DataParameterList(
+  List: [
+    DataParameter(
+      Name: string()
+      Type: string()
+      Default: nil
+      StarArg: bool(true)
+      KeywordArg: bool(false)
+    )
+    DataParameter(
+      Name: string(a)
+      Type: string()
+      Default: nil
+      StarArg: bool(false)
+      KeywordArg: bool(false)
+    )
+  ]
+)
+=====
+*,**a
+-----
+DataParameterList(
+  List: [
+    DataParameter(
+      Name: string()
+      Type: string()
+      Default: nil
+      StarArg: bool(true)
+      KeywordArg: bool(false)
+    )
+    DataParameter(
+      Name: string(a)
+      Type: string()
+      Default: nil
+      StarArg: bool(false)
+      KeywordArg: bool(true)
+    )
+  ]
+)
+=====
+*a,b
+-----
+DataParameterList(
+  List: [
+    DataParameter(
+      Name: string(a)
+      Type: string()
+      Default: nil
+      StarArg: bool(true)
+      KeywordArg: bool(false)
+    )
+    DataParameter(
+      Name: string(b)
+      Type: string()
+      Default: nil
+      StarArg: bool(false)
+      KeywordArg: bool(false)
+    )
+  ]
+)
+=====
+**a
+-----
+DataParameterList(
+  List: [
+    DataParameter(
+      Name: string(a)
+      Type: string()
+      Default: nil
+      StarArg: bool(false)
+      KeywordArg: bool(true)
+    )
+  ]
+)
+=====
+**?
+-----
+expecting IDENTIFIER in parseVarArgsListParamName, found: ERROR
+=====
+?
+-----
+expecting IDENTIFIER, '*', or STARSTAR in parseVarArgsList, found: ERROR
+=====
+*a,*b
+-----
+expecting IDENTIFIER or STARSTAR after ',' in parseVarArgsList, found: STAR
+=====
+*a:?
+-----
+expecting IDENTIFIER in parseParamType, found: ERROR
+=====
+*a,b:?
+-----
+expecting IDENTIFIER in parseParamType, found: ERROR
+=====
+*a,**?
+-----
+expecting IDENTIFIER in parseVarArgsListParamName, found: ERROR
+=====
+*a,**b
+-----
+DataParameterList(
+  List: [
+    DataParameter(
+      Name: string(a)
+      Type: string()
+      Default: nil
+      StarArg: bool(true)
+      KeywordArg: bool(false)
+    )
+    DataParameter(
+      Name: string(b)
+      Type: string()
+      Default: nil
+      StarArg: bool(false)
+      KeywordArg: bool(true)
+    )
+  ]
+)
