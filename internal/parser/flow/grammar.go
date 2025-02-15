@@ -334,13 +334,30 @@ func parseVarArgsKwsParam(p *parser.Parser) (*ast.DataParameter, *parser.ParseEr
 }
 
 func parseSuite(p *parser.Parser) (ast.Statement, *parser.ParseError) {
+	// TODO: For now, we can't test this because we can't generate the NEWLINE
+	//       due to the architecture of our tokenizer.  We'll fake it later when
+	//       we can invoke suite with a larger context.
 	/*
 		suite
 		  : simple_statement
 		  | NEWLINE INDENT statement+ DEDENT
 		  ;
 	*/
-	return nil, parser.FailMsgf("suite not supported")
+	if !p.Match(tokenizer.TokenTypeNewLine) {
+		return parser.Wrap(parseSimpleStatement(p))
+	} else if !p.Match(tokenizer.TokenTypeIndent) {
+		return nil, parser.FailMsgf("expecting NEWLINE in parseSuite, found: %s", p.Peek(0).Type)
+	} else {
+		var stmts []ast.Statement
+		for !p.Match(tokenizer.TokenTypeDedent) {
+			if stmt, err := parseStatement(p); err != nil {
+				return nil, parser.FailErr(err)
+			} else {
+				stmts = append(stmts, stmt)
+			}
+		}
+		return ast.NewStatementList(stmts), nil
+	}
 }
 
 func parseDecorator(p *parser.Parser) (ast.Statement, *parser.ParseError) {

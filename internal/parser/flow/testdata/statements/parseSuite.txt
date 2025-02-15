@@ -1,0 +1,15 @@
+a=b
+-----
+StatementExpression(
+  Assign: [
+    a
+  ]
+  Expr: ExpressionList(
+    Expressions: [
+      ExpressionVariable(
+        Identifier: string(b)
+      )
+    ]
+    Tuple: bool(false)
+  )
+)
