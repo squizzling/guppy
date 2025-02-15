@@ -32,8 +32,11 @@ func testDataParameterFromFile(t *testing.T, fullFilename string, parse func(p *
 	filename := path.Base(fullFilename)
 	f := string(must1(os.ReadFile(fullFilename)))
 	tests := strings.Split(f, "=====\n")
-	for _, test := range tests {
+	for idx, test := range tests {
 		parts := strings.Split(test, "-----\n")
+		if len(parts) != 2 {
+			t.Fatalf("malformed test in %s/%d", filename, idx)
+		}
 		input, output := parts[0], parts[1]
 		t.Run(filename+"/"+input, func(t *testing.T) {
 			t.Parallel()
@@ -57,8 +60,11 @@ func testDataParameterListFromFile(t *testing.T, fullFilename string, parse func
 	filename := path.Base(fullFilename)
 	f := string(must1(os.ReadFile(fullFilename)))
 	tests := strings.Split(f, "=====\n")
-	for _, test := range tests {
+	for idx, test := range tests {
 		parts := strings.Split(test, "-----\n")
+		if len(parts) != 2 {
+			t.Fatalf("malformed test in %s/%d", filename, idx)
+		}
 		input, output := parts[0], parts[1]
 		t.Run(filename+"/"+input, func(t *testing.T) {
 			t.Parallel()
@@ -82,8 +88,11 @@ func testExpressionFromFile(t *testing.T, fullFilename string, parse func(p *par
 	filename := path.Base(fullFilename)
 	f := string(must1(os.ReadFile(fullFilename)))
 	tests := strings.Split(f, "=====\n")
-	for _, test := range tests {
+	for idx, test := range tests {
 		parts := strings.Split(test, "-----\n")
+		if len(parts) != 2 {
+			t.Fatalf("malformed test in %s/%d", filename, idx)
+		}
 		input, output := parts[0], parts[1]
 		t.Run(filename+"/"+input, func(t *testing.T) {
 			t.Parallel()
@@ -102,8 +111,11 @@ func testStatementFromFile(t *testing.T, fullFilename string, parse func(p *pars
 	filename := path.Base(fullFilename)
 	f := string(must1(os.ReadFile(fullFilename)))
 	tests := strings.Split(f, "=====\n")
-	for _, test := range tests {
+	for idx, test := range tests {
 		parts := strings.Split(test, "-----\n")
+		if len(parts) != 2 {
+			t.Fatalf("malformed test in %s/%d", filename, idx)
+		}
 		input, output := parts[0], parts[1]
 		t.Run(filename+"/"+input, func(t *testing.T) {
 			t.Parallel()
