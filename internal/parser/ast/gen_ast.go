@@ -198,13 +198,13 @@ func (si StatementIf) Accept(vs VisitorStatement) (any, error) {
 
 type StatementFunction struct {
 	Token  string
-	Params DataParameterList
+	Params *DataParameterList
 	Body   Statement
 }
 
 func NewStatementFunction(
 	Token string,
-	Params DataParameterList,
+	Params *DataParameterList,
 	Body Statement,
 ) Statement {
 	return StatementFunction{

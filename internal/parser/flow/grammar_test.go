@@ -138,6 +138,7 @@ func TestExpressions(t *testing.T) {
 	testExpressionFromFile(t, "testdata/expressions/parseTestListComp.txt", parseTestListComp)
 	testExpressionFromFile(t, "testdata/expressions/parseTupleExpr.txt", parseTupleExpr)
 	testStatementFromFile(t, "testdata/statements/parseExpressionStatement.txt", parseExpressionStatement)
+	testStatementFromFile(t, "testdata/statements/parseFunctionDefinition.txt", parseFunctionDefinition)
 	testStatementFromFile(t, "testdata/statements/parseSuite.txt", parseSuite)
 }
 

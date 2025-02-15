@@ -1,0 +1,55 @@
+def a(b):
+  c=d
+-----
+StatementFunction(
+  Token: string(a)
+  Params: DataParameterList(
+    List: [
+      DataParameter(
+        Name: string(b)
+        Type: string()
+        Default: nil
+        StarArg: bool(false)
+        KeywordArg: bool(false)
+      )
+    ]
+  )
+  Body: StatementList(
+    Statements: [
+      StatementExpression(
+        Assign: [
+          c
+        ]
+        Expr: ExpressionList(
+          Expressions: [
+            ExpressionVariable(
+              Identifier: string(d)
+            )
+          ]
+          Tuple: bool(false)
+        )
+      )
+    ]
+  )
+)
+=====
+?
+-----
+expecting DEF in parseFunctionDefinition, found: ERROR
+=====
+def ?
+-----
+expecting IDENTIFIER in parseFunctionDefinition, found: ERROR
+=====
+def a?
+-----
+expecting LEFTPAREN in parseParameters, found: ERROR
+=====
+def a()?
+-----
+expecting ':' in parseFunctionDefinition, found: ERROR
+=====
+def a(b):
+?
+-----
+expecting NEWLINE in parseSuite, found: ERROR

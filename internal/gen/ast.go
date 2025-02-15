@@ -49,7 +49,7 @@ var Interfaces = []Interface{
 
 		{"Function", false, []Field{
 			{"Token", "string"},
-			{"Params", "DataParameterList"},
+			{"Params", "*DataParameterList"},
 			{"Body", "Statement"},
 		}},
 		{"Decorated", false, []Field{

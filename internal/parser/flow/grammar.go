@@ -142,7 +142,19 @@ func parseFunctionDefinition(p *parser.Parser) (ast.Statement, *parser.ParseErro
 		  : DEF ID parameters ':' suite
 		  ;
 	*/
-	return nil, parser.FailMsgf("parseFunctionDefinition not supported")
+	if !p.Match(tokenizer.TokenTypeDef) {
+		return nil, parser.FailMsgf("expecting DEF in parseFunctionDefinition, found: %s", p.Peek(0).Type)
+	} else if tok, ok := p.Capture(tokenizer.TokenTypeIdentifier); !ok {
+		return nil, parser.FailMsgf("expecting IDENTIFIER in parseFunctionDefinition, found: %s", p.Peek(0).Type)
+	} else if params, err := parseParameters(p); err != nil {
+		return nil, parser.FailErr(err)
+	} else if !p.Match(tokenizer.TokenTypeColon) {
+		return nil, parser.FailMsgf("expecting ':' in parseFunctionDefinition, found: %s", p.Peek(0).Type)
+	} else if suite, err := parseSuite(p); err != nil {
+		return nil, parser.FailErr(err)
+	} else {
+		return ast.NewStatementFunction(tok.Lexeme, params, suite), nil
+	}
 }
 
 func parseParameters(p *parser.Parser) (*ast.DataParameterList, *parser.ParseError) {
