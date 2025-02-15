@@ -65,7 +65,7 @@ func parseCompoundStatement(p *parser.Parser) (ast.Statement, *parser.ParseError
 		  | decorated
 		  ;
 	*/
-	switch p.Peek(0).Type {
+	switch p.Next.Type {
 	case tokenizer.TokenTypeIf:
 		return parser.Wrap(parseIf(p))
 	case tokenizer.TokenTypeDef:
@@ -143,13 +143,13 @@ func parseFunctionDefinition(p *parser.Parser) (ast.Statement, *parser.ParseErro
 		  ;
 	*/
 	if !p.Match(tokenizer.TokenTypeDef) {
-		return nil, parser.FailMsgf("expecting DEF in parseFunctionDefinition, found: %s", p.Peek(0).Type)
+		return nil, parser.FailMsgf("expecting DEF in parseFunctionDefinition, found: %s", p.Next.Type)
 	} else if tok, ok := p.Capture(tokenizer.TokenTypeIdentifier); !ok {
-		return nil, parser.FailMsgf("expecting IDENTIFIER in parseFunctionDefinition, found: %s", p.Peek(0).Type)
+		return nil, parser.FailMsgf("expecting IDENTIFIER in parseFunctionDefinition, found: %s", p.Next.Type)
 	} else if params, err := parseParameters(p); err != nil {
 		return nil, parser.FailErr(err)
 	} else if !p.Match(tokenizer.TokenTypeColon) {
-		return nil, parser.FailMsgf("expecting ':' in parseFunctionDefinition, found: %s", p.Peek(0).Type)
+		return nil, parser.FailMsgf("expecting ':' in parseFunctionDefinition, found: %s", p.Next.Type)
 	} else if suite, err := parseSuite(p); err != nil {
 		return nil, parser.FailErr(err)
 	} else {
@@ -164,13 +164,13 @@ func parseParameters(p *parser.Parser) (*ast.DataParameterList, *parser.ParseErr
 		  ;
 	*/
 	if !p.Match(tokenizer.TokenTypeLeftParen) {
-		return nil, parser.FailMsgf("expecting LEFTPAREN in parseParameters, found: %s", p.Peek(0).Type)
+		return nil, parser.FailMsgf("expecting LEFTPAREN in parseParameters, found: %s", p.Next.Type)
 	} else if p.Match(tokenizer.TokenTypeRightParen) {
 		return &ast.DataParameterList{List: nil}, nil
 	} else if params, err := parseVarArgsList(p); err != nil {
 		return nil, parser.FailErr(err)
 	} else if !p.Match(tokenizer.TokenTypeRightParen) {
-		return nil, parser.FailMsgf("expecting RIGHTPAREN in parseParameters, found: %s", p.Peek(0).Type)
+		return nil, parser.FailMsgf("expecting RIGHTPAREN in parseParameters, found: %s", p.Next.Type)
 	} else {
 		return params, nil
 	}
@@ -205,7 +205,7 @@ func parseVarArgsList(p *parser.Parser) (*ast.DataParameterList, *parser.ParseEr
 					} else if p.PeekMatch(0, tokenizer.TokenTypeStar, tokenizer.TokenTypeStarStar) {
 						break
 					} else {
-						return nil, parser.FailMsgf("expecting IDENTIFIER, '*', or STARSTAR are ',' in parsevarArgsList, found: %s", p.Peek(0).Type)
+						return nil, parser.FailMsgf("expecting IDENTIFIER, '*', or STARSTAR are ',' in parsevarArgsList, found: %s", p.Next.Type)
 					}
 				} else {
 					return &ast.DataParameterList{List: params}, nil
@@ -230,7 +230,7 @@ func parseVarArgsList(p *parser.Parser) (*ast.DataParameterList, *parser.ParseEr
 					} else if p.PeekMatch(0, tokenizer.TokenTypeStarStar) {
 						break
 					} else {
-						return nil, parser.FailMsgf("expecting IDENTIFIER or STARSTAR after ',' in parseVarArgsList, found: %s", p.Peek(0).Type)
+						return nil, parser.FailMsgf("expecting IDENTIFIER or STARSTAR after ',' in parseVarArgsList, found: %s", p.Next.Type)
 					}
 				} else {
 					return &ast.DataParameterList{List: params}, nil
@@ -248,7 +248,7 @@ func parseVarArgsList(p *parser.Parser) (*ast.DataParameterList, *parser.ParseEr
 	}
 
 	if len(params) == 0 { // If we have nothing, then no arms matched.
-		return nil, parser.FailMsgf("expecting IDENTIFIER, '*', or STARSTAR in parseVarArgsList, found: %s", p.Peek(0).Type)
+		return nil, parser.FailMsgf("expecting IDENTIFIER, '*', or STARSTAR in parseVarArgsList, found: %s", p.Next.Type)
 	}
 
 	return &ast.DataParameterList{List: params}, nil
@@ -279,7 +279,7 @@ func parseVarArgsListParamName(p *parser.Parser) (*ast.DataParameter, *parser.Pa
 	     ;
 	*/
 	if t, ok := p.Capture(tokenizer.TokenTypeIdentifier); !ok {
-		return nil, parser.FailMsgf("expecting IDENTIFIER in parseVarArgsListParamName, found: %s", p.Peek(0).Type)
+		return nil, parser.FailMsgf("expecting IDENTIFIER in parseVarArgsListParamName, found: %s", p.Next.Type)
 	} else if !p.PeekMatch(0, tokenizer.TokenTypeColon) {
 		return &ast.DataParameter{
 			Name: t.Lexeme,
@@ -299,9 +299,9 @@ func parseParamType(p *parser.Parser) (*ast.DataParameter, *parser.ParseError) {
 	     ;
 	*/
 	if !p.Match(tokenizer.TokenTypeColon) {
-		return nil, parser.FailMsgf("expecting ':' in parseParamType, found: %s", p.Peek(0).Type)
+		return nil, parser.FailMsgf("expecting ':' in parseParamType, found: %s", p.Next.Type)
 	} else if t, ok := p.Capture(tokenizer.TokenTypeIdentifier); !ok {
-		return nil, parser.FailMsgf("expecting IDENTIFIER in parseParamType, found: %s", p.Peek(0).Type)
+		return nil, parser.FailMsgf("expecting IDENTIFIER in parseParamType, found: %s", p.Next.Type)
 	} else {
 		return &ast.DataParameter{
 			Type: t.Lexeme,
@@ -316,7 +316,7 @@ func parseVarArgsStarParam(p *parser.Parser) (*ast.DataParameter, *parser.ParseE
 		  ;
 	*/
 	if !p.Match(tokenizer.TokenTypeStar) {
-		return nil, parser.FailMsgf("expecting '*' in parseVarArgsStarParam, found: %s", p.Peek(0).Type)
+		return nil, parser.FailMsgf("expecting '*' in parseVarArgsStarParam, found: %s", p.Next.Type)
 	} else if p.PeekMatch(0, tokenizer.TokenTypeIdentifier) {
 		if param, err := parseVarArgsListParamName(p); err != nil {
 			return nil, parser.FailErr(err)
@@ -336,7 +336,7 @@ func parseVarArgsKwsParam(p *parser.Parser) (*ast.DataParameter, *parser.ParseEr
 		  ;
 	*/
 	if !p.Match(tokenizer.TokenTypeStarStar) {
-		return nil, parser.FailMsgf("expecting STARSTAR in parseVarArgsKwsParam, found: %s", p.Peek(0).Type)
+		return nil, parser.FailMsgf("expecting STARSTAR in parseVarArgsKwsParam, found: %s", p.Next.Type)
 	} else if param, err := parseVarArgsListParamName(p); err != nil {
 		return nil, parser.FailErr(err)
 	} else {
@@ -358,7 +358,7 @@ func parseSuite(p *parser.Parser) (ast.Statement, *parser.ParseError) {
 	if !p.Match(tokenizer.TokenTypeNewLine) {
 		return parser.Wrap(parseSimpleStatement(p))
 	} else if !p.Match(tokenizer.TokenTypeIndent) {
-		return nil, parser.FailMsgf("expecting NEWLINE in parseSuite, found: %s", p.Peek(0).Type)
+		return nil, parser.FailMsgf("expecting NEWLINE in parseSuite, found: %s", p.Next.Type)
 	} else {
 		var stmts []ast.Statement
 		for !p.Match(tokenizer.TokenTypeDedent) {
@@ -420,7 +420,7 @@ func parseIdList(p *parser.Parser) ([]string, *parser.ParseError) {
 	*/
 	t, ok := p.Capture(tokenizer.TokenTypeIdentifier)
 	if !ok {
-		return nil, parser.FailMsgf("expecting ID, found %s", p.Peek(0).Type)
+		return nil, parser.FailMsgf("expecting ID, found %s", p.Next.Type)
 	}
 	idList := []string{t.Lexeme}
 	for p.Match(tokenizer.TokenTypeComma) { // Read a comma
@@ -493,7 +493,7 @@ func parseTest(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 		if exprCond, err := parseOrTest(p); err != nil {
 			return nil, parser.FailErr(err)
 		} else if !p.Match(tokenizer.TokenTypeElse) {
-			return nil, parser.FailMsgf("expecting 'ELSE' in test clause, found %s", p.Peek(0).Type)
+			return nil, parser.FailMsgf("expecting 'ELSE' in test clause, found %s", p.Next.Type)
 		} else if exprRight, err := parseTest(p); err != nil {
 			return nil, parser.FailErr(err)
 		} else {
@@ -973,7 +973,7 @@ func parseAtom(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 	} else if p.Match(tokenizer.TokenTypeFalse) {
 		return ast.NewExpressionLiteral(false), nil
 	} else {
-		return nil, parser.FailMsgf("atom not supported: %s", p.Peek(0).Type)
+		return nil, parser.FailMsgf("atom not supported: %s", p.Next.Type)
 	}
 }
 
@@ -1103,7 +1103,7 @@ func parseDictExpr(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 	// {a:a,a:a,}
 
 	if !p.Match(tokenizer.TokenTypeLeftBrace) {
-		return nil, parser.FailMsgf("expecting '{' in dictExpr, found: %s", p.Peek(0).Type)
+		return nil, parser.FailMsgf("expecting '{' in dictExpr, found: %s", p.Next.Type)
 	} else {
 		var exprKeys []ast.Expression
 		var exprValues []ast.Expression
@@ -1111,7 +1111,7 @@ func parseDictExpr(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 			if exprKey, err := parseExpression(p); err != nil {
 				return nil, parser.FailErr(err)
 			} else if !p.Match(tokenizer.TokenTypeColon) {
-				return nil, parser.FailMsgf("expecting ':' in dictExpr, found: %s", p.Peek(0).Type)
+				return nil, parser.FailMsgf("expecting ':' in dictExpr, found: %s", p.Next.Type)
 			} else if exprValue, err := parseExpression(p); err != nil {
 				return nil, parser.FailErr(err)
 			} else {

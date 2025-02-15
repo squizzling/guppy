@@ -8,11 +8,13 @@ import (
 
 type Parser struct {
 	tokens *tokenizer.Tokenizer
+	Next   tokenizer.Token
 }
 
 func NewParser(tokens *tokenizer.Tokenizer) *Parser {
 	return &Parser{
 		tokens: tokens,
+		Next:   tokens.Peek(0),
 	}
 }
 
@@ -20,39 +22,27 @@ func (p *Parser) RemainingTokens() int {
 	return p.tokens.RemainingTokens()
 }
 
-func (p *Parser) Peek(n int) tokenizer.Token {
-	return p.tokens.Peek(n)
-}
-
 func (p *Parser) PeekMatch(n int, tokenTypes ...tokenizer.TokenType) bool {
 	return slices.Contains(tokenTypes, p.tokens.Peek(n).Type)
 }
 
 func (p *Parser) Match(tokenType tokenizer.TokenType) bool {
-	nextToken := p.tokens.Peek(0)
-	if nextToken.Type == tokenType {
+	if p.Next.Type == tokenType {
 		p.tokens.Advance()
+		p.Next = p.tokens.Peek(0)
 		return true
 	}
 	return false
 }
 
 func (p *Parser) Capture(tts ...tokenizer.TokenType) (tokenizer.Token, bool) {
-	if p.isAtEnd() {
-		return tokenizer.Token{}, false
-	}
-
-	nextToken := p.tokens.Peek(0)
 	for _, tt := range tts {
-		if nextToken.Type == tt {
+		if p.Next.Type == tt {
 			p.tokens.Advance()
+			nextToken := p.Next
+			p.Next = p.tokens.Peek(0)
 			return nextToken, true
 		}
 	}
 	return tokenizer.Token{}, false
-}
-
-func (p *Parser) isAtEnd() bool {
-	nextToken := p.tokens.Peek(0)
-	return nextToken.Type == tokenizer.TokenTypeEOF || nextToken.Type == tokenizer.TokenTypeError
 }
