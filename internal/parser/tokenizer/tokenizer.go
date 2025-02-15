@@ -292,8 +292,9 @@ type Tokenizer struct {
 	offset int
 	start  int
 
-	startOfLine bool
 	inGroup     int
+	finalEOL    bool
+	startOfLine bool
 
 	indents       []int
 	dedentPending int
@@ -594,12 +595,24 @@ func (t *Tokenizer) getNext() Token {
 	}
 
 	if !t.more() { // We're at EOF.  Deal with any dedents
+		// > The end of input also serves as an implicit terminator for the final physical line.
+		// > ...
+		// > At the end of the file, a DEDENT token is generated for each number remaining on the stack that is larger than zero.
+		//
+		// On the first entry to this, we want to synthesize an EOL
+		// On subsequent entries, we want to synthesize DEDENTs
+		// On the final pass, we want to synthesize EOF
+		if !t.finalEOL {
+			t.finalEOL = true
+			return Token{Type: TokenTypeNewLine}
+		}
 		if len(t.indents) > 0 {
 			t.indents = t.indents[:len(t.indents)-1]
 			return Token{Type: TokenTypeDedent}
 		}
 		return t.newEOF()
 	}
+	t.finalEOL = false
 
 	// Skip any whitespace
 	for t.more() && (t.match(' ') || t.match('\t')) {
@@ -657,6 +670,7 @@ func (t *Tokenizer) getNext() Token {
 		fallthrough
 	case '\n': // Empty lines are already ignored and filtered out
 		t.startOfLine = true
+		t.finalEOL = true
 		return t.newToken(TokenTypeNewLine)
 	case '#': // This is a comment after a token, so we want to emit a new line after processing it
 		for t.more() && t.next() != '\n' {
