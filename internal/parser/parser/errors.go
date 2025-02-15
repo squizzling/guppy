@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"runtime"
+	"strings"
 )
 
 type ParseError struct {
@@ -40,6 +41,17 @@ func caller(skip int) (string, string, int) {
 	}
 	frame, _ := runtime.CallersFrames(rpc).Next()
 	return frame.Function, frame.File, frame.Line
+}
+
+func callerName(skip int) string {
+	rpc := make([]uintptr, 1)
+	n := runtime.Callers(skip+3, rpc)
+	if n < 1 {
+		return "unknown"
+	}
+	frame, _ := runtime.CallersFrames(rpc).Next()
+	parts := strings.Split(frame.Function, ".")
+	return parts[len(parts)-1]
 }
 
 func FailErrSkip(err error, msg string, skip int) *ParseError {

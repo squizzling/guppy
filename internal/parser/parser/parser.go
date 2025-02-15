@@ -26,6 +26,15 @@ func (p *Parser) PeekMatch(n int, tokenTypes ...tokenizer.TokenType) bool {
 	return slices.Contains(tokenTypes, p.tokens.Peek(n).Type)
 }
 
+func (p *Parser) MatchErr(tokenType tokenizer.TokenType) *ParseError {
+	if p.Next.Type == tokenType {
+		p.tokens.Advance()
+		p.Next = p.tokens.Peek(0)
+		return nil
+	}
+	return FailMsgf("expecting %s in %s, found %s", tokenType, callerName(0), p.Next.Type)
+}
+
 func (p *Parser) Match(tokenType tokenizer.TokenType) bool {
 	if p.Next.Type == tokenType {
 		p.tokens.Advance()

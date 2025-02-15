@@ -10,7 +10,7 @@ DataParameter(
 =====
 ?
 -----
-expecting ':' in parseParamType, found: ERROR
+expecting COLON in parseParamType, found ERROR
 =====
 : ?
 -----

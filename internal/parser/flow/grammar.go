@@ -298,8 +298,8 @@ func parseParamType(p *parser.Parser) (*ast.DataParameter, *parser.ParseError) {
 	     : ':' ID
 	     ;
 	*/
-	if !p.Match(tokenizer.TokenTypeColon) {
-		return nil, parser.FailMsgf("expecting ':' in parseParamType, found: %s", p.Next.Type)
+	if err := p.MatchErr(tokenizer.TokenTypeColon); err != nil {
+		return nil, parser.FailErr(err)
 	} else if t, ok := p.Capture(tokenizer.TokenTypeIdentifier); !ok {
 		return nil, parser.FailMsgf("expecting IDENTIFIER in parseParamType, found: %s", p.Next.Type)
 	} else {
