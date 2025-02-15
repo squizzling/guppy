@@ -126,18 +126,17 @@ func testStatementFromFile(t *testing.T, fullFilename string, parse func(p *pars
 func TestExpressions(t *testing.T) {
 	t.Parallel()
 
-	testExpressionFromFile(t, "testdata/expressions/parseDictExpr.txt", parseDictExpr)
-	testExpressionFromFile(t, "testdata/expressions/parseTest.txt", parseTest)
-	testExpressionFromFile(t, "testdata/expressions/parseTestListComp.txt", parseTestListComp)
-	testExpressionFromFile(t, "testdata/expressions/parseTupleExpr.txt", parseTupleExpr)
-	testStatementFromFile(t, "testdata/statements/parseExpressionStatement.txt", parseExpressionStatement)
 	testDataParameterFromFile(t, "testdata/dataparameter/parseParamType.txt", parseParamType)
 	testDataParameterFromFile(t, "testdata/dataparameter/parseVarArgsKwsParam.txt", parseVarArgsKwsParam)
 	testDataParameterFromFile(t, "testdata/dataparameter/parseVarArgsListParamDef.txt", parseVarArgsListParamDef)
 	testDataParameterFromFile(t, "testdata/dataparameter/parseVarArgsListParamName.txt", parseVarArgsListParamName)
 	testDataParameterFromFile(t, "testdata/dataparameter/parseVarArgsStarParam.txt", parseVarArgsStarParam)
-	testDataParameterFromFile(t, "testdata/dataparameter/parseVarArgsStarParam.txt", parseVarArgsStarParam)
 	testDataParameterListFromFile(t, "testdata/dataparameterlist/parseVarArgsList.txt", parseVarArgsList)
+	testExpressionFromFile(t, "testdata/expressions/parseDictExpr.txt", parseDictExpr)
+	testExpressionFromFile(t, "testdata/expressions/parseTest.txt", parseTest)
+	testExpressionFromFile(t, "testdata/expressions/parseTestListComp.txt", parseTestListComp)
+	testExpressionFromFile(t, "testdata/expressions/parseTupleExpr.txt", parseTupleExpr)
+	testStatementFromFile(t, "testdata/statements/parseExpressionStatement.txt", parseExpressionStatement)
 }
 
 func TestParseIdList(t *testing.T) {
