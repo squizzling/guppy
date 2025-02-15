@@ -1,3 +1,136 @@
+a
+-----
+DataParameterList(
+  List: [
+    DataParameter(
+      Name: string(a)
+      Type: string()
+      Default: nil
+      StarArg: bool(false)
+      KeywordArg: bool(false)
+    )
+  ]
+)
+=====
+a,b
+-----
+DataParameterList(
+  List: [
+    DataParameter(
+      Name: string(a)
+      Type: string()
+      Default: nil
+      StarArg: bool(false)
+      KeywordArg: bool(false)
+    )
+    DataParameter(
+      Name: string(b)
+      Type: string()
+      Default: nil
+      StarArg: bool(false)
+      KeywordArg: bool(false)
+    )
+  ]
+)
+=====
+a,b,*c
+-----
+DataParameterList(
+  List: [
+    DataParameter(
+      Name: string(a)
+      Type: string()
+      Default: nil
+      StarArg: bool(false)
+      KeywordArg: bool(false)
+    )
+    DataParameter(
+      Name: string(b)
+      Type: string()
+      Default: nil
+      StarArg: bool(false)
+      KeywordArg: bool(false)
+    )
+    DataParameter(
+      Name: string(c)
+      Type: string()
+      Default: nil
+      StarArg: bool(true)
+      KeywordArg: bool(false)
+    )
+  ]
+)
+=====
+a,b,*c,**d
+-----
+DataParameterList(
+  List: [
+    DataParameter(
+      Name: string(a)
+      Type: string()
+      Default: nil
+      StarArg: bool(false)
+      KeywordArg: bool(false)
+    )
+    DataParameter(
+      Name: string(b)
+      Type: string()
+      Default: nil
+      StarArg: bool(false)
+      KeywordArg: bool(false)
+    )
+    DataParameter(
+      Name: string(c)
+      Type: string()
+      Default: nil
+      StarArg: bool(true)
+      KeywordArg: bool(false)
+    )
+    DataParameter(
+      Name: string(d)
+      Type: string()
+      Default: nil
+      StarArg: bool(false)
+      KeywordArg: bool(true)
+    )
+  ]
+)
+=====
+a,b,*,**c
+-----
+DataParameterList(
+  List: [
+    DataParameter(
+      Name: string(a)
+      Type: string()
+      Default: nil
+      StarArg: bool(false)
+      KeywordArg: bool(false)
+    )
+    DataParameter(
+      Name: string(b)
+      Type: string()
+      Default: nil
+      StarArg: bool(false)
+      KeywordArg: bool(false)
+    )
+    DataParameter(
+      Name: string()
+      Type: string()
+      Default: nil
+      StarArg: bool(true)
+      KeywordArg: bool(false)
+    )
+    DataParameter(
+      Name: string(c)
+      Type: string()
+      Default: nil
+      StarArg: bool(false)
+      KeywordArg: bool(true)
+    )
+  ]
+)
+=====
 *
 -----
 DataParameterList(
@@ -103,6 +236,10 @@ DataParameterList(
   ]
 )
 =====
+a,?
+-----
+expecting IDENTIFIER, '*', or STARSTAR are ',' in parsevarArgsList, found: ERROR
+=====
 **?
 -----
 expecting IDENTIFIER in parseVarArgsListParamName, found: ERROR
@@ -147,3 +284,11 @@ DataParameterList(
     )
   ]
 )
+=====
+a:?
+-----
+expecting IDENTIFIER in parseParamType, found: ERROR
+=====
+a,b:?
+-----
+expecting IDENTIFIER in parseParamType, found: ERROR

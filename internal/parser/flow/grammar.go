@@ -165,42 +165,71 @@ func parseVarArgsList(p *parser.Parser) (*ast.DataParameterList, *parser.ParseEr
 		  | var_args_kws_param
 		  ;
 	*/
+	params := []*ast.DataParameter{}
+
 	if p.PeekMatch(0, tokenizer.TokenTypeIdentifier) {
-		return nil, parser.FailMsgf("parseVarArgsList arm not supported")
-	} else if p.PeekMatch(0, tokenizer.TokenTypeStar) {
+		if param, err := parseVarArgsListParamDef(p); err != nil {
+			return nil, parser.FailErr(err)
+		} else {
+			params = append(params, param)
+			for {
+				if p.Match(tokenizer.TokenTypeComma) {
+					if p.PeekMatch(0, tokenizer.TokenTypeIdentifier) {
+						if param, err = parseVarArgsListParamDef(p); err != nil {
+							return nil, parser.FailErr(err)
+						} else {
+							params = append(params, param)
+						}
+					} else if p.PeekMatch(0, tokenizer.TokenTypeStar, tokenizer.TokenTypeStarStar) {
+						break
+					} else {
+						return nil, parser.FailMsgf("expecting IDENTIFIER, '*', or STARSTAR are ',' in parsevarArgsList, found: %s", p.Peek(0).Type)
+					}
+				} else {
+					return &ast.DataParameterList{List: params}, nil
+				}
+			}
+		}
+	}
+
+	if p.PeekMatch(0, tokenizer.TokenTypeStar) {
 		if param, err := parseVarArgsStarParam(p); err != nil {
 			return nil, parser.FailErr(err)
 		} else {
-			params := []*ast.DataParameter{param}
-			for p.Match(tokenizer.TokenTypeComma) {
-				if p.PeekMatch(0, tokenizer.TokenTypeIdentifier) {
-					if param, err = parseVarArgsListParamDef(p); err != nil {
-						return nil, parser.FailErr(err)
-					} else {
-						params = append(params, param)
-					}
-				} else if p.PeekMatch(0, tokenizer.TokenTypeStarStar) {
-					if param, err = parseVarArgsKwsParam(p); err != nil {
-						return nil, parser.FailErr(err)
-					} else {
-						params = append(params, param)
+			params = append(params, param)
+			for {
+				if p.Match(tokenizer.TokenTypeComma) {
+					if p.PeekMatch(0, tokenizer.TokenTypeIdentifier) {
+						if param, err = parseVarArgsListParamDef(p); err != nil {
+							return nil, parser.FailErr(err)
+						} else {
+							params = append(params, param)
+						}
+					} else if p.PeekMatch(0, tokenizer.TokenTypeStarStar) {
 						break
+					} else {
+						return nil, parser.FailMsgf("expecting IDENTIFIER or STARSTAR after ',' in parseVarArgsList, found: %s", p.Peek(0).Type)
 					}
 				} else {
-					return nil, parser.FailMsgf("expecting IDENTIFIER or STARSTAR after ',' in parseVarArgsList, found: %s", p.Peek(0).Type)
+					return &ast.DataParameterList{List: params}, nil
 				}
 			}
-			return &ast.DataParameterList{List: params}, nil
 		}
-	} else if p.PeekMatch(0, tokenizer.TokenTypeStarStar) {
+	}
+
+	if p.PeekMatch(0, tokenizer.TokenTypeStarStar) {
 		if param, err := parseVarArgsKwsParam(p); err != nil {
 			return nil, parser.FailErr(err)
 		} else {
-			return &ast.DataParameterList{List: []*ast.DataParameter{param}}, nil
+			params = append(params, param)
 		}
-	} else {
+	}
+
+	if len(params) == 0 { // If we have nothing, then no arms matched.
 		return nil, parser.FailMsgf("expecting IDENTIFIER, '*', or STARSTAR in parseVarArgsList, found: %s", p.Peek(0).Type)
 	}
+
+	return &ast.DataParameterList{List: params}, nil
 }
 
 func parseVarArgsListParamDef(p *parser.Parser) (*ast.DataParameter, *parser.ParseError) {
