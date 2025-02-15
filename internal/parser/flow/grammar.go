@@ -153,6 +153,8 @@ func parseParameters(p *parser.Parser) (*ast.DataParameterList, *parser.ParseErr
 	*/
 	if !p.Match(tokenizer.TokenTypeLeftParen) {
 		return nil, parser.FailMsgf("expecting LEFTPAREN in parseParameters, found: %s", p.Peek(0).Type)
+	} else if p.Match(tokenizer.TokenTypeRightParen) {
+		return &ast.DataParameterList{List: nil}, nil
 	} else if params, err := parseVarArgsList(p); err != nil {
 		return nil, parser.FailErr(err)
 	} else if !p.Match(tokenizer.TokenTypeRightParen) {

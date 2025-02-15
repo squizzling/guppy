@@ -12,6 +12,12 @@ DataParameterList(
   ]
 )
 =====
+()
+-----
+DataParameterList(
+  List: nil
+)
+=====
 ?
 -----
 expecting LEFTPAREN in parseParameters, found: ERROR
