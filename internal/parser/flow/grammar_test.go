@@ -28,86 +28,14 @@ func must1[T any](t T, err error) T {
 	return t
 }
 
-func testDataParameterFromFile(t *testing.T, fullFilename string, parse func(p *parser.Parser) (*ast.DataParameter, *parser.ParseError)) {
-	filename := path.Base(fullFilename)
-	f := string(must1(os.ReadFile(fullFilename)))
-	tests := strings.Split(f, "=====\n")
-	for idx, test := range tests {
-		parts := strings.Split(test, "-----\n")
-		if len(parts) != 2 {
-			t.Fatalf("malformed test in %s/%d", filename, idx)
-		}
-		input, output := parts[0], parts[1]
-		t.Run(filename+"/"+input, func(t *testing.T) {
-			t.Parallel()
+func testFromFile[T any](
+	t *testing.T,
+	fullFilename string,
+	parse func(p *parser.Parser) (T, *parser.ParseError),
+	render func(t T) string,
+) {
+	// TODO: Pull out common code with rebuildForFile, so we can have a consistent view between both worlds
 
-			if actual, err := parse(parser.NewParser(tokenizer.NewTokenizer(input))); err != nil {
-				if !assert.Equal(t, strings.TrimRight(output, "\n"), err.Error()) {
-					ss := err.Stack()
-					for _, s := range ss {
-						_, _ = fmt.Fprintf(os.Stderr, "%s %s\n", s.Location, s.Message)
-					}
-				}
-			} else {
-				actualTree := must1(actual.Accept(ast.DebugWriter{}))
-				assert.Equal(t, output, actualTree)
-			}
-		})
-	}
-}
-
-func testDataParameterListFromFile(t *testing.T, fullFilename string, parse func(p *parser.Parser) (*ast.DataParameterList, *parser.ParseError)) {
-	filename := path.Base(fullFilename)
-	f := string(must1(os.ReadFile(fullFilename)))
-	tests := strings.Split(f, "=====\n")
-	for idx, test := range tests {
-		parts := strings.Split(test, "-----\n")
-		if len(parts) != 2 {
-			t.Fatalf("malformed test in %s/%d", filename, idx)
-		}
-		input, output := parts[0], parts[1]
-		t.Run(filename+"/"+input, func(t *testing.T) {
-			t.Parallel()
-
-			if actual, err := parse(parser.NewParser(tokenizer.NewTokenizer(input))); err != nil {
-				if !assert.Equal(t, strings.TrimRight(output, "\n"), err.Error()) {
-					ss := err.Stack()
-					for _, s := range ss {
-						_, _ = fmt.Fprintf(os.Stderr, "%s %s\n", s.Location, s.Message)
-					}
-				}
-			} else {
-				actualTree := must1(actual.Accept(ast.DebugWriter{}))
-				assert.Equal(t, output, actualTree)
-			}
-		})
-	}
-}
-
-func testExpressionFromFile(t *testing.T, fullFilename string, parse func(p *parser.Parser) (ast.Expression, *parser.ParseError)) {
-	filename := path.Base(fullFilename)
-	f := string(must1(os.ReadFile(fullFilename)))
-	tests := strings.Split(f, "=====\n")
-	for idx, test := range tests {
-		parts := strings.Split(test, "-----\n")
-		if len(parts) != 2 {
-			t.Fatalf("malformed test in %s/%d", filename, idx)
-		}
-		input, output := parts[0], parts[1]
-		t.Run(filename+"/"+input, func(t *testing.T) {
-			t.Parallel()
-
-			if actual, err := parse(parser.NewParser(tokenizer.NewTokenizer(input))); err != nil {
-				assert.Equal(t, strings.TrimRight(output, "\n"), err.Error())
-			} else {
-				actualTree := must1(actual.Accept(ast.DebugWriter{}))
-				assert.Equal(t, output, actualTree)
-			}
-		})
-	}
-}
-
-func testStatementFromFile(t *testing.T, fullFilename string, parse func(p *parser.Parser) (ast.Statement, *parser.ParseError)) {
 	filename := path.Base(fullFilename)
 	f := string(must1(os.ReadFile(fullFilename)))
 	tests := strings.Split(f, "=====\n")
@@ -128,30 +56,90 @@ func testStatementFromFile(t *testing.T, fullFilename string, parse func(p *pars
 					}
 				}
 			} else {
-				actualTree := must1(actual.Accept(ast.DebugWriter{}))
+				actualTree := render(actual)
 				assert.Equal(t, output, actualTree)
 			}
 		})
 	}
 }
 
-func TestExpressions(t *testing.T) {
+type grammarTest[T any] struct {
+	fileName string
+	parse    func(p *parser.Parser) (T, *parser.ParseError)
+}
+
+var dataParameterTests = []grammarTest[*ast.DataParameter]{
+	{"parseParamType", parseParamType},
+	{"parseVarArgsKwsParam", parseVarArgsKwsParam},
+	{"parseVarArgsListParamDef", parseVarArgsListParamDef},
+	{"parseVarArgsListParamName", parseVarArgsListParamName},
+	{"parseVarArgsStarParam", parseVarArgsStarParam},
+}
+
+var dataParameterListTests = []grammarTest[*ast.DataParameterList]{
+	{"parseVarArgsList", parseVarArgsList},
+	{"parseParameters", parseParameters},
+}
+
+var dataExpressionTests = []grammarTest[ast.Expression]{
+	{"parseDictExpr", parseDictExpr},
+	{"parseTest", parseTest},
+	{"parseTestListComp", parseTestListComp},
+	{"parseTupleExpr", parseTupleExpr},
+}
+
+var dataStatementTests = []grammarTest[ast.Statement]{
+	{"parseExpressionStatement", parseExpressionStatement},
+	{"parseFunctionDefinition", parseFunctionDefinition},
+	{"parseSuite", parseSuite},
+}
+
+func renderDataParameter(d *ast.DataParameter) string {
+	return must1(d.Accept(ast.DebugWriter{})).(string)
+}
+
+func renderDataParameterList(d *ast.DataParameterList) string {
+	return must1(d.Accept(ast.DebugWriter{})).(string)
+}
+
+func renderExpression(d ast.Expression) string {
+	return must1(d.Accept(ast.DebugWriter{})).(string)
+}
+
+func renderStatement(d ast.Statement) string {
+	return must1(d.Accept(ast.DebugWriter{})).(string)
+}
+
+func TestDataParameter(t *testing.T) {
 	t.Parallel()
 
-	testDataParameterFromFile(t, "testdata/dataparameter/parseParamType.txt", parseParamType)
-	testDataParameterFromFile(t, "testdata/dataparameter/parseVarArgsKwsParam.txt", parseVarArgsKwsParam)
-	testDataParameterFromFile(t, "testdata/dataparameter/parseVarArgsListParamDef.txt", parseVarArgsListParamDef)
-	testDataParameterFromFile(t, "testdata/dataparameter/parseVarArgsListParamName.txt", parseVarArgsListParamName)
-	testDataParameterFromFile(t, "testdata/dataparameter/parseVarArgsStarParam.txt", parseVarArgsStarParam)
-	testDataParameterListFromFile(t, "testdata/dataparameterlist/parseVarArgsList.txt", parseVarArgsList)
-	testDataParameterListFromFile(t, "testdata/dataparameterlist/parseParameters.txt", parseParameters)
-	testExpressionFromFile(t, "testdata/expressions/parseDictExpr.txt", parseDictExpr)
-	testExpressionFromFile(t, "testdata/expressions/parseTest.txt", parseTest)
-	testExpressionFromFile(t, "testdata/expressions/parseTestListComp.txt", parseTestListComp)
-	testExpressionFromFile(t, "testdata/expressions/parseTupleExpr.txt", parseTupleExpr)
-	testStatementFromFile(t, "testdata/statements/parseExpressionStatement.txt", parseExpressionStatement)
-	testStatementFromFile(t, "testdata/statements/parseFunctionDefinition.txt", parseFunctionDefinition)
-	testStatementFromFile(t, "testdata/statements/parseSuite.txt", parseSuite)
+	for _, tst := range dataParameterTests {
+		testFromFile(t, "testdata/dataparameter/"+tst.fileName+".txt", tst.parse, renderDataParameter)
+	}
+}
+
+func TestDataParameterList(t *testing.T) {
+	t.Parallel()
+
+	for _, tst := range dataParameterListTests {
+		testFromFile(t, "testdata/dataparameterlist/"+tst.fileName+".txt", tst.parse, renderDataParameterList)
+	}
+}
+
+func TestExpression(t *testing.T) {
+	t.Parallel()
+
+	for _, tst := range dataExpressionTests {
+		testFromFile(t, "testdata/expressions/"+tst.fileName+".txt", tst.parse, renderExpression)
+	}
+}
+
+func TestStatement(t *testing.T) {
+	t.Parallel()
+
+	for _, tst := range dataStatementTests {
+		testFromFile(t, "testdata/statements/"+tst.fileName+".txt", tst.parse, renderStatement)
+	}
 }
 
 func TestParseIdList(t *testing.T) {
