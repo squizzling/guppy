@@ -383,7 +383,6 @@ func (t *Tokenizer) newTokenIndent(indent int) Token {
 }
 
 func (t *Tokenizer) calculateIndent(indent int) error {
-	fmt.Printf("doing dedent to %d\n", indent)
 	for len(t.indents) > 0 {
 		amt := t.indents[len(t.indents)-1]
 		if amt > indent {
@@ -595,12 +594,11 @@ func (t *Tokenizer) getNext() Token {
 	}
 
 	if !t.more() { // We're at EOF.  Deal with any dedents
-		t.dedentPending = len(t.indents)
-		if t.dedentPending == 0 {
-			return t.newEOF()
-		} else {
+		if len(t.indents) > 0 {
+			t.indents = t.indents[:len(t.indents)-1]
 			return Token{Type: TokenTypeDedent}
 		}
+		return t.newEOF()
 	}
 
 	// Skip any whitespace
