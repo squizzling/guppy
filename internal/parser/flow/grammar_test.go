@@ -132,6 +132,7 @@ func TestExpressions(t *testing.T) {
 	testDataParameterFromFile(t, "testdata/dataparameter/parseVarArgsListParamName.txt", parseVarArgsListParamName)
 	testDataParameterFromFile(t, "testdata/dataparameter/parseVarArgsStarParam.txt", parseVarArgsStarParam)
 	testDataParameterListFromFile(t, "testdata/dataparameterlist/parseVarArgsList.txt", parseVarArgsList)
+	testDataParameterListFromFile(t, "testdata/dataparameterlist/parseParameters.txt", parseParameters)
 	testExpressionFromFile(t, "testdata/expressions/parseDictExpr.txt", parseDictExpr)
 	testExpressionFromFile(t, "testdata/expressions/parseTest.txt", parseTest)
 	testExpressionFromFile(t, "testdata/expressions/parseTestListComp.txt", parseTestListComp)

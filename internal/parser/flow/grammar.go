@@ -151,7 +151,15 @@ func parseParameters(p *parser.Parser) (*ast.DataParameterList, *parser.ParseErr
 		  : OPEN_PAREN var_args_list? CLOSE_PAREN
 		  ;
 	*/
-	return nil, parser.FailMsgf("parameters not supported")
+	if !p.Match(tokenizer.TokenTypeLeftParen) {
+		return nil, parser.FailMsgf("expecting LEFTPAREN in parseParameters, found: %s", p.Peek(0).Type)
+	} else if params, err := parseVarArgsList(p); err != nil {
+		return nil, parser.FailErr(err)
+	} else if !p.Match(tokenizer.TokenTypeRightParen) {
+		return nil, parser.FailMsgf("expecting RIGHTPAREN in parseParameters, found: %s", p.Peek(0).Type)
+	} else {
+		return params, nil
+	}
 }
 
 func parseVarArgsList(p *parser.Parser) (*ast.DataParameterList, *parser.ParseError) {

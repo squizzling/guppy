@@ -169,6 +169,7 @@ func TestRebuild(t *testing.T) {
 	rebuildDataParameterForFile("testdata/dataparameter/parseVarArgsListParamName.txt", parseVarArgsListParamName)
 	rebuildDataParameterForFile("testdata/dataparameter/parseVarArgsStarParam.txt", parseVarArgsStarParam)
 	rebuildDataParameterListFromFile("testdata/dataparameterlist/parseVarArgsList.txt", parseVarArgsList)
+	rebuildDataParameterListFromFile("testdata/dataparameterlist/parseParameters.txt", parseParameters)
 	rebuildExpressionForFile("testdata/expressions/parseDictExpr.txt", parseDictExpr)
 	rebuildExpressionForFile("testdata/expressions/parseTest.txt", parseTest)
 	rebuildExpressionForFile("testdata/expressions/parseTestListComp.txt", parseTestListComp)
