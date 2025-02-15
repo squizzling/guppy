@@ -28,4 +28,4 @@ expecting IDENTIFIER in parseParamType, found: ERROR
 =====
 ?
 -----
-expecting STARSTAR in parseVarArgsKwsParam, found: ERROR
+expecting STAR_STAR in parseVarArgsKwsParam, found ERROR

@@ -35,21 +35,21 @@ StatementFunction(
 =====
 ?
 -----
-expecting DEF in parseFunctionDefinition, found: ERROR
+expecting DEF in parseFunctionDefinition, found ERROR
 =====
 def ?
 -----
-expecting IDENTIFIER in parseFunctionDefinition, found: ERROR
+expecting [IDENTIFIER] in parseFunctionDefinition, found ERROR
 =====
 def a?
 -----
-expecting LEFTPAREN in parseParameters, found: ERROR
+expecting LEFT_PAREN in parseParameters, found ERROR
 =====
 def a()?
 -----
-expecting ':' in parseFunctionDefinition, found: ERROR
+expecting COLON in parseFunctionDefinition, found ERROR
 =====
 def a(b):
 ?
 -----
-expecting NEWLINE in parseSuite, found: ERROR
+expecting INDENT in parseSuite, found ERROR

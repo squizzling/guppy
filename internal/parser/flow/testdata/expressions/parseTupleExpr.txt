@@ -64,8 +64,8 @@ compFor not implemented
 =====
 x
 -----
-expecting '(' in tupleExpr
+expecting LEFT_PAREN in parseTupleExpr, found IDENTIFIER
 =====
 (10,
 -----
-expecting ')' after tupleExpr
+expecting RIGHT_PAREN in parseTupleExpr, found NEW_LINE

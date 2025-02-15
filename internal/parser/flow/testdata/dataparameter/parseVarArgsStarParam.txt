@@ -40,7 +40,7 @@ DataParameter(
 =====
 ?
 -----
-expecting '*' in parseVarArgsStarParam, found: ERROR
+expecting STAR in parseVarArgsStarParam, found ERROR
 =====
 *a:?
 -----

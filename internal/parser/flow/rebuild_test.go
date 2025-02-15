@@ -135,8 +135,8 @@ func rebuildStatementForFile(
 
 	tests := strings.Split(f, "=====\n")
 	for idx, test := range tests {
-		parts := strings.Split(test, "-----\n")
-		input, output := strings.TrimRight(parts[0], "\n"), strings.TrimRight(parts[1], "\n")
+		parts := strings.Split(test, "\n-----\n")
+		input, output := parts[0], parts[1]
 		if idx > 0 {
 			_, _ = fmt.Fprintf(&b, "=====\n")
 		}
@@ -175,5 +175,6 @@ func TestRebuild(t *testing.T) {
 	rebuildExpressionForFile("testdata/expressions/parseTestListComp.txt", parseTestListComp)
 	rebuildExpressionForFile("testdata/expressions/parseTupleExpr.txt", parseTupleExpr)
 	rebuildStatementForFile("testdata/statements/parseExpressionStatement.txt", parseExpressionStatement)
+	rebuildStatementForFile("testdata/statements/parseFunctionDefinition.txt", parseFunctionDefinition)
 	rebuildStatementForFile("testdata/statements/parseSuite.txt", parseSuite)
 }

@@ -22,7 +22,7 @@ atom not supported: ERROR
 =====
 a if b c
 -----
-expecting 'ELSE' in test clause, found IDENTIFIER
+expecting ELSE in parseTest, found IDENTIFIER
 =====
 a if b else ?
 -----

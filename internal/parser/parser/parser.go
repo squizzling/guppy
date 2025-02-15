@@ -55,3 +55,15 @@ func (p *Parser) Capture(tts ...tokenizer.TokenType) (tokenizer.Token, bool) {
 	}
 	return tokenizer.Token{}, false
 }
+
+func (p *Parser) CaptureErr(tts ...tokenizer.TokenType) (tokenizer.Token, *ParseError) {
+	for _, tt := range tts {
+		if p.Next.Type == tt {
+			p.tokens.Advance()
+			nextToken := p.Next
+			p.Next = p.tokens.Peek(0)
+			return nextToken, nil
+		}
+	}
+	return p.Next, FailMsgf("expecting %s in %s, found %s", tts, callerName(0), p.Next.Type)
+}

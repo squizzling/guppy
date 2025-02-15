@@ -83,7 +83,7 @@ atom not supported: ERROR
 =====
 {a?
 -----
-expecting ':' in dictExpr, found: ERROR
+expecting COLON in parseDictExpr, found ERROR
 =====
 {a:?
 -----
@@ -91,4 +91,4 @@ atom not supported: ERROR
 =====
 a
 -----
-expecting '{' in dictExpr, found: IDENTIFIER
+expecting LEFT_BRACE in parseDictExpr, found IDENTIFIER

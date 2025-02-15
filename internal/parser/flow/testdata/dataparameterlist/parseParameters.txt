@@ -20,7 +20,7 @@ DataParameterList(
 =====
 ?
 -----
-expecting LEFTPAREN in parseParameters, found: ERROR
+expecting LEFT_PAREN in parseParameters, found ERROR
 =====
 (a:?
 -----
@@ -28,5 +28,4 @@ expecting IDENTIFIER in parseParamType, found: ERROR
 =====
 (a?
 -----
-expecting RIGHTPAREN in parseParameters, found: ERROR
-
+expecting RIGHT_PAREN in parseParameters, found ERROR

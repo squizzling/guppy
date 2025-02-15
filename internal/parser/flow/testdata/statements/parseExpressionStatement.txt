@@ -40,7 +40,7 @@ StatementExpression(
 =====
 a,b ?
 -----
-expecting '=' after identifier
+expecting EQUAL in parseExpressionStatement, found ERROR
 =====
 for =
 -----

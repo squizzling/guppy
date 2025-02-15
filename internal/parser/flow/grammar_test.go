@@ -112,7 +112,7 @@ func testStatementFromFile(t *testing.T, fullFilename string, parse func(p *pars
 	f := string(must1(os.ReadFile(fullFilename)))
 	tests := strings.Split(f, "=====\n")
 	for idx, test := range tests {
-		parts := strings.Split(test, "-----\n")
+		parts := strings.Split(test, "\n-----\n")
 		if len(parts) != 2 {
 			t.Fatalf("malformed test in %s/%d", filename, idx)
 		}
