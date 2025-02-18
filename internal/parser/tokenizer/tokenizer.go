@@ -637,6 +637,23 @@ func (t *Tokenizer) getNext() Token {
 	}
 
 	ch := t.next()
+	for ch == '\\' {
+		if t.peek(0) == '\n' {
+			t.offset++
+		} else if t.peek(0) == '\r' && t.peek(1) == '\n' {
+			t.offset += 2
+		} else {
+			return t.newTokenError(errors.New("'\\' without new line"))
+		}
+
+		// Eat any whitespace
+		for t.more() && (t.match(' ') || t.match('\t')) {
+		}
+
+		t.start = t.offset
+		ch = t.next()
+	}
+
 	if tt, ok := singles[ch]; ok {
 		if indent[ch] {
 			t.inGroup++
@@ -653,23 +670,6 @@ func (t *Tokenizer) getNext() Token {
 		} else {
 			return t.newToken(ttSingle)
 		}
-	}
-
-	for ch == '\\' {
-		if t.peek(0) == '\n' {
-			t.offset++
-		} else if t.peek(0) == '\r' && t.peek(1) == '\n' {
-			t.offset += 2
-		} else {
-			return t.newTokenError(errors.New("'\\' without new line"))
-		}
-
-		// Eat any whitespace
-		for t.more() && (t.match(' ') || t.match('\t')) {
-		}
-
-		t.start = t.offset
-		ch = t.next()
 	}
 
 	switch ch {
