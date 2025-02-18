@@ -571,7 +571,13 @@ func (t *Tokenizer) getNext() Token {
 			if t.match(' ') {
 			} else if t.match('\t') {
 			} else if t.match('\\') {
-				return t.newTokenError(errors.New("'\\' in indentation is not supported"))
+				if t.peek(0) == '\r' && t.peek(1) == '\n' {
+					t.offset += 2
+				} else if t.peek(0) == '\n' {
+					t.offset++
+				} else {
+					return t.newTokenError(errors.New("'\\' not EOL"))
+				}
 			} else if t.match('#') {
 				// Ignore the line entirely
 				for t.more() && t.next() != '\n' { // Scan to EOL
