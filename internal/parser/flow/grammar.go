@@ -122,7 +122,7 @@ func parseSmallStatement(p *parser.Parser) (ast.Statement, *parser.ParseError) {
 		  ;
 	*/
 	if p.Next.Type == tokenizer.TokenTypeReturn {
-		return parser.Wrap(parseReturn(p))
+		return parser.Wrap(parseReturnStatement(p))
 	} else if p.Next.Type == tokenizer.TokenTypeImport || p.Next.Type == tokenizer.TokenTypeFrom {
 		return parser.Wrap(parseImport(p))
 	} else if p.Next.Type == tokenizer.TokenTypeAssert {
@@ -376,8 +376,25 @@ func parseDecorator(p *parser.Parser) (ast.Statement, *parser.ParseError) {
 	return nil, parser.FailMsgf("decorator not supported")
 }
 
-func parseReturn(p *parser.Parser) (ast.Statement, *parser.ParseError) {
-	return nil, parser.FailMsgf("return not supported")
+func isTestListStart(p *parser.Parser) bool {
+	return isAtomStart(p) || p.PeekMatch(0, tokenizer.TokenTypeNot)
+}
+
+func parseReturnStatement(p *parser.Parser) (ast.Statement, *parser.ParseError) {
+	/*
+	  return_statement
+	    : RETURN testlist?
+	    ;
+	*/
+	if err := p.MatchErr(tokenizer.TokenTypeReturn); err != nil {
+		return nil, parser.FailErr(err)
+	} else if !isTestListStart(p) {
+		return ast.NewStatementReturn(nil), nil
+	} else if expr, err := parseTestList(p); err != nil {
+		return nil, parser.FailErr(err)
+	} else {
+		return ast.NewStatementReturn(expr), nil
+	}
 }
 
 func parseImport(p *parser.Parser) (ast.Statement, *parser.ParseError) {

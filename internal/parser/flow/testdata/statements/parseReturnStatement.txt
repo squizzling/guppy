@@ -1,0 +1,26 @@
+return
+-----
+StatementReturn(
+  Expr: nil
+)
+=====
+return a
+-----
+StatementReturn(
+  Expr: ExpressionList(
+    Expressions: [
+      ExpressionVariable(
+        Identifier: string(a)
+      )
+    ]
+    Tuple: bool(false)
+  )
+)
+=====
+?
+-----
+expecting RETURN in parseReturnStatement, found ERROR
+=====
+return [ ?
+-----
+expecting RIGHT_SQUARE in parseListExpr, found ERROR
