@@ -741,7 +741,7 @@ func parsePower(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 	*/
 	if atom, err := parseAtomExpr(p); err != nil {
 		return nil, parser.FailErr(err)
-	} else if t, ok := p.Capture(tokenizer.TokenTypeCaret); !ok {
+	} else if t, ok := p.Capture(tokenizer.TokenTypeStarStar); !ok {
 		return atom, nil
 	} else if factor, err := parseFactor(p); err != nil {
 		return nil, parser.FailErr(err)
