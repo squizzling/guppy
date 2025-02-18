@@ -43,8 +43,8 @@ var Interfaces = []Interface{
 		}},
 		{"If", false, []Field{
 			{"Condition", "[]Expression"},
-			{"Statement", "[]StatementList"},
-			{"StatementElse", "StatementList"},
+			{"Statement", "[]Statement"},
+			{"StatementElse", "Statement"},
 		}},
 
 		{"Function", false, []Field{

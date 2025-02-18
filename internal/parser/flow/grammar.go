@@ -67,7 +67,7 @@ func parseCompoundStatement(p *parser.Parser) (ast.Statement, *parser.ParseError
 	*/
 	switch p.Next.Type {
 	case tokenizer.TokenTypeIf:
-		return parser.Wrap(parseIf(p))
+		return parser.Wrap(parseIfStatement(p))
 	case tokenizer.TokenTypeDef:
 		return parser.Wrap(parseFunctionDefinition(p))
 	case tokenizer.TokenTypeAt:
@@ -132,8 +132,47 @@ func parseSmallStatement(p *parser.Parser) (ast.Statement, *parser.ParseError) {
 	}
 }
 
-func parseIf(p *parser.Parser) (ast.Statement, *parser.ParseError) {
-	return nil, parser.FailMsgf("if not supported")
+func parseIfStatement(p *parser.Parser) (ast.Statement, *parser.ParseError) {
+	/*
+	  if_statement
+	    : IF test ':' suite ( ELIF test ':' suite )* ( ELSE ':' suite )?
+	    ;
+	*/
+	if err := p.MatchErr(tokenizer.TokenTypeIf); err != nil {
+		return nil, parser.FailErr(err)
+	} else if exprTest, err := parseTest(p); err != nil {
+		return nil, parser.FailErr(err)
+	} else if err := p.MatchErr(tokenizer.TokenTypeColon); err != nil {
+		return nil, parser.FailErr(err)
+	} else if stmtSuite, err := parseSuite(p); err != nil {
+		return nil, parser.FailErr(err)
+	} else {
+		exprs := []ast.Expression{exprTest}
+		stmts := []ast.Statement{stmtSuite}
+
+		for p.Match(tokenizer.TokenTypeElIf) {
+			if exprTest, err = parseTest(p); err != nil {
+				return nil, parser.FailErr(err)
+			} else if err = p.MatchErr(tokenizer.TokenTypeColon); err != nil {
+				return nil, parser.FailErr(err)
+			} else if stmtSuite, err = parseSuite(p); err != nil {
+				return nil, parser.FailErr(err)
+			} else {
+				exprs = append(exprs, exprTest)
+				stmts = append(stmts, stmtSuite)
+			}
+		}
+
+		if !p.Match(tokenizer.TokenTypeElse) {
+			return ast.NewStatementIf(exprs, stmts, nil), nil
+		} else if err = p.MatchErr(tokenizer.TokenTypeColon); err != nil {
+			return nil, parser.FailErr(err)
+		} else if stmtElse, err := parseSuite(p); err != nil {
+			return nil, parser.FailErr(err)
+		} else {
+			return ast.NewStatementIf(exprs, stmts, stmtElse), nil
+		}
+	}
 }
 
 func parseFunctionDefinition(p *parser.Parser) (ast.Statement, *parser.ParseError) {

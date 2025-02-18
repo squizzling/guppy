@@ -1,0 +1,369 @@
+if a:
+  b
+-----
+StatementIf(
+  Condition: [
+    ExpressionVariable(
+      Identifier: string(a)
+    )
+  ]
+  Statement: [
+    StatementList(
+      Statements: [
+        StatementExpression(
+          Assign: nil
+          Expr: ExpressionList(
+            Expressions: [
+              ExpressionVariable(
+                Identifier: string(b)
+              )
+            ]
+            Tuple: bool(false)
+          )
+        )
+      ]
+    )
+  ]
+  StatementElse: nil
+)
+=====
+if a:
+  b
+elif c:
+  d
+-----
+StatementIf(
+  Condition: [
+    ExpressionVariable(
+      Identifier: string(a)
+    )
+    ExpressionVariable(
+      Identifier: string(c)
+    )
+  ]
+  Statement: [
+    StatementList(
+      Statements: [
+        StatementExpression(
+          Assign: nil
+          Expr: ExpressionList(
+            Expressions: [
+              ExpressionVariable(
+                Identifier: string(b)
+              )
+            ]
+            Tuple: bool(false)
+          )
+        )
+      ]
+    )
+    StatementList(
+      Statements: [
+        StatementExpression(
+          Assign: nil
+          Expr: ExpressionList(
+            Expressions: [
+              ExpressionVariable(
+                Identifier: string(d)
+              )
+            ]
+            Tuple: bool(false)
+          )
+        )
+      ]
+    )
+  ]
+  StatementElse: nil
+)
+=====
+if a:
+  b
+elif c:
+  d
+elif e:
+  f
+elif g:
+  h
+-----
+StatementIf(
+  Condition: [
+    ExpressionVariable(
+      Identifier: string(a)
+    )
+    ExpressionVariable(
+      Identifier: string(c)
+    )
+    ExpressionVariable(
+      Identifier: string(e)
+    )
+    ExpressionVariable(
+      Identifier: string(g)
+    )
+  ]
+  Statement: [
+    StatementList(
+      Statements: [
+        StatementExpression(
+          Assign: nil
+          Expr: ExpressionList(
+            Expressions: [
+              ExpressionVariable(
+                Identifier: string(b)
+              )
+            ]
+            Tuple: bool(false)
+          )
+        )
+      ]
+    )
+    StatementList(
+      Statements: [
+        StatementExpression(
+          Assign: nil
+          Expr: ExpressionList(
+            Expressions: [
+              ExpressionVariable(
+                Identifier: string(d)
+              )
+            ]
+            Tuple: bool(false)
+          )
+        )
+      ]
+    )
+    StatementList(
+      Statements: [
+        StatementExpression(
+          Assign: nil
+          Expr: ExpressionList(
+            Expressions: [
+              ExpressionVariable(
+                Identifier: string(f)
+              )
+            ]
+            Tuple: bool(false)
+          )
+        )
+      ]
+    )
+    StatementList(
+      Statements: [
+        StatementExpression(
+          Assign: nil
+          Expr: ExpressionList(
+            Expressions: [
+              ExpressionVariable(
+                Identifier: string(h)
+              )
+            ]
+            Tuple: bool(false)
+          )
+        )
+      ]
+    )
+  ]
+  StatementElse: nil
+)
+=====
+if a:
+  b
+else:
+  c
+-----
+StatementIf(
+  Condition: [
+    ExpressionVariable(
+      Identifier: string(a)
+    )
+  ]
+  Statement: [
+    StatementList(
+      Statements: [
+        StatementExpression(
+          Assign: nil
+          Expr: ExpressionList(
+            Expressions: [
+              ExpressionVariable(
+                Identifier: string(b)
+              )
+            ]
+            Tuple: bool(false)
+          )
+        )
+      ]
+    )
+  ]
+  StatementElse: StatementList(
+    Statements: [
+      StatementExpression(
+        Assign: nil
+        Expr: ExpressionList(
+          Expressions: [
+            ExpressionVariable(
+              Identifier: string(c)
+            )
+          ]
+          Tuple: bool(false)
+        )
+      )
+    ]
+  )
+)
+=====
+if a:
+  b
+elif c:
+  d
+elif e:
+  f
+elif g:
+  h
+else:
+  i
+-----
+StatementIf(
+  Condition: [
+    ExpressionVariable(
+      Identifier: string(a)
+    )
+    ExpressionVariable(
+      Identifier: string(c)
+    )
+    ExpressionVariable(
+      Identifier: string(e)
+    )
+    ExpressionVariable(
+      Identifier: string(g)
+    )
+  ]
+  Statement: [
+    StatementList(
+      Statements: [
+        StatementExpression(
+          Assign: nil
+          Expr: ExpressionList(
+            Expressions: [
+              ExpressionVariable(
+                Identifier: string(b)
+              )
+            ]
+            Tuple: bool(false)
+          )
+        )
+      ]
+    )
+    StatementList(
+      Statements: [
+        StatementExpression(
+          Assign: nil
+          Expr: ExpressionList(
+            Expressions: [
+              ExpressionVariable(
+                Identifier: string(d)
+              )
+            ]
+            Tuple: bool(false)
+          )
+        )
+      ]
+    )
+    StatementList(
+      Statements: [
+        StatementExpression(
+          Assign: nil
+          Expr: ExpressionList(
+            Expressions: [
+              ExpressionVariable(
+                Identifier: string(f)
+              )
+            ]
+            Tuple: bool(false)
+          )
+        )
+      ]
+    )
+    StatementList(
+      Statements: [
+        StatementExpression(
+          Assign: nil
+          Expr: ExpressionList(
+            Expressions: [
+              ExpressionVariable(
+                Identifier: string(h)
+              )
+            ]
+            Tuple: bool(false)
+          )
+        )
+      ]
+    )
+  ]
+  StatementElse: StatementList(
+    Statements: [
+      StatementExpression(
+        Assign: nil
+        Expr: ExpressionList(
+          Expressions: [
+            ExpressionVariable(
+              Identifier: string(i)
+            )
+          ]
+          Tuple: bool(false)
+        )
+      )
+    ]
+  )
+)
+=====
+?
+-----
+expecting IF in parseIfStatement, found ERROR
+=====
+if ?
+-----
+atom not supported: ERROR
+=====
+if a ?
+-----
+expecting COLON in parseIfStatement, found ERROR
+=====
+if a:
+  ?
+-----
+atom not supported: ERROR
+=====
+if a:
+  b
+elif ?
+-----
+atom not supported: ERROR
+=====
+if a:
+  b
+elif c ?
+-----
+expecting COLON in parseIfStatement, found ERROR
+=====
+if a:
+  b
+elif c:
+  ?
+-----
+atom not supported: ERROR
+=====
+if a:
+  b
+elif c:
+  d
+else ?
+-----
+expecting COLON in parseIfStatement, found ERROR
+=====
+if a:
+  b
+elif c:
+  d
+else:
+  ?
+-----
+atom not supported: ERROR

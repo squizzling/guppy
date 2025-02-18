@@ -176,7 +176,11 @@ func (dw DebugWriter) VisitStatementIf(si StatementIf) (any, error) {
 		dw.o()
 		_s += dw.p() + "]\n"
 	}
-	_s += dw.p() + "StatementElse: " + s(si.StatementElse.Accept(dw)) // IsConcrete
+	if si.StatementElse != nil {
+		_s += dw.p() + "StatementElse: " + s(si.StatementElse.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "StatementElse: nil\n"
+	}
 	dw.o()
 	_s += dw.p() + ")\n"
 	return _s, nil

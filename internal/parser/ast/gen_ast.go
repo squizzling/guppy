@@ -176,14 +176,14 @@ func (sa StatementAssert) Accept(vs VisitorStatement) (any, error) {
 
 type StatementIf struct {
 	Condition     []Expression
-	Statement     []StatementList
-	StatementElse StatementList
+	Statement     []Statement
+	StatementElse Statement
 }
 
 func NewStatementIf(
 	Condition []Expression,
-	Statement []StatementList,
-	StatementElse StatementList,
+	Statement []Statement,
+	StatementElse Statement,
 ) Statement {
 	return StatementIf{
 		Condition:     Condition,

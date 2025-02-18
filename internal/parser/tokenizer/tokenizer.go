@@ -12,6 +12,7 @@ var keywords = map[string]TokenType{
 	"and":    TokenTypeAnd,
 	"assert": TokenTypeAssert,
 	"def":    TokenTypeDef,
+	"elif":   TokenTypeElIf,
 	"else":   TokenTypeElse,
 	"for":    TokenTypeFor,
 	"from":   TokenTypeFrom,
@@ -129,6 +130,7 @@ const (
 
 	TokenTypeAssert
 	TokenTypeDef
+	TokenTypeElIf
 	TokenTypeElse
 	TokenTypeFor
 	TokenTypeFrom
@@ -180,6 +182,8 @@ func (tt TokenType) String() string {
 		return "COMMA"
 	case TokenTypeDot:
 		return "DOT"
+	case TokenTypeElIf:
+		return "ELIF"
 	case TokenTypeElse:
 		return "ELSE"
 	case TokenTypeEqual:
