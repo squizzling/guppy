@@ -688,8 +688,10 @@ func (t *Tokenizer) getNext() Token {
 		t.startOfLine = true
 		return t.newToken(TokenTypeNewLine)
 	case '"', '\'':
+		docString := false
 		if t.peek(0) == ch && t.peek(1) == ch {
-			return t.newTokenError(errors.New("deal with line docstrings"))
+			docString = true
+			t.offset += 2
 		}
 		var strRaw []byte
 		eos := ch
@@ -703,7 +705,10 @@ func (t *Tokenizer) getNext() Token {
 					return t.newTokenError(fmt.Errorf("unknown escape character: %02x / %c", t.peek(1), t.peek(1)))
 				}
 			case eos:
-				return t.newTokenString(string(strRaw))
+				if !docString || (t.peek(0) == eos && t.peek(1) == eos) {
+					return t.newTokenString(string(strRaw))
+				}
+				strRaw = append(strRaw, byte(ch))
 			default:
 				strRaw = append(strRaw, byte(ch))
 			}
