@@ -422,6 +422,22 @@ func (t *Tokenizer) more() bool {
 	return t.offset < len(t.data)
 }
 
+func (t *Tokenizer) isEOL() bool {
+	return t.peek(0) == '\n' || (t.peek(0) == '\r' && t.peek(1) == '\n')
+}
+
+func (t *Tokenizer) skipEOL() bool {
+	if t.peek(0) == '\n' {
+		t.offset++
+		return true
+	} else if t.peek(0) == '\r' && t.peek(1) == '\n' {
+		t.offset += 2
+		return true
+	} else {
+		return false
+	}
+}
+
 func (t *Tokenizer) next() int {
 	ch := t.data[t.offset]
 	t.offset++
@@ -542,15 +558,13 @@ func (t *Tokenizer) getNext() Token {
 					return t.newTokenError(errors.New("'\\' in indentation is not supported"))
 				} else if t.match('#') {
 					// Ignore the line entirely
-					for t.more() && t.next() != '\n' { // Scan to EOL
+					for t.more() && !t.skipEOL() { // Scan to EOL
+						t.offset++
 					}
 					indent = 0 // Reset the indent
 					continue   // Re-enter the SOL loop
-				} else if t.peek(0) == '\r' && t.peek(1) == '\n' {
-					t.offset += 2
-					indent = 0
-					continue
-				} else if t.match('\n') {
+				} else if t.isEOL() {
+					t.skipEOL()
 					indent = 0
 					continue
 				} else {
@@ -575,19 +589,18 @@ func (t *Tokenizer) getNext() Token {
 			if t.match(' ') {
 			} else if t.match('\t') {
 			} else if t.match('\\') {
-				if t.peek(0) == '\r' && t.peek(1) == '\n' {
-					t.offset += 2
-				} else if t.peek(0) == '\n' {
-					t.offset++
+				if t.isEOL() {
+					t.skipEOL()
 				} else {
 					return t.newTokenError(errors.New("'\\' not EOL"))
 				}
 			} else if t.match('#') {
 				// Ignore the line entirely
-				for t.more() && t.next() != '\n' { // Scan to EOL
+				for t.more() && !t.skipEOL() {
+					t.offset++
 				}
 				continue // Re-enter the SOL loop
-			} else if t.match('\n') {
+			} else if t.skipEOL() {
 				continue
 			} else {
 				break
@@ -638,11 +651,7 @@ func (t *Tokenizer) getNext() Token {
 
 	ch := t.next()
 	for ch == '\\' {
-		if t.peek(0) == '\n' {
-			t.offset++
-		} else if t.peek(0) == '\r' && t.peek(1) == '\n' {
-			t.offset += 2
-		} else {
+		if !t.skipEOL() {
 			return t.newTokenError(errors.New("'\\' without new line"))
 		}
 
@@ -683,7 +692,8 @@ func (t *Tokenizer) getNext() Token {
 		t.finalEOL = true
 		return t.newToken(TokenTypeNewLine)
 	case '#': // This is a comment after a token, so we want to emit a new line after processing it
-		for t.more() && t.next() != '\n' {
+		for t.more() && !t.skipEOL() {
+			t.offset++
 		}
 		t.startOfLine = true
 		return t.newToken(TokenTypeNewLine)
