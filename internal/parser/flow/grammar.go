@@ -826,8 +826,10 @@ func parseTrailer(p *parser.Parser, expr ast.Expression) (ast.Expression, *parse
 		return nil, parser.FailErr(err)
 	} else if tok.Type == tokenizer.TokenTypeLeftParen {
 		if isActualArgsStart(p) {
-			if expr, err = parseActualArgs(p, expr); err != nil {
+			if args, err := parseActualArgs(p); err != nil {
 				return nil, parser.FailErr(err)
+			} else {
+				expr = ast.NewExpressionCall(expr, args.Args, args.StarArg, args.KeywordArg)
 			}
 		} else {
 			expr = ast.NewExpressionCall(expr, nil, nil, nil)
@@ -862,7 +864,7 @@ func isActualArgsStart(p *parser.Parser) bool {
 	return p.PeekMatch(0, actualArgsTokens...) || isAtomStart(p)
 }
 
-func parseActualArgs(p *parser.Parser, expr ast.Expression) (ast.Expression, *parser.ParseError) {
+func parseActualArgs(p *parser.Parser) (ast.DataArgumentList, *parser.ParseError) {
 	/*
 		actual_args
 		  : (argument COMMA)* ( argument COMMA?
@@ -875,48 +877,48 @@ func parseActualArgs(p *parser.Parser, expr ast.Expression) (ast.Expression, *pa
 	var args []ast.DataArgument
 	for isAtomStart(p) {
 		if arg, err := parseArgument(p); err != nil {
-			return nil, parser.FailErr(err)
+			return ast.DataArgumentList{}, parser.FailErr(err)
 		} else {
 			args = append(args, arg)
 			if !p.Match(tokenizer.TokenTypeComma) {
-				return ast.NewExpressionCall(expr, args, nil, nil), nil
+				return ast.NewDataArgumentList(args, nil, nil), nil
 			}
 		}
 	}
 
 	// It can only be end of arguments, actual_star_arg or actual_kws_arg, not an argument
 	if tok, ok := p.Capture(tokenizer.TokenTypeStar, tokenizer.TokenTypeStarStar); !ok {
-		return ast.NewExpressionCall(expr, args, nil, nil), nil
+		return ast.NewDataArgumentList(args, nil, nil), nil
 	} else if tok.Type == tokenizer.TokenTypeStar {
 		if starArg, err := parseActualStarArg(p); err != nil {
-			return nil, parser.FailErr(err)
+			return ast.DataArgumentList{}, parser.FailErr(err)
 		} else if !p.Match(tokenizer.TokenTypeComma) {
-			return ast.NewExpressionCall(expr, args, starArg, nil), nil
+			return ast.NewDataArgumentList(args, starArg, nil), nil
 		} else {
 			for isAtomStart(p) {
 				if arg, err := parseArgument(p); err != nil {
-					return nil, parser.FailErr(err)
+					return ast.DataArgumentList{}, parser.FailErr(err)
 				} else {
 					args = append(args, arg)
 					if !p.Match(tokenizer.TokenTypeComma) {
-						return ast.NewExpressionCall(expr, args, starArg, nil), nil
+						return ast.NewDataArgumentList(args, starArg, nil), nil
 					}
 				}
 			}
 
 			if !p.Match(tokenizer.TokenTypeStarStar) {
-				return ast.NewExpressionCall(expr, args, starArg, nil), nil
+				return ast.NewDataArgumentList(args, starArg, nil), nil
 			} else if kwArg, err := parseActualKwsArg(p); err != nil {
-				return nil, parser.FailErr(err)
+				return ast.DataArgumentList{}, parser.FailErr(err)
 			} else {
-				return ast.NewExpressionCall(expr, args, starArg, kwArg), nil
+				return ast.NewDataArgumentList(args, starArg, kwArg), nil
 			}
 		}
 	} else /*if tok.Type == tokenizer.TokenTypeStarStar*/ {
 		if kwArg, err := parseActualKwsArg(p); err != nil {
-			return nil, parser.FailErr(err)
+			return ast.DataArgumentList{}, parser.FailErr(err)
 		} else {
-			return ast.NewExpressionCall(expr, args, nil, kwArg), nil
+			return ast.NewDataArgumentList(args, nil, kwArg), nil
 		}
 	}
 }

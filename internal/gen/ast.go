@@ -12,8 +12,10 @@ var Interfaces = []Interface{
 			{"Assign", "string"},
 			{"Expr", "Expression"},
 		}},
-		{"ParameterList", true, []Field{
-			{"List", "[]*DataParameter"},
+		{"ArgumentList", true, []Field{
+			{"Args", "[]DataArgument"},
+			{"StarArg", "Expression"},
+			{"KeywordArg", "Expression"},
 		}},
 		{"Parameter", true, []Field{
 			{"Name", "string"},
@@ -21,6 +23,9 @@ var Interfaces = []Interface{
 			{"Default", "Expression"},
 			{"StarArg", "bool"},
 			{"KeywordArg", "bool"},
+		}},
+		{"ParameterList", true, []Field{
+			{"List", "[]*DataParameter"},
 		}},
 	}},
 	{"Statement", []ASTNode{

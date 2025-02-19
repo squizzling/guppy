@@ -6,8 +6,9 @@ import (
 
 type VisitorData interface {
 	VisitDataArgument(da DataArgument) (any, error)
-	VisitDataParameterList(dpl DataParameterList) (any, error)
+	VisitDataArgumentList(dal DataArgumentList) (any, error)
 	VisitDataParameter(dp DataParameter) (any, error)
+	VisitDataParameterList(dpl DataParameterList) (any, error)
 }
 
 type Data interface {
@@ -33,20 +34,26 @@ func (da DataArgument) Accept(vd VisitorData) (any, error) {
 	return vd.VisitDataArgument(da)
 }
 
-type DataParameterList struct {
-	List []*DataParameter
+type DataArgumentList struct {
+	Args       []DataArgument
+	StarArg    Expression
+	KeywordArg Expression
 }
 
-func NewDataParameterList(
-	List []*DataParameter,
-) DataParameterList {
-	return DataParameterList{
-		List: List,
+func NewDataArgumentList(
+	Args []DataArgument,
+	StarArg Expression,
+	KeywordArg Expression,
+) DataArgumentList {
+	return DataArgumentList{
+		Args:       Args,
+		StarArg:    StarArg,
+		KeywordArg: KeywordArg,
 	}
 }
 
-func (dpl DataParameterList) Accept(vd VisitorData) (any, error) {
-	return vd.VisitDataParameterList(dpl)
+func (dal DataArgumentList) Accept(vd VisitorData) (any, error) {
+	return vd.VisitDataArgumentList(dal)
 }
 
 type DataParameter struct {
@@ -75,6 +82,22 @@ func NewDataParameter(
 
 func (dp DataParameter) Accept(vd VisitorData) (any, error) {
 	return vd.VisitDataParameter(dp)
+}
+
+type DataParameterList struct {
+	List []*DataParameter
+}
+
+func NewDataParameterList(
+	List []*DataParameter,
+) DataParameterList {
+	return DataParameterList{
+		List: List,
+	}
+}
+
+func (dpl DataParameterList) Accept(vd VisitorData) (any, error) {
+	return vd.VisitDataParameterList(dpl)
 }
 
 type VisitorStatement interface {

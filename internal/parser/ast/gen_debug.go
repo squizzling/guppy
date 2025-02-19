@@ -39,21 +39,31 @@ func (dw DebugWriter) VisitDataArgument(da DataArgument) (any, error) {
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitDataParameterList(dpl DataParameterList) (any, error) {
-	_s := "DataParameterList(\n"
+func (dw DebugWriter) VisitDataArgumentList(dal DataArgumentList) (any, error) {
+	_s := "DataArgumentList(\n"
 	dw.i()
-	if dpl.List == nil {
-		_s += dw.p() + "List: nil\n"
-	} else if len(dpl.List) == 0 {
-		_s += dw.p() + "List: []\n"
+	if dal.Args == nil {
+		_s += dw.p() + "Args: nil\n"
+	} else if len(dal.Args) == 0 {
+		_s += dw.p() + "Args: []\n"
 	} else {
-		_s += dw.p() + "List: [\n"
+		_s += dw.p() + "Args: [\n"
 		dw.i()
-		for _, _r := range dpl.List {
+		for _, _r := range dal.Args {
 			_s += dw.p() + s(_r.Accept(dw)) // IsInterfaceArray
 		}
 		dw.o()
 		_s += dw.p() + "]\n"
+	}
+	if dal.StarArg != nil {
+		_s += dw.p() + "StarArg: " + s(dal.StarArg.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "StarArg: nil\n"
+	}
+	if dal.KeywordArg != nil {
+		_s += dw.p() + "KeywordArg: " + s(dal.KeywordArg.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "KeywordArg: nil\n"
 	}
 	dw.o()
 	_s += dw.p() + ")\n"
@@ -72,6 +82,27 @@ func (dw DebugWriter) VisitDataParameter(dp DataParameter) (any, error) {
 	}
 	_s += dw.p() + "StarArg: bool(" + fmt.Sprintf("%t", dp.StarArg) + ")\n"
 	_s += dw.p() + "KeywordArg: bool(" + fmt.Sprintf("%t", dp.KeywordArg) + ")\n"
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
+func (dw DebugWriter) VisitDataParameterList(dpl DataParameterList) (any, error) {
+	_s := "DataParameterList(\n"
+	dw.i()
+	if dpl.List == nil {
+		_s += dw.p() + "List: nil\n"
+	} else if len(dpl.List) == 0 {
+		_s += dw.p() + "List: []\n"
+	} else {
+		_s += dw.p() + "List: [\n"
+		dw.i()
+		for _, _r := range dpl.List {
+			_s += dw.p() + s(_r.Accept(dw)) // IsInterfaceArray
+		}
+		dw.o()
+		_s += dw.p() + "]\n"
+	}
 	dw.o()
 	_s += dw.p() + ")\n"
 	return _s, nil
