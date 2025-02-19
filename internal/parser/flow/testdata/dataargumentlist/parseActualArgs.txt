@@ -1,0 +1,167 @@
+a
+-----
+DataArgumentList(
+  Args: [
+    DataArgument(
+      Assign: string()
+      Expr: ExpressionVariable(
+        Identifier: string(a)
+      )
+    )
+  ]
+  StarArg: nil
+  KeywordArg: nil
+)
+=====
+a,
+-----
+DataArgumentList(
+  Args: [
+    DataArgument(
+      Assign: string()
+      Expr: ExpressionVariable(
+        Identifier: string(a)
+      )
+    )
+  ]
+  StarArg: nil
+  KeywordArg: nil
+)
+=====
+a,b
+-----
+DataArgumentList(
+  Args: [
+    DataArgument(
+      Assign: string()
+      Expr: ExpressionVariable(
+        Identifier: string(a)
+      )
+    )
+    DataArgument(
+      Assign: string()
+      Expr: ExpressionVariable(
+        Identifier: string(b)
+      )
+    )
+  ]
+  StarArg: nil
+  KeywordArg: nil
+)
+=====
+a,b,
+-----
+DataArgumentList(
+  Args: [
+    DataArgument(
+      Assign: string()
+      Expr: ExpressionVariable(
+        Identifier: string(a)
+      )
+    )
+    DataArgument(
+      Assign: string()
+      Expr: ExpressionVariable(
+        Identifier: string(b)
+      )
+    )
+  ]
+  StarArg: nil
+  KeywordArg: nil
+)
+=====
+*a
+-----
+DataArgumentList(
+  Args: nil
+  StarArg: ExpressionVariable(
+    Identifier: string(a)
+  )
+  KeywordArg: nil
+)
+=====
+a,*b
+-----
+DataArgumentList(
+  Args: [
+    DataArgument(
+      Assign: string()
+      Expr: ExpressionVariable(
+        Identifier: string(a)
+      )
+    )
+  ]
+  StarArg: ExpressionVariable(
+    Identifier: string(b)
+  )
+  KeywordArg: nil
+)
+=====
+*a,b
+-----
+DataArgumentList(
+  Args: [
+    DataArgument(
+      Assign: string()
+      Expr: ExpressionVariable(
+        Identifier: string(b)
+      )
+    )
+  ]
+  StarArg: ExpressionVariable(
+    Identifier: string(a)
+  )
+  KeywordArg: nil
+)
+=====
+*a, **b
+-----
+DataArgumentList(
+  Args: nil
+  StarArg: ExpressionVariable(
+    Identifier: string(a)
+  )
+  KeywordArg: ExpressionVariable(
+    Identifier: string(b)
+  )
+)
+=====
+*a, ?
+-----
+DataArgumentList(
+  Args: nil
+  StarArg: ExpressionVariable(
+    Identifier: string(a)
+  )
+  KeywordArg: nil
+)
+=====
+**a
+-----
+DataArgumentList(
+  Args: nil
+  StarArg: nil
+  KeywordArg: ExpressionVariable(
+    Identifier: string(a)
+  )
+)
+=====
+a + ?
+-----
+atom not supported: ERROR
+=====
+* ?
+-----
+atom not supported: ERROR
+=====
+*a,b + ?
+-----
+atom not supported: ERROR
+=====
+*a,**b + ?
+-----
+atom not supported: ERROR
+=====
+**a + ?
+-----
+atom not supported: ERROR

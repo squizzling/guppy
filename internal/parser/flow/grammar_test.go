@@ -68,6 +68,10 @@ type grammarTest[T any] struct {
 	parse    func(p *parser.Parser) (T, *parser.ParseError)
 }
 
+var dataArgumentListTests = []grammarTest[*ast.DataArgumentList]{
+	{"parseActualArgs", parseActualArgs},
+}
+
 var dataParameterTests = []grammarTest[*ast.DataParameter]{
 	{"parseParamType", parseParamType},
 	{"parseVarArgsKwsParam", parseVarArgsKwsParam},
@@ -96,6 +100,10 @@ var dataStatementTests = []grammarTest[ast.Statement]{
 	{"parseSuite", parseSuite},
 }
 
+func renderDataArgumentList(d *ast.DataArgumentList) string {
+	return must1(d.Accept(ast.DebugWriter{})).(string)
+}
+
 func renderDataParameter(d *ast.DataParameter) string {
 	return must1(d.Accept(ast.DebugWriter{})).(string)
 }
@@ -110,6 +118,14 @@ func renderExpression(d ast.Expression) string {
 
 func renderStatement(d ast.Statement) string {
 	return must1(d.Accept(ast.DebugWriter{})).(string)
+}
+
+func TestDataArgumentList(t *testing.T) {
+	t.Parallel()
+
+	for _, tst := range dataArgumentListTests {
+		testFromFile(t, "testdata/dataargumentlist/"+tst.fileName+".txt", tst.parse, renderDataArgumentList)
+	}
 }
 
 func TestDataParameter(t *testing.T) {

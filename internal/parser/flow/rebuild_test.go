@@ -53,6 +53,9 @@ func rebuildForFile[T any](
 }
 
 func TestRebuild(t *testing.T) {
+	for _, tst := range dataArgumentListTests {
+		rebuildForFile("testdata/dataargumentlist/"+tst.fileName+".txt", tst.parse, renderDataArgumentList)
+	}
 	for _, tst := range dataParameterTests {
 		rebuildForFile("testdata/dataparameter/"+tst.fileName+".txt", tst.parse, renderDataParameter)
 	}
