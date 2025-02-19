@@ -832,8 +832,8 @@ func parseTrailer(p *parser.Parser, expr ast.Expression) (ast.Expression, *parse
 		} else {
 			expr = ast.NewExpressionCall(expr, nil, nil, nil)
 		}
-		if t, ok := p.Capture(tokenizer.TokenTypeRightParen); !ok {
-			return nil, parser.FailMsgf("expecting ')' after args found %s", t.Type)
+		if err := p.MatchErr(tokenizer.TokenTypeRightParen); err != nil {
+			return nil, parser.FailErr(err)
 		} else {
 			return expr, nil
 		}
@@ -871,55 +871,52 @@ func parseActualArgs(p *parser.Parser, expr ast.Expression) (ast.Expression, *pa
 		                      )
 		  ;
 	*/
+
 	var args []ast.DataArgument
-	haveFirstNamedArg := false
-	for {
-		if isAtomStart(p) { // TODO: Make sure isAtomStart does what we want
-			if arg, err := parseArgument(p); err != nil {
-				return nil, parser.FailErr(err)
-			} else {
-				if arg.Assign != "" {
-					haveFirstNamedArg = true
-				} else if haveFirstNamedArg {
-					// No assign, but we've had a named arg
-					return nil, parser.FailMsgf("positional argument follows keyword argument")
-				}
-				args = append(args, arg)
-				if !p.Match(tokenizer.TokenTypeComma) {
-					return ast.NewExpressionCall(expr, args, nil, nil), nil
-				}
-			}
-		} else if p.Match(tokenizer.TokenTypeStar) {
-			starArgs, err := parseActualStarArg(p)
-			if err != nil {
-				return nil, parser.FailErr(err)
-			}
-			for {
-				// TODO: COMMA in the inner loop
-				if isAtomStart(p) {
-					if arg, err := parseArgument(p); err != nil {
-						return nil, parser.FailErr(err)
-					} else {
-						args = append(args, arg)
-					}
-				} else if p.Match(tokenizer.TokenTypeStarStar) {
-					if keywordArgs, err := parseActualKeywordArg(p); err != nil {
-						return nil, parser.FailErr(err)
-					} else {
-						return ast.NewExpressionCall(expr, args, starArgs, keywordArgs), nil
-					}
-				} else {
-					return ast.NewExpressionCall(expr, args, starArgs, nil), nil
-				}
-			}
-		} else if p.Match(tokenizer.TokenTypeStarStar) {
-			if keywordArgs, err := parseActualKeywordArg(p); err != nil {
-				return nil, parser.FailErr(err)
-			} else {
-				return ast.NewExpressionCall(expr, args, nil, keywordArgs), nil
-			}
+	for isAtomStart(p) {
+		if arg, err := parseArgument(p); err != nil {
+			return nil, parser.FailErr(err)
 		} else {
-			return ast.NewExpressionCall(expr, args, nil, nil), nil
+			args = append(args, arg)
+			if !p.Match(tokenizer.TokenTypeComma) {
+				return ast.NewExpressionCall(expr, args, nil, nil), nil
+			}
+		}
+	}
+
+	// It can only be end of arguments, actual_star_arg or actual_kws_arg, not an argument
+	if tok, ok := p.Capture(tokenizer.TokenTypeStar, tokenizer.TokenTypeStarStar); !ok {
+		return ast.NewExpressionCall(expr, args, nil, nil), nil
+	} else if tok.Type == tokenizer.TokenTypeStar {
+		if starArg, err := parseActualStarArg(p); err != nil {
+			return nil, parser.FailErr(err)
+		} else if !p.Match(tokenizer.TokenTypeComma) {
+			return ast.NewExpressionCall(expr, args, starArg, nil), nil
+		} else {
+			for isAtomStart(p) {
+				if arg, err := parseArgument(p); err != nil {
+					return nil, parser.FailErr(err)
+				} else {
+					args = append(args, arg)
+					if !p.Match(tokenizer.TokenTypeComma) {
+						return ast.NewExpressionCall(expr, args, starArg, nil), nil
+					}
+				}
+			}
+
+			if !p.Match(tokenizer.TokenTypeStarStar) {
+				return ast.NewExpressionCall(expr, args, starArg, nil), nil
+			} else if kwArg, err := parseActualKwsArg(p); err != nil {
+				return nil, parser.FailErr(err)
+			} else {
+				return ast.NewExpressionCall(expr, args, starArg, kwArg), nil
+			}
+		}
+	} else /*if tok.Type == tokenizer.TokenTypeStarStar*/ {
+		if kwArg, err := parseActualKwsArg(p); err != nil {
+			return nil, parser.FailErr(err)
+		} else {
+			return ast.NewExpressionCall(expr, args, nil, kwArg), nil
 		}
 	}
 }
@@ -933,7 +930,7 @@ func parseActualStarArg(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 	return parser.Wrap(parseTest(p))
 }
 
-func parseActualKeywordArg(p *parser.Parser) (ast.Expression, *parser.ParseError) {
+func parseActualKwsArg(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 	/*
 	   actual_kws_arg
 	     : POWER test
