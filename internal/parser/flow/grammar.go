@@ -415,10 +415,6 @@ func parseDecorator(p *parser.Parser) (ast.Statement, *parser.ParseError) {
 	return nil, parser.FailMsgf("decorator not supported")
 }
 
-func isTestListStart(p *parser.Parser) bool {
-	return isAtomStart(p) || p.PeekMatch(0, tokenizer.TokenTypeNot)
-}
-
 func parseReturnStatement(p *parser.Parser) (ast.Statement, *parser.ParseError) {
 	/*
 	  return_statement
@@ -427,7 +423,7 @@ func parseReturnStatement(p *parser.Parser) (ast.Statement, *parser.ParseError) 
 	*/
 	if err := p.MatchErr(tokenizer.TokenTypeReturn); err != nil {
 		return nil, parser.FailErr(err)
-	} else if !isTestListStart(p) {
+	} else if !isAtomStart(p) {
 		return ast.NewStatementReturn(nil), nil
 	} else if expr, err := parseTestList(p); err != nil {
 		return nil, parser.FailErr(err)
@@ -491,6 +487,7 @@ func parseIdList(p *parser.Parser) ([]string, *parser.ParseError) {
 
 func isAtomStart(p *parser.Parser) bool {
 	atomTokens := []tokenizer.TokenType{
+		tokenizer.TokenTypeNot,
 		tokenizer.TokenTypePlus,
 		tokenizer.TokenTypeMinus,
 		tokenizer.TokenTypeTilde,
