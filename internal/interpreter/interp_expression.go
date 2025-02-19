@@ -81,7 +81,7 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (any, error) {
 
 	if lv, ok := expr.(*ObjectLValue); ok {
 		// We have an lvalue, push lv.left on to the start of ecArgs
-		ecArgs = append([]ast.DataArgument{{Expr: ast.NewExpressionLiteral(lv.left)}}, ecArgs...)
+		ecArgs = append([]*ast.DataArgument{{Expr: ast.NewExpressionLiteral(lv.left)}}, ecArgs...)
 	}
 
 	var sProvidedArgs []string

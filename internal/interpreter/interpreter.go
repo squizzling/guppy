@@ -112,7 +112,7 @@ func (s *scope) Get(key string) (Object, error) {
 	return s.lookupChain.Get(key)
 }
 
-func (i *Interpreter) Execute(sp ast.StatementProgram) {
+func (i *Interpreter) Execute(sp *ast.StatementProgram) {
 	_, err := sp.Accept(i)
 	if err != nil {
 		fmt.Printf("err: %v\n", err)

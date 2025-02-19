@@ -22,7 +22,7 @@ var magicNames = map[tokenizer.TokenType]string{
 	tokenizer.TokenTypeStar:           "__mul__",
 }
 
-func ParseProgram(p *parser.Parser) (ast.StatementProgram, *parser.ParseError) {
+func ParseProgram(p *parser.Parser) (*ast.StatementProgram, *parser.ParseError) {
 	/*
 	   program
 	     : ( NEWLINE | statement )* EOF
@@ -34,7 +34,7 @@ func ParseProgram(p *parser.Parser) (ast.StatementProgram, *parser.ParseError) {
 			continue
 		}
 		if statement, err := parseStatement(p); err != nil {
-			return ast.StatementProgram{}, parser.FailErr(err)
+			return nil, parser.FailErr(err)
 		} else {
 			statements = append(statements, statement)
 		}
@@ -506,7 +506,7 @@ func isAtomStart(p *parser.Parser) bool {
 	return p.PeekMatch(0, atomTokens...)
 }
 
-func parseTestList(p *parser.Parser) (ast.ExpressionList, *parser.ParseError) {
+func parseTestList(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 	/*
 		testlist
 		  : test (COMMA test)* COMMA?
@@ -603,7 +603,7 @@ func parseBinaryCall(
 		}
 		leftExpression = ast.NewExpressionCall(
 			ast.NewExpressionMember(leftExpression, member),
-			[]ast.DataArgument{
+			[]*ast.DataArgument{
 				{
 					Assign: "right",
 					Expr:   rightExpression,
@@ -864,7 +864,7 @@ func isActualArgsStart(p *parser.Parser) bool {
 	return p.PeekMatch(0, actualArgsTokens...) || isAtomStart(p)
 }
 
-func parseActualArgs(p *parser.Parser) (ast.DataArgumentList, *parser.ParseError) {
+func parseActualArgs(p *parser.Parser) (*ast.DataArgumentList, *parser.ParseError) {
 	/*
 		actual_args
 		  : (argument COMMA)* ( argument COMMA?
@@ -874,10 +874,10 @@ func parseActualArgs(p *parser.Parser) (ast.DataArgumentList, *parser.ParseError
 		  ;
 	*/
 
-	var args []ast.DataArgument
+	var args []*ast.DataArgument
 	for isAtomStart(p) {
 		if arg, err := parseArgument(p); err != nil {
-			return ast.DataArgumentList{}, parser.FailErr(err)
+			return nil, parser.FailErr(err)
 		} else {
 			args = append(args, arg)
 			if !p.Match(tokenizer.TokenTypeComma) {
@@ -891,13 +891,13 @@ func parseActualArgs(p *parser.Parser) (ast.DataArgumentList, *parser.ParseError
 		return ast.NewDataArgumentList(args, nil, nil), nil
 	} else if tok.Type == tokenizer.TokenTypeStar {
 		if starArg, err := parseActualStarArg(p); err != nil {
-			return ast.DataArgumentList{}, parser.FailErr(err)
+			return nil, parser.FailErr(err)
 		} else if !p.Match(tokenizer.TokenTypeComma) {
 			return ast.NewDataArgumentList(args, starArg, nil), nil
 		} else {
 			for isAtomStart(p) {
 				if arg, err := parseArgument(p); err != nil {
-					return ast.DataArgumentList{}, parser.FailErr(err)
+					return nil, parser.FailErr(err)
 				} else {
 					args = append(args, arg)
 					if !p.Match(tokenizer.TokenTypeComma) {
@@ -909,14 +909,14 @@ func parseActualArgs(p *parser.Parser) (ast.DataArgumentList, *parser.ParseError
 			if !p.Match(tokenizer.TokenTypeStarStar) {
 				return ast.NewDataArgumentList(args, starArg, nil), nil
 			} else if kwArg, err := parseActualKwsArg(p); err != nil {
-				return ast.DataArgumentList{}, parser.FailErr(err)
+				return nil, parser.FailErr(err)
 			} else {
 				return ast.NewDataArgumentList(args, starArg, kwArg), nil
 			}
 		}
 	} else /*if tok.Type == tokenizer.TokenTypeStarStar*/ {
 		if kwArg, err := parseActualKwsArg(p); err != nil {
-			return ast.DataArgumentList{}, parser.FailErr(err)
+			return nil, parser.FailErr(err)
 		} else {
 			return ast.NewDataArgumentList(args, nil, kwArg), nil
 		}
@@ -941,7 +941,7 @@ func parseActualKwsArg(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 	return parser.Wrap(parseTest(p))
 }
 
-func parseArgument(p *parser.Parser) (ast.DataArgument, *parser.ParseError) {
+func parseArgument(p *parser.Parser) (*ast.DataArgument, *parser.ParseError) {
 	/*
 	   argument
 	     : test (comp_for)? | (ID ASSIGN)? test
@@ -951,17 +951,17 @@ func parseArgument(p *parser.Parser) (ast.DataArgument, *parser.ParseError) {
 		tokenId, _ := p.Capture(tokenizer.TokenTypeIdentifier) // Already validated
 		_ = p.Match(tokenizer.TokenTypeEqual)                  // Already validated
 		if test, err := parseTest(p); err != nil {
-			return ast.DataArgument{}, parser.FailErr(err)
+			return nil, parser.FailErr(err)
 		} else {
 			return ast.NewDataArgument(tokenId.Lexeme, test), nil
 		}
 	} else {
 		if expr, err := parseTest(p); err != nil {
-			return ast.DataArgument{}, parser.FailErr(err)
+			return nil, parser.FailErr(err)
 		} else if !p.Match(tokenizer.TokenTypeFor) {
 			return ast.NewDataArgument("", expr), nil
 		} else if expr, err = parseCompFor(p, expr); err != nil {
-			return ast.DataArgument{}, parser.FailErr(err)
+			return nil, parser.FailErr(err)
 		} else {
 			return ast.NewDataArgument("", expr), nil
 		}

@@ -59,16 +59,19 @@ func defineType(interfaceName string, t gen.ASTNode) {
 		}
 		fmt.Printf("\t%s %s,\n", field.Name, field.Type)
 	}
+
+	typeName := structName
 	if t.NewConcrete {
-		fmt.Printf(") %s {\n", structName)
+		typeName = "&" + structName
+		fmt.Printf(") *%s {\n", structName)
 	} else {
 		fmt.Printf(") %s {\n", interfaceName)
 	}
 
 	if len(t.Fields) == 0 {
-		fmt.Printf("\treturn %s{}\n", structName)
+		fmt.Printf("\treturn %s{}\n", typeName)
 	} else {
-		fmt.Printf("\treturn %s{\n", structName)
+		fmt.Printf("\treturn %s{\n", typeName)
 		for _, field := range t.Fields {
 			fmt.Printf("\t\t%-*s %s,\n", maxNameLen+1, field.Name+":", field.Name)
 		}

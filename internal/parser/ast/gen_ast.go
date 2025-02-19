@@ -23,8 +23,8 @@ type DataArgument struct {
 func NewDataArgument(
 	Assign string,
 	Expr Expression,
-) DataArgument {
-	return DataArgument{
+) *DataArgument {
+	return &DataArgument{
 		Assign: Assign,
 		Expr:   Expr,
 	}
@@ -35,17 +35,17 @@ func (da DataArgument) Accept(vd VisitorData) (any, error) {
 }
 
 type DataArgumentList struct {
-	Args       []DataArgument
+	Args       []*DataArgument
 	StarArg    Expression
 	KeywordArg Expression
 }
 
 func NewDataArgumentList(
-	Args []DataArgument,
+	Args []*DataArgument,
 	StarArg Expression,
 	KeywordArg Expression,
-) DataArgumentList {
-	return DataArgumentList{
+) *DataArgumentList {
+	return &DataArgumentList{
 		Args:       Args,
 		StarArg:    StarArg,
 		KeywordArg: KeywordArg,
@@ -70,8 +70,8 @@ func NewDataParameter(
 	Default Expression,
 	StarArg bool,
 	KeywordArg bool,
-) DataParameter {
-	return DataParameter{
+) *DataParameter {
+	return &DataParameter{
 		Name:       Name,
 		Type:       Type,
 		Default:    Default,
@@ -90,8 +90,8 @@ type DataParameterList struct {
 
 func NewDataParameterList(
 	List []*DataParameter,
-) DataParameterList {
-	return DataParameterList{
+) *DataParameterList {
+	return &DataParameterList{
 		List: List,
 	}
 }
@@ -117,13 +117,13 @@ type Statement interface {
 }
 
 type StatementProgram struct {
-	Statements StatementList
+	Statements *StatementList
 }
 
 func NewStatementProgram(
-	Statements StatementList,
-) StatementProgram {
-	return StatementProgram{
+	Statements *StatementList,
+) *StatementProgram {
+	return &StatementProgram{
 		Statements: Statements,
 	}
 }
@@ -134,12 +134,12 @@ func (sp StatementProgram) Accept(vs VisitorStatement) (any, error) {
 
 type StatementExpression struct {
 	Assign []string
-	Expr   ExpressionList
+	Expr   Expression
 }
 
 func NewStatementExpression(
 	Assign []string,
-	Expr ExpressionList,
+	Expr Expression,
 ) Statement {
 	return StatementExpression{
 		Assign: Assign,
@@ -258,8 +258,8 @@ type StatementList struct {
 
 func NewStatementList(
 	Statements []Statement,
-) StatementList {
-	return StatementList{
+) *StatementList {
+	return &StatementList{
 		Statements: Statements,
 	}
 }
@@ -295,8 +295,8 @@ type ExpressionList struct {
 func NewExpressionList(
 	Expressions []Expression,
 	Tuple bool,
-) ExpressionList {
-	return ExpressionList{
+) *ExpressionList {
+	return &ExpressionList{
 		Expressions: Expressions,
 		Tuple:       Tuple,
 	}
@@ -498,14 +498,14 @@ func (es ExpressionSubscript) Accept(ve VisitorExpression) (any, error) {
 
 type ExpressionCall struct {
 	Expr        Expression
-	Args        []DataArgument
+	Args        []*DataArgument
 	StarArgs    Expression
 	KeywordArgs Expression
 }
 
 func NewExpressionCall(
 	Expr Expression,
-	Args []DataArgument,
+	Args []*DataArgument,
 	StarArgs Expression,
 	KeywordArgs Expression,
 ) Expression {

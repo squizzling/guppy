@@ -13,7 +13,7 @@ var Interfaces = []Interface{
 			{"Expr", "Expression"},
 		}},
 		{"ArgumentList", true, []Field{
-			{"Args", "[]DataArgument"},
+			{"Args", "[]*DataArgument"},
 			{"StarArg", "Expression"},
 			{"KeywordArg", "Expression"},
 		}},
@@ -30,11 +30,11 @@ var Interfaces = []Interface{
 	}},
 	{"Statement", []ASTNode{
 		{"Program", true, []Field{
-			{"Statements", "StatementList"},
+			{"Statements", "*StatementList"},
 		}},
 		{"Expression", false, []Field{
 			{"Assign", "[]string"},
-			{"Expr", "ExpressionList"},
+			{"Expr", "Expression"},
 		}},
 		{"Return", false, []Field{
 			{"Expr", "Expression"},
@@ -112,7 +112,7 @@ var Interfaces = []Interface{
 		}},
 		{"Call", false, []Field{
 			{"Expr", "Expression"},
-			{"Args", "[]DataArgument"},
+			{"Args", "[]*DataArgument"},
 			{"StarArgs", "Expression"},
 			{"KeywordArgs", "Expression"},
 		}},

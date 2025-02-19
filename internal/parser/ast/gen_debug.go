@@ -133,7 +133,11 @@ func (dw DebugWriter) VisitStatementExpression(se StatementExpression) (any, err
 		dw.o()
 		_s += dw.p() + "]\n"
 	}
-	_s += dw.p() + "Expr: " + s(se.Expr.Accept(dw)) // IsConcrete
+	if se.Expr != nil {
+		_s += dw.p() + "Expr: " + s(se.Expr.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "Expr: nil\n"
+	}
 	dw.o()
 	_s += dw.p() + ")\n"
 	return _s, nil
