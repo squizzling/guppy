@@ -705,7 +705,7 @@ func (t *Tokenizer) getNext() Token {
 			switch ch := t.next(); ch {
 			case '\\':
 				switch ch := t.next(); ch {
-				case '\'', '"':
+				case '\'', '"', '\\':
 					strRaw = append(strRaw, byte(ch))
 				default:
 					return t.newTokenError(fmt.Errorf("unknown escape character: %02x / %c", ch, ch))
