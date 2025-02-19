@@ -108,6 +108,25 @@ func (dw DebugWriter) VisitDataParameterList(dpl DataParameterList) (any, error)
 	return _s, nil
 }
 
+func (dw DebugWriter) VisitDataSubscript(ds DataSubscript) (any, error) {
+	_s := "DataSubscript(\n"
+	dw.i()
+	if ds.Start != nil {
+		_s += dw.p() + "Start: " + s(ds.Start.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "Start: nil\n"
+	}
+	if ds.End != nil {
+		_s += dw.p() + "End: " + s(ds.End.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "End: nil\n"
+	}
+	_s += dw.p() + "Range: bool(" + fmt.Sprintf("%t", ds.Range) + ")\n"
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
 func (dw DebugWriter) VisitStatementProgram(sp StatementProgram) (any, error) {
 	_s := "StatementProgram(\n"
 	dw.i()
@@ -453,7 +472,17 @@ func (dw DebugWriter) VisitExpressionSubscript(es ExpressionSubscript) (any, err
 	} else {
 		_s += dw.p() + "Expr: nil\n"
 	}
-	_s += dw.p() + "Identifier: string(" + es.Identifier + ")\n"
+	if es.Start != nil {
+		_s += dw.p() + "Start: " + s(es.Start.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "Start: nil\n"
+	}
+	if es.End != nil {
+		_s += dw.p() + "End: " + s(es.End.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "End: nil\n"
+	}
+	_s += dw.p() + "Range: bool(" + fmt.Sprintf("%t", es.Range) + ")\n"
 	dw.o()
 	_s += dw.p() + ")\n"
 	return _s, nil

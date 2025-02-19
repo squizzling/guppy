@@ -9,6 +9,7 @@ type VisitorData interface {
 	VisitDataArgumentList(dal DataArgumentList) (any, error)
 	VisitDataParameter(dp DataParameter) (any, error)
 	VisitDataParameterList(dpl DataParameterList) (any, error)
+	VisitDataSubscript(ds DataSubscript) (any, error)
 }
 
 type Data interface {
@@ -98,6 +99,28 @@ func NewDataParameterList(
 
 func (dpl DataParameterList) Accept(vd VisitorData) (any, error) {
 	return vd.VisitDataParameterList(dpl)
+}
+
+type DataSubscript struct {
+	Start Expression
+	End   Expression
+	Range bool
+}
+
+func NewDataSubscript(
+	Start Expression,
+	End Expression,
+	Range bool,
+) *DataSubscript {
+	return &DataSubscript{
+		Start: Start,
+		End:   End,
+		Range: Range,
+	}
+}
+
+func (ds DataSubscript) Accept(vd VisitorData) (any, error) {
+	return vd.VisitDataSubscript(ds)
 }
 
 type VisitorStatement interface {
@@ -478,17 +501,23 @@ func (em ExpressionMember) Accept(ve VisitorExpression) (any, error) {
 }
 
 type ExpressionSubscript struct {
-	Expr       Expression
-	Identifier string
+	Expr  Expression
+	Start Expression
+	End   Expression
+	Range bool
 }
 
 func NewExpressionSubscript(
 	Expr Expression,
-	Identifier string,
+	Start Expression,
+	End Expression,
+	Range bool,
 ) Expression {
 	return ExpressionSubscript{
-		Expr:       Expr,
-		Identifier: Identifier,
+		Expr:  Expr,
+		Start: Start,
+		End:   End,
+		Range: Range,
 	}
 }
 

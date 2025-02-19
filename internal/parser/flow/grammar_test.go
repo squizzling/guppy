@@ -85,6 +85,10 @@ var dataParameterListTests = []grammarTest[*ast.DataParameterList]{
 	{"parseParameters", parseParameters},
 }
 
+var dataSubscriptTests = []grammarTest[*ast.DataSubscript]{
+	{"parseSubscript", parseSubscript},
+}
+
 var dataExpressionTests = []grammarTest[ast.Expression]{
 	{"parseDictExpr", parseDictExpr},
 	{"parseTest", parseTest},
@@ -109,6 +113,10 @@ func renderDataParameter(d *ast.DataParameter) string {
 }
 
 func renderDataParameterList(d *ast.DataParameterList) string {
+	return must1(d.Accept(ast.DebugWriter{})).(string)
+}
+
+func renderDataSubscript(d *ast.DataSubscript) string {
 	return must1(d.Accept(ast.DebugWriter{})).(string)
 }
 
@@ -141,6 +149,14 @@ func TestDataParameterList(t *testing.T) {
 
 	for _, tst := range dataParameterListTests {
 		testFromFile(t, "testdata/dataparameterlist/"+tst.fileName+".txt", tst.parse, renderDataParameterList)
+	}
+}
+
+func TestDataSubscript(t *testing.T) {
+	t.Parallel()
+
+	for _, tst := range dataSubscriptTests {
+		testFromFile(t, "testdata/datasubscript/"+tst.fileName+".txt", tst.parse, renderDataSubscript)
 	}
 }
 

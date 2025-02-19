@@ -62,6 +62,9 @@ func TestRebuild(t *testing.T) {
 	for _, tst := range dataParameterListTests {
 		rebuildForFile("testdata/dataparameterlist/"+tst.fileName+".txt", tst.parse, renderDataParameterList)
 	}
+	for _, tst := range dataSubscriptTests {
+		rebuildForFile("testdata/datasubscript/"+tst.fileName+".txt", tst.parse, renderDataSubscript)
+	}
 	for _, tst := range dataExpressionTests {
 		rebuildForFile("testdata/expressions/"+tst.fileName+".txt", tst.parse, renderExpression)
 	}

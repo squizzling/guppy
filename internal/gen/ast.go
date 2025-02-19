@@ -27,6 +27,11 @@ var Interfaces = []Interface{
 		{"ParameterList", true, []Field{
 			{"List", "[]*DataParameter"},
 		}},
+		{"Subscript", true, []Field{
+			{"Start", "Expression"},
+			{"End", "Expression"},
+			{"Range", "bool"},
+		}},
 	}},
 	{"Statement", []ASTNode{
 		{"Program", true, []Field{
@@ -108,7 +113,9 @@ var Interfaces = []Interface{
 		}},
 		{"Subscript", false, []Field{
 			{"Expr", "Expression"},
-			{"Identifier", "string"},
+			{"Start", "Expression"},
+			{"End", "Expression"},
+			{"Range", "bool"},
 		}},
 		{"Call", false, []Field{
 			{"Expr", "Expression"},

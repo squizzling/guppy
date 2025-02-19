@@ -1,0 +1,65 @@
+a
+-----
+DataSubscript(
+  Start: ExpressionVariable(
+    Identifier: string(a)
+  )
+  End: nil
+  Range: bool(false)
+)
+=====
+a:
+-----
+DataSubscript(
+  Start: ExpressionVariable(
+    Identifier: string(a)
+  )
+  End: nil
+  Range: bool(true)
+)
+=====
+:a
+-----
+DataSubscript(
+  Start: nil
+  End: ExpressionVariable(
+    Identifier: string(a)
+  )
+  Range: bool(true)
+)
+=====
+:
+-----
+DataSubscript(
+  Start: nil
+  End: nil
+  Range: bool(true)
+)
+=====
+a:b
+-----
+DataSubscript(
+  Start: ExpressionVariable(
+    Identifier: string(a)
+  )
+  End: ExpressionVariable(
+    Identifier: string(b)
+  )
+  Range: bool(true)
+)
+=====
+a + ?
+-----
+atom not supported: ERROR
+=====
+a:b + ?
+-----
+atom not supported: ERROR
+=====
+?
+-----
+expecting COLON in parseSubscript, found ERROR
+=====
+:a + ?
+-----
+atom not supported: ERROR

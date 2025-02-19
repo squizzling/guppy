@@ -840,12 +840,12 @@ func parseTrailer(p *parser.Parser, expr ast.Expression) (ast.Expression, *parse
 			return expr, nil
 		}
 	} else if tok.Type == tokenizer.TokenTypeLeftSquare {
-		if expr, err = parseSubscript(p, expr); err != nil {
+		if subscript, err := parseSubscript(p); err != nil {
 			return nil, parser.FailErr(err)
 		} else if err = p.MatchErr(tokenizer.TokenTypeRightSquare); err != nil {
 			return nil, parser.FailErr(err)
 		} else {
-			return expr, nil
+			return ast.NewExpressionSubscript(expr, subscript.Start, subscript.End, subscript.Range), nil
 		}
 	} else /*if tok.Type == tokenizer.TokenTypeDot*/ {
 		if ident, ok := p.Capture(tokenizer.TokenTypeIdentifier); ok {
@@ -977,14 +977,34 @@ func parseCompFor(p *parser.Parser, expr ast.Expression) (ast.Expression, *parse
 	return nil, parser.FailMsgf("compFor not implemented")
 }
 
-func parseSubscript(p *parser.Parser, expr ast.Expression) (ast.Expression, *parser.ParseError) {
+func parseSubscript(p *parser.Parser) (*ast.DataSubscript, *parser.ParseError) {
 	/*
 		subscript
 		  : test
 		  | test? COLON test?
 		  ;
 	*/
-	return nil, parser.FailMsgf("subscript not implemented")
+	if isAtomStart(p) {
+		if exprStart, err := parseTest(p); err != nil {
+			return nil, parser.FailErr(err)
+		} else if !p.Match(tokenizer.TokenTypeColon) {
+			return ast.NewDataSubscript(exprStart, nil, false), nil
+		} else if !isAtomStart(p) {
+			return ast.NewDataSubscript(exprStart, nil, true), nil
+		} else if exprEnd, err := parseTest(p); err != nil {
+			return nil, parser.FailErr(err)
+		} else {
+			return ast.NewDataSubscript(exprStart, exprEnd, true), nil
+		}
+	} else if err := p.MatchErr(tokenizer.TokenTypeColon); err != nil {
+		return nil, parser.FailErr(err)
+	} else if !isAtomStart(p) {
+		return ast.NewDataSubscript(nil, nil, true), nil
+	} else if exprEnd, err := parseTest(p); err != nil {
+		return nil, parser.FailErr(err)
+	} else {
+		return ast.NewDataSubscript(nil, exprEnd, true), nil
+	}
 }
 
 func parseAtom(p *parser.Parser) (ast.Expression, *parser.ParseError) {
