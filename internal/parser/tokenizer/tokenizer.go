@@ -617,6 +617,14 @@ func (t *Tokenizer) getNext() Token {
 		return Token{Type: TokenTypeDedent}
 	}
 
+	// Skip any whitespace
+	for t.more() && (t.match(' ') || t.match('\t')) {
+	}
+
+	t.start = t.offset
+
+	// We are at the start of a fresh token.
+
 	if !t.more() { // We're at EOF.  Deal with any dedents
 		// > The end of input also serves as an implicit terminator for the final physical line.
 		// > ...
@@ -636,18 +644,6 @@ func (t *Tokenizer) getNext() Token {
 		return t.newEOF()
 	}
 	t.finalEOL = false
-
-	// Skip any whitespace
-	for t.more() && (t.match(' ') || t.match('\t')) {
-	}
-
-	t.start = t.offset
-
-	// We are at the start of a fresh token.
-
-	if !t.more() {
-		return t.newTokenError(errors.New("EOF"))
-	}
 
 	ch := t.next()
 	for ch == '\\' {
