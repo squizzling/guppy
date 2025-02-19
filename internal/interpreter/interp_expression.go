@@ -180,6 +180,12 @@ func (i *Interpreter) VisitExpressionGrouping(eg ast.ExpressionGrouping) (any, e
 	panic("ExpressionGrouping")
 }
 
+func (i *Interpreter) VisitExpressionLambda(el ast.ExpressionLambda) (any, error) {
+	defer i.trace()()
+
+	panic("ExpressionLambda")
+}
+
 func (i *Interpreter) VisitExpressionList(el ast.ExpressionList) (any, error) {
 	defer i.trace()()
 

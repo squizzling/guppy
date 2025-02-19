@@ -296,6 +296,7 @@ type VisitorExpression interface {
 	VisitExpressionBinary(eb ExpressionBinary) (any, error)
 	VisitExpressionDict(ed ExpressionDict) (any, error)
 	VisitExpressionGrouping(eg ExpressionGrouping) (any, error)
+	VisitExpressionLambda(el ExpressionLambda) (any, error)
 	VisitExpressionLiteral(el ExpressionLiteral) (any, error)
 	VisitExpressionLogical(el ExpressionLogical) (any, error)
 	VisitExpressionTernary(et ExpressionTernary) (any, error)
@@ -384,6 +385,25 @@ func NewExpressionGrouping(
 
 func (eg ExpressionGrouping) Accept(ve VisitorExpression) (any, error) {
 	return ve.VisitExpressionGrouping(eg)
+}
+
+type ExpressionLambda struct {
+	Identifier string
+	Expr       Expression
+}
+
+func NewExpressionLambda(
+	Identifier string,
+	Expr Expression,
+) Expression {
+	return ExpressionLambda{
+		Identifier: Identifier,
+		Expr:       Expr,
+	}
+}
+
+func (el ExpressionLambda) Accept(ve VisitorExpression) (any, error) {
+	return ve.VisitExpressionLambda(el)
 }
 
 type ExpressionLiteral struct {

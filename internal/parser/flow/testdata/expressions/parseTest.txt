@@ -12,10 +12,6 @@ ExpressionTernary(
   )
 )
 =====
-lambda
------
-lambda not supported
-=====
 a if ?
 -----
 atom not supported: ERROR

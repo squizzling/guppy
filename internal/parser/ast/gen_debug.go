@@ -373,6 +373,20 @@ func (dw DebugWriter) VisitExpressionGrouping(eg ExpressionGrouping) (any, error
 	return _s, nil
 }
 
+func (dw DebugWriter) VisitExpressionLambda(el ExpressionLambda) (any, error) {
+	_s := "ExpressionLambda(\n"
+	dw.i()
+	_s += dw.p() + "Identifier: string(" + el.Identifier + ")\n"
+	if el.Expr != nil {
+		_s += dw.p() + "Expr: " + s(el.Expr.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "Expr: nil\n"
+	}
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
 func (dw DebugWriter) VisitExpressionLiteral(el ExpressionLiteral) (any, error) {
 	_s := "ExpressionLiteral(\n"
 	dw.i()

@@ -87,6 +87,10 @@ var Interfaces = []Interface{
 		{"Grouping", false, []Field{
 			{"Expr", "Expression"},
 		}},
+		{"Lambda", false, []Field{
+			{"Identifier", "string"},
+			{"Expr", "Expression"},
+		}},
 		{"Literal", false, []Field{
 			{"Value", "any"},
 		}},

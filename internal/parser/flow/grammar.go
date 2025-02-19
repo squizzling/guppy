@@ -538,7 +538,7 @@ func parseTest(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 		  ;
 	*/
 	if p.PeekMatch(0, tokenizer.TokenTypeLambda) {
-		return parser.Wrap(parseLambda(p))
+		return parser.Wrap(parseLambdef(p))
 	} else if exprLeft, err := parseOrTest(p); err != nil {
 		return nil, parser.FailErr(err)
 	} else if p.Match(tokenizer.TokenTypeIf) {
@@ -558,8 +558,23 @@ func parseTest(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 	}
 }
 
-func parseLambda(p *parser.Parser) (ast.Expression, *parser.ParseError) {
-	return nil, parser.FailMsgf("lambda not supported")
+func parseLambdef(p *parser.Parser) (ast.Expression, *parser.ParseError) {
+	/*
+		lambdef
+		  : LAMBDA ID COLON test
+		  ;
+	*/
+	if err := p.MatchErr(tokenizer.TokenTypeLambda); err != nil {
+		return nil, parser.FailErr(err)
+	} else if identifier, err := p.CaptureErr(tokenizer.TokenTypeIdentifier); err != nil {
+		return nil, parser.FailErr(err)
+	} else if err := p.MatchErr(tokenizer.TokenTypeColon); err != nil {
+		return nil, parser.FailErr(err)
+	} else if expr, err := parseTest(p); err != nil {
+		return nil, parser.FailErr(err)
+	} else {
+		return ast.NewExpressionLambda(identifier.Lexeme, expr), nil
+	}
 }
 
 func parseBinary(

@@ -91,6 +91,7 @@ var dataSubscriptTests = []grammarTest[*ast.DataSubscript]{
 
 var dataExpressionTests = []grammarTest[ast.Expression]{
 	{"parseDictExpr", parseDictExpr},
+	{"parseLambdef", parseLambdef},
 	{"parseTest", parseTest},
 	{"parseTestListComp", parseTestListComp},
 	{"parseTupleExpr", parseTupleExpr},
