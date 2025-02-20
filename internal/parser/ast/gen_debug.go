@@ -70,6 +70,77 @@ func (dw DebugWriter) VisitDataArgumentList(dal DataArgumentList) (any, error) {
 	return _s, nil
 }
 
+func (dw DebugWriter) VisitDataListIter(dli DataListIter) (any, error) {
+	_s := "DataListIter(\n"
+	dw.i()
+	// IsConcrete
+	if dli.For != nil {
+		_s += dw.p() + "For: " + s(dli.For.Accept(dw))
+	} else {
+		_s += dw.p() + "For: nil\n"
+	}
+	// IsConcrete
+	if dli.If != nil {
+		_s += dw.p() + "If: " + s(dli.If.Accept(dw))
+	} else {
+		_s += dw.p() + "If: nil\n"
+	}
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
+func (dw DebugWriter) VisitDataListFor(dlf DataListFor) (any, error) {
+	_s := "DataListFor(\n"
+	dw.i()
+	if dlf.Idents == nil {
+		_s += dw.p() + "Idents: nil\n"
+	} else if len(dlf.Idents) == 0 {
+		_s += dw.p() + "Idents: []\n"
+	} else {
+		_s += dw.p() + "Idents: [\n"
+		dw.i()
+		for _, _r := range dlf.Idents {
+			_s += dw.p() + _r + "\n" // []string
+		}
+		dw.o()
+		_s += dw.p() + "]\n"
+	}
+	if dlf.Expr != nil {
+		_s += dw.p() + "Expr: " + s(dlf.Expr.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "Expr: nil\n"
+	}
+	// IsConcrete
+	if dlf.Iter != nil {
+		_s += dw.p() + "Iter: " + s(dlf.Iter.Accept(dw))
+	} else {
+		_s += dw.p() + "Iter: nil\n"
+	}
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
+func (dw DebugWriter) VisitDataListIf(dli DataListIf) (any, error) {
+	_s := "DataListIf(\n"
+	dw.i()
+	if dli.Expr != nil {
+		_s += dw.p() + "Expr: " + s(dli.Expr.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "Expr: nil\n"
+	}
+	// IsConcrete
+	if dli.Iter != nil {
+		_s += dw.p() + "Iter: " + s(dli.Iter.Accept(dw))
+	} else {
+		_s += dw.p() + "Iter: nil\n"
+	}
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
 func (dw DebugWriter) VisitDataParameter(dp DataParameter) (any, error) {
 	_s := "DataParameter(\n"
 	dw.i()
@@ -311,6 +382,25 @@ func (dw DebugWriter) VisitExpressionList(el ExpressionList) (any, error) {
 		_s += dw.p() + "]\n"
 	}
 	_s += dw.p() + "Tuple: bool(" + fmt.Sprintf("%t", el.Tuple) + ")\n"
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
+func (dw DebugWriter) VisitExpressionListMaker(elm ExpressionListMaker) (any, error) {
+	_s := "ExpressionListMaker(\n"
+	dw.i()
+	if elm.Expr != nil {
+		_s += dw.p() + "Expr: " + s(elm.Expr.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "Expr: nil\n"
+	}
+	// IsConcrete
+	if elm.For != nil {
+		_s += dw.p() + "For: " + s(elm.For.Accept(dw))
+	} else {
+		_s += dw.p() + "For: nil\n"
+	}
 	dw.o()
 	_s += dw.p() + ")\n"
 	return _s, nil

@@ -495,7 +495,6 @@ func isAtomStart(p *parser.Parser) bool {
 		tokenizer.TokenTypeLeftBrace,
 		tokenizer.TokenTypeLeftSquare,
 		tokenizer.TokenTypeIdentifier,
-		tokenizer.TokenTypeLambda,
 		tokenizer.TokenTypeInt,
 		tokenizer.TokenTypeFloat,
 		tokenizer.TokenTypeString,
@@ -1085,6 +1084,147 @@ func parseListExpr(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 	}
 }
 
+func parseLambdefNoCond(p *parser.Parser) (ast.Expression, *parser.ParseError) {
+	/*
+	  lambdef_nocond
+	    : LAMBDA ID COLON test_nocond
+	    ;
+	*/
+	if err := p.MatchErr(tokenizer.TokenTypeLambda); err != nil {
+		return nil, parser.FailErr(err)
+	} else if identifier, err := p.CaptureErr(tokenizer.TokenTypeIdentifier); err != nil {
+		return nil, parser.FailErr(err)
+	} else if err := p.MatchErr(tokenizer.TokenTypeColon); err != nil {
+		return nil, parser.FailErr(err)
+	} else if expr, err := parseTestNoCond(p); err != nil {
+		return nil, parser.FailErr(err)
+	} else {
+		return ast.NewExpressionLambda(identifier.Lexeme, expr), nil
+	}
+}
+
+func parseTestNoCond(p *parser.Parser) (ast.Expression, *parser.ParseError) {
+	/*
+	  test_nocond
+	    : or_test | lambdef_nocond
+	    ;
+	*/
+	if isAtomStart(p) {
+		if expr, err := parseOrTest(p); err != nil {
+			return nil, parser.FailErr(err)
+		} else {
+			return expr, nil
+		}
+	} else if p.Next.Type != tokenizer.TokenTypeLambda {
+		return nil, p.MatchErr(tokenizer.TokenTypeLambda) // TODO: no
+	} else if expr, err := parseLambdefNoCond(p); err != nil {
+		return nil, parser.FailErr(err)
+	} else {
+		return expr, nil
+	}
+}
+
+func parseTestListNoCond(p *parser.Parser) (ast.Expression, *parser.ParseError) {
+	/*
+	  // Backward compatibility cruft to support:
+	  // [ x for x in lambda: True, lambda: False if x() ]
+	  // even while also allowing:
+	  // lambda x: 5 if x else 2
+	  // (But not a mix of the two)
+	  testlist_nocond
+	    : test_nocond ((COMMA test_nocond)+ (COMMA)?)?
+	    ;
+	*/
+
+	// TODO: I believe this is the same grammar as parseTestList, with extra steps.
+	//       It would be good to validate that.  Treating it as the regexes:
+	//        T((CT)+(C)?)?
+	//        T(CT)*C? shows
+	//       both produce regex graphs which you can convince yourself are the same.
+	var exprList []ast.Expression
+	for {
+		if expr, err := parseTestNoCond(p); err != nil {
+			return nil, parser.FailErr(err)
+		} else {
+			exprList = append(exprList, expr)
+			if !p.Match(tokenizer.TokenTypeComma) {
+				return ast.NewExpressionList(exprList, len(exprList) > 1), nil
+			} else if !isAtomStart(p) {
+				return ast.NewExpressionList(exprList, true), nil
+			} else {
+				// loop
+			}
+		}
+	}
+}
+
+func parseListIter(p *parser.Parser) (*ast.DataListIter, *parser.ParseError) {
+	/*
+	  list_iter
+	    : list_for | list_if
+	    ;
+	*/
+	if p.Next.Type == tokenizer.TokenTypeFor {
+		if listFor, err := parseListFor(p); err != nil {
+			return nil, parser.FailErr(err)
+		} else {
+			return ast.NewDataListIter(listFor, nil), nil
+		}
+	} else if p.Next.Type == tokenizer.TokenTypeIf {
+		if listFor, err := parseListIf(p); err != nil {
+			return nil, parser.FailErr(err)
+		} else {
+			return ast.NewDataListIter(nil, listFor), nil
+		}
+	} else {
+		// TODO: Restructure parser so we can manage this better and return a clean error
+		return nil, parser.FailMsgf("expecting FOR or IF")
+	}
+}
+
+func parseListFor(p *parser.Parser) (*ast.DataListFor, *parser.ParseError) {
+	/*
+	  list_for
+	    : FOR id_list IN testlist_nocond (list_iter)?
+	    ;
+	*/
+	if err := p.MatchErr(tokenizer.TokenTypeFor); err != nil {
+		return nil, parser.FailErr(err)
+	} else if idList, err := parseIdList(p); err != nil {
+		return nil, parser.FailErr(err)
+	} else if err := p.MatchErr(tokenizer.TokenTypeIn); err != nil {
+		return nil, parser.FailErr(err)
+	} else if expr, err := parseTestListNoCond(p); err != nil {
+		return nil, parser.FailErr(err)
+	} else if p.Next.Type != tokenizer.TokenTypeFor && p.Next.Type != tokenizer.TokenTypeIf {
+		return ast.NewDataListFor(idList, expr, nil), nil
+	} else if listFor, err := parseListIter(p); err != nil {
+		return nil, parser.FailErr(err)
+	} else {
+		return ast.NewDataListFor(idList, expr, listFor), nil
+	}
+}
+
+func parseListIf(p *parser.Parser) (*ast.DataListIf, *parser.ParseError) {
+	/*
+	  list_if
+	    : IF test_nocond (list_iter)?
+	    ;
+	*/
+	if err := p.MatchErr(tokenizer.TokenTypeIf); err != nil {
+		return nil, parser.FailErr(err)
+	} else if expr, err := parseTestNoCond(p); err != nil {
+		return nil, parser.FailErr(err)
+	} else if !p.PeekMatch(0, tokenizer.TokenTypeFor, tokenizer.TokenTypeIf) {
+		return ast.NewDataListIf(expr, nil), nil
+	} else if iter, err := parseListIter(p); err != nil {
+		return nil, parser.FailErr(err)
+	} else {
+		// TODO: Restructure parser so we can manage this better and return a clean error
+		return ast.NewDataListIf(expr, iter), nil
+	}
+}
+
 func parseListMaker(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 	/*
 		list_maker
@@ -1093,8 +1233,12 @@ func parseListMaker(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 	*/
 	if expr, err := parseTest(p); err != nil {
 		return nil, parser.FailErr(err)
-	} else if p.Match(tokenizer.TokenTypeFor) {
-		return nil, parser.FailMsgf("list_for not implemented")
+	} else if p.Next.Type == tokenizer.TokenTypeFor {
+		if listFor, err := parseListFor(p); err != nil {
+			return nil, parser.FailErr(err)
+		} else {
+			return ast.NewExpressionListMaker(expr, listFor), nil
+		}
 	} else if p.Match(tokenizer.TokenTypeComma) {
 		out := []ast.Expression{expr}
 		for isAtomStart(p) {

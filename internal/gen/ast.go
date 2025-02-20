@@ -17,6 +17,19 @@ var Interfaces = []Interface{
 			{"StarArg", "Expression"},
 			{"KeywordArg", "Expression"},
 		}},
+		{"ListIter", true, []Field{
+			{"For", "*DataListFor"},
+			{"If", "*DataListIf"},
+		}},
+		{"ListFor", true, []Field{
+			{"Idents", "[]string"},
+			{"Expr", "Expression"},
+			{"Iter", "*DataListIter"},
+		}},
+		{"ListIf", true, []Field{
+			{"Expr", "Expression"},
+			{"Iter", "*DataListIter"},
+		}},
 		{"Parameter", true, []Field{
 			{"Name", "string"},
 			{"Type", "string"},
@@ -74,6 +87,10 @@ var Interfaces = []Interface{
 		{"List", true, []Field{ // Make this a concrete return type
 			{"Expressions", "[]Expression"},
 			{"Tuple", "bool"},
+		}},
+		{"ListMaker", false, []Field{
+			{"Expr", "Expression"},
+			{"For", "*DataListFor"},
 		}},
 		{"Binary", false, []Field{
 			{"Left", "Expression"},

@@ -72,6 +72,18 @@ var dataArgumentListTests = []grammarTest[*ast.DataArgumentList]{
 	{"parseActualArgs", parseActualArgs},
 }
 
+var dataListForTests = []grammarTest[*ast.DataListFor]{
+	{"parseListFor", parseListFor},
+}
+
+var dataListIfTests = []grammarTest[*ast.DataListIf]{
+	{"parseListIf", parseListIf},
+}
+
+var dataListIterTests = []grammarTest[*ast.DataListIter]{
+	{"parseListIter", parseListIter},
+}
+
 var dataParameterTests = []grammarTest[*ast.DataParameter]{
 	{"parseParamType", parseParamType},
 	{"parseVarArgsKwsParam", parseVarArgsKwsParam},
@@ -92,8 +104,11 @@ var dataSubscriptTests = []grammarTest[*ast.DataSubscript]{
 var dataExpressionTests = []grammarTest[ast.Expression]{
 	{"parseDictExpr", parseDictExpr},
 	{"parseLambdef", parseLambdef},
+	{"parseLambdefNoCond", parseLambdefNoCond},
 	{"parseTest", parseTest},
 	{"parseTestListComp", parseTestListComp},
+	{"parseTestListNoCond", parseTestListNoCond},
+	{"parseTestNoCond", parseTestNoCond},
 	{"parseTupleExpr", parseTupleExpr},
 }
 
@@ -106,6 +121,18 @@ var dataStatementTests = []grammarTest[ast.Statement]{
 }
 
 func renderDataArgumentList(d *ast.DataArgumentList) string {
+	return must1(d.Accept(ast.DebugWriter{})).(string)
+}
+
+func renderDataListFor(d *ast.DataListFor) string {
+	return must1(d.Accept(ast.DebugWriter{})).(string)
+}
+
+func renderDataListIf(d *ast.DataListIf) string {
+	return must1(d.Accept(ast.DebugWriter{})).(string)
+}
+
+func renderDataListIter(d *ast.DataListIter) string {
 	return must1(d.Accept(ast.DebugWriter{})).(string)
 }
 
@@ -134,6 +161,30 @@ func TestDataArgumentList(t *testing.T) {
 
 	for _, tst := range dataArgumentListTests {
 		testFromFile(t, "testdata/dataargumentlist/"+tst.fileName+".txt", tst.parse, renderDataArgumentList)
+	}
+}
+
+func TestDataListFor(t *testing.T) {
+	t.Parallel()
+
+	for _, tst := range dataListForTests {
+		testFromFile(t, "testdata/datalistfor/"+tst.fileName+".txt", tst.parse, renderDataListFor)
+	}
+}
+
+func TestDataListIf(t *testing.T) {
+	t.Parallel()
+
+	for _, tst := range dataListIfTests {
+		testFromFile(t, "testdata/datalistif/"+tst.fileName+".txt", tst.parse, renderDataListIf)
+	}
+}
+
+func TestDataListIter(t *testing.T) {
+	t.Parallel()
+
+	for _, tst := range dataListIterTests {
+		testFromFile(t, "testdata/datalistiter/"+tst.fileName+".txt", tst.parse, renderDataListIter)
 	}
 }
 

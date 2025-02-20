@@ -1,0 +1,73 @@
+a
+-----
+ExpressionList(
+  Expressions: [
+    ExpressionVariable(
+      Identifier: string(a)
+    )
+  ]
+  Tuple: bool(false)
+)
+=====
+a,
+-----
+ExpressionList(
+  Expressions: [
+    ExpressionVariable(
+      Identifier: string(a)
+    )
+  ]
+  Tuple: bool(true)
+)
+=====
+a,b
+-----
+ExpressionList(
+  Expressions: [
+    ExpressionVariable(
+      Identifier: string(a)
+    )
+    ExpressionVariable(
+      Identifier: string(b)
+    )
+  ]
+  Tuple: bool(true)
+)
+=====
+a,b,c
+-----
+ExpressionList(
+  Expressions: [
+    ExpressionVariable(
+      Identifier: string(a)
+    )
+    ExpressionVariable(
+      Identifier: string(b)
+    )
+    ExpressionVariable(
+      Identifier: string(c)
+    )
+  ]
+  Tuple: bool(true)
+)
+=====
+a,b,c,
+-----
+ExpressionList(
+  Expressions: [
+    ExpressionVariable(
+      Identifier: string(a)
+    )
+    ExpressionVariable(
+      Identifier: string(b)
+    )
+    ExpressionVariable(
+      Identifier: string(c)
+    )
+  ]
+  Tuple: bool(true)
+)
+=====
+a + ?
+-----
+atom not supported: ERROR

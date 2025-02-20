@@ -1,0 +1,62 @@
+if a
+-----
+DataListIf(
+  Expr: ExpressionVariable(
+    Identifier: string(a)
+  )
+  Iter: nil
+)
+=====
+if a if b
+-----
+DataListIf(
+  Expr: ExpressionVariable(
+    Identifier: string(a)
+  )
+  Iter: DataListIter(
+    For: nil
+    If: DataListIf(
+      Expr: ExpressionVariable(
+        Identifier: string(b)
+      )
+      Iter: nil
+    )
+  )
+)
+=====
+if a for b in c
+-----
+DataListIf(
+  Expr: ExpressionVariable(
+    Identifier: string(a)
+  )
+  Iter: DataListIter(
+    For: DataListFor(
+      Idents: [
+        b
+      ]
+      Expr: ExpressionList(
+        Expressions: [
+          ExpressionVariable(
+            Identifier: string(c)
+          )
+        ]
+        Tuple: bool(false)
+      )
+      Iter: nil
+    )
+    If: nil
+  )
+)
+=====
+?
+-----
+expecting IF in parseListIf, found ERROR
+=====
+if ?
+-----
+expecting LAMBDA in parseTestNoCond, found ERROR
+=====
+if a for ?
+-----
+expecting ID, found ERROR

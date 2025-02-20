@@ -7,6 +7,9 @@ import (
 type VisitorData interface {
 	VisitDataArgument(da DataArgument) (any, error)
 	VisitDataArgumentList(dal DataArgumentList) (any, error)
+	VisitDataListIter(dli DataListIter) (any, error)
+	VisitDataListFor(dlf DataListFor) (any, error)
+	VisitDataListIf(dli DataListIf) (any, error)
 	VisitDataParameter(dp DataParameter) (any, error)
 	VisitDataParameterList(dpl DataParameterList) (any, error)
 	VisitDataSubscript(ds DataSubscript) (any, error)
@@ -55,6 +58,66 @@ func NewDataArgumentList(
 
 func (dal DataArgumentList) Accept(vd VisitorData) (any, error) {
 	return vd.VisitDataArgumentList(dal)
+}
+
+type DataListIter struct {
+	For *DataListFor
+	If  *DataListIf
+}
+
+func NewDataListIter(
+	For *DataListFor,
+	If *DataListIf,
+) *DataListIter {
+	return &DataListIter{
+		For: For,
+		If:  If,
+	}
+}
+
+func (dli DataListIter) Accept(vd VisitorData) (any, error) {
+	return vd.VisitDataListIter(dli)
+}
+
+type DataListFor struct {
+	Idents []string
+	Expr   Expression
+	Iter   *DataListIter
+}
+
+func NewDataListFor(
+	Idents []string,
+	Expr Expression,
+	Iter *DataListIter,
+) *DataListFor {
+	return &DataListFor{
+		Idents: Idents,
+		Expr:   Expr,
+		Iter:   Iter,
+	}
+}
+
+func (dlf DataListFor) Accept(vd VisitorData) (any, error) {
+	return vd.VisitDataListFor(dlf)
+}
+
+type DataListIf struct {
+	Expr Expression
+	Iter *DataListIter
+}
+
+func NewDataListIf(
+	Expr Expression,
+	Iter *DataListIter,
+) *DataListIf {
+	return &DataListIf{
+		Expr: Expr,
+		Iter: Iter,
+	}
+}
+
+func (dli DataListIf) Accept(vd VisitorData) (any, error) {
+	return vd.VisitDataListIf(dli)
 }
 
 type DataParameter struct {
@@ -293,6 +356,7 @@ func (sl StatementList) Accept(vs VisitorStatement) (any, error) {
 
 type VisitorExpression interface {
 	VisitExpressionList(el ExpressionList) (any, error)
+	VisitExpressionListMaker(elm ExpressionListMaker) (any, error)
 	VisitExpressionBinary(eb ExpressionBinary) (any, error)
 	VisitExpressionDict(ed ExpressionDict) (any, error)
 	VisitExpressionGrouping(eg ExpressionGrouping) (any, error)
@@ -328,6 +392,25 @@ func NewExpressionList(
 
 func (el ExpressionList) Accept(ve VisitorExpression) (any, error) {
 	return ve.VisitExpressionList(el)
+}
+
+type ExpressionListMaker struct {
+	Expr Expression
+	For  *DataListFor
+}
+
+func NewExpressionListMaker(
+	Expr Expression,
+	For *DataListFor,
+) Expression {
+	return ExpressionListMaker{
+		Expr: Expr,
+		For:  For,
+	}
+}
+
+func (elm ExpressionListMaker) Accept(ve VisitorExpression) (any, error) {
+	return ve.VisitExpressionListMaker(elm)
 }
 
 type ExpressionBinary struct {

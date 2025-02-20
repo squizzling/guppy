@@ -200,6 +200,12 @@ func (i *Interpreter) VisitExpressionList(el ast.ExpressionList) (any, error) {
 	return NewObjectList(o...), nil
 }
 
+func (i *Interpreter) VisitExpressionListMaker(elm ast.ExpressionListMaker) (any, error) {
+	defer i.trace()()
+
+	panic("ExpressionListMaker")
+}
+
 func (i *Interpreter) VisitExpressionLiteral(el ast.ExpressionLiteral) (any, error) {
 	defer i.trace("Value: %v", el.Value)()
 

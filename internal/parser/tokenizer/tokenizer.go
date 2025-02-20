@@ -18,6 +18,7 @@ var keywords = map[string]TokenType{
 	"from":   TokenTypeFrom,
 	"if":     TokenTypeIf,
 	"import": TokenTypeImport,
+	"in":     TokenTypeIn,
 	"is":     TokenTypeIs,
 	"lambda": TokenTypeLambda,
 	"not":    TokenTypeNot,
@@ -136,6 +137,7 @@ const (
 	TokenTypeFrom
 	TokenTypeIf
 	TokenTypeImport
+	TokenTypeIn
 	TokenTypeIs
 	TokenTypeIsNot // This is not generated in the lexer, it's a synthetic token the parser uses
 	TokenTypeLambda
@@ -245,6 +247,8 @@ func (tt TokenType) String() string {
 		return "IF"
 	case TokenTypeImport:
 		return "IMPORT"
+	case TokenTypeIn:
+		return "IN"
 	case TokenTypeIs:
 		return "IS"
 	case TokenTypeIsNot:

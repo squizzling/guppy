@@ -1,0 +1,24 @@
+lambda a: b
+-----
+ExpressionLambda(
+  Identifier: string(a)
+  Expr: ExpressionVariable(
+    Identifier: string(b)
+  )
+)
+=====
+?
+-----
+expecting LAMBDA in parseLambdefNoCond, found ERROR
+=====
+lambda ?
+-----
+expecting [IDENTIFIER] in parseLambdefNoCond, found ERROR
+=====
+lambda a ?
+-----
+expecting COLON in parseLambdefNoCond, found ERROR
+=====
+lambda a : ?
+-----
+expecting LAMBDA in parseTestNoCond, found ERROR
