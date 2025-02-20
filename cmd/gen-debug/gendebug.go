@@ -61,7 +61,12 @@ func defineAst(packageName string, interfaces []gen.Interface) {
 					fmt.Printf("\t\t_s += dw.p() + \"%s: nil\\n\"\n", field.Name)
 					fmt.Printf("\t}\n")
 				} else if gen.IsConcrete(field.Type) {
-					fmt.Printf("\t_s += dw.p() + \"%s: \" + s(%s.%s.Accept(dw)) // IsConcrete\n", field.Name, receiverName, field.Name)
+					fmt.Printf("\t// IsConcrete\n")
+					fmt.Printf("\tif %s.%s != nil {\n", receiverName, field.Name)
+					fmt.Printf("\t\t_s += dw.p() + \"%s: \" + s(%s.%s.Accept(dw))\n", field.Name, receiverName, field.Name)
+					fmt.Printf("\t} else {\n")
+					fmt.Printf("\t\t_s += dw.p() + \"%s: nil\\n\"\n", field.Name)
+					fmt.Printf("\t}\n")
 				} else if gen.IsInterfaceArray(field.Type) || gen.IsConcreteArray(field.Type) { // Done
 					fmt.Printf("\tif %s.%s == nil {\n", receiverName, field.Name)
 					fmt.Printf("\t\t_s += dw.p() + \"%s: nil\\n\"\n", field.Name)

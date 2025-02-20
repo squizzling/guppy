@@ -130,7 +130,12 @@ func (dw DebugWriter) VisitDataSubscript(ds DataSubscript) (any, error) {
 func (dw DebugWriter) VisitStatementProgram(sp StatementProgram) (any, error) {
 	_s := "StatementProgram(\n"
 	dw.i()
-	_s += dw.p() + "Statements: " + s(sp.Statements.Accept(dw)) // IsConcrete
+	// IsConcrete
+	if sp.Statements != nil {
+		_s += dw.p() + "Statements: " + s(sp.Statements.Accept(dw))
+	} else {
+		_s += dw.p() + "Statements: nil\n"
+	}
 	dw.o()
 	_s += dw.p() + ")\n"
 	return _s, nil
@@ -244,7 +249,12 @@ func (dw DebugWriter) VisitStatementFunction(sf StatementFunction) (any, error) 
 	_s := "StatementFunction(\n"
 	dw.i()
 	_s += dw.p() + "Token: string(" + sf.Token + ")\n"
-	_s += dw.p() + "Params: " + s(sf.Params.Accept(dw)) // IsConcrete
+	// IsConcrete
+	if sf.Params != nil {
+		_s += dw.p() + "Params: " + s(sf.Params.Accept(dw))
+	} else {
+		_s += dw.p() + "Params: nil\n"
+	}
 	if sf.Body != nil {
 		_s += dw.p() + "Body: " + s(sf.Body.Accept(dw)) // IsInterface
 	} else {
