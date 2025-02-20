@@ -529,6 +529,10 @@ func parseTestList(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 	}
 }
 
+func isTestStart(p *parser.Parser) bool {
+	return isAtomStart(p) || p.Next.Type == tokenizer.TokenTypeLambda
+}
+
 func parseTest(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 	/*
 		test
@@ -875,7 +879,7 @@ func isActualArgsStart(p *parser.Parser) bool {
 		tokenizer.TokenTypeStar,
 		tokenizer.TokenTypeStarStar,
 	}
-	return p.PeekMatch(0, actualArgsTokens...) || isAtomStart(p)
+	return p.PeekMatch(0, actualArgsTokens...) || isTestStart(p)
 }
 
 func parseActualArgs(p *parser.Parser) (*ast.DataArgumentList, *parser.ParseError) {
@@ -889,7 +893,7 @@ func parseActualArgs(p *parser.Parser) (*ast.DataArgumentList, *parser.ParseErro
 	*/
 
 	var args []*ast.DataArgument
-	for isAtomStart(p) {
+	for isTestStart(p) {
 		if arg, err := parseArgument(p); err != nil {
 			return nil, parser.FailErr(err)
 		} else {
