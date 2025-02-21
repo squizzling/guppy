@@ -1,0 +1,309 @@
+from a.b.c import *
+-----
+StatementImportFromStar(
+  From: [
+    a
+    b
+    c
+  ]
+)
+=====
+from a.b.c import d
+-----
+StatementImportFrom(
+  From: [
+    a
+    b
+    c
+  ]
+  Imports: [
+    DataImportAs(
+      Name: [
+        d
+      ]
+      As: string()
+    )
+  ]
+)
+=====
+from a.b.c import d as e
+-----
+StatementImportFrom(
+  From: [
+    a
+    b
+    c
+  ]
+  Imports: [
+    DataImportAs(
+      Name: [
+        d
+      ]
+      As: string(e)
+    )
+  ]
+)
+=====
+from a.b.c import d, e
+-----
+StatementImportFrom(
+  From: [
+    a
+    b
+    c
+  ]
+  Imports: [
+    DataImportAs(
+      Name: [
+        d
+      ]
+      As: string()
+    )
+    DataImportAs(
+      Name: [
+        e
+      ]
+      As: string()
+    )
+  ]
+)
+=====
+from a.b.c import d as e, f
+-----
+StatementImportFrom(
+  From: [
+    a
+    b
+    c
+  ]
+  Imports: [
+    DataImportAs(
+      Name: [
+        d
+      ]
+      As: string(e)
+    )
+    DataImportAs(
+      Name: [
+        f
+      ]
+      As: string()
+    )
+  ]
+)
+=====
+from a.b.c import d, e as f
+-----
+StatementImportFrom(
+  From: [
+    a
+    b
+    c
+  ]
+  Imports: [
+    DataImportAs(
+      Name: [
+        d
+      ]
+      As: string()
+    )
+    DataImportAs(
+      Name: [
+        e
+      ]
+      As: string(f)
+    )
+  ]
+)
+=====
+from a.b.c import d as e, f as g
+-----
+StatementImportFrom(
+  From: [
+    a
+    b
+    c
+  ]
+  Imports: [
+    DataImportAs(
+      Name: [
+        d
+      ]
+      As: string(e)
+    )
+    DataImportAs(
+      Name: [
+        f
+      ]
+      As: string(g)
+    )
+  ]
+)
+=====
+from a.b.c import (d)
+-----
+StatementImportFrom(
+  From: [
+    a
+    b
+    c
+  ]
+  Imports: [
+    DataImportAs(
+      Name: [
+        d
+      ]
+      As: string()
+    )
+  ]
+)
+=====
+from a.b.c import (d as e)
+-----
+StatementImportFrom(
+  From: [
+    a
+    b
+    c
+  ]
+  Imports: [
+    DataImportAs(
+      Name: [
+        d
+      ]
+      As: string(e)
+    )
+  ]
+)
+=====
+from a.b.c import (d, e)
+-----
+StatementImportFrom(
+  From: [
+    a
+    b
+    c
+  ]
+  Imports: [
+    DataImportAs(
+      Name: [
+        d
+      ]
+      As: string()
+    )
+    DataImportAs(
+      Name: [
+        e
+      ]
+      As: string()
+    )
+  ]
+)
+=====
+from a.b.c import (d as e, f)
+-----
+StatementImportFrom(
+  From: [
+    a
+    b
+    c
+  ]
+  Imports: [
+    DataImportAs(
+      Name: [
+        d
+      ]
+      As: string(e)
+    )
+    DataImportAs(
+      Name: [
+        f
+      ]
+      As: string()
+    )
+  ]
+)
+=====
+from a.b.c import (d, e as f)
+-----
+StatementImportFrom(
+  From: [
+    a
+    b
+    c
+  ]
+  Imports: [
+    DataImportAs(
+      Name: [
+        d
+      ]
+      As: string()
+    )
+    DataImportAs(
+      Name: [
+        e
+      ]
+      As: string(f)
+    )
+  ]
+)
+=====
+from a.b.c import (d as e, f as g)
+-----
+StatementImportFrom(
+  From: [
+    a
+    b
+    c
+  ]
+  Imports: [
+    DataImportAs(
+      Name: [
+        d
+      ]
+      As: string(e)
+    )
+    DataImportAs(
+      Name: [
+        f
+      ]
+      As: string(g)
+    )
+  ]
+)
+=====
+?
+-----
+expecting FROM in parseImportFrom, found ERROR
+=====
+from ?
+-----
+expecting [IDENTIFIER] in parseDottedName, found ERROR
+=====
+from a ?
+-----
+expecting IMPORT in parseImportFrom, found ERROR
+=====
+from a import ?
+-----
+expecting [IDENTIFIER] in parseImportAsName, found ERROR
+=====
+from a import ( ?
+-----
+expecting [IDENTIFIER] in parseImportAsName, found ERROR
+=====
+from a import ( b ?
+-----
+expecting RIGHT_PAREN in parseImportFrom, found ERROR
+=====
+from a import ( b as ?
+-----
+expecting [IDENTIFIER] in parseImportAsName, found ERROR
+=====
+from a import ( b as c, ?
+-----
+expecting [IDENTIFIER] in parseImportAsName, found ERROR
+=====
+from a. ?
+-----
+expecting [IDENTIFIER] in parseDottedName, found ERROR

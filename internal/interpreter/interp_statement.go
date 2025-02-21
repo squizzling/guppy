@@ -68,10 +68,22 @@ func (i *Interpreter) VisitStatementIf(si ast.StatementIf) (any, error) {
 	panic("StatementIf")
 }
 
-func (i *Interpreter) VisitStatementImport(si ast.StatementImport) (any, error) {
+func (i *Interpreter) VisitStatementImportFrom(sif ast.StatementImportFrom) (any, error) {
 	defer i.trace()()
 
-	panic("StatementImport")
+	panic("StatementImportFrom")
+}
+
+func (i *Interpreter) VisitStatementImportFromStar(sifs ast.StatementImportFromStar) (any, error) {
+	defer i.trace()()
+
+	panic("StatementImportFromStar")
+}
+
+func (i *Interpreter) VisitStatementImportNames(sif ast.StatementImportNames) (any, error) {
+	defer i.trace()()
+
+	panic("StatementImportNames")
 }
 
 func (i *Interpreter) VisitStatementList(sl ast.StatementList) (any, error) {

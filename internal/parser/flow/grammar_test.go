@@ -116,6 +116,9 @@ var dataStatementTests = []grammarTest[ast.Statement]{
 	{"parseExpressionStatement", parseExpressionStatement},
 	{"parseFunctionDefinition", parseFunctionDefinition},
 	{"parseIfStatement", parseIfStatement},
+	{"parseImportStatement", parseImportStatement},
+	{"parseImportName", parseImportName},
+	{"parseImportFrom", parseImportFrom},
 	{"parseReturnStatement", parseReturnStatement},
 	{"parseSuite", parseSuite},
 }

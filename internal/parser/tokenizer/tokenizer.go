@@ -10,6 +10,7 @@ type TokenType int
 
 var keywords = map[string]TokenType{
 	"and":    TokenTypeAnd,
+	"as":     TokenTypeAs,
 	"assert": TokenTypeAssert,
 	"def":    TokenTypeDef,
 	"elif":   TokenTypeElIf,
@@ -96,6 +97,7 @@ const (
 	TokenTypeAt
 	TokenTypeAmper
 	TokenTypeAnd
+	TokenTypeAs
 	TokenTypeBang
 	TokenTypeBangEqual
 	TokenTypeCaret
@@ -237,6 +239,8 @@ func (tt TokenType) String() string {
 
 	case TokenTypeAnd:
 		return "AND"
+	case TokenTypeAs:
+		return "AS"
 	case TokenTypeAssert:
 		return "ASSERT"
 	case TokenTypeDef:

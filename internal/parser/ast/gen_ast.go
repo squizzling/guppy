@@ -7,6 +7,7 @@ import (
 type VisitorData interface {
 	VisitDataArgument(da DataArgument) (any, error)
 	VisitDataArgumentList(dal DataArgumentList) (any, error)
+	VisitDataImportAs(dia DataImportAs) (any, error)
 	VisitDataListIter(dli DataListIter) (any, error)
 	VisitDataListFor(dlf DataListFor) (any, error)
 	VisitDataListIf(dli DataListIf) (any, error)
@@ -58,6 +59,25 @@ func NewDataArgumentList(
 
 func (dal DataArgumentList) Accept(vd VisitorData) (any, error) {
 	return vd.VisitDataArgumentList(dal)
+}
+
+type DataImportAs struct {
+	Name []string
+	As   string
+}
+
+func NewDataImportAs(
+	Name []string,
+	As string,
+) *DataImportAs {
+	return &DataImportAs{
+		Name: Name,
+		As:   As,
+	}
+}
+
+func (dia DataImportAs) Accept(vd VisitorData) (any, error) {
+	return vd.VisitDataImportAs(dia)
 }
 
 type DataListIter struct {
@@ -190,7 +210,9 @@ type VisitorStatement interface {
 	VisitStatementProgram(sp StatementProgram) (any, error)
 	VisitStatementExpression(se StatementExpression) (any, error)
 	VisitStatementReturn(sr StatementReturn) (any, error)
-	VisitStatementImport(si StatementImport) (any, error)
+	VisitStatementImportFrom(sif StatementImportFrom) (any, error)
+	VisitStatementImportFromStar(sifs StatementImportFromStar) (any, error)
+	VisitStatementImportNames(sin StatementImportNames) (any, error)
 	VisitStatementAssert(sa StatementAssert) (any, error)
 	VisitStatementIf(si StatementIf) (any, error)
 	VisitStatementFunction(sf StatementFunction) (any, error)
@@ -253,15 +275,55 @@ func (sr StatementReturn) Accept(vs VisitorStatement) (any, error) {
 	return vs.VisitStatementReturn(sr)
 }
 
-type StatementImport struct {
+type StatementImportFrom struct {
+	From    []string
+	Imports []*DataImportAs
 }
 
-func NewStatementImport() Statement {
-	return StatementImport{}
+func NewStatementImportFrom(
+	From []string,
+	Imports []*DataImportAs,
+) Statement {
+	return StatementImportFrom{
+		From:    From,
+		Imports: Imports,
+	}
 }
 
-func (si StatementImport) Accept(vs VisitorStatement) (any, error) {
-	return vs.VisitStatementImport(si)
+func (sif StatementImportFrom) Accept(vs VisitorStatement) (any, error) {
+	return vs.VisitStatementImportFrom(sif)
+}
+
+type StatementImportFromStar struct {
+	From []string
+}
+
+func NewStatementImportFromStar(
+	From []string,
+) Statement {
+	return StatementImportFromStar{
+		From: From,
+	}
+}
+
+func (sifs StatementImportFromStar) Accept(vs VisitorStatement) (any, error) {
+	return vs.VisitStatementImportFromStar(sifs)
+}
+
+type StatementImportNames struct {
+	Imports []*DataImportAs
+}
+
+func NewStatementImportNames(
+	Imports []*DataImportAs,
+) Statement {
+	return StatementImportNames{
+		Imports: Imports,
+	}
+}
+
+func (sin StatementImportNames) Accept(vs VisitorStatement) (any, error) {
+	return vs.VisitStatementImportNames(sin)
 }
 
 type StatementAssert struct {

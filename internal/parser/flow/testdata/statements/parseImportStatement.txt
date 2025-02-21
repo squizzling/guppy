@@ -1,0 +1,32 @@
+import a
+-----
+StatementImportNames(
+  Imports: [
+    DataImportAs(
+      Name: [
+        a
+      ]
+      As: string()
+    )
+  ]
+)
+=====
+from a import b
+-----
+StatementImportFrom(
+  From: [
+    a
+  ]
+  Imports: [
+    DataImportAs(
+      Name: [
+        b
+      ]
+      As: string()
+    )
+  ]
+)
+=====
+?
+-----
+expecting import or from

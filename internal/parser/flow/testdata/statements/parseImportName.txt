@@ -1,0 +1,137 @@
+import a.b.c
+-----
+StatementImportNames(
+  Imports: [
+    DataImportAs(
+      Name: [
+        a
+        b
+        c
+      ]
+      As: string()
+    )
+  ]
+)
+=====
+import a.b.c as d
+-----
+StatementImportNames(
+  Imports: [
+    DataImportAs(
+      Name: [
+        a
+        b
+        c
+      ]
+      As: string(d)
+    )
+  ]
+)
+=====
+import a.b.c, d.e.f
+-----
+StatementImportNames(
+  Imports: [
+    DataImportAs(
+      Name: [
+        a
+        b
+        c
+      ]
+      As: string()
+    )
+    DataImportAs(
+      Name: [
+        d
+        e
+        f
+      ]
+      As: string()
+    )
+  ]
+)
+=====
+import a.b.c, d.e.f as g
+-----
+StatementImportNames(
+  Imports: [
+    DataImportAs(
+      Name: [
+        a
+        b
+        c
+      ]
+      As: string()
+    )
+    DataImportAs(
+      Name: [
+        d
+        e
+        f
+      ]
+      As: string(g)
+    )
+  ]
+)
+=====
+import a.b.c as d, e.f.g
+-----
+StatementImportNames(
+  Imports: [
+    DataImportAs(
+      Name: [
+        a
+        b
+        c
+      ]
+      As: string(d)
+    )
+    DataImportAs(
+      Name: [
+        e
+        f
+        g
+      ]
+      As: string()
+    )
+  ]
+)
+=====
+import a.b.c as d, e.f.g as h
+-----
+StatementImportNames(
+  Imports: [
+    DataImportAs(
+      Name: [
+        a
+        b
+        c
+      ]
+      As: string(d)
+    )
+    DataImportAs(
+      Name: [
+        e
+        f
+        g
+      ]
+      As: string(h)
+    )
+  ]
+)
+=====
+?
+-----
+expecting IMPORT in parseImportName, found ERROR
+=====
+import ?
+-----
+expecting [IDENTIFIER] in parseDottedName, found ERROR
+=====
+import a, b.?
+-----
+expecting [IDENTIFIER] in parseDottedName, found ERROR
+=====
+import a as ?
+-----
+expecting [IDENTIFIER] in parseDottedAsName, found ERROR

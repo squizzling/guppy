@@ -70,6 +70,28 @@ func (dw DebugWriter) VisitDataArgumentList(dal DataArgumentList) (any, error) {
 	return _s, nil
 }
 
+func (dw DebugWriter) VisitDataImportAs(dia DataImportAs) (any, error) {
+	_s := "DataImportAs(\n"
+	dw.i()
+	if dia.Name == nil {
+		_s += dw.p() + "Name: nil\n"
+	} else if len(dia.Name) == 0 {
+		_s += dw.p() + "Name: []\n"
+	} else {
+		_s += dw.p() + "Name: [\n"
+		dw.i()
+		for _, _r := range dia.Name {
+			_s += dw.p() + _r + "\n" // []string
+		}
+		dw.o()
+		_s += dw.p() + "]\n"
+	}
+	_s += dw.p() + "As: string(" + dia.As + ")\n"
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
 func (dw DebugWriter) VisitDataListIter(dli DataListIter) (any, error) {
 	_s := "DataListIter(\n"
 	dw.i()
@@ -251,9 +273,77 @@ func (dw DebugWriter) VisitStatementReturn(sr StatementReturn) (any, error) {
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStatementImport(si StatementImport) (any, error) {
-	_s := "StatementImport(\n"
+func (dw DebugWriter) VisitStatementImportFrom(sif StatementImportFrom) (any, error) {
+	_s := "StatementImportFrom(\n"
 	dw.i()
+	if sif.From == nil {
+		_s += dw.p() + "From: nil\n"
+	} else if len(sif.From) == 0 {
+		_s += dw.p() + "From: []\n"
+	} else {
+		_s += dw.p() + "From: [\n"
+		dw.i()
+		for _, _r := range sif.From {
+			_s += dw.p() + _r + "\n" // []string
+		}
+		dw.o()
+		_s += dw.p() + "]\n"
+	}
+	if sif.Imports == nil {
+		_s += dw.p() + "Imports: nil\n"
+	} else if len(sif.Imports) == 0 {
+		_s += dw.p() + "Imports: []\n"
+	} else {
+		_s += dw.p() + "Imports: [\n"
+		dw.i()
+		for _, _r := range sif.Imports {
+			_s += dw.p() + s(_r.Accept(dw)) // IsInterfaceArray
+		}
+		dw.o()
+		_s += dw.p() + "]\n"
+	}
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
+func (dw DebugWriter) VisitStatementImportFromStar(sifs StatementImportFromStar) (any, error) {
+	_s := "StatementImportFromStar(\n"
+	dw.i()
+	if sifs.From == nil {
+		_s += dw.p() + "From: nil\n"
+	} else if len(sifs.From) == 0 {
+		_s += dw.p() + "From: []\n"
+	} else {
+		_s += dw.p() + "From: [\n"
+		dw.i()
+		for _, _r := range sifs.From {
+			_s += dw.p() + _r + "\n" // []string
+		}
+		dw.o()
+		_s += dw.p() + "]\n"
+	}
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
+func (dw DebugWriter) VisitStatementImportNames(sin StatementImportNames) (any, error) {
+	_s := "StatementImportNames(\n"
+	dw.i()
+	if sin.Imports == nil {
+		_s += dw.p() + "Imports: nil\n"
+	} else if len(sin.Imports) == 0 {
+		_s += dw.p() + "Imports: []\n"
+	} else {
+		_s += dw.p() + "Imports: [\n"
+		dw.i()
+		for _, _r := range sin.Imports {
+			_s += dw.p() + s(_r.Accept(dw)) // IsInterfaceArray
+		}
+		dw.o()
+		_s += dw.p() + "]\n"
+	}
 	dw.o()
 	_s += dw.p() + ")\n"
 	return _s, nil

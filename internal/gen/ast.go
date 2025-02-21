@@ -17,6 +17,10 @@ var Interfaces = []Interface{
 			{"StarArg", "Expression"},
 			{"KeywordArg", "Expression"},
 		}},
+		{"ImportAs", true, []Field{
+			{"Name", "[]string"},
+			{"As", "string"},
+		}},
 		{"ListIter", true, []Field{
 			{"For", "*DataListFor"},
 			{"If", "*DataListIf"},
@@ -57,8 +61,15 @@ var Interfaces = []Interface{
 		{"Return", false, []Field{
 			{"Expr", "Expression"},
 		}},
-		{"Import", false, []Field{
-			// TODO
+		{"ImportFrom", false, []Field{
+			{"From", "[]string"},
+			{"Imports", "[]*DataImportAs"},
+		}},
+		{"ImportFromStar", false, []Field{
+			{"From", "[]string"},
+		}},
+		{"ImportNames", false, []Field{
+			{"Imports", "[]*DataImportAs"},
 		}},
 		{"Assert", false, []Field{
 			{"Test", "Expression"},

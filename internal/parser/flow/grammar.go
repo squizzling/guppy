@@ -124,7 +124,7 @@ func parseSmallStatement(p *parser.Parser) (ast.Statement, *parser.ParseError) {
 	if p.Next.Type == tokenizer.TokenTypeReturn {
 		return parser.Wrap(parseReturnStatement(p))
 	} else if p.Next.Type == tokenizer.TokenTypeImport || p.Next.Type == tokenizer.TokenTypeFrom {
-		return parser.Wrap(parseImport(p))
+		return parser.Wrap(parseImportStatement(p))
 	} else if p.Next.Type == tokenizer.TokenTypeAssert {
 		return parser.Wrap(parseAssert(p))
 	} else {
@@ -430,10 +430,6 @@ func parseReturnStatement(p *parser.Parser) (ast.Statement, *parser.ParseError) 
 	} else {
 		return ast.NewStatementReturn(expr), nil
 	}
-}
-
-func parseImport(p *parser.Parser) (ast.Statement, *parser.ParseError) {
-	return nil, parser.FailMsgf("import not supported")
 }
 
 func parseAssert(p *parser.Parser) (ast.Statement, *parser.ParseError) {
@@ -1359,5 +1355,166 @@ func parseDictExpr(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 			}
 		}
 		return ast.NewExpressionDict(exprKeys, exprValues), nil
+	}
+}
+
+func parseImportStatement(p *parser.Parser) (ast.Statement, *parser.ParseError) {
+	/*
+	  import_statement
+	    : import_name
+	    | import_from
+	    ;
+	*/
+	if p.Next.Type == tokenizer.TokenTypeImport {
+		return parser.Wrap(parseImportName(p))
+	} else if p.Next.Type == tokenizer.TokenTypeFrom {
+		return parser.Wrap(parseImportFrom(p))
+	} else {
+		return nil, parser.FailMsgf("expecting import or from") // todo: cleanup
+	}
+}
+
+func parseImportName(p *parser.Parser) (ast.Statement, *parser.ParseError) {
+	/*
+	  import_name
+	    : IMPORT dotted_as_names
+	    ;
+	*/
+	if err := p.MatchErr(tokenizer.TokenTypeImport); err != nil {
+		return nil, parser.FailErr(err)
+	} else if names, err := parseDottedAsNames(p); err != nil {
+		return nil, parser.FailErr(err)
+	} else {
+		return ast.NewStatementImportNames(names), nil
+	}
+}
+
+func parseImportFrom(p *parser.Parser) (ast.Statement, *parser.ParseError) {
+	/*
+	  import_from
+	    : FROM dotted_name
+	      IMPORT ( '*'
+	             | '(' import_as_names ')'
+	             | import_as_names
+	             )
+	    ;
+	*/
+	if err := p.MatchErr(tokenizer.TokenTypeFrom); err != nil {
+		return nil, parser.FailErr(err)
+	} else if from, err := parseDottedName(p); err != nil {
+		return nil, parser.FailErr(err)
+	} else if err := p.MatchErr(tokenizer.TokenTypeImport); err != nil {
+		return nil, parser.FailErr(err)
+	} else if p.Match(tokenizer.TokenTypeStar) {
+		return ast.NewStatementImportFromStar(from), nil
+	} else if p.Match(tokenizer.TokenTypeLeftParen) {
+		if importAsNames, err := parseImportAsNames(p); err != nil {
+			return nil, parser.FailErr(err)
+		} else if err := p.MatchErr(tokenizer.TokenTypeRightParen); err != nil {
+			return nil, parser.FailErr(err)
+		} else {
+			return ast.NewStatementImportFrom(from, importAsNames), nil
+		}
+	} else if importAsNames, err := parseImportAsNames(p); err != nil {
+		return nil, parser.FailErr(err)
+	} else {
+		return ast.NewStatementImportFrom(from, importAsNames), nil
+	}
+}
+
+func parseImportAsNames(p *parser.Parser) ([]*ast.DataImportAs, *parser.ParseError) {
+	/*
+	  import_as_names
+	    : import_as_name ( ',' import_as_name )* ','?
+	    ;
+	*/
+	if name, err := parseImportAsName(p); err != nil {
+		return nil, parser.FailErr(err)
+	} else {
+		names := []*ast.DataImportAs{name}
+		for p.Match(tokenizer.TokenTypeComma) {
+			if name, err := parseImportAsName(p); err != nil {
+				return nil, parser.FailErr(err)
+			} else {
+				names = append(names, name)
+			}
+		}
+		return names, nil
+	}
+}
+
+func parseImportAsName(p *parser.Parser) (*ast.DataImportAs, *parser.ParseError) {
+	/*
+	  import_as_name
+	    : ID ( AS ID )?
+	    ;
+	*/
+	if name, err := p.CaptureErr(tokenizer.TokenTypeIdentifier); err != nil {
+		return nil, parser.FailErr(err)
+	} else if !p.Match(tokenizer.TokenTypeAs) {
+		return ast.NewDataImportAs([]string{name.Lexeme}, ""), nil
+	} else if as, err := p.CaptureErr(tokenizer.TokenTypeIdentifier); err != nil {
+		return nil, parser.FailErr(err)
+	} else {
+		return ast.NewDataImportAs([]string{name.Lexeme}, as.Lexeme), nil
+	}
+}
+
+func parseDottedAsNames(p *parser.Parser) ([]*ast.DataImportAs, *parser.ParseError) {
+	/*
+	  dotted_as_names
+	    : dotted_as_name ( ',' dotted_as_name )*
+	    ;
+	*/
+	if name, err := parseDottedAsName(p); err != nil {
+		return nil, parser.FailErr(err)
+	} else {
+		names := []*ast.DataImportAs{name}
+		for p.Match(tokenizer.TokenTypeComma) {
+			if name, err := parseDottedAsName(p); err != nil {
+				return nil, parser.FailErr(err)
+			} else {
+				names = append(names, name)
+			}
+		}
+		return names, nil
+	}
+}
+
+func parseDottedAsName(p *parser.Parser) (*ast.DataImportAs, *parser.ParseError) {
+	/*
+	  dotted_as_name
+	    : dotted_name ( AS ID )?
+	    ;
+	*/
+	if name, err := parseDottedName(p); err != nil {
+		return nil, parser.FailErr(err)
+	} else if !p.Match(tokenizer.TokenTypeAs) {
+		return ast.NewDataImportAs(name, ""), nil
+	} else if asName, err := p.CaptureErr(tokenizer.TokenTypeIdentifier); err != nil {
+		return nil, parser.FailErr(err)
+	} else {
+		return ast.NewDataImportAs(name, asName.Lexeme), nil
+	}
+}
+
+func parseDottedName(p *parser.Parser) ([]string, *parser.ParseError) {
+	/*
+	  dotted_name
+	    : ID ( '.' ID )*
+	    ;
+	*/
+	if ident, err := p.CaptureErr(tokenizer.TokenTypeIdentifier); err != nil {
+		return nil, parser.FailErr(err)
+	} else {
+		idents := []string{ident.Lexeme}
+		for p.Match(tokenizer.TokenTypeDot) {
+			if ident, err := p.CaptureErr(tokenizer.TokenTypeIdentifier); err != nil {
+				return nil, parser.FailErr(err)
+			} else {
+				idents = append(idents, ident.Lexeme)
+			}
+		}
+		return idents, nil
 	}
 }
