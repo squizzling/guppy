@@ -8,7 +8,7 @@ import (
 	"guppy/internal/parser/tokenizer"
 )
 
-var magicNames = map[tokenizer.TokenType]string{
+var magicBinaryNames = map[tokenizer.TokenType]string{
 	tokenizer.TokenTypeAmper:          "__and__",
 	tokenizer.TokenTypeAnd:            "__binary_and__",
 	tokenizer.TokenTypeCaret:          "__xor__",
@@ -20,6 +20,13 @@ var magicNames = map[tokenizer.TokenType]string{
 	tokenizer.TokenTypePlus:           "__add__",
 	tokenizer.TokenTypeSlash:          "__truediv__",
 	tokenizer.TokenTypeStar:           "__mul__",
+}
+
+var magicUnaryNames = map[tokenizer.TokenType]string{
+	tokenizer.TokenTypeNot:   "__unary_binary_not__",
+	tokenizer.TokenTypePlus:  "__unary_plus__",
+	tokenizer.TokenTypeMinus: "__unary_minus__",
+	tokenizer.TokenTypeTilde: "__unary_not__",
 }
 
 func ParseProgram(p *parser.Parser) (*ast.StatementProgram, *parser.ParseError) {
@@ -607,7 +614,7 @@ func parseBinaryCall(
 	}
 
 	for op, ok := p.Capture(tokens...); ok; op, ok = p.Capture(tokens...) {
-		member, ok := magicNames[op.Type]
+		member, ok := magicBinaryNames[op.Type]
 		if !ok {
 			return nil, parser.FailErrSkip(fmt.Errorf("unrecognized tokenType %s", op.Type), "", 1)
 		}
@@ -628,6 +635,27 @@ func parseBinaryCall(
 		)
 	}
 	return leftExpression, nil
+}
+
+func parseUnaryCall(
+	p *parser.Parser,
+	next func(p *parser.Parser) (ast.Expression, *parser.ParseError),
+	op tokenizer.TokenType,
+) (ast.Expression, *parser.ParseError) {
+	member, ok := magicUnaryNames[op]
+	if !ok {
+		return nil, parser.FailErrSkip(fmt.Errorf("unrecognized tokenType %s", op), "", 1)
+	}
+	expr, err := next(p)
+	if err != nil {
+		return nil, parser.FailErrSkip(err, "", 1)
+	}
+	return ast.NewExpressionCall(
+		ast.NewExpressionMember(expr, member),
+		[]*ast.DataArgument{},
+		nil,
+		nil,
+	), nil
 }
 
 func parseOrTest(p *parser.Parser) (ast.Expression, *parser.ParseError) {
@@ -656,11 +684,7 @@ func parseNotTest(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 		  ;
 	*/
 	if p.Match(tokenizer.TokenTypeNot) {
-		if e, err := parseNotTest(p); err != nil {
-			return nil, parser.FailErr(err)
-		} else {
-			return ast.NewExpressionUnary(tokenizer.TokenTypeNot, e), nil
-		}
+		return parseUnaryCall(p, parseNotTest, tokenizer.TokenTypeNot)
 	} else {
 		return parser.Wrap(parseComparison(p))
 	}
@@ -774,13 +798,10 @@ func parseFactor(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 		  ;
 	*/
 	if t, ok := p.Capture(tokenizer.TokenTypePlus, tokenizer.TokenTypeMinus, tokenizer.TokenTypeTilde); ok {
-		if expr, err := parseFactor(p); err != nil {
-			return nil, parser.FailErr(err)
-		} else {
-			return ast.NewExpressionUnary(t.Type, expr), nil
-		}
+		return parseUnaryCall(p, parseFactor, t.Type)
+	} else {
+		return parser.Wrap(parsePower(p))
 	}
-	return parser.Wrap(parsePower(p))
 }
 
 func parsePower(p *parser.Parser) (ast.Expression, *parser.ParseError) {
