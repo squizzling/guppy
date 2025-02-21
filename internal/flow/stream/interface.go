@@ -12,12 +12,14 @@ type Stream interface {
 
 func newStreamObject() interpreter.Object {
 	return interpreter.NewObject(map[string]interpreter.Object{
-		"max":     methodMax{},
-		"publish": methodPublish{},
-		"sum":     methodSum{},
+		"fill":    methodFill{interpreter.NewObject(nil)},
+		"max":     methodMax{interpreter.NewObject(nil)},
+		"publish": methodPublish{interpreter.NewObject(nil)},
+		"sum":     methodSum{interpreter.NewObject(nil)},
 	})
 }
 
+var _ = interpreter.FlowCall(methodFill{})
 var _ = interpreter.FlowCall(methodMax{})
 var _ = interpreter.FlowCall(methodPublish{})
 var _ = interpreter.FlowCall(methodSum{})
