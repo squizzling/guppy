@@ -210,6 +210,8 @@ func (i *Interpreter) VisitExpressionLiteral(el ast.ExpressionLiteral) (any, err
 	defer i.trace("Value: %v", el.Value)()
 
 	switch v := el.Value.(type) {
+	case int:
+		return NewObjectInt(v), nil
 	case string:
 		return NewObjectString(v), nil
 	case nil:
