@@ -27,8 +27,8 @@ func main() {
 	}
 
 	i := interpreter.NewInterpreter()
-	i.Scope.DeclareSet("filter", &filter.FFIFilter{})
-	i.Scope.DeclareSet("data", &stream.FFIData{})
+	i.Scope.DeclareSet("filter", &filter.FFIFilter{Object: interpreter.NewObject(nil)})
+	i.Scope.DeclareSet("data", &stream.FFIData{Object: interpreter.NewObject(nil)})
 
 	i.Execute(program)
 }
