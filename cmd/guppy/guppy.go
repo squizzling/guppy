@@ -30,5 +30,8 @@ func main() {
 	i.Scope.DeclareSet("filter", &filter.FFIFilter{Object: interpreter.NewObject(nil)})
 	i.Scope.DeclareSet("data", &stream.FFIData{Object: interpreter.NewObject(nil)})
 
-	i.Execute(program)
+	errProgram := i.Execute(program)
+	if errProgram != nil {
+		fmt.Printf("%v\n", errProgram)
+	}
 }
