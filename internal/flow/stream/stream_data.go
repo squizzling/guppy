@@ -11,8 +11,8 @@ type FFIData struct {
 	interpreter.Object
 }
 
-func (f FFIData) Args(i *interpreter.Interpreter) ([]interpreter.ArgData, error) {
-	return []interpreter.ArgData{
+func (f FFIData) Params(i *interpreter.Interpreter) ([]interpreter.ParamData, error) {
+	return []interpreter.ParamData{
 		{Name: "metric"},
 		{Name: "filter", Default: interpreter.NewObjectNone()},
 		{Name: "rollup", Default: interpreter.NewObjectNone()},

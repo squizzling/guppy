@@ -17,19 +17,19 @@ func (i *Interpreter) doAnd(left Object, right Object) (Object, error) {
 	}
 }
 
-type ArgData struct {
+type ParamData struct {
 	Name    string
 	Default Object
 }
 
 type FlowCall interface {
-	Args(i *Interpreter) ([]ArgData, error)
+	Params(i *Interpreter) ([]ParamData, error)
 	Call(i *Interpreter) (Object, error)
 }
 
-func (i *Interpreter) doArgs(fo Object) ([]ArgData, error) {
+func (i *Interpreter) doParams(fo Object) ([]ParamData, error) {
 	if fc, ok := fo.(FlowCall); ok {
-		return fc.Args(i)
+		return fc.Params(i)
 	} else {
 		// TODO: Test this
 		return nil, fmt.Errorf("%T is not callable", fo)

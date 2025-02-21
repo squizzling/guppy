@@ -42,7 +42,7 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (any, error) {
 	i.pushScope()
 	defer i.popScope()
 
-	argData, err := i.doArgs(expr)
+	paramData, err := i.doParams(expr)
 	if err != nil {
 		return nil, err
 	}
@@ -90,19 +90,19 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (any, error) {
 	for _, a := range ecArgs {
 		sProvidedArgs = append(sProvidedArgs, a.Assign)
 	}
-	for _, a := range argData {
-		expectedArgs = append(expectedArgs, a.Name)
+	for _, p := range paramData {
+		expectedArgs = append(expectedArgs, p.Name)
 	}
 
-	if len(ecArgs) > len(argData) {
-		// calculate ecArgs - argData
+	if len(ecArgs) > len(paramData) {
+		// calculate ecArgs - paramData
 		var extraArgs []string
 		for _, a1 := range ecArgs {
 			if a1.Assign == "" {
 				continue
 			}
 			found := false
-			for _, a2 := range argData {
+			for _, a2 := range paramData {
 				if a1.Assign == a2.Name {
 					found = true
 					break
@@ -121,8 +121,8 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (any, error) {
 			if arg, err := r(exprArg.Expr.Accept(i)); err != nil {
 				return nil, err
 			} else {
-				i.Scope.DeclareSet(argData[idx].Name, arg)
-				providedArgs[argData[idx].Name] = true
+				i.Scope.DeclareSet(paramData[idx].Name, arg)
+				providedArgs[paramData[idx].Name] = true
 			}
 		} else if _, ok := providedArgs[exprArg.Assign]; ok {
 			// Everything after this will be provided, so we don't need to track the
@@ -134,28 +134,28 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (any, error) {
 			if arg, err := r(exprArg.Expr.Accept(i)); err != nil {
 				return nil, err
 			} else {
-				i.Scope.DeclareSet(argData[idx].Name, arg)
-				providedArgs[argData[idx].Name] = true
+				i.Scope.DeclareSet(paramData[idx].Name, arg)
+				providedArgs[paramData[idx].Name] = true
 			}
 		}
 	}
 
-	// Loop through argData.  If an argument is not provided, and it's got a default, then provide it
+	// Loop through paramData.  If a parameter is not provided, and it's got a default, then provide it
 
-	for _, arg := range argData {
-		if _, ok := providedArgs[arg.Name]; !ok {
-			if arg.Default != nil {
-				i.Scope.DeclareSet(arg.Name, arg.Default)
-				providedArgs[arg.Name] = true
+	for _, param := range paramData {
+		if _, ok := providedArgs[param.Name]; !ok {
+			if param.Default != nil {
+				i.Scope.DeclareSet(param.Name, param.Default)
+				providedArgs[param.Name] = true
 			}
 		}
 	}
 
 	// If the length of providedArgs matches the expected, we can invoke the call
 
-	if len(argData) != len(providedArgs) {
+	if len(paramData) != len(providedArgs) {
 		// TODO: Make this better
-		return nil, fmt.Errorf("arg count wrong %d vs %d", len(argData), len(providedArgs))
+		return nil, fmt.Errorf("arg count wrong %d vs %d", len(paramData), len(providedArgs))
 	}
 
 	if ec.StarArgs != nil {

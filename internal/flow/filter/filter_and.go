@@ -10,8 +10,8 @@ type methodBinaryAnd struct {
 	interpreter.Object
 }
 
-func (mba methodBinaryAnd) Args(i *interpreter.Interpreter) ([]interpreter.ArgData, error) {
-	return []interpreter.ArgData{
+func (mba methodBinaryAnd) Params(i *interpreter.Interpreter) ([]interpreter.ParamData, error) {
+	return []interpreter.ParamData{
 		{Name: "self"},
 		{Name: "right"},
 	}, nil

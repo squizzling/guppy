@@ -10,8 +10,8 @@ type FFIFilter struct {
 	interpreter.Object
 }
 
-func (f FFIFilter) Args(i *interpreter.Interpreter) ([]interpreter.ArgData, error) {
-	return []interpreter.ArgData{
+func (f FFIFilter) Params(i *interpreter.Interpreter) ([]interpreter.ParamData, error) {
+	return []interpreter.ParamData{
 		{Name: "key"},
 		{Name: "value"},
 	}, nil

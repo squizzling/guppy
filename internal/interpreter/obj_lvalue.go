@@ -12,8 +12,8 @@ func NewLValue(left Object, right Object) Object {
 	}
 }
 
-func (lv *ObjectLValue) Args(i *Interpreter) ([]ArgData, error) {
-	return i.doArgs(lv.right)
+func (lv *ObjectLValue) Params(i *Interpreter) ([]ParamData, error) {
+	return i.doParams(lv.right)
 }
 
 func (lv *ObjectLValue) Call(i *Interpreter) (Object, error) {

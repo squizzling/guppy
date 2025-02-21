@@ -10,8 +10,8 @@ type methodFill struct {
 	interpreter.Object
 }
 
-func (mf methodFill) Args(i *interpreter.Interpreter) ([]interpreter.ArgData, error) {
-	return []interpreter.ArgData{
+func (mf methodFill) Params(i *interpreter.Interpreter) ([]interpreter.ParamData, error) {
+	return []interpreter.ParamData{
 		{Name: "self"},
 		{Name: "value", Default: interpreter.NewObjectNone()},
 		{Name: "duration", Default: interpreter.NewObjectNone()},

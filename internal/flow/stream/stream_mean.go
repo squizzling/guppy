@@ -8,7 +8,7 @@ type methodMean struct {
 	interpreter.Object
 }
 
-func (mm methodMean) Args(i *interpreter.Interpreter) ([]interpreter.ArgData, error) {
+func (mm methodMean) Params(i *interpreter.Interpreter) ([]interpreter.ParamData, error) {
 	return argsAggregate(i)
 }
 

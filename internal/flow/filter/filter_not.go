@@ -10,8 +10,8 @@ type methodBinaryNot struct {
 	interpreter.Object
 }
 
-func (mba methodBinaryNot) Args(i *interpreter.Interpreter) ([]interpreter.ArgData, error) {
-	return []interpreter.ArgData{
+func (mba methodBinaryNot) Params(i *interpreter.Interpreter) ([]interpreter.ParamData, error) {
+	return []interpreter.ParamData{
 		{Name: "self"},
 	}, nil
 }
