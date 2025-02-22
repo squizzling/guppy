@@ -13,7 +13,8 @@ var Interfaces = []Interface{
 			{"Expr", "Expression"},
 		}},
 		{"ArgumentList", true, []Field{
-			{"Args", "[]*DataArgument"},
+			{"Args", "[]Expression"},
+			{"NamedArgs", "[]*DataArgument"},
 			{"StarArg", "Expression"},
 			{"KeywordArg", "Expression"},
 		}},
@@ -151,9 +152,10 @@ var Interfaces = []Interface{
 		}},
 		{"Call", false, []Field{
 			{"Expr", "Expression"},
-			{"Args", "[]*DataArgument"},
-			{"StarArgs", "Expression"},
-			{"KeywordArgs", "Expression"},
+			{"Args", "[]Expression"},
+			{"NamedArgs", "[]*DataArgument"},
+			{"StarArg", "Expression"},
+			{"KeywordArg", "Expression"},
 		}},
 	}},
 }

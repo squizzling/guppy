@@ -1,7 +1,6 @@
 package interpreter
 
 import (
-	"errors"
 	"fmt"
 
 	"guppy/internal/parser/ast"
@@ -30,9 +29,10 @@ func (i *Interpreter) VisitExpressionBinary(eb ast.ExpressionBinary) (any, error
 }
 
 func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (any, error) {
+	return nil, fmt.Errorf("calls not working")
 	// TODO: I think there's some weirdness happening with calls and self, but
 	//       because flow doesn't support classes, it might not be a problem?
-	defer i.trace()()
+	/*defer i.trace()()
 
 	expr, err := r(ec.Expr.Accept(i))
 	if err != nil {
@@ -47,7 +47,7 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (any, error) {
 		return nil, err
 	}
 
-	ecArgs := ec.Args
+	ecArgs := ec.Args*/
 
 	/*
 	  If keyword arguments are present, they are first converted to positional arguments, as follows.
@@ -79,7 +79,7 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (any, error) {
 	    that formal parameter receives a dictionary containing the excess keyword arguments (using the keywords as keys and the argument values as corresponding values), or a (new) empty dictionary if there were no excess keyword arguments.
 	*/
 
-	if lv, ok := expr.(*ObjectLValue); ok {
+	/*if lv, ok := expr.(*ObjectLValue); ok {
 		// We have an lvalue, push lv.left on to the start of ecArgs
 		ecArgs = append([]*ast.DataArgument{{Expr: ast.NewExpressionLiteral(lv.left)}}, ecArgs...)
 	}
@@ -165,7 +165,7 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (any, error) {
 		return nil, errors.New("keyword arguments are not supported")
 	}
 
-	return i.doCall(expr)
+	return i.doCall(expr)*/
 }
 
 func (i *Interpreter) VisitExpressionDict(ed ast.ExpressionDict) (any, error) {

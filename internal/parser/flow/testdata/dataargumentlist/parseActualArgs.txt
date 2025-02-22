@@ -2,13 +2,11 @@ a
 -----
 DataArgumentList(
   Args: [
-    DataArgument(
-      Assign: string()
-      Expr: ExpressionVariable(
-        Identifier: string(a)
-      )
+    ExpressionVariable(
+      Identifier: string(a)
     )
   ]
+  NamedArgs: nil
   StarArg: nil
   KeywordArg: nil
 )
@@ -17,13 +15,11 @@ a,
 -----
 DataArgumentList(
   Args: [
-    DataArgument(
-      Assign: string()
-      Expr: ExpressionVariable(
-        Identifier: string(a)
-      )
+    ExpressionVariable(
+      Identifier: string(a)
     )
   ]
+  NamedArgs: nil
   StarArg: nil
   KeywordArg: nil
 )
@@ -32,19 +28,14 @@ a,b
 -----
 DataArgumentList(
   Args: [
-    DataArgument(
-      Assign: string()
-      Expr: ExpressionVariable(
-        Identifier: string(a)
-      )
+    ExpressionVariable(
+      Identifier: string(a)
     )
-    DataArgument(
-      Assign: string()
-      Expr: ExpressionVariable(
-        Identifier: string(b)
-      )
+    ExpressionVariable(
+      Identifier: string(b)
     )
   ]
+  NamedArgs: nil
   StarArg: nil
   KeywordArg: nil
 )
@@ -53,19 +44,14 @@ a,b,
 -----
 DataArgumentList(
   Args: [
-    DataArgument(
-      Assign: string()
-      Expr: ExpressionVariable(
-        Identifier: string(a)
-      )
+    ExpressionVariable(
+      Identifier: string(a)
     )
-    DataArgument(
-      Assign: string()
-      Expr: ExpressionVariable(
-        Identifier: string(b)
-      )
+    ExpressionVariable(
+      Identifier: string(b)
     )
   ]
+  NamedArgs: nil
   StarArg: nil
   KeywordArg: nil
 )
@@ -74,6 +60,7 @@ DataArgumentList(
 -----
 DataArgumentList(
   Args: nil
+  NamedArgs: nil
   StarArg: ExpressionVariable(
     Identifier: string(a)
   )
@@ -84,13 +71,11 @@ a,*b
 -----
 DataArgumentList(
   Args: [
-    DataArgument(
-      Assign: string()
-      Expr: ExpressionVariable(
-        Identifier: string(a)
-      )
+    ExpressionVariable(
+      Identifier: string(a)
     )
   ]
+  NamedArgs: nil
   StarArg: ExpressionVariable(
     Identifier: string(b)
   )
@@ -101,13 +86,11 @@ DataArgumentList(
 -----
 DataArgumentList(
   Args: [
-    DataArgument(
-      Assign: string()
-      Expr: ExpressionVariable(
-        Identifier: string(b)
-      )
+    ExpressionVariable(
+      Identifier: string(b)
     )
   ]
+  NamedArgs: nil
   StarArg: ExpressionVariable(
     Identifier: string(a)
   )
@@ -118,6 +101,7 @@ DataArgumentList(
 -----
 DataArgumentList(
   Args: nil
+  NamedArgs: nil
   StarArg: ExpressionVariable(
     Identifier: string(a)
   )
@@ -130,6 +114,7 @@ DataArgumentList(
 -----
 DataArgumentList(
   Args: nil
+  NamedArgs: nil
   StarArg: ExpressionVariable(
     Identifier: string(a)
   )
@@ -140,10 +125,33 @@ DataArgumentList(
 -----
 DataArgumentList(
   Args: nil
+  NamedArgs: nil
   StarArg: nil
   KeywordArg: ExpressionVariable(
     Identifier: string(a)
   )
+)
+=====
+*a,b,c=d
+-----
+DataArgumentList(
+  Args: [
+    ExpressionVariable(
+      Identifier: string(b)
+    )
+  ]
+  NamedArgs: [
+    DataArgument(
+      Assign: string(c)
+      Expr: ExpressionVariable(
+        Identifier: string(d)
+      )
+    )
+  ]
+  StarArg: ExpressionVariable(
+    Identifier: string(a)
+  )
+  KeywordArg: nil
 )
 =====
 a + ?
@@ -165,3 +173,11 @@ atom not supported: ERROR
 **a + ?
 -----
 atom not supported: ERROR
+=====
+a=b,c
+-----
+unnamed argument follows named argument
+=====
+*a,b=c,d
+-----
+unnamed argument follows named argument

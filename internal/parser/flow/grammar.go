@@ -624,12 +624,8 @@ func parseBinaryCall(
 		}
 		leftExpression = ast.NewExpressionCall(
 			ast.NewExpressionMember(leftExpression, member),
-			[]*ast.DataArgument{
-				{
-					Assign: "right",
-					Expr:   rightExpression,
-				},
-			},
+			[]ast.Expression{rightExpression},
+			nil,
 			nil,
 			nil,
 		)
@@ -652,7 +648,8 @@ func parseUnaryCall(
 	}
 	return ast.NewExpressionCall(
 		ast.NewExpressionMember(expr, member),
-		[]*ast.DataArgument{},
+		nil,
+		nil,
 		nil,
 		nil,
 	), nil
@@ -864,10 +861,10 @@ func parseTrailer(p *parser.Parser, expr ast.Expression) (ast.Expression, *parse
 			if args, err := parseActualArgs(p); err != nil {
 				return nil, parser.FailErr(err)
 			} else {
-				expr = ast.NewExpressionCall(expr, args.Args, args.StarArg, args.KeywordArg)
+				expr = ast.NewExpressionCall(expr, args.Args, args.NamedArgs, args.StarArg, args.KeywordArg)
 			}
 		} else {
-			expr = ast.NewExpressionCall(expr, nil, nil, nil)
+			expr = ast.NewExpressionCall(expr, nil, nil, nil, nil)
 		}
 		if err := p.MatchErr(tokenizer.TokenTypeRightParen); err != nil {
 			return nil, parser.FailErr(err)
@@ -909,51 +906,60 @@ func parseActualArgs(p *parser.Parser) (*ast.DataArgumentList, *parser.ParseErro
 		  ;
 	*/
 
-	var args []*ast.DataArgument
+	var unnamedArgs []ast.Expression
+	var namedArgs []*ast.DataArgument
 	for isTestStart(p) {
 		if arg, err := parseArgument(p); err != nil {
 			return nil, parser.FailErr(err)
+		} else if len(namedArgs) > 0 && arg.Assign == "" {
+			return nil, parser.FailMsgf("unnamed argument follows named argument")
+		} else if arg.Assign == "" {
+			unnamedArgs = append(unnamedArgs, arg.Expr)
 		} else {
-			args = append(args, arg)
-			if !p.Match(tokenizer.TokenTypeComma) {
-				return ast.NewDataArgumentList(args, nil, nil), nil
-			}
+			namedArgs = append(namedArgs, arg)
+		}
+		if !p.Match(tokenizer.TokenTypeComma) {
+			return ast.NewDataArgumentList(unnamedArgs, namedArgs, nil, nil), nil
 		}
 	}
 
 	// It can only be end of arguments, actual_star_arg or actual_kws_arg, not an argument
 	if tok, ok := p.Capture(tokenizer.TokenTypeStar, tokenizer.TokenTypeStarStar); !ok {
-		return ast.NewDataArgumentList(args, nil, nil), nil
+		return ast.NewDataArgumentList(unnamedArgs, namedArgs, nil, nil), nil
 	} else if tok.Type == tokenizer.TokenTypeStar {
 		if starArg, err := parseActualStarArg(p); err != nil {
 			return nil, parser.FailErr(err)
 		} else if !p.Match(tokenizer.TokenTypeComma) {
-			return ast.NewDataArgumentList(args, starArg, nil), nil
+			return ast.NewDataArgumentList(unnamedArgs, namedArgs, starArg, nil), nil
 		} else {
 			for isAtomStart(p) {
 				if arg, err := parseArgument(p); err != nil {
 					return nil, parser.FailErr(err)
+				} else if len(namedArgs) > 0 && arg.Assign == "" {
+					return nil, parser.FailMsgf("unnamed argument follows named argument")
+				} else if arg.Assign == "" {
+					unnamedArgs = append(unnamedArgs, arg.Expr)
 				} else {
-					args = append(args, arg)
-					if !p.Match(tokenizer.TokenTypeComma) {
-						return ast.NewDataArgumentList(args, starArg, nil), nil
-					}
+					namedArgs = append(namedArgs, arg)
+				}
+				if !p.Match(tokenizer.TokenTypeComma) {
+					return ast.NewDataArgumentList(unnamedArgs, namedArgs, starArg, nil), nil
 				}
 			}
 
 			if !p.Match(tokenizer.TokenTypeStarStar) {
-				return ast.NewDataArgumentList(args, starArg, nil), nil
+				return ast.NewDataArgumentList(unnamedArgs, namedArgs, starArg, nil), nil
 			} else if kwArg, err := parseActualKwsArg(p); err != nil {
 				return nil, parser.FailErr(err)
 			} else {
-				return ast.NewDataArgumentList(args, starArg, kwArg), nil
+				return ast.NewDataArgumentList(unnamedArgs, namedArgs, starArg, kwArg), nil
 			}
 		}
 	} else /*if tok.Type == tokenizer.TokenTypeStarStar*/ {
 		if kwArg, err := parseActualKwsArg(p); err != nil {
 			return nil, parser.FailErr(err)
 		} else {
-			return ast.NewDataArgumentList(args, nil, kwArg), nil
+			return ast.NewDataArgumentList(unnamedArgs, namedArgs, nil, kwArg), nil
 		}
 	}
 }

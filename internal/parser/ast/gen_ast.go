@@ -40,18 +40,21 @@ func (da DataArgument) Accept(vd VisitorData) (any, error) {
 }
 
 type DataArgumentList struct {
-	Args       []*DataArgument
+	Args       []Expression
+	NamedArgs  []*DataArgument
 	StarArg    Expression
 	KeywordArg Expression
 }
 
 func NewDataArgumentList(
-	Args []*DataArgument,
+	Args []Expression,
+	NamedArgs []*DataArgument,
 	StarArg Expression,
 	KeywordArg Expression,
 ) *DataArgumentList {
 	return &DataArgumentList{
 		Args:       Args,
+		NamedArgs:  NamedArgs,
 		StarArg:    StarArg,
 		KeywordArg: KeywordArg,
 	}
@@ -691,23 +694,26 @@ func (es ExpressionSubscript) Accept(ve VisitorExpression) (any, error) {
 }
 
 type ExpressionCall struct {
-	Expr        Expression
-	Args        []*DataArgument
-	StarArgs    Expression
-	KeywordArgs Expression
+	Expr       Expression
+	Args       []Expression
+	NamedArgs  []*DataArgument
+	StarArg    Expression
+	KeywordArg Expression
 }
 
 func NewExpressionCall(
 	Expr Expression,
-	Args []*DataArgument,
-	StarArgs Expression,
-	KeywordArgs Expression,
+	Args []Expression,
+	NamedArgs []*DataArgument,
+	StarArg Expression,
+	KeywordArg Expression,
 ) Expression {
 	return ExpressionCall{
-		Expr:        Expr,
-		Args:        Args,
-		StarArgs:    StarArgs,
-		KeywordArgs: KeywordArgs,
+		Expr:       Expr,
+		Args:       Args,
+		NamedArgs:  NamedArgs,
+		StarArg:    StarArg,
+		KeywordArg: KeywordArg,
 	}
 }
 

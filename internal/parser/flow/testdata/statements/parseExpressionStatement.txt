@@ -9,8 +9,9 @@ StatementExpression(
           Identifier: string(a)
         )
         Args: nil
-        StarArgs: nil
-        KeywordArgs: nil
+        NamedArgs: nil
+        StarArg: nil
+        KeywordArg: nil
       )
     ]
     Tuple: bool(false)
@@ -30,8 +31,9 @@ StatementExpression(
           Identifier: string(b)
         )
         Args: nil
-        StarArgs: nil
-        KeywordArgs: nil
+        NamedArgs: nil
+        StarArg: nil
+        KeywordArg: nil
       )
     ]
     Tuple: bool(false)

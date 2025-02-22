@@ -55,6 +55,19 @@ func (dw DebugWriter) VisitDataArgumentList(dal DataArgumentList) (any, error) {
 		dw.o()
 		_s += dw.p() + "]\n"
 	}
+	if dal.NamedArgs == nil {
+		_s += dw.p() + "NamedArgs: nil\n"
+	} else if len(dal.NamedArgs) == 0 {
+		_s += dw.p() + "NamedArgs: []\n"
+	} else {
+		_s += dw.p() + "NamedArgs: [\n"
+		dw.i()
+		for _, _r := range dal.NamedArgs {
+			_s += dw.p() + s(_r.Accept(dw)) // IsInterfaceArray
+		}
+		dw.o()
+		_s += dw.p() + "]\n"
+	}
 	if dal.StarArg != nil {
 		_s += dw.p() + "StarArg: " + s(dal.StarArg.Accept(dw)) // IsInterface
 	} else {
@@ -713,15 +726,28 @@ func (dw DebugWriter) VisitExpressionCall(ec ExpressionCall) (any, error) {
 		dw.o()
 		_s += dw.p() + "]\n"
 	}
-	if ec.StarArgs != nil {
-		_s += dw.p() + "StarArgs: " + s(ec.StarArgs.Accept(dw)) // IsInterface
+	if ec.NamedArgs == nil {
+		_s += dw.p() + "NamedArgs: nil\n"
+	} else if len(ec.NamedArgs) == 0 {
+		_s += dw.p() + "NamedArgs: []\n"
 	} else {
-		_s += dw.p() + "StarArgs: nil\n"
+		_s += dw.p() + "NamedArgs: [\n"
+		dw.i()
+		for _, _r := range ec.NamedArgs {
+			_s += dw.p() + s(_r.Accept(dw)) // IsInterfaceArray
+		}
+		dw.o()
+		_s += dw.p() + "]\n"
 	}
-	if ec.KeywordArgs != nil {
-		_s += dw.p() + "KeywordArgs: " + s(ec.KeywordArgs.Accept(dw)) // IsInterface
+	if ec.StarArg != nil {
+		_s += dw.p() + "StarArg: " + s(ec.StarArg.Accept(dw)) // IsInterface
 	} else {
-		_s += dw.p() + "KeywordArgs: nil\n"
+		_s += dw.p() + "StarArg: nil\n"
+	}
+	if ec.KeywordArg != nil {
+		_s += dw.p() + "KeywordArg: " + s(ec.KeywordArg.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "KeywordArg: nil\n"
 	}
 	dw.o()
 	_s += dw.p() + ")\n"
