@@ -8,7 +8,7 @@ type methodSum struct {
 	interpreter.Object
 }
 
-func (ms methodSum) Params(i *interpreter.Interpreter) ([]interpreter.ParamData, error) {
+func (ms methodSum) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
 	return argsAggregate(i)
 }
 

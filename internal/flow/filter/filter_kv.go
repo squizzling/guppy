@@ -10,42 +10,89 @@ type FFIFilter struct {
 	interpreter.Object
 }
 
-func (f FFIFilter) Params(i *interpreter.Interpreter) ([]interpreter.ParamData, error) {
-	return []interpreter.ParamData{
-		{Name: "key"},
-		{Name: "value"},
+func (f FFIFilter) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
+	return &interpreter.Params{
+		Params: []interpreter.ParamDef{
+			{Name: "field"},
+			{Name: "term", Default: interpreter.NewObjectNone()},
+		},
+		StarParam: "terms",
+		KWParams: []interpreter.ParamDef{
+			{Name: "match_missing", Default: interpreter.NewObjectBool(false)},
+		},
 	}, nil
 }
 
-func (f FFIFilter) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
-	if key, err := interpreter.ArgAsString(i, "key"); err != nil {
+func (f FFIFilter) resolveTerms(i *interpreter.Interpreter) ([]string, error) {
+	var terms []string
+
+	if objTerm, err := i.Scope.Get("term"); err != nil {
 		return nil, err
-	} else if value, err := interpreter.ArgAsString(i, "value"); err != nil {
-		// TODO: value should read an array as `*value`
+	} else if strTerm, ok := objTerm.(*interpreter.ObjectString); ok {
+		terms = append(terms, strTerm.Value)
+	} else if _, ok = objTerm.(*interpreter.ObjectNone); !ok {
+		return nil, fmt.Errorf("term is not *interpreter.ObjectString or *interpreter.ObjectNone")
+	} else {
+		// nothing
+	}
+
+	if v, err := i.Scope.Get("terms"); err != nil {
 		return nil, err
 	} else {
-		return NewKV(key, []string{value}), nil
+		switch v := v.(type) {
+		case *interpreter.ObjectTuple:
+			for _, o := range v.Items {
+				if term, err := i.DoString(o); err != nil {
+					return nil, err
+				} else {
+					terms = append(terms, term)
+				}
+			}
+		default:
+			return nil, fmt.Errorf("unhandled term type: %T", v)
+		}
+		return terms, nil
+	}
+}
+
+func (f FFIFilter) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
+	if term, err := interpreter.ArgAsString(i, "field"); err != nil {
+		return nil, err
+	} else if terms, err := f.resolveTerms(i); err != nil {
+		return nil, err
+	} else if matchMissing, err := interpreter.ArgAsBool(i, "match_missing"); err != nil {
+		return nil, err
+	} else {
+		return NewKV(term, terms, matchMissing), nil
 	}
 }
 
 type kv struct {
 	interpreter.Object
 
-	key    string
-	values []string
+	key          string
+	values       []string
+	matchMissing bool
 }
 
-func NewKV(key string, values []string) Filter {
+func NewKV(key string, values []string, matchMissing bool) Filter {
 	return &kv{
-		Object: newFilterObject(),
-		key:    key,
-		values: values,
+		Object:       newFilterObject(),
+		key:          key,
+		values:       values,
+		matchMissing: matchMissing,
 	}
 }
 
-func (fkc *kv) RenderFilter() string {
-	if len(fkc.values) != 1 {
-		panic("stop")
+func (fkv *kv) RenderFilter() string {
+	term := "*("
+	for _, v := range fkv.values {
+		term = term + "'" + v + "'"
 	}
-	return fmt.Sprintf("filter('%s', '%s')", fkc.key, fkc.values[0])
+	term += ")"
+	matchMissing := ""
+	if fkv.matchMissing {
+		matchMissing = ", match_missing=True"
+	}
+	return fmt.Sprintf("filter('%s', %s%s)", fkv.key, term, matchMissing)
 }

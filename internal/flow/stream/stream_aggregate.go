@@ -7,10 +7,12 @@ import (
 	"guppy/internal/interpreter"
 )
 
-func argsAggregate(i *interpreter.Interpreter) ([]interpreter.ParamData, error) {
-	return []interpreter.ParamData{
-		{Name: "self"},
-		{Name: "by", Default: interpreter.NewObjectNone()},
+func argsAggregate(i *interpreter.Interpreter) (*interpreter.Params, error) {
+	return &interpreter.Params{
+		Params: []interpreter.ParamDef{
+			{Name: "self"},
+			{Name: "by", Default: interpreter.NewObjectNone()},
+		},
 	}, nil
 }
 

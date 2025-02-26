@@ -8,7 +8,7 @@ type methodMax struct {
 	interpreter.Object
 }
 
-func (mm methodMax) Params(i *interpreter.Interpreter) ([]interpreter.ParamData, error) {
+func (mm methodMax) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
 	return argsAggregate(i)
 }
 

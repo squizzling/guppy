@@ -10,10 +10,12 @@ type methodPublish struct {
 	interpreter.Object
 }
 
-func (mp methodPublish) Params(i *interpreter.Interpreter) ([]interpreter.ParamData, error) {
-	return []interpreter.ParamData{
-		{Name: "self"},
-		{Name: "label"},
+func (mp methodPublish) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
+	return &interpreter.Params{
+		Params: []interpreter.ParamDef{
+			{Name: "self"},
+			{Name: "label"},
+		},
 	}, nil
 }
 

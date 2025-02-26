@@ -11,14 +11,16 @@ type FFIData struct {
 	interpreter.Object
 }
 
-func (f FFIData) Params(i *interpreter.Interpreter) ([]interpreter.ParamData, error) {
-	return []interpreter.ParamData{
-		{Name: "metric"},
-		{Name: "filter", Default: interpreter.NewObjectNone()},
-		{Name: "rollup", Default: interpreter.NewObjectNone()},
-		{Name: "extrapolation", Default: interpreter.NewObjectString("null")},
-		//{Name: "maxExtrapolations", Default: interpreter.NewObjectNone()}, // TODO: Check what this has for a default
-		//{Name: "resolution", Default: interpreter.NewObjectNone()},
+func (f FFIData) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
+	return &interpreter.Params{
+		Params: []interpreter.ParamDef{
+			{Name: "metric"},
+			{Name: "filter", Default: interpreter.NewObjectNone()},
+			{Name: "rollup", Default: interpreter.NewObjectNone()},
+			{Name: "extrapolation", Default: interpreter.NewObjectString("null")},
+			//{Name: "maxExtrapolations", Default: interpreter.NewObjectNone()}, // TODO: Check what this has for a default
+			//{Name: "resolution", Default: interpreter.NewObjectNone()},
+		},
 	}, nil
 }
 

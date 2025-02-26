@@ -3,17 +3,17 @@ package interpreter
 type ObjectString struct {
 	Object
 
-	s string
+	Value string
 }
 
 func NewObjectString(s string) Object {
 	return &ObjectString{
-		s: s,
+		Value: s,
 	}
 }
 
 func (os *ObjectString) String(i *Interpreter) (string, error) {
-	return os.s, nil
+	return os.Value, nil
 }
 
 var _ = FlowStringable(&ObjectString{})

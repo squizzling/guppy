@@ -12,7 +12,7 @@ func NewLValue(left Object, right Object) Object {
 	}
 }
 
-func (lv *ObjectLValue) Params(i *Interpreter) ([]ParamData, error) {
+func (lv *ObjectLValue) Params(i *Interpreter) (*Params, error) {
 	return i.doParams(lv.right)
 }
 

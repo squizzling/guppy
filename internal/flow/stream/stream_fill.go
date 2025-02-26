@@ -10,12 +10,14 @@ type methodFill struct {
 	interpreter.Object
 }
 
-func (mf methodFill) Params(i *interpreter.Interpreter) ([]interpreter.ParamData, error) {
-	return []interpreter.ParamData{
-		{Name: "self"},
-		{Name: "value", Default: interpreter.NewObjectNone()},
-		{Name: "duration", Default: interpreter.NewObjectNone()},
-		{Name: "maxCount", Default: interpreter.NewObjectNone()},
+func (mf methodFill) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
+	return &interpreter.Params{
+		Params: []interpreter.ParamDef{
+			{Name: "self"},
+			{Name: "value", Default: interpreter.NewObjectNone()},
+			{Name: "duration", Default: interpreter.NewObjectNone()},
+			{Name: "maxCount", Default: interpreter.NewObjectNone()},
+		},
 	}, nil
 }
 
