@@ -84,18 +84,7 @@ DataArgumentList(
 =====
 *a,b
 -----
-DataArgumentList(
-  Args: [
-    ExpressionVariable(
-      Identifier: string(b)
-    )
-  ]
-  NamedArgs: nil
-  StarArg: ExpressionVariable(
-    Identifier: string(a)
-  )
-  KeywordArg: nil
-)
+unnamed argument follows *argument
 =====
 *a, **b
 -----
@@ -134,25 +123,7 @@ DataArgumentList(
 =====
 *a,b,c=d
 -----
-DataArgumentList(
-  Args: [
-    ExpressionVariable(
-      Identifier: string(b)
-    )
-  ]
-  NamedArgs: [
-    DataArgument(
-      Assign: string(c)
-      Expr: ExpressionVariable(
-        Identifier: string(d)
-      )
-    )
-  ]
-  StarArg: ExpressionVariable(
-    Identifier: string(a)
-  )
-  KeywordArg: nil
-)
+unnamed argument follows *argument
 =====
 a + ?
 -----
@@ -180,4 +151,4 @@ unnamed argument follows named argument
 =====
 *a,b=c,d
 -----
-unnamed argument follows named argument
+unnamed argument follows *argument
