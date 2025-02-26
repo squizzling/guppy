@@ -935,10 +935,8 @@ func parseActualArgs(p *parser.Parser) (*ast.DataArgumentList, *parser.ParseErro
 			for isAtomStart(p) {
 				if arg, err := parseArgument(p); err != nil {
 					return nil, parser.FailErr(err)
-				} else if len(namedArgs) > 0 && arg.Assign == "" {
-					return nil, parser.FailMsgf("unnamed argument follows named argument")
 				} else if arg.Assign == "" {
-					unnamedArgs = append(unnamedArgs, arg.Expr)
+					return nil, parser.FailMsgf("unnamed argument follows *argument")
 				} else {
 					namedArgs = append(namedArgs, arg)
 				}
