@@ -126,12 +126,26 @@ func ArgAsBool(i *Interpreter, argName string) (bool, error) {
 	}
 }
 
+func ArgAsDouble(i *Interpreter, argName string) (float64, error) {
+	if objArg, err := i.Scope.Get(argName); err != nil {
+		return 0, err
+	} else if doubleArg, ok := objArg.(*ObjectDouble); !ok {
+		if intArg, ok := objArg.(*ObjectInt); !ok {
+			return 0, fmt.Errorf("%T is not *interpreter.ObjectDouble or *interpreter.ObjectInt", objArg)
+		} else {
+			return float64(intArg.Value), nil
+		}
+	} else {
+		return doubleArg.Value, nil
+	}
+}
+
 func ArgAs[T any](i *Interpreter, name string) (T, error) {
 	var zero T
 	if v, err := i.Scope.Get(name); err != nil {
 		return zero, err
 	} else if o, ok := v.(T); !ok {
-		return zero, fmt.Errorf("arg %s is %T not %T", name, o, &v)
+		return zero, fmt.Errorf("arg %s is %T not %T", name, v, zero)
 	} else {
 		return o, nil
 	}
