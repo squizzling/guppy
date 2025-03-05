@@ -27,6 +27,8 @@ func (f FFIPrint) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
 			switch arg := arg.(type) {
 			case *interpreter.ObjectString:
 				sb.WriteString(arg.Value)
+			case *interpreter.ObjectInt:
+				sb.WriteString(fmt.Sprintf("%d", arg.Value))
 			default:
 				sb.WriteString(fmt.Sprintf("unknown[%d/%T](%v)", idx, arg, arg))
 			}
