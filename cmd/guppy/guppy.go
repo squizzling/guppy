@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"guppy/internal/flow/debug"
 	"guppy/internal/flow/filter"
 	"guppy/internal/flow/stream"
 	"guppy/internal/interpreter"
@@ -31,6 +32,7 @@ func main() {
 	i.Scope.DeclareSet("data", &stream.FFIData{Object: interpreter.NewObject(nil)})
 	i.Scope.DeclareSet("events", &stream.FFIEvents{Object: interpreter.NewObject(nil)})
 	i.Scope.DeclareSet("filter", &filter.FFIFilter{Object: interpreter.NewObject(nil)})
+	i.Scope.DeclareSet("_print", &debug.FFIPrint{Object: interpreter.NewObject(nil)})
 	i.Scope.DeclareSet("threshold", &stream.FFIThreshold{Object: interpreter.NewObject(nil)})
 
 	errProgram := i.Execute(program)
