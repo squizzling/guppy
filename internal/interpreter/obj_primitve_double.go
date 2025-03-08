@@ -8,10 +8,7 @@ type ObjectDouble struct {
 
 func NewObjectDouble(f float64) Object {
 	return &ObjectDouble{
-		Value: f,
+		Object: NewObject(nil),
+		Value:  f,
 	}
-}
-
-func (od *ObjectDouble) Double(i *Interpreter) (float64, error) {
-	return od.Value, nil
 }

@@ -9,6 +9,7 @@ type ObjectList struct {
 
 func NewObjectList(items ...Object) Object {
 	return &ObjectList{
-		Items: items,
+		Object: NewObject(nil),
+		Items:  items,
 	}
 }

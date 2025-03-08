@@ -105,18 +105,6 @@ func (i *Interpreter) DoString(o Object) (string, error) {
 	}
 }
 
-type FlowIntable interface {
-	Int(i *Interpreter) (int, error)
-}
-
-func (i *Interpreter) doInt(o Object) (int, error) {
-	if s, ok := o.(FlowIntable); !ok {
-		return 0, fmt.Errorf("%T is not intable", &s)
-	} else {
-		return s.Int(i)
-	}
-}
-
 func ArgAsString(i *Interpreter, argName string) (string, error) {
 	if objArg, err := i.Scope.Get(argName); err != nil {
 		return "", err

@@ -8,7 +8,8 @@ type ObjectString struct {
 
 func NewObjectString(s string) Object {
 	return &ObjectString{
-		Value: s,
+		Object: NewObject(nil),
+		Value:  s,
 	}
 }
 

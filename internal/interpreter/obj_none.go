@@ -1,9 +1,15 @@
 package interpreter
 
-type ObjectNone struct {
-	Object
-}
+import (
+	"errors"
+)
+
+type ObjectNone struct{}
 
 func NewObjectNone() Object {
 	return &ObjectNone{}
+}
+
+func (on *ObjectNone) Member(i *Interpreter, obj Object, memberName string) (Object, error) {
+	return nil, errors.New("None doesn't support member")
 }

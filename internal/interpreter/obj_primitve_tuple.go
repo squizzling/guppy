@@ -9,6 +9,7 @@ type ObjectTuple struct {
 
 func NewObjectTuple(items ...Object) Object {
 	return &ObjectTuple{
-		Items: items,
+		Object: NewObject(nil),
+		Items:  items,
 	}
 }
