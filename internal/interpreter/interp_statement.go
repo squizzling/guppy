@@ -47,10 +47,14 @@ func (i *Interpreter) VisitStatementExpression(se ast.StatementExpression) (any,
 			return nil, fmt.Errorf("assigning invalid count (assign %d, return %d)", len(se.Assign), len(values.Items))
 		}
 
-		i.Scope.DeclareSet(se.Assign[0], values)
+		if err := i.Scope.Set(se.Assign[0], values); err != nil {
+			return nil, err
+		}
 	} else {
 		for idx := 0; idx < len(values.Items); idx++ {
-			i.Scope.DeclareSet(se.Assign[idx], values.Items[idx])
+			if err := i.Scope.Set(se.Assign[idx], values.Items[idx]); err != nil {
+				return nil, err
+			}
 		}
 	}
 	return nil, nil

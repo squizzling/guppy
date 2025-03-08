@@ -2,3 +2,5 @@
 /profile.html
 /profile.out
 *.flow
+*.swp
+*.prof

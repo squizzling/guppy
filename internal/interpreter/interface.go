@@ -11,8 +11,12 @@ func (i *Interpreter) doAnd(left Object, right Object) (Object, error) {
 		i.pushScope()
 		defer i.popScope()
 
-		i.Scope.DeclareSet("self", left)
-		i.Scope.DeclareSet("right", right)
+		if err := i.Scope.Set("self", left); err != nil {
+			return nil, err
+		}
+		if err := i.Scope.Set("right", right); err != nil {
+			return nil, err
+		}
 		return i.doCall(and)
 	}
 }

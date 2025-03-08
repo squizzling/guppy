@@ -29,11 +29,11 @@ func main() {
 
 	i := interpreter.NewInterpreter()
 
-	i.Scope.DeclareSet("data", &stream.FFIData{Object: interpreter.NewObject(nil)})
-	i.Scope.DeclareSet("events", &stream.FFIEvents{Object: interpreter.NewObject(nil)})
-	i.Scope.DeclareSet("filter", &filter.FFIFilter{Object: interpreter.NewObject(nil)})
-	i.Scope.DeclareSet("_print", &debug.FFIPrint{Object: interpreter.NewObject(nil)})
-	i.Scope.DeclareSet("threshold", &stream.FFIThreshold{Object: interpreter.NewObject(nil)})
+	_ = i.Globals.Set("data", &stream.FFIData{Object: interpreter.NewObject(nil)})
+	_ = i.Globals.Set("events", &stream.FFIEvents{Object: interpreter.NewObject(nil)})
+	_ = i.Globals.Set("filter", &filter.FFIFilter{Object: interpreter.NewObject(nil)})
+	_ = i.Globals.Set("_print", &debug.FFIPrint{Object: interpreter.NewObject(nil)})
+	_ = i.Globals.Set("threshold", &stream.FFIThreshold{Object: interpreter.NewObject(nil)})
 
 	errProgram := i.Execute(program)
 	if errProgram != nil {

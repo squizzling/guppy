@@ -2,6 +2,7 @@ package interpreter
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"runtime"
 	"runtime/debug"
@@ -21,6 +22,7 @@ func NewInterpreter() *Interpreter {
 	i := &Interpreter{}
 	i.pushScope()
 	i.Globals = i.Scope
+	i.pushScope()
 
 	return i
 }
@@ -79,30 +81,18 @@ type scope struct {
 	lookupChain *scope // Used for lookup
 }
 
-func (s *scope) Declare(key string) {
-	if _, ok := s.vars[key]; !ok {
-		s.vars[key] = nil
-	}
-}
-
-func (s *scope) Set(key string, value Object) bool {
-	// TODO: This whole model might be wrong for Signalflow.
+func (s *scope) Set(key string, value Object) error {
+	// Set is not allowed to look up the chain to find something, it can only set in the current context, and only if
+	// there's nothing there already.
 	if _, ok := s.vars[key]; ok {
-		s.vars[key] = value
-		return true
+		return errors.New("scope contains multiple bindings of " + key)
 	}
-	if s.lookupChain == nil {
-		return false
-	}
-	return s.lookupChain.Set(key, value)
-}
-
-func (s *scope) DeclareSet(key string, value Object) {
-	s.Declare(key)
-	s.Set(key, value)
+	s.vars[key] = value
+	return nil
 }
 
 func (s *scope) Get(key string) (Object, error) {
+	// Get is allowed to look up the chain to find something
 	if val, ok := s.vars[key]; ok {
 		return val, nil
 	}

@@ -228,11 +228,15 @@ func (i *Interpreter) assignArgs(
 	kwArgs map[string]Object, // TODO: I don't like this map key, so punting it.
 ) error {
 	if starParamName != "" {
-		i.Scope.DeclareSet(starParamName, NewObjectTuple(starArgs...))
+		if err := i.Scope.Set(starParamName, NewObjectTuple(starArgs...)); err != nil {
+			return err
+		}
 	}
 
 	for idx, _ := range formalParams {
-		i.Scope.DeclareSet(formalNames[idx], formalParams[idx])
+		if err := i.Scope.Set(formalNames[idx], formalParams[idx]); err != nil {
+			return err
+		}
 	}
 	if kwParamName != "" {
 		return fmt.Errorf("can't set kwparam")
