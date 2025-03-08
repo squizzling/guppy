@@ -11,12 +11,7 @@ type methodBinaryAnd struct {
 }
 
 func (mba methodBinaryAnd) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
-	return &interpreter.Params{
-		Params: []interpreter.ParamDef{
-			{Name: "self"},
-			{Name: "right"},
-		},
-	}, nil
+	return interpreter.BinaryParams, nil
 }
 
 func (mba methodBinaryAnd) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
