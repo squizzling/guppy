@@ -15,11 +15,14 @@ type Interpreter struct {
 	Globals *scope
 	Scope   *scope
 
-	debugDepth int
+	debugDepth  int
+	enableTrace bool
 }
 
-func NewInterpreter() *Interpreter {
-	i := &Interpreter{}
+func NewInterpreter(enableTrace bool) *Interpreter {
+	i := &Interpreter{
+		enableTrace: enableTrace,
+	}
 	i.pushScope()
 	i.Globals = i.Scope
 	i.pushScope()
@@ -27,7 +30,11 @@ func NewInterpreter() *Interpreter {
 	return i
 }
 
-func (i *Interpreter) trace(a ...any) func() {
+func (i *Interpreter) trace(a ...any) func(err *error) {
+	if !i.enableTrace {
+		return func(err *error) {}
+	}
+
 	rpc := []uintptr{0}
 	s := runtime.Callers(2, rpc)
 	n := "unknown"
@@ -45,12 +52,16 @@ func (i *Interpreter) trace(a ...any) func() {
 			ss = " - " + ss
 		}
 	}
-	//fmt.Printf("%senter %s%s\n", strings.Repeat(" ", i.debugDepth), n, ss)
+	fmt.Printf("%senter %s%s\n", strings.Repeat(" ", i.debugDepth), n, ss)
 	i.debugDepth++
-	return func() {
+	return func(err *error) {
 		i.debugDepth--
 		if !bytes.Contains(debug.Stack(), []byte("panic")) {
-			//fmt.Printf("%sleave %s%s\n", strings.Repeat(" ", i.debugDepth), n, ss)
+			if *err != nil {
+				fmt.Printf("%sleave %s%s [Error: %s]\n", strings.Repeat(" ", i.debugDepth), n, ss, *err)
+			} else {
+				fmt.Printf("%sleave %s%s\n", strings.Repeat(" ", i.debugDepth), n, ss)
+			}
 		}
 	}
 }

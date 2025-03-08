@@ -7,8 +7,8 @@ import (
 	"guppy/internal/parser/tokenizer"
 )
 
-func (i *Interpreter) VisitExpressionBinary(eb ast.ExpressionBinary) (any, error) {
-	defer i.trace()()
+func (i *Interpreter) VisitExpressionBinary(eb ast.ExpressionBinary) (_ any, errOut error) {
+	defer i.trace()(&errOut)
 
 	left, err := r(eb.Left.Accept(i))
 	if err != nil {
@@ -42,7 +42,8 @@ func findParamSlot(params *Params, name string) int {
 	return -1
 }
 
-func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (any, error) {
+func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (_ any, errOut error) {
+	defer i.trace()(&errOut)
 	/*
 	  If keyword arguments are present, they are first converted to positional arguments, as follows.
 	  First, a list of unfilled slots is created for the formal parameters.
@@ -80,7 +81,6 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (any, error) {
 
 	// TODO: I think there's some weirdness happening with calls and self, but
 	//       because flow doesn't support classes, it might not be a problem?
-	defer i.trace()()
 
 	expr, err := r(ec.Expr.Accept(i))
 	if err != nil {
@@ -262,26 +262,26 @@ func (i *Interpreter) resolveStarArgs(unnamedArgs []ast.Expression, formalParamC
 	return starArgs, nil
 }
 
-func (i *Interpreter) VisitExpressionDict(ed ast.ExpressionDict) (any, error) {
-	defer i.trace()()
+func (i *Interpreter) VisitExpressionDict(ed ast.ExpressionDict) (_ any, errOut error) {
+	defer i.trace()(&errOut)
 
 	panic("ExpressionDict")
 }
 
-func (i *Interpreter) VisitExpressionGrouping(eg ast.ExpressionGrouping) (any, error) {
-	defer i.trace()()
+func (i *Interpreter) VisitExpressionGrouping(eg ast.ExpressionGrouping) (_ any, errOut error) {
+	defer i.trace()(&errOut)
 
 	panic("ExpressionGrouping")
 }
 
-func (i *Interpreter) VisitExpressionLambda(el ast.ExpressionLambda) (any, error) {
-	defer i.trace()()
+func (i *Interpreter) VisitExpressionLambda(el ast.ExpressionLambda) (_ any, errOut error) {
+	defer i.trace()(&errOut)
 
 	panic("ExpressionLambda")
 }
 
-func (i *Interpreter) VisitExpressionList(el ast.ExpressionList) (any, error) {
-	defer i.trace()()
+func (i *Interpreter) VisitExpressionList(el ast.ExpressionList) (_ any, errOut error) {
+	defer i.trace()(&errOut)
 
 	var o []Object
 	for _, expr := range el.Expressions {
@@ -294,14 +294,14 @@ func (i *Interpreter) VisitExpressionList(el ast.ExpressionList) (any, error) {
 	return NewObjectList(o...), nil
 }
 
-func (i *Interpreter) VisitExpressionListMaker(elm ast.ExpressionListMaker) (any, error) {
-	defer i.trace()()
+func (i *Interpreter) VisitExpressionListMaker(elm ast.ExpressionListMaker) (_ any, errOut error) {
+	defer i.trace()(&errOut)
 
 	panic("ExpressionListMaker")
 }
 
-func (i *Interpreter) VisitExpressionLiteral(el ast.ExpressionLiteral) (any, error) {
-	defer i.trace("Value: %v", el.Value)()
+func (i *Interpreter) VisitExpressionLiteral(el ast.ExpressionLiteral) (_ any, errOut error) {
+	defer i.trace("Value: %v", el.Value)(&errOut)
 
 	switch v := el.Value.(type) {
 	case int:
@@ -319,42 +319,42 @@ func (i *Interpreter) VisitExpressionLiteral(el ast.ExpressionLiteral) (any, err
 	}
 }
 
-func (i *Interpreter) VisitExpressionLogical(el ast.ExpressionLogical) (any, error) {
-	defer i.trace()()
+func (i *Interpreter) VisitExpressionLogical(el ast.ExpressionLogical) (_ any, errOut error) {
+	defer i.trace()(&errOut)
 
 	panic("ExpressionLogical")
 }
 
-func (i *Interpreter) VisitExpressionMember(em ast.ExpressionMember) (any, error) {
-	defer i.trace("Member: %s", em.Identifier)()
+func (i *Interpreter) VisitExpressionMember(em ast.ExpressionMember) (_ any, errOut error) {
+	defer i.trace("Member: %s", em.Identifier)(&errOut)
 
-	if expr, err := r(em.Expr.Accept(i)); err != nil {
+	if obj, err := r(em.Expr.Accept(i)); err != nil {
 		return nil, err
 	} else {
-		return expr.Member(i, expr, em.Identifier)
+		return obj.Member(i, obj, em.Identifier)
 	}
 }
 
-func (i *Interpreter) VisitExpressionSubscript(es ast.ExpressionSubscript) (any, error) {
-	defer i.trace()()
+func (i *Interpreter) VisitExpressionSubscript(es ast.ExpressionSubscript) (_ any, errOut error) {
+	defer i.trace()(&errOut)
 
 	panic("ExpressionSubscript")
 }
 
-func (i *Interpreter) VisitExpressionTernary(et ast.ExpressionTernary) (any, error) {
-	defer i.trace()()
+func (i *Interpreter) VisitExpressionTernary(et ast.ExpressionTernary) (_ any, errOut error) {
+	defer i.trace()(&errOut)
 
 	panic("ExpressionTernary")
 }
 
-func (i *Interpreter) VisitExpressionUnary(eu ast.ExpressionUnary) (any, error) {
-	defer i.trace()()
+func (i *Interpreter) VisitExpressionUnary(eu ast.ExpressionUnary) (_ any, errOut error) {
+	defer i.trace()(&errOut)
 
 	panic("ExpressionUnary")
 }
 
-func (i *Interpreter) VisitExpressionVariable(ev ast.ExpressionVariable) (any, error) {
-	defer i.trace("Identifier: %s", ev.Identifier)()
+func (i *Interpreter) VisitExpressionVariable(ev ast.ExpressionVariable) (_ any, errOut error) {
+	defer i.trace("Identifier: %s", ev.Identifier)(&errOut)
 
 	return i.Scope.Get(ev.Identifier)
 }

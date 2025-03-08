@@ -27,7 +27,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	i := interpreter.NewInterpreter()
+	i := interpreter.NewInterpreter(false)
 
 	_ = i.Globals.Set("data", &stream.FFIData{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("events", &stream.FFIEvents{Object: interpreter.NewObject(nil)})

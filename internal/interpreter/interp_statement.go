@@ -6,20 +6,20 @@ import (
 	"guppy/internal/parser/ast"
 )
 
-func (i *Interpreter) VisitStatementAssert(sa ast.StatementAssert) (any, error) {
-	defer i.trace()()
+func (i *Interpreter) VisitStatementAssert(sa ast.StatementAssert) (_ any, errOut error) {
+	defer i.trace()(&errOut)
 
 	panic("StatementAssert")
 }
 
-func (i *Interpreter) VisitStatementDecorated(sd ast.StatementDecorated) (any, error) {
-	defer i.trace()()
+func (i *Interpreter) VisitStatementDecorated(sd ast.StatementDecorated) (_ any, errOut error) {
+	defer i.trace()(&errOut)
 
 	panic("StatementDecorated")
 }
 
-func (i *Interpreter) VisitStatementExpression(se ast.StatementExpression) (any, error) {
-	defer i.trace()()
+func (i *Interpreter) VisitStatementExpression(se ast.StatementExpression) (_ any, errOut error) {
+	defer i.trace()(&errOut)
 
 	valuesAny, err := se.Expr.Accept(i)
 	if err != nil {
@@ -60,38 +60,38 @@ func (i *Interpreter) VisitStatementExpression(se ast.StatementExpression) (any,
 	return nil, nil
 }
 
-func (i *Interpreter) VisitStatementFunction(sf ast.StatementFunction) (any, error) {
-	defer i.trace()()
+func (i *Interpreter) VisitStatementFunction(sf ast.StatementFunction) (_ any, errOut error) {
+	defer i.trace()(&errOut)
 
 	panic("StatementFunction")
 }
 
-func (i *Interpreter) VisitStatementIf(si ast.StatementIf) (any, error) {
-	defer i.trace()()
+func (i *Interpreter) VisitStatementIf(si ast.StatementIf) (_ any, errOut error) {
+	defer i.trace()(&errOut)
 
 	panic("StatementIf")
 }
 
-func (i *Interpreter) VisitStatementImportFrom(sif ast.StatementImportFrom) (any, error) {
-	defer i.trace()()
+func (i *Interpreter) VisitStatementImportFrom(sif ast.StatementImportFrom) (_ any, errOut error) {
+	defer i.trace()(&errOut)
 
 	panic("StatementImportFrom")
 }
 
-func (i *Interpreter) VisitStatementImportFromStar(sifs ast.StatementImportFromStar) (any, error) {
-	defer i.trace()()
+func (i *Interpreter) VisitStatementImportFromStar(sifs ast.StatementImportFromStar) (_ any, errOut error) {
+	defer i.trace()(&errOut)
 
 	panic("StatementImportFromStar")
 }
 
-func (i *Interpreter) VisitStatementImportNames(sif ast.StatementImportNames) (any, error) {
-	defer i.trace()()
+func (i *Interpreter) VisitStatementImportNames(sif ast.StatementImportNames) (_ any, errOut error) {
+	defer i.trace()(&errOut)
 
 	panic("StatementImportNames")
 }
 
-func (i *Interpreter) VisitStatementList(sl ast.StatementList) (any, error) {
-	defer i.trace()()
+func (i *Interpreter) VisitStatementList(sl ast.StatementList) (_ any, errOut error) {
+	defer i.trace()(&errOut)
 
 	for _, stmt := range sl.Statements {
 		_, err := stmt.Accept(i)
@@ -102,14 +102,14 @@ func (i *Interpreter) VisitStatementList(sl ast.StatementList) (any, error) {
 	return nil, nil
 }
 
-func (i *Interpreter) VisitStatementProgram(sp ast.StatementProgram) (any, error) {
-	defer i.trace()()
+func (i *Interpreter) VisitStatementProgram(sp ast.StatementProgram) (_ any, errOut error) {
+	defer i.trace()(&errOut)
 
 	return sp.Statements.Accept(i)
 }
 
-func (i *Interpreter) VisitStatementReturn(sr ast.StatementReturn) (any, error) {
-	defer i.trace()()
+func (i *Interpreter) VisitStatementReturn(sr ast.StatementReturn) (_ any, errOut error) {
+	defer i.trace()(&errOut)
 
 	panic("StatementReturn")
 }
