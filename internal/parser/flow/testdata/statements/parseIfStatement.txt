@@ -315,6 +315,77 @@ StatementIf(
   )
 )
 =====
+if True:
+  a=b;c=d
+  e=f;g=h
+-----
+StatementIf(
+  Condition: [
+    ExpressionLiteral(
+      Value: bool(true)
+    )
+  ]
+  Statement: [
+    StatementList(
+      Statements: [
+        StatementExpression(
+          Assign: [
+            a
+          ]
+          Expr: ExpressionList(
+            Expressions: [
+              ExpressionVariable(
+                Identifier: string(b)
+              )
+            ]
+            Tuple: bool(false)
+          )
+        )
+        StatementExpression(
+          Assign: [
+            c
+          ]
+          Expr: ExpressionList(
+            Expressions: [
+              ExpressionVariable(
+                Identifier: string(d)
+              )
+            ]
+            Tuple: bool(false)
+          )
+        )
+        StatementExpression(
+          Assign: [
+            e
+          ]
+          Expr: ExpressionList(
+            Expressions: [
+              ExpressionVariable(
+                Identifier: string(f)
+              )
+            ]
+            Tuple: bool(false)
+          )
+        )
+        StatementExpression(
+          Assign: [
+            g
+          ]
+          Expr: ExpressionList(
+            Expressions: [
+              ExpressionVariable(
+                Identifier: string(h)
+              )
+            ]
+            Tuple: bool(false)
+          )
+        )
+      ]
+    )
+  ]
+  StatementElse: nil
+)
+=====
 ?
 -----
 expecting IF in parseIfStatement, found ERROR

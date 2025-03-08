@@ -42,6 +42,8 @@ func ParseProgram(p *parser.Parser) (*ast.StatementProgram, *parser.ParseError) 
 		}
 		if statement, err := parseStatement(p); err != nil {
 			return nil, parser.FailErr(err)
+		} else if stmtList, ok := statement.(*ast.StatementList); ok {
+			statements = append(statements, stmtList.Statements...)
 		} else {
 			statements = append(statements, statement)
 		}
@@ -410,6 +412,8 @@ func parseSuite(p *parser.Parser) (ast.Statement, *parser.ParseError) {
 		for !p.Match(tokenizer.TokenTypeDedent) {
 			if stmt, err := parseStatement(p); err != nil {
 				return nil, parser.FailErr(err)
+			} else if stmtList, ok := stmt.(*ast.StatementList); ok {
+				stmts = append(stmts, stmtList.Statements...)
 			} else {
 				stmts = append(stmts, stmt)
 			}
