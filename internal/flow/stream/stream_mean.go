@@ -9,28 +9,47 @@ type methodMean struct {
 }
 
 func (mm methodMean) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
-	return argsAggregate(i)
+	return argsAggregateOver(i)
 }
 
 func (mm methodMean) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
-	return callAggregate(i, NewMean)
+	return callAggregateOver(i, NewMeanAggregate, NewMeanTransform)
 }
 
-type mean struct {
+type meanAggregate struct {
 	interpreter.Object
 
 	source Stream
 	by     []string
 }
 
-func NewMean(source Stream, by []string) Stream {
-	return &mean{
+func NewMeanAggregate(source Stream, by []string) Stream {
+	return &meanAggregate{
 		Object: newStreamObject(),
 		source: unpublish(source),
 		by:     by,
 	}
 }
 
-func (m *mean) RenderStream() string {
-	return renderAggregate(m.source, "mean", m.by)
+func (ma *meanAggregate) RenderStream() string {
+	return renderAggregate(ma.source, "mean", ma.by)
+}
+
+type meanTransform struct {
+	interpreter.Object
+
+	source Stream
+	over   string
+}
+
+func NewMeanTransform(source Stream, over string) Stream {
+	return &meanTransform{
+		Object: newStreamObject(),
+		source: unpublish(source),
+		over:   over,
+	}
+}
+
+func (mt *meanTransform) RenderStream() string {
+	return renderTransform(mt.source, "mean", mt.over)
 }

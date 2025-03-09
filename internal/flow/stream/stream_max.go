@@ -9,28 +9,47 @@ type methodMax struct {
 }
 
 func (mm methodMax) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
-	return argsAggregate(i)
+	return argsAggregateOver(i)
 }
 
 func (mm methodMax) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
-	return callAggregate(i, NewMax)
+	return callAggregateOver(i, NewMaxAggregate, NewMaxTransform)
 }
 
-type max struct {
+type maxAggregate struct {
 	interpreter.Object
 
 	source Stream
 	by     []string
 }
 
-func NewMax(source Stream, by []string) Stream {
-	return &max{
+func NewMaxAggregate(source Stream, by []string) Stream {
+	return &maxAggregate{
 		Object: newStreamObject(),
 		source: unpublish(source),
 		by:     by,
 	}
 }
 
-func (m *max) RenderStream() string {
-	return renderAggregate(m.source, "max", m.by)
+func (ma *maxAggregate) RenderStream() string {
+	return renderAggregate(ma.source, "max", ma.by)
+}
+
+type maxTransform struct {
+	interpreter.Object
+
+	source Stream
+	over   string
+}
+
+func NewMaxTransform(source Stream, over string) Stream {
+	return &maxTransform{
+		Object: newStreamObject(),
+		source: unpublish(source),
+		over:   over,
+	}
+}
+
+func (mt *maxTransform) RenderStream() string {
+	return renderTransform(mt.source, "max", mt.over)
 }
