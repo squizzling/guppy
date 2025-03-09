@@ -589,16 +589,19 @@ func parseLambdef(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 
 func parseBinary(
 	p *parser.Parser,
-	next func() (ast.Expression, *parser.ParseError),
+	next func(p *parser.Parser) (ast.Expression, *parser.ParseError),
 	tokens ...tokenizer.TokenType,
 ) (ast.Expression, *parser.ParseError) {
-	leftExpression, err := next()
+	// TODO: Currently unused, as we translate A op B in to A.op(B) via parseBinaryCall
+	//       instead.  We may switch back if it turns out to be more efficient/necessary
+	//       to avoid the call overhead.
+	leftExpression, err := next(p)
 	if err != nil {
 		return nil, parser.FailErrSkip(err, "", 1)
 	}
 
 	for op, ok := p.Capture(tokens...); ok; op, ok = p.Capture(tokens...) {
-		rightExpression, err := next()
+		rightExpression, err := next(p)
 		if err != nil {
 			return nil, parser.FailErrSkip(err, "", 1)
 		}
