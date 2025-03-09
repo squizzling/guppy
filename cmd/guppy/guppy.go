@@ -35,6 +35,8 @@ func main() {
 	_ = i.Globals.Set("_print", &debug.FFIPrint{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("threshold", &stream.FFIThreshold{Object: interpreter.NewObject(nil)})
 
+	_ = i.Scope.Set("Args", interpreter.NewObjectDict())
+
 	errProgram := i.Execute(program)
 	if errProgram != nil {
 		fmt.Printf("%v\n", errProgram)
