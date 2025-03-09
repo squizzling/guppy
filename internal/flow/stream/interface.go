@@ -14,7 +14,7 @@ func newStreamObject() interpreter.Object {
 	return interpreter.NewObject(map[string]interpreter.Object{
 		"fill":    methodFill{interpreter.NewObject(nil)},
 		"max":     methodMax{interpreter.NewObject(nil)},
-		"mean":    methodMax{interpreter.NewObject(nil)},
+		"mean":    methodMean{interpreter.NewObject(nil)},
 		"publish": methodPublish{interpreter.NewObject(nil)},
 		"sum":     methodSum{interpreter.NewObject(nil)},
 	})
