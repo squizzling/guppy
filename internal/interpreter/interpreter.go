@@ -30,9 +30,21 @@ func NewInterpreter(enableTrace bool) *Interpreter {
 	return i
 }
 
-func (i *Interpreter) trace(a ...any) func(err *error) {
+type Reprer interface {
+	Repr() string
+}
+
+func Repr(o any) string {
+	if repr, ok := o.(Reprer); ok {
+		return repr.Repr()
+	} else {
+		return fmt.Sprintf("%#v", o)
+	}
+}
+
+func (i *Interpreter) trace(a ...any) func(returnValue *any, err *error) {
 	if !i.enableTrace {
-		return func(err *error) {}
+		return func(returnValue *any, err *error) {}
 	}
 
 	rpc := []uintptr{0}
@@ -54,13 +66,15 @@ func (i *Interpreter) trace(a ...any) func(err *error) {
 	}
 	fmt.Printf("%senter %s%s\n", strings.Repeat(" ", i.debugDepth), n, ss)
 	i.debugDepth++
-	return func(err *error) {
+	return func(returnValue *any, err *error) {
 		i.debugDepth--
 		if !bytes.Contains(debug.Stack(), []byte("panic")) {
-			if *err != nil {
-				fmt.Printf("%sleave %s%s [Error: %s]\n", strings.Repeat(" ", i.debugDepth), n, ss, *err)
+			if *returnValue != nil {
+				fmt.Printf("%sleave %s%s -> %s\n", strings.Repeat(" ", i.debugDepth), n, ss, Repr(*returnValue))
+			} else if *err != nil {
+				fmt.Printf("%sleave %s%s -> error(%s)\n", strings.Repeat(" ", i.debugDepth), n, ss, *err)
 			} else {
-				fmt.Printf("%sleave %s%s\n", strings.Repeat(" ", i.debugDepth), n, ss)
+				fmt.Printf("%sleave %s%s -> (nil, nil)\n", strings.Repeat(" ", i.debugDepth), n, ss)
 			}
 		}
 	}

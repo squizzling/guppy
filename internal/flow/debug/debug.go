@@ -11,6 +11,10 @@ type FFIPrint struct {
 	interpreter.Object
 }
 
+func (f FFIPrint) Repr() string {
+	return "_print"
+}
+
 func (f FFIPrint) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
 	return &interpreter.Params{
 		StarParam: "star",

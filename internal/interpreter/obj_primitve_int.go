@@ -19,6 +19,10 @@ func NewObjectInt(i int) Object {
 	}
 }
 
+func (oi *ObjectInt) Repr() string {
+	return fmt.Sprintf("int(%d)", oi.Value)
+}
+
 type methodIntAdd struct {
 	Object
 }
