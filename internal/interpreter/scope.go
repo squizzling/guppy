@@ -9,64 +9,6 @@ import (
 	"guppy/internal/parser/ast"
 )
 
-func (i *Interpreter) pushScope() {
-	i.Scope = &scope{
-		isDefined:      make(map[string]bool),
-		vars:           make(map[string]Object),
-		deferredAssign: make(map[string]deferAssign),
-		popChain:       i.Scope,
-		lookupChain:    i.Scope,
-	}
-}
-
-func (i *Interpreter) pushNewScope(s *scope) {
-	i.Scope = &scope{
-		vars:        make(map[string]Object),
-		popChain:    i.Scope,
-		lookupChain: s,
-	}
-}
-
-func (i *Interpreter) popScope() {
-	i.Scope = i.Scope.popChain
-}
-
-func (i *Interpreter) resolveDeferred() error {
-	for len(i.Scope.deferredAssign) > 0 {
-		progress := false
-		for key, da := range i.Scope.deferredAssign {
-			maybeResolved, err := r(da.object.expr.Accept(i))
-			if err != nil {
-				return fmt.Errorf("deferred resolution failed for keys %s: %w", da.vars, err)
-			}
-			if _, ok := maybeResolved.(*ObjectDeferred); !ok {
-				for idx, value := range maybeResolved.(*ObjectList).Items {
-					i.Scope.vars[da.vars[idx]] = value
-				}
-				progress = true
-				delete(i.Scope.deferredAssign, key)
-			}
-		}
-		if !progress {
-			break
-		}
-	}
-
-	if len(i.Scope.deferredAssign) > 0 {
-		return fmt.Errorf("%d remaining to resolve", len(i.Scope.deferredAssign))
-	}
-
-	for _, anon := range i.Scope.deferred {
-		if o, err := anon.expr.Accept(i); err != nil {
-			return fmt.Errorf("deferred anonymous resolution failed: %w", err)
-		} else if od, ok := o.(*ObjectDeferred); ok {
-			return fmt.Errorf("deferred anonymous resolution missing variables: %s", od.desired)
-		}
-	}
-	i.Scope.deferredAssign = nil
-	return nil
-}
-
 type deferAssign struct {
 	vars   []string
 	object *ObjectDeferred
@@ -79,6 +21,56 @@ type scope struct {
 	deferred       []*ObjectDeferred
 	popChain       *scope // Used when popping
 	lookupChain    *scope // Used for lookup
+}
+
+func (i *Interpreter) pushScope() {
+	i.Scope = &scope{
+		isDefined:      make(map[string]bool),
+		vars:           make(map[string]Object),
+		deferredAssign: make(map[string]deferAssign),
+		popChain:       i.Scope,
+		lookupChain:    i.Scope,
+	}
+}
+
+func (i *Interpreter) popScope() {
+	i.Scope = i.Scope.popChain
+}
+
+func (s *scope) resolveDeferred(i *Interpreter) error {
+	for len(s.deferredAssign) > 0 {
+		progress := false
+		for key, da := range s.deferredAssign {
+			maybeResolved, err := r(da.object.expr.Accept(i))
+			if err != nil {
+				return fmt.Errorf("deferred resolution failed for keys %s: %w", da.vars, err)
+			}
+			if _, ok := maybeResolved.(*ObjectDeferred); !ok {
+				for idx, value := range maybeResolved.(*ObjectList).Items {
+					s.vars[da.vars[idx]] = value
+				}
+				progress = true
+				delete(s.deferredAssign, key)
+			}
+		}
+		if !progress {
+			break
+		}
+	}
+
+	if len(s.deferredAssign) > 0 {
+		return fmt.Errorf("%d remaining to resolve", len(s.deferredAssign))
+	}
+
+	for _, anon := range s.deferred {
+		if o, err := anon.expr.Accept(i); err != nil {
+			return fmt.Errorf("deferred anonymous resolution failed: %w", err)
+		} else if od, ok := o.(*ObjectDeferred); ok {
+			return fmt.Errorf("deferred anonymous resolution missing variables: %s", od.desired)
+		}
+	}
+	s.deferredAssign = nil
+	return nil
 }
 
 func (s *scope) Set(key string, value Object) error {
