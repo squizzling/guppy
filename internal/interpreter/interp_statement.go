@@ -25,6 +25,19 @@ func (i *Interpreter) VisitStatementExpression(se ast.StatementExpression) (retu
 	if err != nil {
 		return nil, err
 	}
+
+	// If the result is deferred, save it for later
+	if od, ok := valuesAny.(*ObjectDeferred); ok {
+		if len(se.Assign) == 0 {
+			// TODO: Figure out the type we want here.
+			i.Scope.DeferAnonymous(NewObjectDeferred(se.Expr, od.desired...).(*ObjectDeferred))
+			return nil, nil
+		}
+
+		err := i.Scope.SetDefers(se.Assign, NewObjectDeferred(se.Expr, od.desired...).(*ObjectDeferred))
+		return nil, err
+	}
+
 	values := valuesAny.(*ObjectList)
 	if len(se.Assign) == 0 { // Do nothing
 		return nil, nil
@@ -51,8 +64,8 @@ func (i *Interpreter) VisitStatementExpression(se ast.StatementExpression) (retu
 			return nil, err
 		}
 	} else {
-		for idx := 0; idx < len(values.Items); idx++ {
-			if err := i.Scope.Set(se.Assign[idx], values.Items[idx]); err != nil {
+		for idx, value := range values.Items {
+			if err := i.Scope.Set(se.Assign[idx], value); err != nil {
 				return nil, err
 			}
 		}
@@ -105,7 +118,14 @@ func (i *Interpreter) VisitStatementList(sl ast.StatementList) (returnValue any,
 func (i *Interpreter) VisitStatementProgram(sp ast.StatementProgram) (returnValue any, errOut error) {
 	defer i.trace()(&returnValue, &errOut)
 
-	return sp.Statements.Accept(i)
+	i.pushScope()
+	defer i.popScope()
+	if _, err := sp.Statements.Accept(i); err != nil {
+		return nil, err
+	} else if err := i.resolveDeferred(); err != nil {
+		return nil, err
+	}
+	return nil, nil
 }
 
 func (i *Interpreter) VisitStatementReturn(sr ast.StatementReturn) (returnValue any, errOut error) {

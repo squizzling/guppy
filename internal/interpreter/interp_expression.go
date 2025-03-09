@@ -202,6 +202,27 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (returnValue an
 		return nil, err
 	}
 
+	// If any of our arguments are deferred, then we're deferred
+	desired := []string{}
+	for _, p := range formalParams {
+		if od, ok := p.(*ObjectDeferred); ok {
+			desired = append(desired, od.desired...)
+		}
+	}
+	for _, p := range starArgs {
+		if od, ok := p.(*ObjectDeferred); ok {
+			desired = append(desired, od.desired...)
+		}
+	}
+	for _, p := range kwArguments {
+		if od, ok := p.(*ObjectDeferred); ok {
+			desired = append(desired, od.desired...)
+		}
+	}
+	if len(desired) > 0 {
+		return NewObjectDeferred(ec, desired...), nil
+	}
+
 	// Perform all argument resolution above here, so we don't pollute the scope as we evaluate things.
 	i.pushScope()
 	defer i.popScope()
@@ -284,12 +305,18 @@ func (i *Interpreter) VisitExpressionList(el ast.ExpressionList) (returnValue an
 	defer i.trace()(&returnValue, &errOut)
 
 	var o []Object
+	var desired []string
 	for _, expr := range el.Expressions {
-		exprResult, err := expr.Accept(i)
+		exprResult, err := r(expr.Accept(i))
 		if err != nil {
 			return nil, err
+		} else if od, ok := exprResult.(*ObjectDeferred); ok {
+			desired = append(desired, od.desired...)
 		}
-		o = append(o, exprResult.(Object))
+		o = append(o, exprResult)
+	}
+	if len(desired) > 0 {
+		return NewObjectDeferred(el, desired...), nil
 	}
 	return NewObjectList(o...), nil
 }
