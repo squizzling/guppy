@@ -22,7 +22,7 @@ func (mf methodFill) Params(i *interpreter.Interpreter) (*interpreter.Params, er
 }
 
 func resolveDuration(i *interpreter.Interpreter) (int, error) {
-	if by, err := i.Scope.Get("duration"); err != nil {
+	if by, err := i.Scope.GetArg("duration"); err != nil {
 		return 0, err
 	} else {
 		switch by := by.(type) {
@@ -35,7 +35,7 @@ func resolveDuration(i *interpreter.Interpreter) (int, error) {
 }
 
 func resolveMaxCount(i *interpreter.Interpreter) (int, error) {
-	if by, err := i.Scope.Get("maxCount"); err != nil {
+	if by, err := i.Scope.GetArg("maxCount"); err != nil {
 		return 0, err
 	} else {
 		switch by := by.(type) {

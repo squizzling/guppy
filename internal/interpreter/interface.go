@@ -106,7 +106,7 @@ func (i *Interpreter) DoString(o Object) (string, error) {
 }
 
 func ArgAsString(i *Interpreter, argName string) (string, error) {
-	if objArg, err := i.Scope.Get(argName); err != nil {
+	if objArg, err := i.Scope.GetArg(argName); err != nil {
 		return "", err
 	} else if strArg, err := i.DoString(objArg); err != nil {
 		return "", err
@@ -116,7 +116,7 @@ func ArgAsString(i *Interpreter, argName string) (string, error) {
 }
 
 func ArgAsBool(i *Interpreter, argName string) (bool, error) {
-	if objArg, err := i.Scope.Get(argName); err != nil {
+	if objArg, err := i.Scope.GetArg(argName); err != nil {
 		return false, err
 	} else if boolArg, ok := objArg.(*ObjectBool); !ok {
 		return false, fmt.Errorf("%T is not *interpreter.ObjectBool", objArg)
@@ -126,7 +126,7 @@ func ArgAsBool(i *Interpreter, argName string) (bool, error) {
 }
 
 func ArgAsDouble(i *Interpreter, argName string) (float64, error) {
-	if objArg, err := i.Scope.Get(argName); err != nil {
+	if objArg, err := i.Scope.GetArg(argName); err != nil {
 		return 0, err
 	} else if doubleArg, ok := objArg.(*ObjectDouble); !ok {
 		if intArg, ok := objArg.(*ObjectInt); !ok {
@@ -141,7 +141,7 @@ func ArgAsDouble(i *Interpreter, argName string) (float64, error) {
 
 func ArgAs[T any](i *Interpreter, name string) (T, error) {
 	var zero T
-	if v, err := i.Scope.Get(name); err != nil {
+	if v, err := i.Scope.GetArg(name); err != nil {
 		return zero, err
 	} else if o, ok := v.(T); !ok {
 		return zero, fmt.Errorf("arg %s is %T not %T", name, v, zero)

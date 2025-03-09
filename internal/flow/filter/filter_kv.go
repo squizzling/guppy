@@ -26,7 +26,7 @@ func (f FFIFilter) Params(i *interpreter.Interpreter) (*interpreter.Params, erro
 func (f FFIFilter) resolveTerms(i *interpreter.Interpreter) ([]string, error) {
 	var terms []string
 
-	if objTerm, err := i.Scope.Get("term"); err != nil {
+	if objTerm, err := i.Scope.GetArg("term"); err != nil {
 		return nil, err
 	} else if strTerm, ok := objTerm.(*interpreter.ObjectString); ok {
 		terms = append(terms, strTerm.Value)
@@ -36,7 +36,7 @@ func (f FFIFilter) resolveTerms(i *interpreter.Interpreter) ([]string, error) {
 		// nothing
 	}
 
-	if v, err := i.Scope.Get("terms"); err != nil {
+	if v, err := i.Scope.GetArg("terms"); err != nil {
 		return nil, err
 	} else {
 		switch v := v.(type) {

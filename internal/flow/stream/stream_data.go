@@ -25,7 +25,7 @@ func (f FFIData) Params(i *interpreter.Interpreter) (*interpreter.Params, error)
 }
 
 func resolveFilter(i *interpreter.Interpreter) (filter.Filter, error) {
-	if fltr, err := i.Scope.Get("filter"); err != nil {
+	if fltr, err := i.Scope.GetArg("filter"); err != nil {
 		return nil, err
 	} else {
 		switch fltr := fltr.(type) {
@@ -40,7 +40,7 @@ func resolveFilter(i *interpreter.Interpreter) (filter.Filter, error) {
 }
 
 func resolveRollup(i *interpreter.Interpreter) (string, error) {
-	if rollup, err := i.Scope.Get("rollup"); err != nil {
+	if rollup, err := i.Scope.GetArg("rollup"); err != nil {
 		return "", err
 	} else {
 		switch rollup := rollup.(type) {

@@ -99,6 +99,21 @@ func (s *scope) SetDefers(keys []string, d *ObjectDeferred) error {
 	return nil
 }
 
+// GetArg is a hack to look up variables without deferred resolution.  It fails if it can't find
+// something.  It's meant for arguments, which we know much exist.  I don't love the interface
+// and it would be good to refactor at some point.
+func (s *scope) GetArg(key string) (Object, error) {
+	// TODO: Refactor.
+	if val, ok := s.vars[key]; ok {
+		return val, nil
+	}
+
+	if s.lookupChain == nil {
+		return nil, fmt.Errorf("argument %s does not exist", key)
+	}
+	return s.lookupChain.GetArg(key)
+}
+
 func (s *scope) Get(key string) (Object, error) {
 	// Get is allowed to look up the chain to find something
 	if val, ok := s.vars[key]; ok {

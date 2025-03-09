@@ -34,7 +34,7 @@ func (mia methodIntAdd) Params(i *Interpreter) (*Params, error) {
 func (mia methodIntAdd) Call(i *Interpreter) (Object, error) {
 	if self, err := ArgAs[*ObjectInt](i, "self"); err != nil {
 		return nil, err
-	} else if right, err := i.Scope.Get("right"); err != nil {
+	} else if right, err := i.Scope.GetArg("right"); err != nil {
 		return nil, err
 	} else {
 		switch right := right.(type) {

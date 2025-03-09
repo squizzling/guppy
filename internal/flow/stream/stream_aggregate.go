@@ -17,7 +17,7 @@ func argsAggregate(i *interpreter.Interpreter) (*interpreter.Params, error) {
 }
 
 func resolveBy(i *interpreter.Interpreter) ([]string, error) {
-	if by, err := i.Scope.Get("by"); err != nil {
+	if by, err := i.Scope.GetArg("by"); err != nil {
 		return nil, err
 	} else {
 		switch by := by.(type) {
