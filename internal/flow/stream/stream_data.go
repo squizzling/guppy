@@ -18,7 +18,7 @@ func (f FFIData) Params(i *interpreter.Interpreter) (*interpreter.Params, error)
 			{Name: "filter", Default: interpreter.NewObjectNone()},
 			{Name: "rollup", Default: interpreter.NewObjectNone()},
 			{Name: "extrapolation", Default: interpreter.NewObjectString("null")},
-			//{Name: "maxExtrapolations", Default: interpreter.NewObjectNone()}, // TODO: Check what this has for a default
+			{Name: "maxExtrapolations", Default: interpreter.NewObjectInt(0)},
 			//{Name: "resolution", Default: interpreter.NewObjectNone()},
 		},
 	}, nil
@@ -54,6 +54,22 @@ func resolveRollup(i *interpreter.Interpreter) (string, error) {
 	}
 }
 
+func resolveExtrapolation(i *interpreter.Interpreter) (string, error) {
+	if extrapolation, err := interpreter.ArgAsString(i, "extrapolation"); err != nil {
+		return "", err
+	} else {
+		return extrapolation, nil
+	}
+}
+
+func resolveMaxExtrapolations(i *interpreter.Interpreter) (int, error) {
+	if maxExtrapolations, err := interpreter.ArgAs[*interpreter.ObjectInt](i, "maxExtrapolations"); err != nil {
+		return 0, err
+	} else {
+		return maxExtrapolations.Value, nil
+	}
+}
+
 func (f FFIData) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
 	if metricName, err := interpreter.ArgAsString(i, "metric"); err != nil {
 		return nil, err
@@ -61,8 +77,12 @@ func (f FFIData) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
 		return nil, err
 	} else if rollup, err := resolveRollup(i); err != nil {
 		return nil, err
+	} else if extrapolation, err := resolveExtrapolation(i); err != nil {
+		return nil, err
+	} else if maxExtrapolations, err := resolveMaxExtrapolations(i); err != nil {
+		return nil, err
 	} else {
-		return NewData(metricName, fltr, rollup), nil
+		return NewData(metricName, fltr, rollup, extrapolation, maxExtrapolations), nil
 	}
 }
 
@@ -71,17 +91,21 @@ var _ = interpreter.FlowCall(FFIData{})
 type data struct {
 	interpreter.Object
 
-	metricName string
-	filter     filter.Filter
-	rollup     string
+	metricName        string
+	filter            filter.Filter
+	rollup            string
+	extrapolation     string
+	maxExtrapolations int
 }
 
-func NewData(metricName string, filter filter.Filter, rollup string) Stream {
+func NewData(metricName string, filter filter.Filter, rollup string, extrapolation string, maxExtrapolations int) Stream {
 	return &data{
-		Object:     newStreamObject(),
-		metricName: metricName,
-		filter:     filter,
-		rollup:     rollup,
+		Object:            newStreamObject(),
+		metricName:        metricName,
+		filter:            filter,
+		rollup:            rollup,
+		extrapolation:     extrapolation,
+		maxExtrapolations: maxExtrapolations,
 	}
 }
 
@@ -94,5 +118,6 @@ func (d *data) RenderStream() string {
 	if d.rollup != "" {
 		rollupStr = fmt.Sprintf(", rollup='%s'", d.rollup)
 	}
-	return fmt.Sprintf("data('%s'%s%s)", d.metricName, filterStr, rollupStr)
+
+	return fmt.Sprintf("data('%s'%s%s, extrapolation='%s', maxExtrapolations=%d)", d.metricName, filterStr, rollupStr, d.extrapolation, d.maxExtrapolations)
 }
