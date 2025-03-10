@@ -8,6 +8,8 @@ import (
 
 type opMul struct {
 	interpreter.Object
+
+	reverse bool
 }
 
 func (om opMul) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
@@ -15,7 +17,7 @@ func (om opMul) Params(i *interpreter.Interpreter) (*interpreter.Params, error) 
 }
 
 func (om opMul) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
-	return opCall(i, "mul", NewMul, NewMulScalar)
+	return opCall(i, "mul", NewMul, NewMulScalar, om.reverse)
 }
 
 type Mul struct {

@@ -8,6 +8,8 @@ import (
 
 type opAdd struct {
 	interpreter.Object
+
+	reverse bool
 }
 
 func (oa opAdd) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
@@ -15,7 +17,7 @@ func (oa opAdd) Params(i *interpreter.Interpreter) (*interpreter.Params, error) 
 }
 
 func (oa opAdd) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
-	return opCall(i, "add", NewAdd, NewAddScalar)
+	return opCall(i, "add", NewAdd, NewAddScalar, oa.reverse)
 }
 
 type add struct {

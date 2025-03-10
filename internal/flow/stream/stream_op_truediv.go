@@ -8,6 +8,8 @@ import (
 
 type opTrueDiv struct {
 	interpreter.Object
+
+	reverse bool
 }
 
 func (otd opTrueDiv) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
@@ -15,7 +17,7 @@ func (otd opTrueDiv) Params(i *interpreter.Interpreter) (*interpreter.Params, er
 }
 
 func (otd opTrueDiv) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
-	return opCall(i, "trueDiv", NewTrueDiv, NewTrueDivScalar)
+	return opCall(i, "trueDiv", NewTrueDiv, NewTrueDivScalar, otd.reverse)
 }
 
 type TrueDiv struct {

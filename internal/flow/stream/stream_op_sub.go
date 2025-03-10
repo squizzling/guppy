@@ -8,6 +8,8 @@ import (
 
 type opSub struct {
 	interpreter.Object
+
+	reverse bool
 }
 
 func (os opSub) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
@@ -15,7 +17,7 @@ func (os opSub) Params(i *interpreter.Interpreter) (*interpreter.Params, error) 
 }
 
 func (os opSub) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
-	return opCall(i, "sub", NewSub, NewSubScalar)
+	return opCall(i, "sub", NewSub, NewSubScalar, os.reverse)
 }
 
 type sub struct {
