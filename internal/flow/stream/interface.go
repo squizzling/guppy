@@ -17,6 +17,10 @@ func newStreamObject() interpreter.Object {
 		"mean":    methodMean{interpreter.NewObject(nil)},
 		"publish": methodPublish{interpreter.NewObject(nil)},
 		"sum":     methodSum{interpreter.NewObject(nil)},
+		"__add__": opAdd{interpreter.NewObject(nil)},
+		"__mul__": opMul{interpreter.NewObject(nil)},
+		"__sub__": opSub{interpreter.NewObject(nil)},
+		"__truediv__": opTrueDiv{interpreter.NewObject(nil)},
 	})
 }
 
@@ -25,6 +29,10 @@ var _ = interpreter.FlowCall(methodMax{})
 var _ = interpreter.FlowCall(methodMean{})
 var _ = interpreter.FlowCall(methodPublish{})
 var _ = interpreter.FlowCall(methodSum{})
+var _ = interpreter.FlowCall(opAdd{})
+var _ = interpreter.FlowCall(opMul{})
+var _ = interpreter.FlowCall(opSub{})
+var _ = interpreter.FlowCall(opTrueDiv{})
 
 // unpublish will remove any publish called on a Stream. This is because a publish
 // is not actually useful from a dataflow perspective.
