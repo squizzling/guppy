@@ -83,7 +83,7 @@ func NewFill(source Stream, value interpreter.Object, duration int, maxCount int
 func (f *fill) RenderStream() string {
 	s := ""
 	if f.value != nil {
-		s += fmt.Sprintf("value=%#v", f.value)
+		s += fmt.Sprintf("value=%s", interpreter.Repr(f.value))
 	}
 	if f.duration > 0 {
 		s += fmt.Sprintf("duration=%d", f.duration)
