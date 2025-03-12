@@ -14,7 +14,7 @@ func (mp methodPublish) Params(i *interpreter.Interpreter) (*interpreter.Params,
 	return &interpreter.Params{
 		Params: []interpreter.ParamDef{
 			{Name: "self"},
-			{Name: "label"},
+			{Name: "label", Default: interpreter.NewObjectString("")}, // TODO: Validate "" vs None
 			{Name: "enable", Default: interpreter.NewObjectBool(true)},
 		},
 		//KWParam: "additional_dimensions", // Maybe, I don't fully know this one.
