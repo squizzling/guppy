@@ -34,6 +34,7 @@ func main() {
 	_ = i.Globals.Set("filter", &filter.FFIFilter{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("_print", &debug.FFIPrint{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("threshold", &stream.FFIThreshold{Object: interpreter.NewObject(nil)})
+	_ = i.Globals.Set("union", &stream.FFIUnion{Object: interpreter.NewObject(nil)})
 
 	_ = i.Scope.Set("Args", interpreter.NewObjectDict(nil))
 
