@@ -12,12 +12,19 @@ type Stream interface {
 
 func newStreamObject() interpreter.Object {
 	return interpreter.NewObject(map[string]interpreter.Object{
-		"fill":         methodFill{interpreter.NewObject(nil)},
-		"max":          methodMax{interpreter.NewObject(nil)},
-		"mean":         methodMean{interpreter.NewObject(nil)},
-		"publish":      methodPublish{interpreter.NewObject(nil)},
-		"scale":        methodScale{interpreter.NewObject(nil)},
-		"sum":          methodSum{interpreter.NewObject(nil)},
+		// misc
+		"fill":    methodFill{interpreter.NewObject(nil)},
+		"publish": methodPublish{interpreter.NewObject(nil)},
+		"scale":   methodScale{interpreter.NewObject(nil)},
+
+		// Aggregations + transforms
+		"count": methodStreamAggregateTransform{interpreter.NewObject(nil), "count"},
+		"max":   methodStreamAggregateTransform{interpreter.NewObject(nil), "max"},
+		"min":   methodStreamAggregateTransform{interpreter.NewObject(nil), "min"},
+		"mean":  methodStreamAggregateTransform{interpreter.NewObject(nil), "mean"},
+		"sum":   methodStreamAggregateTransform{interpreter.NewObject(nil), "sum"},
+
+		// Math operations
 		"__add__":      methodStreamOp{interpreter.NewObject(nil), "+", false},
 		"__radd__":     methodStreamOp{interpreter.NewObject(nil), "+", true},
 		"__mul__":      methodStreamOp{interpreter.NewObject(nil), "*", false},
@@ -30,11 +37,9 @@ func newStreamObject() interpreter.Object {
 }
 
 var _ = interpreter.FlowCall(methodFill{})
-var _ = interpreter.FlowCall(methodMax{})
-var _ = interpreter.FlowCall(methodMean{})
 var _ = interpreter.FlowCall(methodPublish{})
 var _ = interpreter.FlowCall(methodScale{})
-var _ = interpreter.FlowCall(methodSum{})
+var _ = interpreter.FlowCall(methodStreamAggregateTransform{})
 var _ = interpreter.FlowCall(methodStreamOp{})
 
 // unpublish will remove any publish called on a Stream. This is because a publish

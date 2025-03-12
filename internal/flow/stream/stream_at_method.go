@@ -2,23 +2,17 @@ package stream
 
 import (
 	"fmt"
-	"strings"
 
 	"guppy/internal/interpreter"
 )
 
-// argsAggregate returns an argument list that supports `by` but not `over`
-func argsAggregate(i *interpreter.Interpreter) (*interpreter.Params, error) {
-	return &interpreter.Params{
-		Params: []interpreter.ParamDef{
-			{Name: "self"},
-			{Name: "by", Default: interpreter.NewObjectNone()},
-		},
-	}, nil
+type methodStreamAggregateTransform struct {
+	interpreter.Object
+
+	name string
 }
 
-// argsAggregate returns an argument list that supports `by` and `over`
-func argsAggregateOver(i *interpreter.Interpreter) (*interpreter.Params, error) {
+func (msat methodStreamAggregateTransform) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
 	return &interpreter.Params{
 		Params: []interpreter.ParamDef{
 			{Name: "self"},
@@ -69,25 +63,7 @@ func resolveOver(i *interpreter.Interpreter) (*string, error) {
 	}
 }
 
-func callAggregate(i *interpreter.Interpreter, new func(source Stream, by []string) Stream) (interpreter.Object, error) {
-	// TODO: Not sure if this will ever be used, but it might, histogram_percentile maybe?
-	if self, err := interpreter.ArgAs[Stream](i, "self"); err != nil {
-		return nil, err
-	} else if by, err := resolveBy(i); err != nil {
-		return nil, err
-	} else {
-		return new(self, by), nil
-	}
-}
-
-func callAggregateOver(
-	i *interpreter.Interpreter,
-	newAggregate func(source Stream, by []string) Stream,
-	newTransform func(source Stream, over string) Stream,
-) (
-	interpreter.Object,
-	error,
-) {
+func (msat methodStreamAggregateTransform) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
 	if self, err := interpreter.ArgAs[Stream](i, "self"); err != nil {
 		return nil, err
 	} else if by, err := resolveBy(i); err != nil {
@@ -97,23 +73,8 @@ func callAggregateOver(
 	} else if over != nil && len(by) > 0 {
 		return nil, fmt.Errorf("only one argument of [by, over] may be specified")
 	} else if over != nil {
-		return newTransform(self, *over), nil
+		return newStreamTransform(self, msat.name, *over), nil
 	} else {
-		return newAggregate(self, by), nil
+		return newStreamAggregate(self, msat.name, by), nil
 	}
-}
-
-func renderAggregate(source Stream, aggr string, by []string) string {
-	var bys []string
-	if by == nil {
-		return fmt.Sprintf("%s.%s()", source.RenderStream(), aggr)
-	}
-	for _, by := range by {
-		bys = append(bys, "'"+by+"'")
-	}
-	return fmt.Sprintf("%s.%s(by=[%s])", source.RenderStream(), aggr, strings.Join(bys, ", "))
-}
-
-func renderTransform(source Stream, aggr string, over string) string {
-	return fmt.Sprintf("%s.%s(over='%s')", source.RenderStream(), aggr, over)
 }
