@@ -335,6 +335,8 @@ func (i *Interpreter) VisitExpressionLiteral(el ast.ExpressionLiteral) (returnVa
 	switch v := el.Value.(type) {
 	case int:
 		return NewObjectInt(v), nil
+	case float64:
+		return NewObjectDouble(v), nil
 	case string:
 		return NewObjectString(v), nil
 	case nil:
