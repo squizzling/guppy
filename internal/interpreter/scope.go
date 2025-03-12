@@ -38,6 +38,7 @@ func (i *Interpreter) popScope() {
 }
 
 func (s *scope) resolveDeferred(i *Interpreter) error {
+	var pending []string
 	for len(s.deferredAssign) > 0 {
 		progress := false
 		for key, da := range s.deferredAssign {
@@ -45,12 +46,14 @@ func (s *scope) resolveDeferred(i *Interpreter) error {
 			if err != nil {
 				return fmt.Errorf("deferred resolution failed for keys %s: %w", da.vars, err)
 			}
-			if _, ok := maybeResolved.(*ObjectDeferred); !ok {
+			if od, ok := maybeResolved.(*ObjectDeferred); !ok {
 				for idx, value := range maybeResolved.(*ObjectList).Items {
 					s.vars[da.vars[idx]] = value
 				}
 				progress = true
 				delete(s.deferredAssign, key)
+			} else {
+				pending = append(pending, od.desired...)
 			}
 		}
 		if !progress {
@@ -59,7 +62,8 @@ func (s *scope) resolveDeferred(i *Interpreter) error {
 	}
 
 	if len(s.deferredAssign) > 0 {
-		return fmt.Errorf("%d remaining to resolve", len(s.deferredAssign))
+		slices.Sort(pending)
+		return fmt.Errorf("deferred assignment missing variables: %s", slices.Compact(pending))
 	}
 
 	for _, anon := range s.deferred {
