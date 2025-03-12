@@ -11,6 +11,12 @@ var BinaryParams = &Params{
 	},
 }
 
+var UnaryParams = &Params{
+	Params: []ParamDef{
+		{Name: "self"},
+	},
+}
+
 func (i *Interpreter) doAnd(left Object, right Object) (Object, error) {
 	if and, err := left.Member(i, left, "__binary_and__"); err != nil {
 		return nil, err

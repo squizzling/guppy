@@ -17,13 +17,18 @@ type methodIntOp struct {
 	reverse string
 }
 
+type methodIntNeg struct {
+	Object
+}
+
 func NewObjectInt(i int) Object {
 	return &ObjectInt{
 		Object: NewObject(map[string]Object{
-			"__add__":     methodIntOp{Object: NewObject(nil), op: "+", reverse: "__radd__"},
-			"__mul__":     methodIntOp{Object: NewObject(nil), op: "*", reverse: "__rmul__"},
-			"__sub__":     methodIntOp{Object: NewObject(nil), op: "-", reverse: "__rsub__"},
-			"__truediv__": methodIntOp{Object: NewObject(nil), op: "/", reverse: "__rtruediv__"},
+			"__add__":         methodIntOp{Object: NewObject(nil), op: "+", reverse: "__radd__"},
+			"__mul__":         methodIntOp{Object: NewObject(nil), op: "*", reverse: "__rmul__"},
+			"__sub__":         methodIntOp{Object: NewObject(nil), op: "-", reverse: "__rsub__"},
+			"__truediv__":     methodIntOp{Object: NewObject(nil), op: "/", reverse: "__rtruediv__"},
+			"__unary_minus__": methodIntNeg{Object: NewObject(nil)},
 		}),
 		Value: i,
 	}
@@ -74,3 +79,17 @@ func (mio methodIntOp) Call(i *Interpreter) (Object, error) {
 }
 
 var _ = FlowCall(methodIntOp{})
+
+func (min methodIntNeg) Params(i *Interpreter) (*Params, error) {
+	return UnaryParams, nil
+}
+
+func (min methodIntNeg) Call(i *Interpreter) (Object, error) {
+	if self, err := ArgAs[*ObjectInt](i, "self"); err != nil {
+		return nil, err
+	} else {
+		return NewObjectInt(-self.Value), nil
+	}
+}
+
+var _ = FlowCall(methodIntNeg{})
