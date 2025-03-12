@@ -13,10 +13,11 @@ type Stream interface {
 func newStreamObject() interpreter.Object {
 	return interpreter.NewObject(map[string]interpreter.Object{
 		// misc
-		"fill":      methodFill{interpreter.NewObject(nil)},
-		"publish":   methodPublish{interpreter.NewObject(nil)},
-		"scale":     methodScale{interpreter.NewObject(nil)},
-		"timeshift": methodTimeShift{interpreter.NewObject(nil)},
+		"fill":       methodFill{interpreter.NewObject(nil)},
+		"percentile": methodPercentile{interpreter.NewObject(nil)},
+		"publish":    methodPublish{interpreter.NewObject(nil)},
+		"scale":      methodScale{interpreter.NewObject(nil)},
+		"timeshift":  methodTimeShift{interpreter.NewObject(nil)},
 
 		// Aggregations + transforms
 		"count": methodStreamAggregateTransform{interpreter.NewObject(nil), "count"},
