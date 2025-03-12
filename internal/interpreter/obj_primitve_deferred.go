@@ -34,7 +34,7 @@ func (o *ObjectDeferred) Repr() string {
 func (o *ObjectDeferred) Params(i *Interpreter) (*Params, error) {
 	return &Params{
 		StarParam: "s",
-		//KWParam:   "k",
+		KWParam:   "k",
 	}, nil
 }
 

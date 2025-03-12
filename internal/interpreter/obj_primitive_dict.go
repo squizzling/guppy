@@ -1,18 +1,45 @@
 package interpreter
 
-type ObjectDict struct {
-	Object
+import (
+	"fmt"
+)
+
+type DictItem struct {
+	Key   Object
+	Value Object
 }
 
-func NewObjectDict() Object {
+type ObjectDict struct {
+	Object
+
+	items []DictItem
+}
+
+func NewObjectDict(items []DictItem) Object {
 	return &ObjectDict{
 		Object: NewObject(map[string]Object{
 			"get": methodDictGet{NewObject(nil)},
 		}),
+
+		items: items,
 	}
 }
 
+func NewObjectDictFromMap(items map[string]Object) Object {
+	var itemList []DictItem
+	for key, value := range items {
+		itemList = append(itemList, DictItem{
+			Key:   NewObjectString(key),
+			Value: value,
+		})
+	}
+	return NewObjectDict(itemList)
+}
+
 func (od *ObjectDict) get(key Object, def Object) (Object, error) {
+	if len(od.items) > 0 {
+		return nil, fmt.Errorf("can't read from dict with data")
+	}
 	return def, nil
 }
 

@@ -246,7 +246,7 @@ func (i *Interpreter) assignArgs(
 	starArgs []Object,
 
 	kwParamName string,
-	kwArgs map[string]Object, // TODO: I don't like this map key, so punting it.
+	kwArgs map[string]Object,
 ) error {
 	if starParamName != "" {
 		if err := i.Scope.Set(starParamName, NewObjectTuple(starArgs...)); err != nil {
@@ -260,7 +260,9 @@ func (i *Interpreter) assignArgs(
 		}
 	}
 	if kwParamName != "" {
-		return fmt.Errorf("can't set kwparam")
+		if err := i.Scope.Set(kwParamName, NewObjectDictFromMap(kwArgs)); err != nil {
+			return err
+		}
 	}
 	return nil
 }
