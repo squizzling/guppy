@@ -16,6 +16,7 @@ func newStreamObject() interpreter.Object {
 		"max":          methodMax{interpreter.NewObject(nil)},
 		"mean":         methodMean{interpreter.NewObject(nil)},
 		"publish":      methodPublish{interpreter.NewObject(nil)},
+		"scale":        methodScale{interpreter.NewObject(nil)},
 		"sum":          methodSum{interpreter.NewObject(nil)},
 		"__add__":      methodStreamOp{interpreter.NewObject(nil), "+", false},
 		"__radd__":     methodStreamOp{interpreter.NewObject(nil), "+", true},
@@ -32,6 +33,7 @@ var _ = interpreter.FlowCall(methodFill{})
 var _ = interpreter.FlowCall(methodMax{})
 var _ = interpreter.FlowCall(methodMean{})
 var _ = interpreter.FlowCall(methodPublish{})
+var _ = interpreter.FlowCall(methodScale{})
 var _ = interpreter.FlowCall(methodSum{})
 var _ = interpreter.FlowCall(methodStreamOp{})
 
