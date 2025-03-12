@@ -4,10 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"guppy/internal/flow/debug"
-	"guppy/internal/flow/filter"
-	"guppy/internal/flow/stream"
-	"guppy/internal/interpreter"
+	iflow "guppy/internal/flow"
 	"guppy/internal/parser/flow"
 	"guppy/internal/parser/parser"
 	"guppy/internal/parser/tokenizer"
@@ -27,18 +24,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	i := interpreter.NewInterpreter(false)
-
-	_ = i.Globals.Set("data", &stream.FFIData{Object: interpreter.NewObject(nil)})
-	_ = i.Globals.Set("events", &stream.FFIEvents{Object: interpreter.NewObject(nil)})
-	_ = i.Globals.Set("filter", &filter.FFIFilter{Object: interpreter.NewObject(nil)})
-	_ = i.Globals.Set("_print", &debug.FFIPrint{Object: interpreter.NewObject(nil)})
-	_ = i.Globals.Set("threshold", &stream.FFIThreshold{Object: interpreter.NewObject(nil)})
-	_ = i.Globals.Set("union", &stream.FFIUnion{Object: interpreter.NewObject(nil)})
-
-	_ = i.Scope.Set("Args", interpreter.NewObjectDict(nil))
-
-	errProgram := i.Execute(program)
+	errProgram := iflow.NewInterpreter(false).Execute(program)
 	if errProgram != nil {
 		fmt.Printf("%v\n", errProgram)
 	}
