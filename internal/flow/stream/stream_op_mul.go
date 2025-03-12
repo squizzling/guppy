@@ -42,18 +42,24 @@ func (m *Mul) RenderStream() string {
 type MulScalar struct {
 	interpreter.Object
 
-	left  Stream
-	right int
+	left    Stream
+	right   int
+	reverse bool
 }
 
-func NewMulScalar(left Stream, right int) Stream {
+func NewMulScalar(left Stream, right int, reverse bool) Stream {
 	return &MulScalar{
-		Object: newStreamObject(),
-		left:   unpublish(left),
-		right:  right,
+		Object:  newStreamObject(),
+		left:    unpublish(left),
+		right:   right,
+		reverse: reverse,
 	}
 }
 
 func (ms *MulScalar) RenderStream() string {
-	return fmt.Sprintf("(%s * %d)", ms.left.RenderStream(), ms.right)
+	if ms.reverse {
+		return fmt.Sprintf("(%d * %s)", ms.right, ms.left.RenderStream())
+	} else {
+		return fmt.Sprintf("(%s * %d)", ms.left.RenderStream(), ms.right)
+	}
 }

@@ -42,18 +42,24 @@ func (a *add) RenderStream() string {
 type AddScalar struct {
 	interpreter.Object
 
-	left  Stream
-	right int
+	left    Stream
+	right   int
+	reverse bool
 }
 
-func NewAddScalar(left Stream, right int) Stream {
+func NewAddScalar(left Stream, right int, reverse bool) Stream {
 	return &AddScalar{
-		Object: newStreamObject(),
-		left:   unpublish(left),
-		right:  right,
+		Object:  newStreamObject(),
+		left:    unpublish(left),
+		right:   right,
+		reverse: reverse,
 	}
 }
 
 func (as *AddScalar) RenderStream() string {
-	return fmt.Sprintf("(%s + %d)", as.left.RenderStream(), as.right)
+	if as.reverse {
+		return fmt.Sprintf("(%d + %s)", as.right, as.left.RenderStream())
+	} else {
+		return fmt.Sprintf("(%s + %d)", as.left.RenderStream(), as.right)
+	}
 }

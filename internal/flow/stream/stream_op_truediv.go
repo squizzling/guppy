@@ -42,18 +42,24 @@ func (td *TrueDiv) RenderStream() string {
 type TrueDivScalar struct {
 	interpreter.Object
 
-	left  Stream
-	right int
+	left    Stream
+	right   int
+	reverse bool
 }
 
-func NewTrueDivScalar(left Stream, right int) Stream {
+func NewTrueDivScalar(left Stream, right int, reverse bool) Stream {
 	return &TrueDivScalar{
-		Object: newStreamObject(),
-		left:   unpublish(left),
-		right:  right,
+		Object:  newStreamObject(),
+		left:    unpublish(left),
+		right:   right,
+		reverse: reverse,
 	}
 }
 
 func (tds *TrueDivScalar) RenderStream() string {
-	return fmt.Sprintf("(%s / %d)", tds.left.RenderStream(), tds.right)
+	if tds.reverse {
+		return fmt.Sprintf("(%d / %s)", tds.right, tds.left.RenderStream())
+	} else {
+		return fmt.Sprintf("(%s / %d)", tds.left.RenderStream(), tds.right)
+	}
 }

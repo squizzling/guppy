@@ -10,7 +10,7 @@ func opCall(
 	i *interpreter.Interpreter,
 	op string,
 	newStream func(self Stream, right Stream) Stream,
-	newScalarStream func(self Stream, right int) Stream,
+	newScalarStream func(self Stream, right int, reverse bool) Stream,
 	reverse bool,
 ) (interpreter.Object, error) {
 	if self, err := i.Scope.GetArg("self"); err != nil {
@@ -29,7 +29,7 @@ func opCall(
 			case Stream:
 				return newStream(selfStream, right), nil
 			case *interpreter.ObjectInt:
-				return newScalarStream(selfStream, right.Value), nil
+				return newScalarStream(selfStream, right.Value, reverse), nil
 			default:
 				return nil, fmt.Errorf("opCall[%s]: unknown type %T", op, right)
 			}
