@@ -15,6 +15,8 @@ func (m methodHistogramPercentile) Params(i *interpreter.Interpreter) (*interpre
 		Params: []interpreter.ParamDef{
 			{Name: "self"},
 		},
+		StarParam: "s",
+		KWParam:   "k",
 	}, nil
 }
 

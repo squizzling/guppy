@@ -15,6 +15,8 @@ func (m methodEquals) Params(i *interpreter.Interpreter) (*interpreter.Params, e
 		Params: []interpreter.ParamDef{
 			{Name: "self"},
 		},
+		StarParam: "s",
+		KWParam:   "k",
 	}, nil
 }
 

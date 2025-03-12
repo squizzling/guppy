@@ -15,6 +15,8 @@ func (m methodCeil) Params(i *interpreter.Interpreter) (*interpreter.Params, err
 		Params: []interpreter.ParamDef{
 			{Name: "self"},
 		},
+		StarParam: "s",
+		KWParam:   "k",
 	}, nil
 }
 

@@ -15,6 +15,8 @@ func (m methodPromote) Params(i *interpreter.Interpreter) (*interpreter.Params, 
 		Params: []interpreter.ParamDef{
 			{Name: "self"},
 		},
+		StarParam: "s",
+		KWParam:   "k",
 	}, nil
 }
 

@@ -15,6 +15,8 @@ func (m methodFloor) Params(i *interpreter.Interpreter) (*interpreter.Params, er
 		Params: []interpreter.ParamDef{
 			{Name: "self"},
 		},
+		StarParam: "s",
+		KWParam:   "k",
 	}, nil
 }
 

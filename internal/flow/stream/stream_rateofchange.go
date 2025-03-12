@@ -15,6 +15,8 @@ func (m methodRateofChange) Params(i *interpreter.Interpreter) (*interpreter.Par
 		Params: []interpreter.ParamDef{
 			{Name: "self"},
 		},
+		StarParam: "s",
+		KWParam:   "k",
 	}, nil
 }
 

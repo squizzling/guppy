@@ -15,6 +15,8 @@ func (m methodMap) Params(i *interpreter.Interpreter) (*interpreter.Params, erro
 		Params: []interpreter.ParamDef{
 			{Name: "self"},
 		},
+		StarParam: "s",
+		KWParam:   "k",
 	}, nil
 }
 

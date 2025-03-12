@@ -15,6 +15,8 @@ func (m methodMeanPlusStdDev) Params(i *interpreter.Interpreter) (*interpreter.P
 		Params: []interpreter.ParamDef{
 			{Name: "self"},
 		},
+		StarParam: "s",
+		KWParam:   "k",
 	}, nil
 }
 

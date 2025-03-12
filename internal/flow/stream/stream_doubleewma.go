@@ -15,6 +15,8 @@ func (m methodDoubleEWMA) Params(i *interpreter.Interpreter) (*interpreter.Param
 		Params: []interpreter.ParamDef{
 			{Name: "self"},
 		},
+		StarParam: "s",
+		KWParam:   "k",
 	}, nil
 }
 
