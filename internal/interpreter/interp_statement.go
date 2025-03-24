@@ -76,7 +76,38 @@ func (i *Interpreter) VisitStatementExpression(se ast.StatementExpression) (retu
 func (i *Interpreter) VisitStatementFunction(sf ast.StatementFunction) (returnValue any, errOut error) {
 	defer i.trace()(&returnValue, &errOut)
 
-	panic("StatementFunction")
+	params := &Params{}
+	for _, param := range sf.Params.List {
+		if param.StarArg {
+			params.StarParam = param.Name
+		} else if param.KeywordArg {
+			params.KWParam = param.Name
+		} else {
+			var def Object
+			if param.Default != nil {
+				var ok bool
+				if defRaw, err := param.Default.Accept(i); err != nil {
+					return nil, err
+				} else if def, ok = defRaw.(Object); !ok {
+					return nil, fmt.Errorf("default is a %T, not an Object", defRaw)
+				}
+			}
+			if params.StarParam == "" {
+				params.Params = append(params.Params, ParamDef{
+					Name:    param.Name,
+					Default: def,
+				})
+			} else {
+				params.KWParams = append(params.KWParams, ParamDef{
+					Name:    param.Name,
+					Default: def,
+				})
+			}
+		}
+	}
+
+	err := i.Scope.Set(sf.Token, NewObjectFunction(sf.Token, params, sf.Body))
+	return nil, err
 }
 
 func (i *Interpreter) VisitStatementIf(si ast.StatementIf) (returnValue any, errOut error) {
@@ -107,12 +138,15 @@ func (i *Interpreter) VisitStatementList(sl ast.StatementList) (returnValue any,
 	defer i.trace()(&returnValue, &errOut)
 
 	for _, stmt := range sl.Statements {
-		_, err := stmt.Accept(i)
+		ret, err := stmt.Accept(i)
 		if err != nil {
 			return nil, err
 		}
+		if ret != nil {
+			return ret, nil
+		}
 	}
-	return nil, nil
+	return NewObjectNone(), nil
 }
 
 func (i *Interpreter) VisitStatementProgram(sp ast.StatementProgram) (returnValue any, errOut error) {
@@ -131,5 +165,9 @@ func (i *Interpreter) VisitStatementProgram(sp ast.StatementProgram) (returnValu
 func (i *Interpreter) VisitStatementReturn(sr ast.StatementReturn) (returnValue any, errOut error) {
 	defer i.trace()(&returnValue, &errOut)
 
-	panic("StatementReturn")
+	if sr.Expr == nil {
+		return NewObjectNone(), nil
+	}
+
+	return sr.Expr.Accept(i)
 }
