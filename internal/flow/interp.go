@@ -11,6 +11,7 @@ func NewInterpreter(enableTrace bool) *interpreter.Interpreter {
 	i := interpreter.NewInterpreter(enableTrace)
 
 	_ = i.Globals.Set("alerts", &stream.FFIAlerts{Object: interpreter.NewObject(nil)})
+	_ = i.Globals.Set("const", &stream.FFIConst{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("data", &stream.FFIData{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("events", &stream.FFIEvents{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("filter", &filter.FFIFilter{Object: interpreter.NewObject(nil)})
