@@ -20,6 +20,15 @@ var magicBinaryNames = map[tokenizer.TokenType]string{
 	tokenizer.TokenTypePlus:           "__add__",
 	tokenizer.TokenTypeSlash:          "__truediv__",
 	tokenizer.TokenTypeStar:           "__mul__",
+
+	tokenizer.TokenTypeBangEqual:    "__ne__",
+	tokenizer.TokenTypeEqualEqual:   "__eq__",
+	tokenizer.TokenTypeGreater:      "__gt__",
+	tokenizer.TokenTypeGreaterEqual: "__ge__",
+	tokenizer.TokenTypeIs:           "__is__",
+	tokenizer.TokenTypeIsNot:        "__isnot__",
+	tokenizer.TokenTypeLess:         "__lt__",
+	tokenizer.TokenTypeLessEqual:    "__le__",
 }
 
 var magicUnaryNames = map[tokenizer.TokenType]string{
@@ -621,6 +630,11 @@ func parseBinaryCall(
 	}
 
 	for op, ok := p.Capture(tokens...); ok; op, ok = p.Capture(tokens...) {
+		if op.Type == tokenizer.TokenTypeIs {
+			if p.Match(tokenizer.TokenTypeNot) {
+				op.Type = tokenizer.TokenTypeIsNot
+			}
+		}
 		member, ok := magicBinaryNames[op.Type]
 		if !ok {
 			return nil, parser.FailErrSkip(fmt.Errorf("unrecognized tokenType %s", op.Type), "", 1)
@@ -700,7 +714,19 @@ func parseComparison(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 		  : expr ((LESS_THAN | LT_EQ | EQUALS | NOT_EQ_1 | NOT_EQ_2 | GREATER_THAN | GT_EQ | IS | IS NOT) expr)*
 		  ;
 	*/
-	leftExpression, err := parseExpression(p)
+
+	return parseBinaryCall(p, parseExpression,
+		tokenizer.TokenTypeLess,
+		tokenizer.TokenTypeLessEqual,
+		tokenizer.TokenTypeEqualEqual,
+		tokenizer.TokenTypeBangEqual,
+		tokenizer.TokenTypeLessGreater,
+		tokenizer.TokenTypeGreater,
+		tokenizer.TokenTypeGreaterEqual,
+		tokenizer.TokenTypeIs,
+	)
+
+	/*leftExpression, err := parseExpression(p)
 	if err != nil {
 		return nil, parser.FailErrSkip(err, "", 1)
 	}
@@ -729,13 +755,14 @@ func parseComparison(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 				op.Type = tokenizer.TokenTypeIsNot
 			}
 		}
+
 		rightExpression, err := parseExpression(p)
 		if err != nil {
 			return nil, parser.FailErrSkip(err, "", 1)
 		}
 		leftExpression = ast.NewExpressionBinary(leftExpression, op, rightExpression)
 	}
-	return leftExpression, nil
+	return leftExpression, nil*/
 }
 
 func parseExpression(p *parser.Parser) (ast.Expression, *parser.ParseError) {
