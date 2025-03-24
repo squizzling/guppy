@@ -47,8 +47,15 @@ func (s *scope) resolveDeferred(i *Interpreter) error {
 				return fmt.Errorf("deferred resolution failed for keys %s: %w", da.vars, err)
 			}
 			if od, ok := maybeResolved.(*ObjectDeferred); !ok {
-				for idx, value := range maybeResolved.(*ObjectList).Items {
-					s.vars[da.vars[idx]] = value
+				// TODO: I don't love this, what if we have an actual list?
+				if objList, ok := maybeResolved.(*ObjectList); ok {
+					for idx, value := range objList.Items {
+						s.vars[da.vars[idx]] = value
+					}
+				} else if obj, ok := maybeResolved.(Object); ok {
+					s.vars[da.vars[0]] = obj
+				} else {
+					return fmt.Errorf("expecting ObjectList or Object, found %T", maybeResolved)
 				}
 				progress = true
 				delete(s.deferredAssign, key)

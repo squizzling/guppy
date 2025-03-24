@@ -38,7 +38,14 @@ func (i *Interpreter) VisitStatementExpression(se ast.StatementExpression) (retu
 		return nil, err
 	}
 
-	values := valuesAny.(*ObjectList)
+	// TODO: Clean up this mess.  Originally we returned a list of length 1 from functions,
+	//       but now we don't.  This turns it back in to a list of length 1, but that's also
+	//       kinda dumb.
+	var values *ObjectList
+	var ok bool
+	if values, ok = valuesAny.(*ObjectList); !ok {
+		values = NewObjectList(valuesAny.(Object)).(*ObjectList)
+	}
 	if len(se.Assign) == 0 { // Do nothing
 		return nil, nil
 	}
