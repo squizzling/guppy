@@ -18,6 +18,9 @@ func (msat methodStreamAggregateTransform) Params(i *interpreter.Interpreter) (*
 			{Name: "self"},
 			{Name: "by", Default: interpreter.NewObjectNone()},
 			{Name: "over", Default: interpreter.NewObjectNone()},
+			{Name: "cycle", Default: interpreter.NewObjectNone()},          // TODO: Resolve cycle
+			{Name: "cycle_start", Default: interpreter.NewObjectNone()},    // TODO: Resolve cycle_start
+			{Name: "partial_values", Default: interpreter.NewObjectNone()}, // TODO: Resolve partial_values
 		},
 	}, nil
 }
