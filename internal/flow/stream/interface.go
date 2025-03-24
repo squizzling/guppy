@@ -61,6 +61,8 @@ func newStreamObject() interpreter.Object {
 		"__rsub__":     methodStreamOp{interpreter.NewObject(nil), "-", true},
 		"__truediv__":  methodStreamOp{interpreter.NewObject(nil), "/", false},
 		"__rtruediv__": methodStreamOp{interpreter.NewObject(nil), "/", true},
+
+		"__unary_minus__": methodStreamUnaryMinus{interpreter.NewObject(nil)},
 	})
 }
 
