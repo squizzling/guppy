@@ -162,3 +162,12 @@ func r(a any, err error) (Object, error) {
 	}
 	return a.(Object), nil
 }
+
+func isTruthy(o Object) (bool, error) {
+	switch o := o.(type) {
+	case *ObjectBool:
+		return o.Value, nil
+	default:
+		return false, fmt.Errorf("ternary condition is %T not *interpreter.ObjectBool", o)
+	}
+}

@@ -120,7 +120,20 @@ func (i *Interpreter) VisitStatementFunction(sf ast.StatementFunction) (returnVa
 func (i *Interpreter) VisitStatementIf(si ast.StatementIf) (returnValue any, errOut error) {
 	defer i.trace()(&returnValue, &errOut)
 
-	panic("StatementIf")
+	for idx, exprCond := range si.Condition {
+		if cond, err := r(exprCond.Accept(i)); err != nil {
+			return nil, err
+		} else if cond, err := isTruthy(cond); err != nil {
+			return nil, err
+		} else if cond {
+			return si.Statement[idx].Accept(i)
+		}
+	}
+	if si.StatementElse != nil {
+		return si.StatementElse.Accept(i)
+	} else {
+		return nil, nil
+	}
 }
 
 func (i *Interpreter) VisitStatementImportFrom(sif ast.StatementImportFrom) (returnValue any, errOut error) {
