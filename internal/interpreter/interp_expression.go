@@ -375,7 +375,22 @@ func (i *Interpreter) VisitExpressionSubscript(es ast.ExpressionSubscript) (retu
 func (i *Interpreter) VisitExpressionTernary(et ast.ExpressionTernary) (returnValue any, errOut error) {
 	defer i.trace()(&returnValue, &errOut)
 
-	panic("ExpressionTernary")
+	if cond, err := et.Cond.Accept(i); err != nil {
+		return nil, err
+	} else {
+		truthy := false
+		switch cond := cond.(type) {
+		case *ObjectBool:
+			truthy = cond.Value
+		default:
+			return nil, fmt.Errorf("ternary condition is %T not *interpreter.ObjectBool", cond)
+		}
+		if truthy {
+			return et.Left.Accept(i)
+		} else {
+			return et.Right.Accept(i)
+		}
+	}
 }
 
 func (i *Interpreter) VisitExpressionUnary(eu ast.ExpressionUnary) (returnValue any, errOut error) {
