@@ -6,18 +6,18 @@ import (
 	"guppy/internal/interpreter"
 )
 
-type streamMathScalar struct {
+type streamMathScalar[T any] struct {
 	interpreter.Object
 
 	left  Stream
 	op    string
-	right int
+	right T
 
 	reverse bool
 }
 
-func newStreamMathScalar(left Stream, op string, right int, reverse bool) Stream {
-	return &streamMathScalar{
+func newStreamMathScalar[T any](left Stream, op string, right T, reverse bool) Stream {
+	return &streamMathScalar[T]{
 		Object: newStreamObject(),
 
 		left:    unpublish(left),
@@ -27,10 +27,10 @@ func newStreamMathScalar(left Stream, op string, right int, reverse bool) Stream
 	}
 }
 
-func (s *streamMathScalar) RenderStream() string {
+func (s *streamMathScalar[T]) RenderStream() string {
 	if s.reverse {
-		return fmt.Sprintf("(%d %s %s)", s.right, s.op, s.left.RenderStream())
+		return fmt.Sprintf("(%v %s %s)", s.right, s.op, s.left.RenderStream())
 	} else {
-		return fmt.Sprintf("(%s %s %d)", s.left.RenderStream(), s.op, s.right)
+		return fmt.Sprintf("(%s %s %v)", s.left.RenderStream(), s.op, s.right)
 	}
 }

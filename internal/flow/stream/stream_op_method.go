@@ -35,6 +35,8 @@ func (mso methodStreamOp) Call(i *interpreter.Interpreter) (interpreter.Object, 
 				return newStreamMathStream(selfStream, mso.op, right), nil
 			case *interpreter.ObjectInt:
 				return newStreamMathScalar(selfStream, mso.op, right.Value, mso.reverse), nil
+			case *interpreter.ObjectDouble:
+				return newStreamMathScalar(selfStream, mso.op, right.Value, mso.reverse), nil
 			default:
 				return nil, fmt.Errorf("opCall[%s]: unknown type %T", mso.op, right)
 			}
