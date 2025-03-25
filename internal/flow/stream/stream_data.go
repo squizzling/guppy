@@ -19,7 +19,7 @@ func (f FFIData) Params(i *interpreter.Interpreter) (*interpreter.Params, error)
 			{Name: "rollup", Default: interpreter.NewObjectNone()},
 			{Name: "extrapolation", Default: interpreter.NewObjectString("null")},
 			{Name: "maxExtrapolations", Default: interpreter.NewObjectInt(0)},
-			//{Name: "resolution", Default: interpreter.NewObjectNone()},
+			{Name: "resolution", Default: interpreter.NewObjectNone()}, // TODO: Handle
 		},
 	}, nil
 }
