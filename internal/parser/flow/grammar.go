@@ -1107,7 +1107,7 @@ func parseAtom(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 		return ast.NewExpressionLiteral(t.LiteralString), nil
 	} else if t, ok := p.Capture(tokenizer.TokenTypeInt); ok {
 		return ast.NewExpressionLiteral(t.LiteralInteger), nil
-	} else if _, ok := p.Capture(tokenizer.TokenTypeFloat); ok {
+	} else if t, ok := p.Capture(tokenizer.TokenTypeFloat); ok {
 		return ast.NewExpressionLiteral(t.LiteralFloat), nil
 	} else if p.Match(tokenizer.TokenTypeNone) {
 		return ast.NewExpressionLiteral(nil), nil
