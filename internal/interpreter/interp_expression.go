@@ -322,13 +322,7 @@ func (i *Interpreter) VisitExpressionList(el ast.ExpressionList) (returnValue an
 		return NewObjectDeferred(el, desired...), nil
 	}
 
-	if len(o) > 1 || el.Tuple {
-		return NewObjectList(o...), nil
-	} else if len(o) == 0 {
-		panic("Empty expression list")
-	} else {
-		return o[0], nil
-	}
+	return NewObjectList(o...), nil
 }
 
 func (i *Interpreter) VisitExpressionListMaker(elm ast.ExpressionListMaker) (returnValue any, errOut error) {

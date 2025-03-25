@@ -12,13 +12,8 @@ StatementIf(
       Statements: [
         StatementExpression(
           Assign: nil
-          Expr: ExpressionList(
-            Expressions: [
-              ExpressionVariable(
-                Identifier: string(b)
-              )
-            ]
-            Tuple: bool(false)
+          Expr: ExpressionVariable(
+            Identifier: string(b)
           )
         )
       ]
@@ -46,13 +41,8 @@ StatementIf(
       Statements: [
         StatementExpression(
           Assign: nil
-          Expr: ExpressionList(
-            Expressions: [
-              ExpressionVariable(
-                Identifier: string(b)
-              )
-            ]
-            Tuple: bool(false)
+          Expr: ExpressionVariable(
+            Identifier: string(b)
           )
         )
       ]
@@ -61,13 +51,8 @@ StatementIf(
       Statements: [
         StatementExpression(
           Assign: nil
-          Expr: ExpressionList(
-            Expressions: [
-              ExpressionVariable(
-                Identifier: string(d)
-              )
-            ]
-            Tuple: bool(false)
+          Expr: ExpressionVariable(
+            Identifier: string(d)
           )
         )
       ]
@@ -105,13 +90,8 @@ StatementIf(
       Statements: [
         StatementExpression(
           Assign: nil
-          Expr: ExpressionList(
-            Expressions: [
-              ExpressionVariable(
-                Identifier: string(b)
-              )
-            ]
-            Tuple: bool(false)
+          Expr: ExpressionVariable(
+            Identifier: string(b)
           )
         )
       ]
@@ -120,13 +100,8 @@ StatementIf(
       Statements: [
         StatementExpression(
           Assign: nil
-          Expr: ExpressionList(
-            Expressions: [
-              ExpressionVariable(
-                Identifier: string(d)
-              )
-            ]
-            Tuple: bool(false)
+          Expr: ExpressionVariable(
+            Identifier: string(d)
           )
         )
       ]
@@ -135,13 +110,8 @@ StatementIf(
       Statements: [
         StatementExpression(
           Assign: nil
-          Expr: ExpressionList(
-            Expressions: [
-              ExpressionVariable(
-                Identifier: string(f)
-              )
-            ]
-            Tuple: bool(false)
+          Expr: ExpressionVariable(
+            Identifier: string(f)
           )
         )
       ]
@@ -150,13 +120,8 @@ StatementIf(
       Statements: [
         StatementExpression(
           Assign: nil
-          Expr: ExpressionList(
-            Expressions: [
-              ExpressionVariable(
-                Identifier: string(h)
-              )
-            ]
-            Tuple: bool(false)
+          Expr: ExpressionVariable(
+            Identifier: string(h)
           )
         )
       ]
@@ -181,13 +146,8 @@ StatementIf(
       Statements: [
         StatementExpression(
           Assign: nil
-          Expr: ExpressionList(
-            Expressions: [
-              ExpressionVariable(
-                Identifier: string(b)
-              )
-            ]
-            Tuple: bool(false)
+          Expr: ExpressionVariable(
+            Identifier: string(b)
           )
         )
       ]
@@ -197,13 +157,8 @@ StatementIf(
     Statements: [
       StatementExpression(
         Assign: nil
-        Expr: ExpressionList(
-          Expressions: [
-            ExpressionVariable(
-              Identifier: string(c)
-            )
-          ]
-          Tuple: bool(false)
+        Expr: ExpressionVariable(
+          Identifier: string(c)
         )
       )
     ]
@@ -241,13 +196,8 @@ StatementIf(
       Statements: [
         StatementExpression(
           Assign: nil
-          Expr: ExpressionList(
-            Expressions: [
-              ExpressionVariable(
-                Identifier: string(b)
-              )
-            ]
-            Tuple: bool(false)
+          Expr: ExpressionVariable(
+            Identifier: string(b)
           )
         )
       ]
@@ -256,13 +206,8 @@ StatementIf(
       Statements: [
         StatementExpression(
           Assign: nil
-          Expr: ExpressionList(
-            Expressions: [
-              ExpressionVariable(
-                Identifier: string(d)
-              )
-            ]
-            Tuple: bool(false)
+          Expr: ExpressionVariable(
+            Identifier: string(d)
           )
         )
       ]
@@ -271,13 +216,8 @@ StatementIf(
       Statements: [
         StatementExpression(
           Assign: nil
-          Expr: ExpressionList(
-            Expressions: [
-              ExpressionVariable(
-                Identifier: string(f)
-              )
-            ]
-            Tuple: bool(false)
+          Expr: ExpressionVariable(
+            Identifier: string(f)
           )
         )
       ]
@@ -286,13 +226,8 @@ StatementIf(
       Statements: [
         StatementExpression(
           Assign: nil
-          Expr: ExpressionList(
-            Expressions: [
-              ExpressionVariable(
-                Identifier: string(h)
-              )
-            ]
-            Tuple: bool(false)
+          Expr: ExpressionVariable(
+            Identifier: string(h)
           )
         )
       ]
@@ -302,13 +237,8 @@ StatementIf(
     Statements: [
       StatementExpression(
         Assign: nil
-        Expr: ExpressionList(
-          Expressions: [
-            ExpressionVariable(
-              Identifier: string(i)
-            )
-          ]
-          Tuple: bool(false)
+        Expr: ExpressionVariable(
+          Identifier: string(i)
         )
       )
     ]
@@ -332,52 +262,32 @@ StatementIf(
           Assign: [
             a
           ]
-          Expr: ExpressionList(
-            Expressions: [
-              ExpressionVariable(
-                Identifier: string(b)
-              )
-            ]
-            Tuple: bool(false)
+          Expr: ExpressionVariable(
+            Identifier: string(b)
           )
         )
         StatementExpression(
           Assign: [
             c
           ]
-          Expr: ExpressionList(
-            Expressions: [
-              ExpressionVariable(
-                Identifier: string(d)
-              )
-            ]
-            Tuple: bool(false)
+          Expr: ExpressionVariable(
+            Identifier: string(d)
           )
         )
         StatementExpression(
           Assign: [
             e
           ]
-          Expr: ExpressionList(
-            Expressions: [
-              ExpressionVariable(
-                Identifier: string(f)
-              )
-            ]
-            Tuple: bool(false)
+          Expr: ExpressionVariable(
+            Identifier: string(f)
           )
         )
         StatementExpression(
           Assign: [
             g
           ]
-          Expr: ExpressionList(
-            Expressions: [
-              ExpressionVariable(
-                Identifier: string(h)
-              )
-            ]
-            Tuple: bool(false)
+          Expr: ExpressionVariable(
+            Identifier: string(h)
           )
         )
       ]

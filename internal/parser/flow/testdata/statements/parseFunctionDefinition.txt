@@ -20,13 +20,8 @@ StatementFunction(
         Assign: [
           c
         ]
-        Expr: ExpressionList(
-          Expressions: [
-            ExpressionVariable(
-              Identifier: string(d)
-            )
-          ]
-          Tuple: bool(false)
+        Expr: ExpressionVariable(
+          Identifier: string(d)
         )
       )
     ]

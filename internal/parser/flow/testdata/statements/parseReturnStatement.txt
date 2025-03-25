@@ -7,13 +7,8 @@ StatementReturn(
 return a
 -----
 StatementReturn(
-  Expr: ExpressionList(
-    Expressions: [
-      ExpressionVariable(
-        Identifier: string(a)
-      )
-    ]
-    Tuple: bool(false)
+  Expr: ExpressionVariable(
+    Identifier: string(a)
   )
 )
 =====

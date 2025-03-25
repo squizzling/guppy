@@ -531,11 +531,15 @@ func parseTestList(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 	var exprList []ast.Expression
 	for {
 		if expr, err := parseTest(p); err != nil {
-			return ast.ExpressionList{}, parser.FailErr(err)
+			return nil, parser.FailErr(err)
 		} else {
 			exprList = append(exprList, expr)
 			if !p.Match(tokenizer.TokenTypeComma) {
-				return ast.NewExpressionList(exprList, len(exprList) > 1), nil
+				if len(exprList) == 1 {
+					return exprList[0], nil
+				} else {
+					return ast.NewExpressionList(exprList, true), nil
+				}
 			} else if !isAtomStart(p) {
 				return ast.NewExpressionList(exprList, true), nil
 			} else {

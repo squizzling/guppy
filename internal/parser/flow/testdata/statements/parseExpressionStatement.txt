@@ -2,19 +2,14 @@ a()
 -----
 StatementExpression(
   Assign: nil
-  Expr: ExpressionList(
-    Expressions: [
-      ExpressionCall(
-        Expr: ExpressionVariable(
-          Identifier: string(a)
-        )
-        Args: nil
-        NamedArgs: nil
-        StarArg: nil
-        KeywordArg: nil
-      )
-    ]
-    Tuple: bool(false)
+  Expr: ExpressionCall(
+    Expr: ExpressionVariable(
+      Identifier: string(a)
+    )
+    Args: nil
+    NamedArgs: nil
+    StarArg: nil
+    KeywordArg: nil
   )
 )
 =====
@@ -24,19 +19,14 @@ StatementExpression(
   Assign: [
     a
   ]
-  Expr: ExpressionList(
-    Expressions: [
-      ExpressionCall(
-        Expr: ExpressionVariable(
-          Identifier: string(b)
-        )
-        Args: nil
-        NamedArgs: nil
-        StarArg: nil
-        KeywordArg: nil
-      )
-    ]
-    Tuple: bool(false)
+  Expr: ExpressionCall(
+    Expr: ExpressionVariable(
+      Identifier: string(b)
+    )
+    Args: nil
+    NamedArgs: nil
+    StarArg: nil
+    KeywordArg: nil
   )
 )
 =====
