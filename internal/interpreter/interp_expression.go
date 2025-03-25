@@ -288,7 +288,20 @@ func (i *Interpreter) resolveStarArgs(unnamedArgs []ast.Expression, formalParamC
 func (i *Interpreter) VisitExpressionDict(ed ast.ExpressionDict) (returnValue any, errOut error) {
 	defer i.trace()(&returnValue, &errOut)
 
-	panic("ExpressionDict")
+	var items []DictItem
+	for idx, keyExpr := range ed.Keys {
+		valExpr := ed.Values[idx]
+
+		if key, err := r(keyExpr.Accept(i)); err != nil {
+			return nil, err
+		} else if val, err := r(valExpr.Accept(i)); err != nil {
+			return nil, err
+		} else {
+			items = append(items, DictItem{Key: key, Value: val})
+		}
+	}
+
+	return NewObjectDict(items), nil
 }
 
 func (i *Interpreter) VisitExpressionGrouping(eg ast.ExpressionGrouping) (returnValue any, errOut error) {

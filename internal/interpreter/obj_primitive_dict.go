@@ -2,6 +2,7 @@ package interpreter
 
 import (
 	"fmt"
+	"strings"
 )
 
 type DictItem struct {
@@ -41,6 +42,21 @@ func (od *ObjectDict) get(key Object, def Object) (Object, error) {
 		return nil, fmt.Errorf("can't read from dict with data")
 	}
 	return def, nil
+}
+
+func (od *ObjectDict) Repr() string {
+	var sb strings.Builder
+	sb.WriteString("{")
+	for idx, item := range od.items {
+		if idx > 0 {
+			sb.WriteString(", ")
+		}
+		sb.WriteString(Repr(item.Key))
+		sb.WriteString(": ")
+		sb.WriteString(Repr(item.Value))
+	}
+	sb.WriteString("}")
+	return sb.String()
 }
 
 var _ = FlowCall(methodDictGet{})
