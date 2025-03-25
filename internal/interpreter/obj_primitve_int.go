@@ -58,22 +58,27 @@ func (mio methodIntOp) Call(i *Interpreter) (Object, error) {
 	} else if right, err := i.Scope.GetArg("right"); err != nil {
 		return nil, err
 	} else {
+		var rightVal int
 		switch right := right.(type) {
 		case *ObjectInt:
-			switch mio.op {
-			case "+":
-				return NewObjectInt(self.Value + right.Value), nil
-			case "-":
-				return NewObjectInt(self.Value - right.Value), nil
-			case "/":
-				return NewObjectInt(self.Value / right.Value), nil
-			case "*":
-				return NewObjectInt(self.Value * right.Value), nil
-			default:
-				return nil, fmt.Errorf("methodIntOp: unknown op %s", mio.op)
-			}
+			rightVal = right.Value
+		case *ObjectDouble:
+			rightVal = int(right.Value)
 		default:
 			return nil, fmt.Errorf("methodIntOp: unknown type %T", right)
+		}
+
+		switch mio.op {
+		case "+":
+			return NewObjectInt(self.Value + rightVal), nil
+		case "-":
+			return NewObjectInt(self.Value - rightVal), nil
+		case "/":
+			return NewObjectInt(self.Value / rightVal), nil
+		case "*":
+			return NewObjectInt(self.Value * rightVal), nil
+		default:
+			return nil, fmt.Errorf("methodIntOp: unknown op %s", mio.op)
 		}
 	}
 }
