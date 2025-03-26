@@ -63,6 +63,20 @@ func newStreamObject() interpreter.Object {
 		"__rtruediv__": methodStreamOp{interpreter.NewObject(nil), "/", true},
 
 		"__unary_minus__": methodStreamUnaryMinus{interpreter.NewObject(nil)},
+
+		// Comparison operations
+		"__ge__":  methodStreamOp{interpreter.NewObject(nil), ">=", false},
+		"__rge__": methodStreamOp{interpreter.NewObject(nil), ">=", true},
+		"__gt__":  methodStreamOp{interpreter.NewObject(nil), ">", false},
+		"__rgt__": methodStreamOp{interpreter.NewObject(nil), ">", true},
+		"__le__":  methodStreamOp{interpreter.NewObject(nil), "<=", false},
+		"__rle__": methodStreamOp{interpreter.NewObject(nil), "<=", true},
+		"__lt__":  methodStreamOp{interpreter.NewObject(nil), "<", false},
+		"__rlt__": methodStreamOp{interpreter.NewObject(nil), "<", true},
+		"__eq__":  methodStreamOp{interpreter.NewObject(nil), "==", false},
+		"__req__": methodStreamOp{interpreter.NewObject(nil), "==", true},
+		"__ne__":  methodStreamOp{interpreter.NewObject(nil), "!=", false},
+		"__rne__": methodStreamOp{interpreter.NewObject(nil), "!=", true},
 	})
 }
 
