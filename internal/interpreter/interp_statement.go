@@ -113,7 +113,7 @@ func (i *Interpreter) VisitStatementFunction(sf ast.StatementFunction) (returnVa
 		}
 	}
 
-	err := i.Scope.Set(sf.Token, NewObjectFunction(sf.Token, params, sf.Body))
+	err := i.Scope.Set(sf.Token, NewObjectFunction(sf.Token, params, i.Scope, sf.Body))
 	return nil, err
 }
 

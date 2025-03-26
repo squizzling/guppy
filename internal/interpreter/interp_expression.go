@@ -224,7 +224,11 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (returnValue an
 	}
 
 	// Perform all argument resolution above here, so we don't pollute the scope as we evaluate things.
-	i.pushScope()
+	if s, ok := expr.(*ObjectFunction); ok {
+		i.pushClosure(s.scope)
+	} else {
+		i.pushClosure(i.Globals)
+	}
 	defer i.popScope()
 
 	if err := i.assignArgs(

@@ -24,10 +24,6 @@ func NewInterpreter(enableTrace bool) *Interpreter {
 	}
 	i.pushScope()
 	i.Globals = i.Scope
-	// TODO: Technically this isn't necessary, but it protects globals from
-	//       modification in case the caller doesn't push their own scope.
-	i.pushScope()
-
 	return i
 }
 

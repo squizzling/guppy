@@ -33,6 +33,16 @@ func (i *Interpreter) pushScope() {
 	}
 }
 
+func (i *Interpreter) pushClosure(s *scope) {
+	i.Scope = &scope{
+		isDefined:      make(map[string]bool),
+		vars:           make(map[string]Object),
+		deferredAssign: make(map[string]deferAssign),
+		popChain:       i.Scope,
+		lookupChain:    s,
+	}
+}
+
 func (i *Interpreter) popScope() {
 	i.Scope = i.Scope.popChain
 }
