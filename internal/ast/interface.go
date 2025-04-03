@@ -44,6 +44,7 @@ func (is Interfaces) IsInterface(name string) bool {
 type Interface struct {
 	Name  string
 	Nodes []Node
+	Extra []string
 }
 
 type Node struct {
@@ -53,6 +54,7 @@ type Node struct {
 }
 
 type Field struct {
-	Name string
-	Type string
+	Name     string
+	Type     string
+	Embedded bool
 }

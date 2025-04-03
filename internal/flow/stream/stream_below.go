@@ -25,23 +25,6 @@ func (mb methodBelow) Call(i *interpreter.Interpreter) (interpreter.Object, erro
 	if self, err := interpreter.ArgAs[Stream](i, "self"); err != nil {
 		return nil, err
 	} else {
-		return NewBelow(self), nil
+		return NewStreamBelow(newStreamObject(), unpublish(self)), nil
 	}
-}
-
-type Below struct {
-	interpreter.Object
-
-	source Stream
-}
-
-func NewBelow(source Stream) Stream {
-	return &Below{
-		Object: newStreamObject(),
-		source: unpublish(source),
-	}
-}
-
-func (b *Below) RenderStream() string {
-	return b.source.RenderStream() + ".below()"
 }

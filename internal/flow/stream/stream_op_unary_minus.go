@@ -1,8 +1,6 @@
 package stream
 
 import (
-	"fmt"
-
 	"guppy/internal/interpreter"
 )
 
@@ -18,24 +16,6 @@ func (msum methodStreamUnaryMinus) Call(i *interpreter.Interpreter) (interpreter
 	if self, err := interpreter.ArgAs[Stream](i, "self"); err != nil {
 		return nil, err
 	} else {
-		return NewStreamUnaryMinus(self), nil
+		return NewStreamMathOpUnaryMinus(newStreamObject(), unpublish(self)), nil
 	}
-}
-
-type streamUnaryMinus struct {
-	interpreter.Object
-
-	left Stream
-}
-
-func NewStreamUnaryMinus(left Stream) Stream {
-	return &streamUnaryMinus{
-		Object: newStreamObject(),
-
-		left: unpublish(left),
-	}
-}
-
-func (sum *streamUnaryMinus) RenderStream() string {
-	return fmt.Sprintf("-(%s)", sum.left.RenderStream())
 }

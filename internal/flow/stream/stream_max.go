@@ -2,7 +2,6 @@ package stream
 
 import (
 	"fmt"
-	"strings"
 
 	"guppy/internal/interpreter"
 )
@@ -52,7 +51,7 @@ func (f FFIMax) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
 					maxConstant = value
 				}
 			case Stream:
-				streamValues = append(streamValues, value)
+				streamValues = append(streamValues, unpublish(value))
 			default:
 				return nil, fmt.Errorf("unexpected type: %T", value)
 			}
@@ -67,40 +66,8 @@ func (f FFIMax) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
 		}
 	}
 
-	return NewMaxStream(maxConstant, streamValues), nil
+	// streamValues are already unpublished
+	return NewStreamMax(newStreamObject(), streamValues, maxConstant), nil
 }
 
 var _ = interpreter.FlowCall(FFIMax{})
-
-type maxStream struct {
-	interpreter.Object
-
-	value   interpreter.Object
-	streams []Stream
-}
-
-func NewMaxStream(value interpreter.Object, streams []Stream) Stream {
-	return &maxStream{
-		Object:  newStreamObject(),
-		value:   value,
-		streams: streams,
-	}
-}
-
-func (m *maxStream) RenderStream() string {
-	var sb strings.Builder
-	sb.WriteString("max(")
-
-	for idx, stream := range m.streams {
-		if idx > 0 {
-			sb.WriteString(", ")
-		}
-		sb.WriteString(stream.RenderStream())
-	}
-	if m.value != nil {
-		sb.WriteString(", ")
-		sb.WriteString(interpreter.Repr(m.value))
-	}
-	sb.WriteString(")")
-	return sb.String()
-}

@@ -29,29 +29,15 @@ func (mp methodPublish) Call(i *interpreter.Interpreter) (interpreter.Object, er
 	} else if enable, err := interpreter.ArgAsBool(i, "enable"); err != nil {
 		return nil, err
 	} else {
-		return NewPublish(self, label, enable), nil
+		// TODO: This whole thing is a hack to expose published data
+		pub := NewStreamPublish(newStreamObject(), unpublish(self), label, enable)
+		if rawPublished, err := i.Globals.Get("_published"); err != nil {
+			return nil, err
+		} else if published, ok := rawPublished.(interface{ Append(s *StreamPublish) }); !ok {
+			return nil, fmt.Errorf("invalid type")
+		} else {
+			published.Append(pub)
+		}
+		return pub, nil
 	}
-}
-
-type publish struct {
-	interpreter.Object
-
-	source Stream
-	label  string
-	enable bool
-}
-
-func NewPublish(source Stream, label string, enable bool) Stream {
-	s := &publish{
-		Object: newStreamObject(),
-		source: source,
-		label:  label,
-		enable: enable,
-	}
-	fmt.Printf("%s\n", s.RenderStream())
-	return s
-}
-
-func (p *publish) RenderStream() string {
-	return fmt.Sprintf("%s.publish(label='%s')", p.source.RenderStream(), p.label)
 }

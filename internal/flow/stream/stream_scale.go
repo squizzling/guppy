@@ -40,25 +40,6 @@ func (ms methodScale) Call(i *interpreter.Interpreter) (interpreter.Object, erro
 	} else if multiple, err := ms.resolveMultiple(i); err != nil {
 		return nil, err
 	} else {
-		return NewScale(self, multiple), nil
+		return NewStreamScale(newStreamObject(), unpublish(self), multiple), nil
 	}
-}
-
-type scale struct {
-	interpreter.Object
-
-	source   Stream
-	multiple float64
-}
-
-func NewScale(source Stream, multiple float64) Stream {
-	return &scale{
-		Object:   newStreamObject(),
-		source:   unpublish(source),
-		multiple: multiple,
-	}
-}
-
-func (s *scale) RenderStream() string {
-	return fmt.Sprintf("%s.scale(%f)", s.source.RenderStream(), s.multiple)
 }

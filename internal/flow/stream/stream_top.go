@@ -26,23 +26,6 @@ func (mt methodTop) Call(i *interpreter.Interpreter) (interpreter.Object, error)
 	if self, err := interpreter.ArgAs[Stream](i, "self"); err != nil {
 		return nil, err
 	} else {
-		return NewTop(self), nil
+		return NewStreamTop(newStreamObject(), unpublish(self)), nil
 	}
-}
-
-type Top struct {
-	interpreter.Object
-
-	source Stream
-}
-
-func NewTop(source Stream) Stream {
-	return &Top{
-		Object: newStreamObject(),
-		source: unpublish(source),
-	}
-}
-
-func (t *Top) RenderStream() string {
-	return t.source.RenderStream() + ".top()"
 }

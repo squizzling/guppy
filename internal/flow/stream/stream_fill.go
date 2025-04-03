@@ -57,39 +57,6 @@ func (mf methodFill) Call(i *interpreter.Interpreter) (interpreter.Object, error
 	} else if maxCount, err := resolveMaxCount(i); err != nil {
 		return nil, err
 	} else {
-		return NewFill(self, value, duration, maxCount), nil
+		return NewStreamFill(newStreamObject(), unpublish(self), value, duration, maxCount), nil
 	}
-}
-
-type fill struct {
-	interpreter.Object
-
-	source   Stream
-	value    interpreter.Object
-	duration int
-	maxCount int
-}
-
-func NewFill(source Stream, value interpreter.Object, duration int, maxCount int) Stream {
-	return &fill{
-		Object:   newStreamObject(),
-		source:   unpublish(source),
-		value:    value,
-		duration: duration,
-		maxCount: maxCount,
-	}
-}
-
-func (f *fill) RenderStream() string {
-	s := ""
-	if f.value != nil {
-		s += fmt.Sprintf("value=%s", interpreter.Repr(f.value))
-	}
-	if f.duration > 0 {
-		s += fmt.Sprintf("duration=%d", f.duration)
-	}
-	if f.maxCount > 0 {
-		s += fmt.Sprintf("maxCount=%d", f.maxCount)
-	}
-	return f.source.RenderStream() + ".fill(" + s + ")"
 }

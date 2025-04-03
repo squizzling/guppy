@@ -4,45 +4,41 @@ import (
 	"guppy/internal/interpreter"
 )
 
-type Stream interface {
-	interpreter.Object
-
-	RenderStream() string
-}
-
 func newStreamObject() interpreter.Object {
 	return interpreter.NewObject(map[string]interpreter.Object{
 		// misc
-		"above":                methodAbove{interpreter.NewObject(nil)},
-		"abs":                  methodAbs{interpreter.NewObject(nil)},
-		"below":                methodBelow{interpreter.NewObject(nil)},
-		"between":              methodBetween{interpreter.NewObject(nil)},
-		"bottom":               methodBottom{interpreter.NewObject(nil)},
-		"ceil":                 methodCeil{interpreter.NewObject(nil)},
-		"delta":                methodDelta{interpreter.NewObject(nil)},
-		"dimensions":           methodDimensions{interpreter.NewObject(nil)},
-		"double_ewma":          methodDoubleEWMA{interpreter.NewObject(nil)},
-		"equals":               methodEquals{interpreter.NewObject(nil)},
-		"ewma":                 methodEWMA{interpreter.NewObject(nil)},
-		"fill":                 methodFill{interpreter.NewObject(nil)},
-		"floor":                methodFloor{interpreter.NewObject(nil)},
-		"histogram_percentile": methodHistogramPercentile{interpreter.NewObject(nil)},
-		"integrate":            methodIntegrate{interpreter.NewObject(nil)},
-		"log10":                methodLog10{interpreter.NewObject(nil)},
-		"log":                  methodLog{interpreter.NewObject(nil)},
-		"map":                  methodMap{interpreter.NewObject(nil)},
-		"mean_plus_stddev":     methodMeanPlusStdDev{interpreter.NewObject(nil)},
-		"not_equals":           methodNotEquals{interpreter.NewObject(nil)},
-		"percentile":           methodPercentile{interpreter.NewObject(nil)},
-		"pow":                  methodPow{interpreter.NewObject(nil)},
-		"promote":              methodPromote{interpreter.NewObject(nil)},
-		"publish":              methodPublish{interpreter.NewObject(nil)},
-		"rateofchange":         methodRateofChange{interpreter.NewObject(nil)},
-		"scale":                methodScale{interpreter.NewObject(nil)},
-		"sqrt":                 methodSqrt{interpreter.NewObject(nil)},
-		"stddev":               methodStdDev{interpreter.NewObject(nil)},
-		"timeshift":            methodTimeShift{interpreter.NewObject(nil)},
-		"top":                  methodTop{interpreter.NewObject(nil)},
+		"above":      methodAbove{interpreter.NewObject(nil)},
+		"abs":        methodAbs{interpreter.NewObject(nil)},
+		"below":      methodBelow{interpreter.NewObject(nil)},
+		"percentile": methodPercentile{interpreter.NewObject(nil)},
+		"publish":    methodPublish{interpreter.NewObject(nil)},
+		"timeshift":  methodTimeShift{interpreter.NewObject(nil)},
+		"top":        methodTop{interpreter.NewObject(nil)},
+
+		// generic
+		"between":              methodGeneric{interpreter.NewObject(nil), "between"},
+		"bottom":               methodGeneric{interpreter.NewObject(nil), "bottom"},
+		"ceil":                 methodGeneric{interpreter.NewObject(nil), "ceil"},
+		"delta":                methodGeneric{interpreter.NewObject(nil), "delta"},
+		"dimensions":           methodGeneric{interpreter.NewObject(nil), "dimensions"},
+		"double_ewma":          methodGeneric{interpreter.NewObject(nil), "double_ewma"},
+		"equals":               methodGeneric{interpreter.NewObject(nil), "equals"},
+		"ewma":                 methodGeneric{interpreter.NewObject(nil), "ewma"},
+		"fill":                 methodGeneric{interpreter.NewObject(nil), "fill"},
+		"floor":                methodGeneric{interpreter.NewObject(nil), "floor"},
+		"histogram_percentile": methodGeneric{interpreter.NewObject(nil), "histogram_percentile"},
+		"integrate":            methodGeneric{interpreter.NewObject(nil), "integrate"},
+		"log10":                methodGeneric{interpreter.NewObject(nil), "log10"},
+		"log":                  methodGeneric{interpreter.NewObject(nil), "log"},
+		"map":                  methodGeneric{interpreter.NewObject(nil), "map"},
+		"mean_plus_stddev":     methodGeneric{interpreter.NewObject(nil), "mean_plus_stddev"},
+		"not_equals":           methodGeneric{interpreter.NewObject(nil), "not_equals"},
+		"pow":                  methodGeneric{interpreter.NewObject(nil), "pow"},
+		"promote":              methodGeneric{interpreter.NewObject(nil), "promote"},
+		"rateofchange":         methodGeneric{interpreter.NewObject(nil), "rateofchange"},
+		"scale":                methodGeneric{interpreter.NewObject(nil), "scale"},
+		"sqrt":                 methodGeneric{interpreter.NewObject(nil), "sqrt"},
+		"stddev":               methodGeneric{interpreter.NewObject(nil), "stddev"},
 
 		// Aggregations + transforms
 		"count":  methodStreamAggregateTransform{interpreter.NewObject(nil), "count"},
@@ -89,8 +85,8 @@ var _ = interpreter.FlowCall(methodStreamOp{})
 // unpublish will remove any publish called on a Stream. This is because a publish
 // is not actually useful from a dataflow perspective.
 func unpublish(s Stream) Stream {
-	if p, ok := s.(*publish); ok {
-		return unpublish(p.source)
+	if p, ok := s.(*StreamPublish); ok {
+		return unpublish(p.Source)
 	}
 	return s
 }
