@@ -1,156 +1,156 @@
-package gen
+package astflow
 
 import (
-	"strings"
+	"guppy/internal/ast"
 )
 
 const Package = "ast"
 
-var Interfaces = []Interface{
-	{"Data", []ASTNode{
-		{"Argument", true, []Field{
+var Interfaces = ast.Interfaces{
+	{"Data", []ast.Node{
+		{"Argument", true, []ast.Field{
 			{"Assign", "string"},
 			{"Expr", "Expression"},
 		}},
-		{"ArgumentList", true, []Field{
+		{"ArgumentList", true, []ast.Field{
 			{"Args", "[]Expression"},
 			{"NamedArgs", "[]*DataArgument"},
 			{"StarArg", "Expression"},
 			{"KeywordArg", "Expression"},
 		}},
-		{"ImportAs", true, []Field{
+		{"ImportAs", true, []ast.Field{
 			{"Name", "[]string"},
 			{"As", "string"},
 		}},
-		{"ListIter", true, []Field{
+		{"ListIter", true, []ast.Field{
 			{"For", "*DataListFor"},
 			{"If", "*DataListIf"},
 		}},
-		{"ListFor", true, []Field{
+		{"ListFor", true, []ast.Field{
 			{"Idents", "[]string"},
 			{"Expr", "Expression"},
 			{"Iter", "*DataListIter"},
 		}},
-		{"ListIf", true, []Field{
+		{"ListIf", true, []ast.Field{
 			{"Expr", "Expression"},
 			{"Iter", "*DataListIter"},
 		}},
-		{"Parameter", true, []Field{
+		{"Parameter", true, []ast.Field{
 			{"Name", "string"},
 			{"Type", "string"},
 			{"Default", "Expression"},
 			{"StarArg", "bool"},
 			{"KeywordArg", "bool"},
 		}},
-		{"ParameterList", true, []Field{
+		{"ParameterList", true, []ast.Field{
 			{"List", "[]*DataParameter"},
 		}},
-		{"Subscript", true, []Field{
+		{"Subscript", true, []ast.Field{
 			{"Start", "Expression"},
 			{"End", "Expression"},
 			{"Range", "bool"},
 		}},
 	}},
-	{"Statement", []ASTNode{
-		{"Program", true, []Field{
+	{"Statement", []ast.Node{
+		{"Program", true, []ast.Field{
 			{"Statements", "*StatementList"},
 		}},
-		{"Expression", false, []Field{
+		{"Expression", false, []ast.Field{
 			{"Assign", "[]string"},
 			{"Expr", "Expression"},
 		}},
-		{"Return", false, []Field{
+		{"Return", false, []ast.Field{
 			{"Expr", "Expression"},
 		}},
-		{"ImportFrom", false, []Field{
+		{"ImportFrom", false, []ast.Field{
 			{"From", "[]string"},
 			{"Imports", "[]*DataImportAs"},
 		}},
-		{"ImportFromStar", false, []Field{
+		{"ImportFromStar", false, []ast.Field{
 			{"From", "[]string"},
 		}},
-		{"ImportNames", false, []Field{
+		{"ImportNames", false, []ast.Field{
 			{"Imports", "[]*DataImportAs"},
 		}},
-		{"Assert", false, []Field{
+		{"Assert", false, []ast.Field{
 			{"Test", "Expression"},
 			{"Raise", "Expression"},
 		}},
-		{"If", false, []Field{
+		{"If", false, []ast.Field{
 			{"Condition", "[]Expression"},
 			{"Statement", "[]Statement"},
 			{"StatementElse", "Statement"},
 		}},
 
-		{"Function", false, []Field{
+		{"Function", false, []ast.Field{
 			{"Token", "string"},
 			{"Params", "*DataParameterList"},
 			{"Body", "Statement"},
 		}},
-		{"Decorated", false, []Field{
+		{"Decorated", false, []ast.Field{
 			// TODO
 		}},
 
-		{"List", true, []Field{
+		{"List", true, []ast.Field{
 			{"Statements", "[]Statement"},
 		}},
 	}},
-	{"Expression", []ASTNode{
-		{"List", true, []Field{ // Make this a concrete return type
+	{"Expression", []ast.Node{
+		{"List", true, []ast.Field{ // Make this a concrete return type
 			{"Expressions", "[]Expression"},
 			{"Tuple", "bool"},
 		}},
-		{"ListMaker", false, []Field{
+		{"ListMaker", false, []ast.Field{
 			{"Expr", "Expression"},
 			{"For", "*DataListFor"},
 		}},
-		{"Binary", false, []Field{
+		{"Binary", false, []ast.Field{
 			{"Left", "Expression"},
 			{"Op", "tokenizer.Token"},
 			{"Right", "Expression"},
 		}},
-		{"Dict", false, []Field{
+		{"Dict", false, []ast.Field{
 			{"Keys", "[]Expression"},
 			{"Values", "[]Expression"},
 		}},
-		{"Grouping", false, []Field{
+		{"Grouping", false, []ast.Field{
 			{"Expr", "Expression"},
 		}},
-		{"Lambda", false, []Field{
+		{"Lambda", false, []ast.Field{
 			{"Identifier", "string"},
 			{"Expr", "Expression"},
 		}},
-		{"Literal", false, []Field{
+		{"Literal", false, []ast.Field{
 			{"Value", "any"},
 		}},
-		{"Logical", false, []Field{
+		{"Logical", false, []ast.Field{
 			{"Left", "Expression"},
 			{"Op", "tokenizer.Token"},
 			{"Right", "Expression"},
 		}},
-		{"Ternary", false, []Field{
+		{"Ternary", false, []ast.Field{
 			{"Left", "Expression"},
 			{"Cond", "Expression"},
 			{"Right", "Expression"},
 		}},
-		{"Unary", false, []Field{
+		{"Unary", false, []ast.Field{
 			{"Op", "tokenizer.TokenType"},
 			{"Right", "Expression"},
 		}},
-		{"Variable", false, []Field{
+		{"Variable", false, []ast.Field{
 			{"Identifier", "string"},
 		}},
-		{"Member", false, []Field{
+		{"Member", false, []ast.Field{
 			{"Expr", "Expression"},
 			{"Identifier", "string"},
 		}},
-		{"Subscript", false, []Field{
+		{"Subscript", false, []ast.Field{
 			{"Expr", "Expression"},
 			{"Start", "Expression"},
 			{"End", "Expression"},
 			{"Range", "bool"},
 		}},
-		{"Call", false, []Field{
+		{"Call", false, []ast.Field{
 			{"Expr", "Expression"},
 			{"Args", "[]Expression"},
 			{"NamedArgs", "[]*DataArgument"},
@@ -158,55 +158,4 @@ var Interfaces = []Interface{
 			{"KeywordArg", "Expression"},
 		}},
 	}},
-}
-
-type Interface struct {
-	Name  string
-	Nodes []ASTNode
-}
-
-type ASTNode struct {
-	Name        string
-	NewConcrete bool
-	Fields      []Field
-}
-
-type Field struct {
-	Name string
-	Type string
-}
-
-func IsInterface(name string) bool {
-	for _, i := range Interfaces {
-		if i.Name == name {
-			return true
-		}
-	}
-	return false
-}
-
-func IsInterfaceArray(name string) bool {
-	if strings.HasPrefix(name, "[]") {
-		return IsInterface(name[2:])
-	}
-	return false
-}
-
-func IsConcrete(name string) bool {
-	name = strings.TrimLeft(name, "*")
-	for _, i := range Interfaces {
-		for _, t := range i.Nodes {
-			if i.Name+t.Name == name {
-				return true
-			}
-		}
-	}
-	return false
-}
-
-func IsConcreteArray(name string) bool {
-	if strings.HasPrefix(name, "[]") {
-		return IsConcrete(name[2:])
-	}
-	return false
 }

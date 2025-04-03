@@ -6,14 +6,15 @@ import (
 	"strings"
 	"unicode"
 
-	"guppy/internal/gen"
+	"guppy/internal/ast"
+	"guppy/internal/ast/ast-flow"
 )
 
 func main() {
-	defineAst(gen.Package, gen.Interfaces)
+	defineAst(astflow.Package, astflow.Interfaces)
 }
 
-func defineAst(packageName string, interfaces []gen.Interface) {
+func defineAst(packageName string, interfaces ast.Interfaces) {
 	fmt.Printf("package %s\n", packageName)
 	fmt.Printf("\n")
 	fmt.Printf("import (\n")
@@ -54,20 +55,20 @@ func defineAst(packageName string, interfaces []gen.Interface) {
 			fmt.Printf("\t_s := \"%s(\\n\"\n", typeName)
 			fmt.Printf("\tdw.i()\n")
 			for idx, field := range t.Fields {
-				if gen.IsInterface(field.Type) {
+				if interfaces.IsInterface(field.Type) {
 					fmt.Printf("\tif %s.%s != nil {\n", receiverName, field.Name)
 					fmt.Printf("\t\t_s += dw.p() + \"%s: \" + s(%s.%s.Accept(dw)) // IsInterface\n", field.Name, receiverName, field.Name)
 					fmt.Printf("\t} else {\n")
 					fmt.Printf("\t\t_s += dw.p() + \"%s: nil\\n\"\n", field.Name)
 					fmt.Printf("\t}\n")
-				} else if gen.IsConcrete(field.Type) {
+				} else if interfaces.IsConcrete(field.Type) {
 					fmt.Printf("\t// IsConcrete\n")
 					fmt.Printf("\tif %s.%s != nil {\n", receiverName, field.Name)
 					fmt.Printf("\t\t_s += dw.p() + \"%s: \" + s(%s.%s.Accept(dw))\n", field.Name, receiverName, field.Name)
 					fmt.Printf("\t} else {\n")
 					fmt.Printf("\t\t_s += dw.p() + \"%s: nil\\n\"\n", field.Name)
 					fmt.Printf("\t}\n")
-				} else if gen.IsInterfaceArray(field.Type) || gen.IsConcreteArray(field.Type) { // Done
+				} else if interfaces.IsInterfaceArray(field.Type) || interfaces.IsConcreteArray(field.Type) { // Done
 					fmt.Printf("\tif %s.%s == nil {\n", receiverName, field.Name)
 					fmt.Printf("\t\t_s += dw.p() + \"%s: nil\\n\"\n", field.Name)
 					fmt.Printf("\t} else if len(%s.%s) == 0 {\n", receiverName, field.Name)
@@ -113,7 +114,7 @@ func defineAst(packageName string, interfaces []gen.Interface) {
 	}
 }
 
-func defineType(interfaceName string, nodeType string, fields []gen.Field) {
+func defineType(interfaceName string, nodeType string, fields []ast.Field) {
 	fmt.Printf("\n")
 	structName := interfaceName + nodeType
 	fmt.Printf("type %s struct {\n", structName)

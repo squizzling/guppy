@@ -1,7 +1,7 @@
 .PHONY: gen
 gen:
-	go run ./cmd/gen-ast   >internal/parser/ast/gen_ast.go
-	go run ./cmd/gen-debug >internal/parser/ast/gen_debug.go
+	go run ./cmd/gen-flow-ast   >internal/parser/ast/gen_flow_ast.go
+	go run ./cmd/gen-flow-debug >internal/parser/ast/gen_flow_debug.go
 
 .PHONY: imports
 imports:

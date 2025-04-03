@@ -6,14 +6,15 @@ import (
 	"strings"
 	"unicode"
 
-	"guppy/internal/gen"
+	"guppy/internal/ast"
+	"guppy/internal/ast/ast-flow"
 )
 
 func main() {
-	defineAst(gen.Package, gen.Interfaces)
+	defineAst(astflow.Package, astflow.Interfaces)
 }
 
-func defineAst(packageName string, interfaces []gen.Interface) {
+func defineAst(packageName string, interfaces ast.Interfaces) {
 	fmt.Printf("package %s\n", packageName)
 	fmt.Printf("\n")
 	fmt.Printf("import (\n")
@@ -38,7 +39,7 @@ func defineAst(packageName string, interfaces []gen.Interface) {
 	}
 }
 
-func defineType(interfaceName string, t gen.ASTNode) {
+func defineType(interfaceName string, t ast.Node) {
 	fmt.Printf("\n")
 	structName := interfaceName + t.Name
 	fmt.Printf("type %s struct {\n", structName)
