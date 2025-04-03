@@ -32,11 +32,11 @@ func (mso methodStreamOp) Call(i *interpreter.Interpreter) (interpreter.Object, 
 		} else {
 			switch right := right.(type) {
 			case Stream:
-				return newStreamMathStream(selfStream, mso.op, right), nil
+				return NewStreamMathOpStream(newStreamObject(), unpublish(selfStream), mso.op, unpublish(right)), nil
 			case *interpreter.ObjectInt:
-				return newStreamMathScalar(selfStream, mso.op, right.Value, mso.reverse), nil
+				return NewStreamMathOpInt(newStreamObject(), unpublish(selfStream), mso.op, right.Value, mso.reverse), nil
 			case *interpreter.ObjectDouble:
-				return newStreamMathScalar(selfStream, mso.op, right.Value, mso.reverse), nil
+				return NewStreamMathOpDouble(newStreamObject(), unpublish(selfStream), mso.op, right.Value, mso.reverse), nil
 			default:
 				return nil, fmt.Errorf("opCall[%s]: unknown type %T", mso.op, right)
 			}

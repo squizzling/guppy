@@ -1,8 +1,6 @@
 package stream
 
 import (
-	"fmt"
-
 	"guppy/internal/interpreter"
 )
 
@@ -20,21 +18,8 @@ func (f FFIEvents) Params(i *interpreter.Interpreter) (*interpreter.Params, erro
 }
 
 func (f FFIEvents) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
-	return NewEvents(), nil
+	// TODO: These probably aren't the right attributes for an event stream
+	return NewStreamEvents(newStreamObject()), nil
 }
 
 var _ = interpreter.FlowCall(FFIEvents{})
-
-type events struct {
-	interpreter.Object
-}
-
-func NewEvents() Stream {
-	return &events{
-		Object: newStreamObject(),
-	}
-}
-
-func (e *events) RenderStream() string {
-	return fmt.Sprintf("events()")
-}

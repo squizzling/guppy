@@ -1,8 +1,6 @@
 package stream
 
 import (
-	"fmt"
-
 	"guppy/internal/interpreter"
 )
 
@@ -22,22 +20,8 @@ func (f FFIAlerts) Params(i *interpreter.Interpreter) (*interpreter.Params, erro
 
 func (f FFIAlerts) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
 	// TODO: Process arguments
-	return NewAlerts(), nil
+	// TODO: This doesn't have the usual stream methods
+	return NewStreamAlerts(newStreamObject()), nil
 }
 
 var _ = interpreter.FlowCall(FFIAlerts{})
-
-type Alerts struct {
-	interpreter.Object
-}
-
-func NewAlerts() Stream {
-	return &Alerts{
-		Object: newStreamObject(), // TODO: This doesn't have the usual methods
-	}
-}
-
-func (a *Alerts) RenderStream() string {
-	// TODO: Render
-	return fmt.Sprintf("alerts()")
-}

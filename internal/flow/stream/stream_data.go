@@ -82,42 +82,8 @@ func (f FFIData) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
 	} else if maxExtrapolations, err := resolveMaxExtrapolations(i); err != nil {
 		return nil, err
 	} else {
-		return NewData(metricName, fltr, rollup, extrapolation, maxExtrapolations), nil
+		return NewStreamData(newStreamObject(), metricName, fltr, rollup, extrapolation, maxExtrapolations), nil
 	}
 }
 
 var _ = interpreter.FlowCall(FFIData{})
-
-type data struct {
-	interpreter.Object
-
-	metricName        string
-	filter            filter.Filter
-	rollup            string
-	extrapolation     string
-	maxExtrapolations int
-}
-
-func NewData(metricName string, filter filter.Filter, rollup string, extrapolation string, maxExtrapolations int) Stream {
-	return &data{
-		Object:            newStreamObject(),
-		metricName:        metricName,
-		filter:            filter,
-		rollup:            rollup,
-		extrapolation:     extrapolation,
-		maxExtrapolations: maxExtrapolations,
-	}
-}
-
-func (d *data) RenderStream() string {
-	filterStr := ""
-	if d.filter != nil {
-		filterStr = fmt.Sprintf(", filter=%s", d.filter.RenderFilter())
-	}
-	rollupStr := ""
-	if d.rollup != "" {
-		rollupStr = fmt.Sprintf(", rollup='%s'", d.rollup)
-	}
-
-	return fmt.Sprintf("data('%s'%s%s, extrapolation='%s', maxExtrapolations=%d)", d.metricName, filterStr, rollupStr, d.extrapolation, d.maxExtrapolations)
-}

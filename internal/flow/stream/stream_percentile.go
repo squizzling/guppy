@@ -26,23 +26,6 @@ func (mp methodPercentile) Call(i *interpreter.Interpreter) (interpreter.Object,
 	if self, err := interpreter.ArgAs[Stream](i, "self"); err != nil {
 		return nil, err
 	} else {
-		return NewPercentile(self), nil
+		return NewStreamPercentile(newStreamObject(), unpublish(self)), nil
 	}
-}
-
-type Percentile struct {
-	interpreter.Object
-
-	source Stream
-}
-
-func NewPercentile(source Stream) Stream {
-	return &Percentile{
-		Object: newStreamObject(),
-		source: unpublish(source),
-	}
-}
-
-func (p *Percentile) RenderStream() string {
-	return p.source.RenderStream() + ".percentile()"
 }

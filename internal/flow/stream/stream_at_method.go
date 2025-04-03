@@ -77,8 +77,8 @@ func (msat methodStreamAggregateTransform) Call(i *interpreter.Interpreter) (int
 	} else if over != nil && len(by) > 0 {
 		return nil, fmt.Errorf("only one argument of [by, over] may be specified")
 	} else if over != nil {
-		return newStreamTransform(self, msat.name, *over), nil
+		return NewStreamTransform(newStreamObject(), unpublish(self), msat.name, *over), nil
 	} else {
-		return newStreamAggregate(self, msat.name, by), nil
+		return NewStreamAggregate(newStreamObject(), unpublish(self), msat.name, by), nil
 	}
 }
