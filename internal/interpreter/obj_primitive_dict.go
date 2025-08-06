@@ -37,6 +37,28 @@ func NewObjectDictFromMap(items map[string]Object) Object {
 	return NewObjectDict(itemList)
 }
 
+func (od *ObjectDict) AsMapStringString() (map[string]string, error) {
+	m := make(map[string]string)
+	for idx, item := range od.items {
+		sKey := ""
+		sValue := ""
+		switch key := item.Key.(type) {
+		case *ObjectString:
+			sKey = key.Value
+		default:
+			return nil, fmt.Errorf("dict idx %d (%s) is %T not *interpreter.ObjectString", idx, Repr(key), key)
+		}
+		switch value := item.Value.(type) {
+		case *ObjectString:
+			sValue = value.Value
+		default:
+			return nil, fmt.Errorf("dict idx %d (%s) is %T not *interpreter.ObjectString", idx, sKey, value)
+		}
+		m[sKey] = sValue
+	}
+	return m, nil
+}
+
 func (od *ObjectDict) get(key Object, def Object) (Object, error) {
 	if len(od.items) > 0 {
 		return nil, fmt.Errorf("can't read from dict with data")
