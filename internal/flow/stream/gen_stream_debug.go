@@ -116,6 +116,8 @@ func (dw DebugWriter) VisitStreamConstDouble(scd StreamConstDouble) (any, error)
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", scd.Object, scd.Object)
 	// TODO: 1 Value float64
 	_s += dw.p() + fmt.Sprintf("Value: %T(%v)\n", scd.Value, scd.Value)
+	// TODO: 2 Key map[string]string
+	_s += dw.p() + fmt.Sprintf("Key: %T(%v)\n", scd.Key, scd.Key)
 	dw.o()
 	_s += dw.p() + ")\n"
 	return _s, nil
@@ -128,6 +130,8 @@ func (dw DebugWriter) VisitStreamConstInt(sci StreamConstInt) (any, error) {
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sci.Object, sci.Object)
 	// TODO: 1 Value int
 	_s += dw.p() + fmt.Sprintf("Value: %T(%v)\n", sci.Value, sci.Value)
+	// TODO: 2 Key map[string]string
+	_s += dw.p() + fmt.Sprintf("Key: %T(%v)\n", sci.Key, sci.Key)
 	dw.o()
 	_s += dw.p() + ")\n"
 	return _s, nil

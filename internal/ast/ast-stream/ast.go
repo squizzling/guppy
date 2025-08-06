@@ -37,10 +37,12 @@ var Interfaces = []ast.Interface{
 		{"ConstDouble", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
 			{"Value", "float64", false},
+			{"Key", "map[string]string", false},
 		}},
 		{"ConstInt", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
 			{"Value", "int", false},
+			{"Key", "map[string]string", false},
 		}},
 		{"Data", true, []ast.Field{
 			{"Object", "interpreter.Object", true},

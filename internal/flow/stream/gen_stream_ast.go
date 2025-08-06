@@ -138,15 +138,18 @@ func (sb StreamBelow) Accept(vs VisitorStream) (any, error) {
 type StreamConstDouble struct {
 	interpreter.Object
 	Value float64
+	Key   map[string]string
 }
 
 func NewStreamConstDouble(
 	Object interpreter.Object,
 	Value float64,
+	Key map[string]string,
 ) *StreamConstDouble {
 	return &StreamConstDouble{
 		Object: Object,
 		Value:  Value,
+		Key:    Key,
 	}
 }
 
@@ -157,15 +160,18 @@ func (scd StreamConstDouble) Accept(vs VisitorStream) (any, error) {
 type StreamConstInt struct {
 	interpreter.Object
 	Value int
+	Key   map[string]string
 }
 
 func NewStreamConstInt(
 	Object interpreter.Object,
 	Value int,
+	Key map[string]string,
 ) *StreamConstInt {
 	return &StreamConstInt{
 		Object: Object,
 		Value:  Value,
+		Key:    Key,
 	}
 }
 
