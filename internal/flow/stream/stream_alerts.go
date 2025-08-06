@@ -15,6 +15,9 @@ func (f FFIAlerts) Params(i *interpreter.Interpreter) (*interpreter.Params, erro
 			{Name: "detector_name", Default: interpreter.NewObjectNone()},
 			{Name: "autodetect_id", Default: interpreter.NewObjectNone()},
 		},
+		KWParams: []interpreter.ParamDef{
+			{Name: "filter", Default: interpreter.NewObjectNone()},
+		},
 	}, nil
 }
 
