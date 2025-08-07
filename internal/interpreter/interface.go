@@ -131,6 +131,16 @@ func ArgAsBool(i *Interpreter, argName string) (bool, error) {
 	}
 }
 
+func ArgAsNone(i *Interpreter, argName string) error {
+	if objArg, err := i.Scope.GetArg(argName); err != nil {
+		return err
+	} else if _, ok := objArg.(*ObjectNone); !ok {
+		return fmt.Errorf("%T is not *interpreter.ObjectNone", objArg)
+	} else {
+		return nil
+	}
+}
+
 func ArgAsDouble(i *Interpreter, argName string) (float64, error) {
 	if objArg, err := i.Scope.GetArg(argName); err != nil {
 		return 0, err

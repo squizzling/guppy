@@ -15,9 +15,12 @@ func newFilterObject() interpreter.Object {
 		"__binary_and__":       methodBinaryAnd{},
 		"__binary_or__":        methodBinaryOr{},
 		"__unary_binary_not__": methodBinaryNot{},
+		"__eq__":               methodBinaryEqual{invert: false},
+		"__ne__":               methodBinaryEqual{invert: true},
 	})
 }
 
 var _ = interpreter.FlowCall(methodBinaryAnd{})
 var _ = interpreter.FlowCall(methodBinaryOr{})
 var _ = interpreter.FlowCall(methodBinaryNot{})
+var _ = interpreter.FlowCall(methodBinaryEqual{})
