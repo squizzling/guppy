@@ -19,7 +19,7 @@ type ObjectDict struct {
 func NewObjectDict(items []DictItem) Object {
 	return &ObjectDict{
 		Object: NewObject(map[string]Object{
-			"get": methodDictGet{NewObject(nil)},
+			"get":           methodDictGet{NewObject(nil)},
 			"__subscript__": methodDictSubscript{NewObject(nil)},
 		}),
 
@@ -71,10 +71,27 @@ func (od *ObjectDict) tryGet(key Object, def Object) (Object, error) {
 }
 
 func (od *ObjectDict) mustGet(key Object) (Object, error) {
-	if len(od.items) > 0 {
-		return nil, fmt.Errorf("can't read from dict with data")
+	if len(od.items) == 0 {
+		return nil, fmt.Errorf("can't ready from empty dict")
 	}
-	return nil, nil
+
+	switch key := key.(type) {
+	case *ObjectString:
+		return od.mustGetString(key.Value)
+	default:
+		return nil, fmt.Errorf("requested key is %T", key)
+	}
+}
+
+func (od *ObjectDict) mustGetString(key string) (Object, error) {
+	for _, item := range od.items {
+		if itemKey, ok := item.Key.(*ObjectString); ok {
+			if itemKey.Value == key {
+				return item.Value, nil
+			}
+		}
+	}
+	return nil, fmt.Errorf("requested key (%s) is not in dict", key)
 }
 
 func (od *ObjectDict) Repr() string {
