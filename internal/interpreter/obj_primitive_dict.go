@@ -1,6 +1,7 @@
 package interpreter
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 )
@@ -72,7 +73,7 @@ func (od *ObjectDict) tryGet(key Object, def Object) (Object, error) {
 
 func (od *ObjectDict) mustGet(key Object) (Object, error) {
 	if len(od.items) == 0 {
-		return nil, fmt.Errorf("can't ready from empty dict")
+		return nil, nil
 	}
 
 	switch key := key.(type) {
@@ -91,7 +92,7 @@ func (od *ObjectDict) mustGetString(key string) (Object, error) {
 			}
 		}
 	}
-	return nil, fmt.Errorf("requested key (%s) is not in dict", key)
+	return nil, nil
 }
 
 func (od *ObjectDict) Repr() string {
@@ -180,7 +181,11 @@ func (mds methodDictSubscript) Call(i *Interpreter) (Object, error) {
 		return nil, err
 	} else if start, err := mds.resolveDictKey(i); err != nil {
 		return nil, err
+	} else if value, err := self.mustGet(start); err != nil {
+		return nil, err
+	} else if value == nil {
+		return nil, errors.New("key not found in dict")
 	} else {
-		return self.mustGet(start)
+		return value, nil
 	}
 }
