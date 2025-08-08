@@ -17,6 +17,8 @@ func newFilterObject() interpreter.Object {
 		"__unary_binary_not__": methodBinaryNot{},
 		"__eq__":               methodBinaryEqual{invert: false},
 		"__ne__":               methodBinaryEqual{invert: true},
+		"__is__":               methodBinaryIs{invert: false},
+		"__isnot__":            methodBinaryIs{invert: true},
 	})
 }
 
