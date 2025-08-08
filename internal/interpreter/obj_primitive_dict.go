@@ -20,6 +20,7 @@ func NewObjectDict(items []DictItem) Object {
 	return &ObjectDict{
 		Object: NewObject(map[string]Object{
 			"get": methodDictGet{NewObject(nil)},
+			"__subscript__": methodDictSubscript{NewObject(nil)},
 		}),
 
 		items: items,
@@ -59,11 +60,21 @@ func (od *ObjectDict) AsMapStringString() (map[string]string, error) {
 	return m, nil
 }
 
-func (od *ObjectDict) get(key Object, def Object) (Object, error) {
+func (od *ObjectDict) tryGet(key Object, def Object) (Object, error) {
+	if obj, err := od.mustGet(key); err != nil {
+		return nil, err
+	} else if obj == nil {
+		return def, nil
+	} else {
+		return obj, nil
+	}
+}
+
+func (od *ObjectDict) mustGet(key Object) (Object, error) {
 	if len(od.items) > 0 {
 		return nil, fmt.Errorf("can't read from dict with data")
 	}
-	return def, nil
+	return nil, nil
 }
 
 func (od *ObjectDict) Repr() string {
@@ -82,6 +93,7 @@ func (od *ObjectDict) Repr() string {
 }
 
 var _ = FlowCall(methodDictGet{})
+var _ = FlowCall(methodDictSubscript{})
 
 type methodDictGet struct {
 	Object
@@ -121,6 +133,37 @@ func (mdg methodDictGet) Call(i *Interpreter) (Object, error) {
 	} else if def, err := resolveDictDefault(i); err != nil {
 		return nil, err
 	} else {
-		return self.get(key, def)
+		return self.tryGet(key, def)
+	}
+}
+
+type methodDictSubscript struct {
+	Object
+}
+
+func (mds methodDictSubscript) Params(i *Interpreter) (*Params, error) {
+	return &Params{
+		Params: []ParamDef{
+			{Name: "self"},
+			{Name: "start"},
+		},
+	}, nil
+}
+
+func (mds methodDictSubscript) resolveDictKey(i *Interpreter) (Object, error) {
+	if key, err := i.Scope.GetArg("start"); err != nil {
+		return nil, err
+	} else {
+		return key, nil
+	}
+}
+
+func (mds methodDictSubscript) Call(i *Interpreter) (Object, error) {
+	if self, err := ArgAs[*ObjectDict](i, "self"); err != nil {
+		return nil, err
+	} else if start, err := mds.resolveDictKey(i); err != nil {
+		return nil, err
+	} else {
+		return self.mustGet(start)
 	}
 }

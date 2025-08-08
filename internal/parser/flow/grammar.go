@@ -914,8 +914,22 @@ func parseTrailer(p *parser.Parser, expr ast.Expression) (ast.Expression, *parse
 			return nil, parser.FailErr(err)
 		} else if err = p.MatchErr(tokenizer.TokenTypeRightSquare); err != nil {
 			return nil, parser.FailErr(err)
+		} else if !subscript.Range {
+			return ast.NewExpressionCall(
+				ast.NewExpressionMember(expr, "__subscript__"),
+				[]ast.Expression{subscript.Start},
+				nil,
+				nil,
+				nil,
+			), nil
 		} else {
-			return ast.NewExpressionSubscript(expr, subscript.Start, subscript.End, subscript.Range), nil
+			return ast.NewExpressionCall(
+				ast.NewExpressionMember(expr, "__subscript_range__"),
+				[]ast.Expression{subscript.Start},
+				nil,
+				nil,
+				nil,
+			), nil
 		}
 	} else /*if tok.Type == tokenizer.TokenTypeDot*/ {
 		if ident, ok := p.Capture(tokenizer.TokenTypeIdentifier); ok {
