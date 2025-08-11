@@ -17,6 +17,7 @@ type VisitorStream interface {
 	VisitStreamEvents(se StreamEvents) (any, error)
 	VisitStreamFill(sf StreamFill) (any, error)
 	VisitStreamGeneric(sg StreamGeneric) (any, error)
+	VisitStreamIsNone(sin StreamIsNone) (any, error)
 	VisitStreamMax(sm StreamMax) (any, error)
 	VisitStreamMathOpDouble(smod StreamMathOpDouble) (any, error)
 	VisitStreamMathOpInt(smoi StreamMathOpInt) (any, error)
@@ -275,6 +276,28 @@ func NewStreamGeneric(
 
 func (sg StreamGeneric) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamGeneric(sg)
+}
+
+type StreamIsNone struct {
+	interpreter.Object
+	Source Stream
+	Invert bool
+}
+
+func NewStreamIsNone(
+	Object interpreter.Object,
+	Source Stream,
+	Invert bool,
+) *StreamIsNone {
+	return &StreamIsNone{
+		Object: Object,
+		Source: Source,
+		Invert: Invert,
+	}
+}
+
+func (sin StreamIsNone) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamIsNone(sin)
 }
 
 type StreamMax struct {

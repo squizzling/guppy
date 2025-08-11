@@ -67,6 +67,11 @@ var Interfaces = []ast.Interface{
 			{"Source", "Stream", false},
 			{"Call", "string", false},
 		}},
+		{"IsNone", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Source", "Stream", false},
+			{"Invert", "bool", false},
+		}},
 		{"Max", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
 			{"Sources", "[]Stream", false},

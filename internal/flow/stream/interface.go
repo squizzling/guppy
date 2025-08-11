@@ -74,6 +74,12 @@ func newStreamObject() interpreter.Object {
 		"__ne__":  methodStreamOp{interpreter.NewObject(nil), "!=", false},
 		"__rne__": methodStreamOp{interpreter.NewObject(nil), "!=", true},
 
+		// is/is not
+		"__is__":     methodStreamIs{interpreter.NewObject(nil), false, false},
+		"__isnot__":  methodStreamIs{interpreter.NewObject(nil), true, false},
+		"__ris__":    methodStreamIs{interpreter.NewObject(nil), false, true},
+		"__risnot__": methodStreamIs{interpreter.NewObject(nil), true, true},
+
 		// Ternary
 		"__ternary__": methodStreamOpTernary{interpreter.NewObject(nil)},
 	})

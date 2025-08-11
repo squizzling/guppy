@@ -201,6 +201,22 @@ func (dw DebugWriter) VisitStreamGeneric(sg StreamGeneric) (any, error) {
 	return _s, nil
 }
 
+func (dw DebugWriter) VisitStreamIsNone(sin StreamIsNone) (any, error) {
+	_s := "StreamIsNone(\n"
+	dw.i()
+	// TODO: 0 Object interpreter.Object
+	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sin.Object, sin.Object)
+	if sin.Source != nil {
+		_s += dw.p() + "Source: " + s(sin.Source.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "Source: nil\n"
+	}
+	_s += dw.p() + "Invert: bool(" + fmt.Sprintf("%t", sin.Invert) + ")\n"
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
 func (dw DebugWriter) VisitStreamMax(sm StreamMax) (any, error) {
 	_s := "StreamMax(\n"
 	dw.i()
