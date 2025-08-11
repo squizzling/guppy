@@ -4,6 +4,14 @@ import (
 	"fmt"
 )
 
+var TernaryParams = &Params{
+	Params: []ParamDef{
+		{Name: "self"},
+		{Name: "left"},
+		{Name: "right"},
+	},
+}
+
 var BinaryParams = &Params{
 	Params: []ParamDef{
 		{Name: "self"},

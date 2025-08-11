@@ -111,6 +111,12 @@ var Interfaces = []ast.Interface{
 			{"Source", "Stream", false},
 			{"Multiple", "float64", false},
 		}},
+		{"Ternary", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Condition", "Stream", false},
+			{"Left", "Stream", false},
+			{"Right", "Stream", false},
+		}},
 		{"Threshold", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
 			{"Value", "float64", false},

@@ -73,6 +73,9 @@ func newStreamObject() interpreter.Object {
 		"__req__": methodStreamOp{interpreter.NewObject(nil), "==", true},
 		"__ne__":  methodStreamOp{interpreter.NewObject(nil), "!=", false},
 		"__rne__": methodStreamOp{interpreter.NewObject(nil), "!=", true},
+
+		// Ternary
+		"__ternary__": methodStreamOpTernary{interpreter.NewObject(nil)},
 	})
 }
 

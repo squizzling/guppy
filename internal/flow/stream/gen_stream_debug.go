@@ -349,6 +349,31 @@ func (dw DebugWriter) VisitStreamScale(ss StreamScale) (any, error) {
 	return _s, nil
 }
 
+func (dw DebugWriter) VisitStreamTernary(st StreamTernary) (any, error) {
+	_s := "StreamTernary(\n"
+	dw.i()
+	// TODO: 0 Object interpreter.Object
+	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", st.Object, st.Object)
+	if st.Condition != nil {
+		_s += dw.p() + "Condition: " + s(st.Condition.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "Condition: nil\n"
+	}
+	if st.Left != nil {
+		_s += dw.p() + "Left: " + s(st.Left.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "Left: nil\n"
+	}
+	if st.Right != nil {
+		_s += dw.p() + "Right: " + s(st.Right.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "Right: nil\n"
+	}
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
 func (dw DebugWriter) VisitStreamThreshold(st StreamThreshold) (any, error) {
 	_s := "StreamThreshold(\n"
 	dw.i()

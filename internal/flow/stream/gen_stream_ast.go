@@ -25,6 +25,7 @@ type VisitorStream interface {
 	VisitStreamPercentile(sp StreamPercentile) (any, error)
 	VisitStreamPublish(sp StreamPublish) (any, error)
 	VisitStreamScale(ss StreamScale) (any, error)
+	VisitStreamTernary(st StreamTernary) (any, error)
 	VisitStreamThreshold(st StreamThreshold) (any, error)
 	VisitStreamTimeShift(sts StreamTimeShift) (any, error)
 	VisitStreamTop(st StreamTop) (any, error)
@@ -462,6 +463,31 @@ func NewStreamScale(
 
 func (ss StreamScale) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamScale(ss)
+}
+
+type StreamTernary struct {
+	interpreter.Object
+	Condition Stream
+	Left      Stream
+	Right     Stream
+}
+
+func NewStreamTernary(
+	Object interpreter.Object,
+	Condition Stream,
+	Left Stream,
+	Right Stream,
+) *StreamTernary {
+	return &StreamTernary{
+		Object:    Object,
+		Condition: Condition,
+		Left:      Left,
+		Right:     Right,
+	}
+}
+
+func (st StreamTernary) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamTernary(st)
 }
 
 type StreamThreshold struct {
