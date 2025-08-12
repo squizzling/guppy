@@ -16,6 +16,7 @@ func NewInterpreter(enableTrace bool) *interpreter.Interpreter {
 	_ = i.Globals.Set("events", &stream.FFIEvents{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("filter", &filter.FFIFilter{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("max", &stream.FFIMax{Object: interpreter.NewObject(nil)})
+	_ = i.Globals.Set("str", &interpreter.FFIStr{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("_print", &debug.FFIPrint{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("_published", NewPublished())
 	_ = i.Globals.Set("threshold", &stream.FFIThreshold{Object: interpreter.NewObject(nil)})
