@@ -29,6 +29,11 @@ func NewObjectDouble(f float64) Object {
 			"__sub__":         methodDoubleOp{Object: NewObject(nil), op: "-", reverse: "__rsub__"},
 			"__truediv__":     methodDoubleOp{Object: NewObject(nil), op: "/", reverse: "__rtruediv__"},
 			"__unary_minus__": methodDoubleNeg{Object: NewObject(nil)},
+
+			"__lt__": methodDoubleOp{Object: NewObject(nil), op: "<"},
+			"__gt__": methodDoubleOp{Object: NewObject(nil), op: ">"},
+			"__le__": methodDoubleOp{Object: NewObject(nil), op: "<="},
+			"__ge__": methodDoubleOp{Object: NewObject(nil), op: ">="},
 		}),
 		Value: f,
 	}
@@ -77,6 +82,14 @@ func (mdo methodDoubleOp) Call(i *Interpreter) (Object, error) {
 			return NewObjectDouble(self.Value / rightVal), nil
 		case "*":
 			return NewObjectDouble(self.Value * rightVal), nil
+		case "<":
+			return NewObjectBool(self.Value < rightVal), nil
+		case ">":
+			return NewObjectBool(self.Value > rightVal), nil
+		case "<=":
+			return NewObjectBool(self.Value <= rightVal), nil
+		case ">=":
+			return NewObjectBool(self.Value >= rightVal), nil
 		default:
 			return nil, fmt.Errorf("methodDoubleOp: unknown op %s", mdo.op)
 		}
