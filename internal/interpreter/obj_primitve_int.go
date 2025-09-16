@@ -2,6 +2,7 @@ package interpreter
 
 import (
 	"fmt"
+	"strconv"
 )
 
 type ObjectInt struct {
@@ -41,6 +42,10 @@ func NewObjectInt(i int) Object {
 
 func (oi *ObjectInt) Repr() string {
 	return fmt.Sprintf("int(%d)", oi.Value)
+}
+
+func (oi *ObjectInt) String(i *Interpreter) (string, error) {
+	return strconv.Itoa(oi.Value), nil
 }
 
 func (mio methodIntOp) Params(i *Interpreter) (*Params, error) {

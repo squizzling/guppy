@@ -27,6 +27,10 @@ func NewInterpreter(enableTrace bool) *Interpreter {
 	return i
 }
 
+type MethodStr interface {
+	MethodStr() (string, error)
+}
+
 type Reprer interface {
 	Repr() string
 }

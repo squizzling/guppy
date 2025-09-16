@@ -19,6 +19,10 @@ func (on *ObjectNone) Repr() string {
 	return "None"
 }
 
+func (on *ObjectNone) String(i *Interpreter) (string, error) {
+	return "None", nil
+}
+
 type methodNoneEqual struct {
 	Object
 }

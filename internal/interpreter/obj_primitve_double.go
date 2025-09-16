@@ -2,6 +2,7 @@ package interpreter
 
 import (
 	"fmt"
+	"strconv"
 )
 
 type ObjectDouble struct {
@@ -41,6 +42,10 @@ func NewObjectDouble(f float64) Object {
 
 func (od *ObjectDouble) Repr() string {
 	return fmt.Sprintf("double(%f)", od.Value)
+}
+
+func (od *ObjectDouble) String(i *Interpreter) (string, error) {
+	return strconv.FormatFloat(od.Value, 'f', 6, 64), nil
 }
 
 func (mdo methodDoubleOp) Params(i *Interpreter) (*Params, error) {

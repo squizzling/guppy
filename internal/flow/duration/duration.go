@@ -164,6 +164,11 @@ func NewDuration(d time.Duration) *Duration {
 	}
 }
 
+func (d *Duration) String(i *interpreter.Interpreter) (string, error) {
+	// TODO: Render in SFX units
+	return d.Duration.String(), nil
+}
+
 type methodDurationOp struct {
 	interpreter.Object
 

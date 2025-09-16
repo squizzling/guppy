@@ -2,7 +2,6 @@ package interpreter
 
 import (
 	"fmt"
-	"strconv"
 )
 
 type FFIStr struct {
@@ -27,18 +26,11 @@ func (f FFIStr) Params(i *Interpreter) (*Params, error) {
 func (f FFIStr) Call(i *Interpreter) (Object, error) {
 	if value, err := i.Scope.GetArg("value"); err != nil {
 		return nil, err
+	} else if valueStr, ok := value.(FlowStringable); !ok {
+		return nil, fmt.Errorf("[FFIStr] %T is not FlowStringable", value)
+	} else if s, err := valueStr.String(i); err != nil {
+		return nil, fmt.Errorf("[FFIStr] %T String() failed: %w", value, err)
 	} else {
-		switch value := value.(type) {
-		case *ObjectInt:
-			return NewObjectString(strconv.Itoa(value.Value)), nil
-		case *ObjectDouble:
-			return NewObjectString(strconv.FormatFloat(value.Value, 'f', 6, 64)), nil
-		case *ObjectString:
-			return value, nil
-		case *ObjectNone:
-			return NewObjectString("None"), nil
-		default:
-			return nil, fmt.Errorf("[FFIStr] %T is not *interpreter.ObjectInt, *interpreter.ObjectDouble, or *interpreter.ObjectString", value)
-		}
+		return NewObjectString(s), nil
 	}
 }
