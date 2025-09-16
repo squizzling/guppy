@@ -9,7 +9,18 @@ import (
 func (i *Interpreter) VisitStatementAssert(sa ast.StatementAssert) (returnValue any, errOut error) {
 	defer i.trace()(&returnValue, &errOut)
 
-	panic("StatementAssert")
+	if test, err := r(sa.Test.Accept(i)); err != nil {
+		return nil, err
+	} else if od, isDeferred := test.(*ObjectDeferred); isDeferred {
+		i.Scope.DeferAnonymous(NewObjectDeferred(sa.Test, od.desired...).(*ObjectDeferred))
+		return nil, nil
+	} else if t, err := isTruthy(test); err != nil {
+		return nil, err
+	} else if !t {
+		panic("Assertion failed")
+	} else {
+		return nil, nil
+	}
 }
 
 func (i *Interpreter) VisitStatementDecorated(sd ast.StatementDecorated) (returnValue any, errOut error) {

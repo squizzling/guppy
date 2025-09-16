@@ -453,7 +453,23 @@ func parseReturnStatement(p *parser.Parser) (ast.Statement, *parser.ParseError) 
 }
 
 func parseAssert(p *parser.Parser) (ast.Statement, *parser.ParseError) {
-	return nil, parser.FailMsgf("assert not supported")
+	/*
+		assert_statement
+		  : ASSERT test ( ',' test )?
+		  ;
+	*/
+
+	if err := p.MatchErr(tokenizer.TokenTypeAssert); err != nil {
+		return nil, parser.FailErr(err)
+	} else if test, err := parseTest(p); err != nil {
+		return nil, err
+	} else if !p.Match(tokenizer.TokenTypeComma) {
+		return ast.NewStatementAssert(test, nil), nil
+	} else if raise, err := parseTest(p); err != nil {
+		return nil, err
+	} else {
+		return ast.NewStatementAssert(test, raise), nil
+	}
 }
 
 func parseExpressionStatement(p *parser.Parser) (ast.Statement, *parser.ParseError) {
@@ -565,7 +581,6 @@ func parseTest(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 	} else if exprLeft, err := parseOrTest(p); err != nil {
 		return nil, parser.FailErr(err)
 	} else if p.Match(tokenizer.TokenTypeIf) {
-
 		if exprCond, err := parseOrTest(p); err != nil {
 			return nil, parser.FailErr(err)
 		} else if err = p.MatchErr(tokenizer.TokenTypeElse); err != nil {
