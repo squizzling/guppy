@@ -20,7 +20,11 @@ func defineAst(packageName string, imports []string, interfaces ast.Interfaces) 
 	if len(imports) > 0 {
 		fmt.Printf("import (\n")
 		for _, importName := range imports {
-			fmt.Printf("\t\"%s\"\n", importName)
+			if importName == "" {
+				fmt.Printf("\n")
+			} else {
+				fmt.Printf("\t\"%s\"\n", importName)
+			}
 		}
 		fmt.Printf(")\n")
 	}

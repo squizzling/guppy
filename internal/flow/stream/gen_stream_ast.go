@@ -1,6 +1,8 @@
 package stream
 
 import (
+	"time"
+
 	"guppy/internal/flow/filter"
 	"guppy/internal/interpreter"
 )
@@ -577,14 +579,14 @@ type StreamTransform struct {
 	interpreter.Object
 	Source Stream
 	Fn     string
-	Over   string
+	Over   time.Duration
 }
 
 func NewStreamTransform(
 	Object interpreter.Object,
 	Source Stream,
 	Fn string,
-	Over string,
+	Over time.Duration,
 ) *StreamTransform {
 	return &StreamTransform{
 		Object: Object,

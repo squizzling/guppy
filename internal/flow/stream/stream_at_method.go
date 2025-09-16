@@ -2,7 +2,9 @@ package stream
 
 import (
 	"fmt"
+	"time"
 
+	"guppy/internal/flow/duration"
 	"guppy/internal/interpreter"
 )
 
@@ -51,7 +53,7 @@ func resolveBy(i *interpreter.Interpreter) ([]string, error) {
 	}
 }
 
-func resolveOver(i *interpreter.Interpreter) (*string, error) {
+func resolveOver(i *interpreter.Interpreter) (*time.Duration, error) {
 	if over, err := i.Scope.GetArg("over"); err != nil {
 		return nil, err
 	} else {
@@ -59,10 +61,15 @@ func resolveOver(i *interpreter.Interpreter) (*string, error) {
 		case *interpreter.ObjectNone:
 			return nil, nil // explicitly nil
 		case *interpreter.ObjectString:
-			s := over.Value
-			return &s, nil
+			if d, err := duration.ParseDuration(over.Value); err != nil {
+				return nil, err
+			} else {
+				return &d, nil
+			}
+		case *duration.Duration:
+			return &over.Duration, nil
 		default:
-			return nil, fmt.Errorf("over is %T not *interpreter.ObjectNone, or *interpreter.ObjectString", over)
+			return nil, fmt.Errorf("over is %T not *flow.Duration, *interpreter.ObjectNone, or *interpreter.ObjectString", over)
 		}
 	}
 }

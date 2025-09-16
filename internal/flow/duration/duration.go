@@ -1,4 +1,4 @@
-package flow
+package duration
 
 import (
 	"fmt"
@@ -58,7 +58,7 @@ var scales = map[int]time.Duration{
 	1: time.Millisecond,
 }
 
-func parseDuration(s string) (time.Duration, error) {
+func ParseDuration(s string) (time.Duration, error) {
 	// The rules I have discovered:
 	// - Remove all whitespace (including \t and \n)
 	// - Mixing terms is permitted
@@ -127,7 +127,7 @@ func (f FFIDuration) resolveDuration(i *interpreter.Interpreter) (time.Duration,
 		case *interpreter.ObjectInt: // milliseconds
 			return time.Duration(arg.Value) * time.Millisecond, nil
 		case *interpreter.ObjectString:
-			return parseDuration(arg.Value)
+			return ParseDuration(arg.Value)
 		case *Duration:
 			return arg.Duration, nil
 		default:

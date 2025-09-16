@@ -2,6 +2,7 @@ package flow
 
 import (
 	"guppy/internal/flow/debug"
+	"guppy/internal/flow/duration"
 	"guppy/internal/flow/filter"
 	"guppy/internal/flow/stream"
 	"guppy/internal/interpreter"
@@ -20,7 +21,7 @@ func NewInterpreter(enableTrace bool) *interpreter.Interpreter {
 	_ = i.Globals.Set("_print", &debug.FFIPrint{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("_published", NewPublished())
 	_ = i.Globals.Set("threshold", &stream.FFIThreshold{Object: interpreter.NewObject(nil)})
-	_ = i.Globals.Set("duration", &FFIDuration{Object: interpreter.NewObject(nil)})
+	_ = i.Globals.Set("duration", &duration.FFIDuration{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("union", &stream.FFIUnion{Object: interpreter.NewObject(nil)})
 
 	_ = i.Scope.Set("Args", interpreter.NewObjectDict(nil))

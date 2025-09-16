@@ -1,4 +1,4 @@
-package flow
+package duration
 
 import (
 	"fmt"
@@ -20,7 +20,7 @@ func TestParseDurationAll(t *testing.T) {
 						for ms := range time.Duration(2) {
 							input := fmt.Sprintf("%dw %dd %dh %dm %ds %dms", w, d, h, m, s, ms)
 							t.Run(input, func(t *testing.T) {
-								output, err := parseDuration(input)
+								output, err := ParseDuration(input)
 								require.NoError(t, err)
 								assert.Equal(t, w*7*24*time.Hour+d*24*time.Hour+h*time.Hour+m*time.Minute+s*time.Second+ms*time.Millisecond, output)
 							})
@@ -61,7 +61,7 @@ func TestParseDurationNoZero(t *testing.T) {
 								input += "1ms"
 							}
 							t.Run("no-zero-"+input, func(t *testing.T) {
-								output, err := parseDuration(input)
+								output, err := ParseDuration(input)
 								require.NoError(t, err)
 								assert.Equal(t, w*7*24*time.Hour+d*24*time.Hour+h*time.Hour+m*time.Minute+s*time.Second+ms*time.Millisecond, output)
 							})
@@ -83,7 +83,7 @@ func TestParseDurationErrors(t *testing.T) {
 		{"1m 1h", "format specifier (hour) is higher than max unit (second)"},
 	} {
 		t.Run(ts.in, func(t *testing.T) {
-			d, err := parseDuration(ts.in)
+			d, err := ParseDuration(ts.in)
 			assert.Zero(t, d)
 			require.ErrorContains(t, err, ts.err)
 		})

@@ -7,6 +7,8 @@ import (
 const Package = "stream"
 
 var Imports = []string{
+	"time",
+	"",
 	"guppy/internal/flow/filter",
 	"guppy/internal/interpreter",
 }
@@ -139,7 +141,7 @@ var Interfaces = []ast.Interface{
 			{"Object", "interpreter.Object", true},
 			{"Source", "Stream", false},
 			{"Fn", "string", false},
-			{"Over", "string", false},
+			{"Over", "time.Duration", false},
 		}},
 		{"Union", true, []ast.Field{
 			{"Object", "interpreter.Object", true},

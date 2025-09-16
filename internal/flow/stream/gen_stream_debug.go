@@ -444,7 +444,8 @@ func (dw DebugWriter) VisitStreamTransform(st StreamTransform) (any, error) {
 		_s += dw.p() + "Source: nil\n"
 	}
 	_s += dw.p() + "Fn: string(" + st.Fn + ")\n"
-	_s += dw.p() + "Over: string(" + st.Over + ")\n"
+	// TODO: 3 Over time.Duration
+	_s += dw.p() + fmt.Sprintf("Over: %T(%v)\n", st.Over, st.Over)
 	dw.o()
 	_s += dw.p() + ")\n"
 	return _s, nil
