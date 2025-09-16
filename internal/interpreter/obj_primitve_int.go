@@ -35,6 +35,8 @@ func NewObjectInt(i int) Object {
 			"__gt__": methodIntOp{Object: NewObject(nil), op: ">"},
 			"__le__": methodIntOp{Object: NewObject(nil), op: "<="},
 			"__ge__": methodIntOp{Object: NewObject(nil), op: ">="},
+			"__eq__": methodIntOp{Object: NewObject(nil), op: "=="},
+			"__ne__": methodIntOp{Object: NewObject(nil), op: "!="},
 		}),
 		Value: i,
 	}
@@ -95,6 +97,10 @@ func (mio methodIntOp) Call(i *Interpreter) (Object, error) {
 			return NewObjectBool(self.Value <= rightVal), nil
 		case ">=":
 			return NewObjectBool(self.Value >= rightVal), nil
+		case "==":
+			return NewObjectBool(self.Value == rightVal), nil
+		case "!=":
+			return NewObjectBool(self.Value != rightVal), nil
 		default:
 			return nil, fmt.Errorf("methodIntOp: unknown op %s", mio.op)
 		}
