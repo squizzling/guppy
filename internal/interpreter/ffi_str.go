@@ -35,8 +35,10 @@ func (f FFIStr) Call(i *Interpreter) (Object, error) {
 			return NewObjectString(strconv.FormatFloat(value.Value, 'f', 6, 64)), nil
 		case *ObjectString:
 			return value, nil
+		case *ObjectNone:
+			return NewObjectString("None"), nil
 		default:
-			return nil, fmt.Errorf("%T is not *interpreter.ObjectInt, *interpreter.ObjectDouble, or *interpreter.ObjectString", value)
+			return nil, fmt.Errorf("[FFIStr] %T is not *interpreter.ObjectInt, *interpreter.ObjectDouble, or *interpreter.ObjectString", value)
 		}
 	}
 }
