@@ -186,6 +186,6 @@ func isTruthy(o Object) (bool, error) {
 	case *ObjectBool:
 		return o.Value, nil
 	default:
-		return false, fmt.Errorf("ternary condition is %T not *interpreter.ObjectBool", o)
+		return false, fmt.Errorf("isTruthy condition is %T not *interpreter.ObjectBool", o)
 	}
 }
