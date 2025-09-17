@@ -77,7 +77,7 @@ func (mio methodIntOp) Call(i *Interpreter) (Object, error) {
 		case *ObjectDouble:
 			rightVal = int(right.Value)
 		default:
-			return nil, fmt.Errorf("methodIntOp: unknown type %T", right)
+			return nil, fmt.Errorf("methodIntOp: unknown type %T op %s", right, mio.op)
 		}
 
 		switch mio.op {

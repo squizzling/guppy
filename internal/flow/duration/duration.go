@@ -155,6 +155,8 @@ type Duration struct {
 func NewDuration(d time.Duration) *Duration {
 	return &Duration{
 		Object: interpreter.NewObject(map[string]interpreter.Object{
+			"__rmul__": methodDurationOp{Object: interpreter.NewObject(nil), op: "*", reverse: true},
+
 			"__lt__": methodDurationOp{Object: interpreter.NewObject(nil), op: "<"},
 			"__gt__": methodDurationOp{Object: interpreter.NewObject(nil), op: ">"},
 			"__le__": methodDurationOp{Object: interpreter.NewObject(nil), op: "<="},
@@ -173,32 +175,32 @@ type methodDurationOp struct {
 	interpreter.Object
 
 	op      string
-	reverse string
+	reverse bool
 }
 
 func (mdu methodDurationOp) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
 	return interpreter.BinaryParams, nil
 }
 func (mdu methodDurationOp) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
-	if right, err := i.Scope.GetArg("right"); err != nil {
-		return nil, err
-	} else if reverseOp, err := right.Member(i, right, mdu.reverse); err == nil {
-		// If it exists, we always use the reverse method, because it's more likely to be the intended behavior.
-		// We explicitly don't expose reverse methods for primitives though.
-		if reverseOpCall, ok := reverseOp.(interpreter.FlowCall); ok {
-			return reverseOpCall.Call(i)
-		}
+	// TODO: I don't love this, but I'm being lazy right now.
+	// Proper fix is to not use ArgAs[*Duration]
+	selfArg := "self"
+	rightArg := "right"
+	if mdu.reverse {
+		selfArg, rightArg = rightArg, selfArg
 	}
 
-	if self, err := interpreter.ArgAs[*Duration](i, "self"); err != nil {
+	if self, err := interpreter.ArgAs[*Duration](i, selfArg); err != nil {
 		return nil, err
-	} else if right, err := i.Scope.GetArg("right"); err != nil {
+	} else if right, err := i.Scope.GetArg(rightArg); err != nil {
 		return nil, err
 	} else {
 		var rightVal time.Duration
 		switch right := right.(type) {
-		case *Duration:
+		case *Duration: // TODO: Look in to what it means for duration('2d') * duration('3d') in SFX
 			rightVal = right.Duration
+		case *interpreter.ObjectInt:
+			rightVal = time.Duration(right.Value)
 		default:
 			return nil, fmt.Errorf("methodDurationOp: unknown type %T", right)
 		}
@@ -207,18 +209,38 @@ func (mdu methodDurationOp) Call(i *interpreter.Interpreter) (interpreter.Object
 		case "+":
 			return NewDuration(self.Duration + rightVal), nil
 		case "-":
-			return NewDuration(self.Duration - rightVal), nil
+			if mdu.reverse {
+				return NewDuration(rightVal - self.Duration), nil
+			} else {
+				return NewDuration(self.Duration - rightVal), nil
+			}
 		case "/":
-			return NewDuration(self.Duration / rightVal), nil
+			if mdu.reverse {
+				return NewDuration(rightVal / self.Duration), nil
+			} else {
+				return NewDuration(self.Duration / rightVal), nil
+			}
 		case "*":
 			return NewDuration(self.Duration * rightVal), nil
 		case "<":
+			if mdu.reverse {
+				panic("handle this")
+			}
 			return interpreter.NewObjectBool(self.Duration < rightVal), nil
 		case ">":
+			if mdu.reverse {
+				panic("handle this")
+			}
 			return interpreter.NewObjectBool(self.Duration > rightVal), nil
 		case "<=":
+			if mdu.reverse {
+				panic("handle this")
+			}
 			return interpreter.NewObjectBool(self.Duration <= rightVal), nil
 		case ">=":
+			if mdu.reverse {
+				panic("handle this")
+			}
 			return interpreter.NewObjectBool(self.Duration >= rightVal), nil
 		default:
 			return nil, fmt.Errorf("methodDurationOp: unknown op %s", mdu.op)
