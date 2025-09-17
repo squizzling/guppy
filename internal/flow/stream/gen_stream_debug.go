@@ -242,6 +242,81 @@ func (dw DebugWriter) VisitStreamMax(sm StreamMax) (any, error) {
 	return _s, nil
 }
 
+func (dw DebugWriter) VisitStreamMean(sm StreamMean) (any, error) {
+	_s := "StreamMean(\n"
+	dw.i()
+	// TODO: 0 Object interpreter.Object
+	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sm.Object, sm.Object)
+	if sm.Sources == nil {
+		_s += dw.p() + "Sources: nil\n"
+	} else if len(sm.Sources) == 0 {
+		_s += dw.p() + "Sources: []\n"
+	} else {
+		_s += dw.p() + "Sources: [\n"
+		dw.i()
+		for _, _r := range sm.Sources {
+			_s += dw.p() + s(_r.Accept(dw)) // IsInterfaceArray
+		}
+		dw.o()
+		_s += dw.p() + "]\n"
+	}
+	// TODO: 2 Constants []interpreter.Object
+	_s += dw.p() + fmt.Sprintf("Constants: %T(%v)\n", sm.Constants, sm.Constants)
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
+func (dw DebugWriter) VisitStreamMedian(sm StreamMedian) (any, error) {
+	_s := "StreamMedian(\n"
+	dw.i()
+	// TODO: 0 Object interpreter.Object
+	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sm.Object, sm.Object)
+	if sm.Sources == nil {
+		_s += dw.p() + "Sources: nil\n"
+	} else if len(sm.Sources) == 0 {
+		_s += dw.p() + "Sources: []\n"
+	} else {
+		_s += dw.p() + "Sources: [\n"
+		dw.i()
+		for _, _r := range sm.Sources {
+			_s += dw.p() + s(_r.Accept(dw)) // IsInterfaceArray
+		}
+		dw.o()
+		_s += dw.p() + "]\n"
+	}
+	// TODO: 2 Constants []interpreter.Object
+	_s += dw.p() + fmt.Sprintf("Constants: %T(%v)\n", sm.Constants, sm.Constants)
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
+func (dw DebugWriter) VisitStreamMin(sm StreamMin) (any, error) {
+	_s := "StreamMin(\n"
+	dw.i()
+	// TODO: 0 Object interpreter.Object
+	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sm.Object, sm.Object)
+	if sm.Sources == nil {
+		_s += dw.p() + "Sources: nil\n"
+	} else if len(sm.Sources) == 0 {
+		_s += dw.p() + "Sources: []\n"
+	} else {
+		_s += dw.p() + "Sources: [\n"
+		dw.i()
+		for _, _r := range sm.Sources {
+			_s += dw.p() + s(_r.Accept(dw)) // IsInterfaceArray
+		}
+		dw.o()
+		_s += dw.p() + "]\n"
+	}
+	// TODO: 2 Value interpreter.Object
+	_s += dw.p() + fmt.Sprintf("Value: %T(%v)\n", sm.Value, sm.Value)
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
 func (dw DebugWriter) VisitStreamMathOpDouble(smod StreamMathOpDouble) (any, error) {
 	_s := "StreamMathOpDouble(\n"
 	dw.i()

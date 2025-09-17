@@ -21,6 +21,9 @@ type VisitorStream interface {
 	VisitStreamGeneric(sg StreamGeneric) (any, error)
 	VisitStreamIsNone(sin StreamIsNone) (any, error)
 	VisitStreamMax(sm StreamMax) (any, error)
+	VisitStreamMean(sm StreamMean) (any, error)
+	VisitStreamMedian(sm StreamMedian) (any, error)
+	VisitStreamMin(sm StreamMin) (any, error)
 	VisitStreamMathOpDouble(smod StreamMathOpDouble) (any, error)
 	VisitStreamMathOpInt(smoi StreamMathOpInt) (any, error)
 	VisitStreamMathOpStream(smos StreamMathOpStream) (any, error)
@@ -322,6 +325,72 @@ func NewStreamMax(
 
 func (sm StreamMax) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamMax(sm)
+}
+
+type StreamMean struct {
+	interpreter.Object
+	Sources   []Stream
+	Constants []interpreter.Object
+}
+
+func NewStreamMean(
+	Object interpreter.Object,
+	Sources []Stream,
+	Constants []interpreter.Object,
+) *StreamMean {
+	return &StreamMean{
+		Object:    Object,
+		Sources:   Sources,
+		Constants: Constants,
+	}
+}
+
+func (sm StreamMean) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamMean(sm)
+}
+
+type StreamMedian struct {
+	interpreter.Object
+	Sources   []Stream
+	Constants []interpreter.Object
+}
+
+func NewStreamMedian(
+	Object interpreter.Object,
+	Sources []Stream,
+	Constants []interpreter.Object,
+) *StreamMedian {
+	return &StreamMedian{
+		Object:    Object,
+		Sources:   Sources,
+		Constants: Constants,
+	}
+}
+
+func (sm StreamMedian) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamMedian(sm)
+}
+
+type StreamMin struct {
+	interpreter.Object
+	Sources []Stream
+	Value   interpreter.Object
+}
+
+func NewStreamMin(
+	Object interpreter.Object,
+	Sources []Stream,
+	Value interpreter.Object,
+) *StreamMin {
+	return &StreamMin{
+		Object:  Object,
+		Sources: Sources,
+		Value:   Value,
+	}
+}
+
+func (sm StreamMin) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamMin(sm)
 }
 
 type StreamMathOpDouble struct {

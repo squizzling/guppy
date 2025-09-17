@@ -79,6 +79,21 @@ var Interfaces = []ast.Interface{
 			{"Sources", "[]Stream", false},
 			{"Value", "interpreter.Object", false},
 		}},
+		{"Mean", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Sources", "[]Stream", false},
+			{"Constants", "[]interpreter.Object", false},
+		}},
+		{"Median", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Sources", "[]Stream", false},
+			{"Constants", "[]interpreter.Object", false},
+		}},
+		{"Min", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Sources", "[]Stream", false},
+			{"Value", "interpreter.Object", false},
+		}},
 		{"MathOpDouble", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
 			{"Stream", "Stream", false},
