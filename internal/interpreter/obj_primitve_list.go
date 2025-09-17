@@ -15,7 +15,8 @@ type ObjectList struct {
 func NewObjectList(items ...Object) Object {
 	return &ObjectList{
 		Object: NewObject(map[string]Object{
-			"__add__": methodListAdd{Object: NewObject(nil)},
+			"__add__":       methodListAdd{Object: NewObject(nil)},
+			"__subscript__": methodListSubscript{Object: NewObject(nil)},
 		}),
 		Items: items,
 	}
@@ -57,5 +58,31 @@ func (mla methodListAdd) Call(i *Interpreter) (Object, error) {
 		default:
 			return nil, fmt.Errorf("methodListAdd: unknown type %T", right)
 		}
+	}
+}
+
+type methodListSubscript struct {
+	Object
+}
+
+func (mls methodListSubscript) Params(i *Interpreter) (*Params, error) {
+	return &Params{
+		Params: []ParamDef{
+			{Name: "self"},
+			{Name: "start"},
+		},
+	}, nil
+}
+
+func (mls methodListSubscript) Call(i *Interpreter) (Object, error) {
+	if self, err := ArgAs[*ObjectList](i, "self"); err != nil {
+		return nil, err
+	} else if start, err := ArgAs[*ObjectInt](i, "start"); err != nil {
+		return nil, err
+	} else if len(self.Items) < start.Value+1 || start.Value < 0 {
+		// TODO: Does flow support x[-1] for last item?
+		return nil, fmt.Errorf("index out of range (%d < %d)", len(self.Items), start.Value+1)
+	} else {
+		return self.Items[start.Value], nil
 	}
 }
