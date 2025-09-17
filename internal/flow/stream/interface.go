@@ -39,6 +39,7 @@ func newStreamObject() interpreter.Object {
 		"scale":                methodGeneric{interpreter.NewObject(nil), "scale"},
 		"sqrt":                 methodGeneric{interpreter.NewObject(nil), "sqrt"},
 		"stddev":               methodGeneric{interpreter.NewObject(nil), "stddev"},
+		"variance":             methodGeneric{interpreter.NewObject(nil), "variance"},
 
 		// Aggregations + transforms
 		"count":  methodStreamAggregateTransform{interpreter.NewObject(nil), "count"},
