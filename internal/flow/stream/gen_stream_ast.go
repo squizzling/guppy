@@ -16,6 +16,7 @@ type VisitorStream interface {
 	VisitStreamConstDouble(scd StreamConstDouble) (any, error)
 	VisitStreamConstInt(sci StreamConstInt) (any, error)
 	VisitStreamData(sd StreamData) (any, error)
+	VisitStreamDetect(sd StreamDetect) (any, error)
 	VisitStreamEvents(se StreamEvents) (any, error)
 	VisitStreamFill(sf StreamFill) (any, error)
 	VisitStreamGeneric(sg StreamGeneric) (any, error)
@@ -216,6 +217,40 @@ func NewStreamData(
 
 func (sd StreamData) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamData(sd)
+}
+
+type StreamDetect struct {
+	interpreter.Object
+	On               Stream
+	Off              Stream
+	Mode             string
+	Annotations      interpreter.Object
+	EventAnnotations interpreter.Object
+	AutoResolveAfter *time.Duration
+}
+
+func NewStreamDetect(
+	Object interpreter.Object,
+	On Stream,
+	Off Stream,
+	Mode string,
+	Annotations interpreter.Object,
+	EventAnnotations interpreter.Object,
+	AutoResolveAfter *time.Duration,
+) *StreamDetect {
+	return &StreamDetect{
+		Object:           Object,
+		On:               On,
+		Off:              Off,
+		Mode:             Mode,
+		Annotations:      Annotations,
+		EventAnnotations: EventAnnotations,
+		AutoResolveAfter: AutoResolveAfter,
+	}
+}
+
+func (sd StreamDetect) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamDetect(sd)
 }
 
 type StreamEvents struct {

@@ -4,6 +4,14 @@ import (
 	"guppy/internal/interpreter"
 )
 
+// Stream[Alert]
+func newStreamAlertObject() interpreter.Object {
+	return interpreter.NewObject(map[string]interpreter.Object{
+		"publish": methodPublish{interpreter.NewObject(nil)},
+	})
+}
+
+// Stream[Unspecified]
 func newStreamObject() interpreter.Object {
 	return interpreter.NewObject(map[string]interpreter.Object{
 		// misc

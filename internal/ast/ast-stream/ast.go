@@ -54,6 +54,15 @@ var Interfaces = []ast.Interface{
 			{"Extrapolation", "string", false},
 			{"MaxExtrapolations", "int", false},
 		}},
+		{"Detect", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"On", "Stream", false},
+			{"Off", "Stream", false},
+			{"Mode", "string", false},
+			{"Annotations", "interpreter.Object", false},
+			{"EventAnnotations", "interpreter.Object", false},
+			{"AutoResolveAfter", "*time.Duration", false},
+		}},
 		{"Events", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
 		}},

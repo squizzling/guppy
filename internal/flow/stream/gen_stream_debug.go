@@ -154,6 +154,33 @@ func (dw DebugWriter) VisitStreamData(sd StreamData) (any, error) {
 	return _s, nil
 }
 
+func (dw DebugWriter) VisitStreamDetect(sd StreamDetect) (any, error) {
+	_s := "StreamDetect(\n"
+	dw.i()
+	// TODO: 0 Object interpreter.Object
+	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sd.Object, sd.Object)
+	if sd.On != nil {
+		_s += dw.p() + "On: " + s(sd.On.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "On: nil\n"
+	}
+	if sd.Off != nil {
+		_s += dw.p() + "Off: " + s(sd.Off.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "Off: nil\n"
+	}
+	_s += dw.p() + "Mode: string(" + sd.Mode + ")\n"
+	// TODO: 4 Annotations interpreter.Object
+	_s += dw.p() + fmt.Sprintf("Annotations: %T(%v)\n", sd.Annotations, sd.Annotations)
+	// TODO: 5 EventAnnotations interpreter.Object
+	_s += dw.p() + fmt.Sprintf("EventAnnotations: %T(%v)\n", sd.EventAnnotations, sd.EventAnnotations)
+	// TODO: 6 AutoResolveAfter *time.Duration
+	_s += dw.p() + fmt.Sprintf("AutoResolveAfter: %T(%v)\n", sd.AutoResolveAfter, sd.AutoResolveAfter)
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
 func (dw DebugWriter) VisitStreamEvents(se StreamEvents) (any, error) {
 	_s := "StreamEvents(\n"
 	dw.i()
