@@ -10,6 +10,10 @@ gen:
 imports:
 	goimports -d -local guppy .
 
+.PHONY: fmt
+fmt:
+	gofmt -l $$(find -name '*.go')
+
 .PHONY: test
 test:
 	go test -coverprofile profile.out ./...
