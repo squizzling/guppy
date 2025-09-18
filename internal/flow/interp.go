@@ -28,6 +28,7 @@ func NewInterpreter(enableTrace bool) *interpreter.Interpreter {
 	_ = i.Globals.Set("threshold", &stream.FFIThreshold{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("duration", &duration.FFIDuration{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("union", &stream.FFIUnion{Object: interpreter.NewObject(nil)})
+	_ = i.Globals.Set("when", &stream.FFIWhen{Object: interpreter.NewObject(nil)})
 
 	_ = i.Scope.Set("Args", interpreter.NewObjectDict(nil))
 

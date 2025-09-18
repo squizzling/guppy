@@ -548,3 +548,22 @@ func (dw DebugWriter) VisitStreamUnion(su StreamUnion) (any, error) {
 	_s += dw.p() + ")\n"
 	return _s, nil
 }
+
+func (dw DebugWriter) VisitStreamWhen(sw StreamWhen) (any, error) {
+	_s := "StreamWhen(\n"
+	dw.i()
+	// TODO: 0 Object interpreter.Object
+	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sw.Object, sw.Object)
+	if sw.Predicate != nil {
+		_s += dw.p() + "Predicate: " + s(sw.Predicate.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "Predicate: nil\n"
+	}
+	// TODO: 2 Lasting *time.Duration
+	_s += dw.p() + fmt.Sprintf("Lasting: %T(%v)\n", sw.Lasting, sw.Lasting)
+	// TODO: 3 AtLeast float64
+	_s += dw.p() + fmt.Sprintf("AtLeast: %T(%v)\n", sw.AtLeast, sw.AtLeast)
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}

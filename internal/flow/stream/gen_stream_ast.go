@@ -37,6 +37,7 @@ type VisitorStream interface {
 	VisitStreamTop(st StreamTop) (any, error)
 	VisitStreamTransform(st StreamTransform) (any, error)
 	VisitStreamUnion(su StreamUnion) (any, error)
+	VisitStreamWhen(sw StreamWhen) (any, error)
 }
 
 type Stream interface {
@@ -686,4 +687,29 @@ func NewStreamUnion(
 
 func (su StreamUnion) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamUnion(su)
+}
+
+type StreamWhen struct {
+	interpreter.Object
+	Predicate Stream
+	Lasting   *time.Duration
+	AtLeast   float64
+}
+
+func NewStreamWhen(
+	Object interpreter.Object,
+	Predicate Stream,
+	Lasting *time.Duration,
+	AtLeast float64,
+) *StreamWhen {
+	return &StreamWhen{
+		Object:    Object,
+		Predicate: Predicate,
+		Lasting:   Lasting,
+		AtLeast:   AtLeast,
+	}
+}
+
+func (sw StreamWhen) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamWhen(sw)
 }

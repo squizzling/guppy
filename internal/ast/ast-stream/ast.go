@@ -162,6 +162,12 @@ var Interfaces = []ast.Interface{
 			{"Object", "interpreter.Object", true},
 			{"Sources", "[]Stream", false},
 		}},
+		{"When", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Predicate", "Stream", false},
+			{"Lasting", "*time.Duration", false},
+			{"AtLeast", "float64", false},
+		}},
 	}, []string{
 		"interpreter.Object",
 	}},
