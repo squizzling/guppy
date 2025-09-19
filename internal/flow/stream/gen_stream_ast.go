@@ -37,6 +37,7 @@ type VisitorStream interface {
 	VisitStreamTimeShift(sts StreamTimeShift) (any, error)
 	VisitStreamTop(st StreamTop) (any, error)
 	VisitStreamTransform(st StreamTransform) (any, error)
+	VisitStreamTransformCycle(stc StreamTransformCycle) (any, error)
 	VisitStreamUnion(su StreamUnion) (any, error)
 	VisitStreamWhen(sw StreamWhen) (any, error)
 }
@@ -86,9 +87,11 @@ func (sa StreamAbs) Accept(vs VisitorStream) (any, error) {
 
 type StreamAggregate struct {
 	interpreter.Object
-	Source Stream
-	Fn     string
-	By     []string
+	Source          Stream
+	Fn              string
+	By              []string
+	AllowAllMissing bool
+	AllowMissing    []string
 }
 
 func NewStreamAggregate(
@@ -96,12 +99,16 @@ func NewStreamAggregate(
 	Source Stream,
 	Fn string,
 	By []string,
+	AllowAllMissing bool,
+	AllowMissing []string,
 ) *StreamAggregate {
 	return &StreamAggregate{
-		Object: Object,
-		Source: Source,
-		Fn:     Fn,
-		By:     By,
+		Object:          Object,
+		Source:          Source,
+		Fn:              Fn,
+		By:              By,
+		AllowAllMissing: AllowAllMissing,
+		AllowMissing:    AllowMissing,
 	}
 }
 
@@ -703,6 +710,43 @@ func NewStreamTransform(
 
 func (st StreamTransform) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamTransform(st)
+}
+
+type StreamTransformCycle struct {
+	interpreter.Object
+	Source        Stream
+	Fn            string
+	Cycle         string
+	CycleStart    *string
+	Timezone      *string
+	PartialValues bool
+	ShiftCycles   int
+}
+
+func NewStreamTransformCycle(
+	Object interpreter.Object,
+	Source Stream,
+	Fn string,
+	Cycle string,
+	CycleStart *string,
+	Timezone *string,
+	PartialValues bool,
+	ShiftCycles int,
+) *StreamTransformCycle {
+	return &StreamTransformCycle{
+		Object:        Object,
+		Source:        Source,
+		Fn:            Fn,
+		Cycle:         Cycle,
+		CycleStart:    CycleStart,
+		Timezone:      Timezone,
+		PartialValues: PartialValues,
+		ShiftCycles:   ShiftCycles,
+	}
+}
+
+func (stc StreamTransformCycle) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamTransformCycle(stc)
 }
 
 type StreamUnion struct {

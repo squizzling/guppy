@@ -28,6 +28,8 @@ var Interfaces = []ast.Interface{
 			{"Source", "Stream", false},
 			{"Fn", "string", false},
 			{"By", "[]string", false},
+			{"AllowAllMissing", "bool", false},
+			{"AllowMissing", "[]string", false},
 		}},
 		{"Alerts", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
@@ -166,6 +168,16 @@ var Interfaces = []ast.Interface{
 			{"Source", "Stream", false},
 			{"Fn", "string", false},
 			{"Over", "time.Duration", false},
+		}},
+		{"TransformCycle", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Source", "Stream", false},
+			{"Fn", "string", false},
+			{"Cycle", "string", false},
+			{"CycleStart", "*string", false},
+			{"Timezone", "*string", false},
+			{"PartialValues", "bool", false},
+			{"ShiftCycles", "int", false},
 		}},
 		{"Union", true, []ast.Field{
 			{"Object", "interpreter.Object", true},

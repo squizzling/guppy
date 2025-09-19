@@ -79,6 +79,20 @@ func (dw DebugWriter) VisitStreamAggregate(sa StreamAggregate) (any, error) {
 		dw.o()
 		_s += dw.p() + "]\n"
 	}
+	_s += dw.p() + "AllowAllMissing: bool(" + fmt.Sprintf("%t", sa.AllowAllMissing) + ")\n"
+	if sa.AllowMissing == nil {
+		_s += dw.p() + "AllowMissing: nil\n"
+	} else if len(sa.AllowMissing) == 0 {
+		_s += dw.p() + "AllowMissing: []\n"
+	} else {
+		_s += dw.p() + "AllowMissing: [\n"
+		dw.i()
+		for _, _r := range sa.AllowMissing {
+			_s += dw.p() + _r + "\n" // []string
+		}
+		dw.o()
+		_s += dw.p() + "]\n"
+	}
 	dw.o()
 	_s += dw.p() + ")\n"
 	return _s, nil
@@ -548,6 +562,30 @@ func (dw DebugWriter) VisitStreamTransform(st StreamTransform) (any, error) {
 	_s += dw.p() + "Fn: string(" + st.Fn + ")\n"
 	// TODO: 3 Over time.Duration
 	_s += dw.p() + fmt.Sprintf("Over: %T(%v)\n", st.Over, st.Over)
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
+func (dw DebugWriter) VisitStreamTransformCycle(stc StreamTransformCycle) (any, error) {
+	_s := "StreamTransformCycle(\n"
+	dw.i()
+	// TODO: 0 Object interpreter.Object
+	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", stc.Object, stc.Object)
+	if stc.Source != nil {
+		_s += dw.p() + "Source: " + s(stc.Source.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "Source: nil\n"
+	}
+	_s += dw.p() + "Fn: string(" + stc.Fn + ")\n"
+	_s += dw.p() + "Cycle: string(" + stc.Cycle + ")\n"
+	// TODO: 4 CycleStart *string
+	_s += dw.p() + fmt.Sprintf("CycleStart: %T(%v)\n", stc.CycleStart, stc.CycleStart)
+	// TODO: 5 Timezone *string
+	_s += dw.p() + fmt.Sprintf("Timezone: %T(%v)\n", stc.Timezone, stc.Timezone)
+	_s += dw.p() + "PartialValues: bool(" + fmt.Sprintf("%t", stc.PartialValues) + ")\n"
+	// TODO: 7 ShiftCycles int
+	_s += dw.p() + fmt.Sprintf("ShiftCycles: %T(%v)\n", stc.ShiftCycles, stc.ShiftCycles)
 	dw.o()
 	_s += dw.p() + ")\n"
 	return _s, nil
