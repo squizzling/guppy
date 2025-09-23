@@ -18,7 +18,7 @@ func (f FFIData) Params(i *interpreter.Interpreter) (*interpreter.Params, error)
 			{Name: "filter", Default: interpreter.NewObjectNone()},
 			{Name: "rollup", Default: interpreter.NewObjectNone()},
 			{Name: "extrapolation", Default: interpreter.NewObjectString("null")},
-			{Name: "maxExtrapolations", Default: interpreter.NewObjectInt(0)},
+			{Name: "maxExtrapolations", Default: interpreter.NewObjectInt(-1)},
 			{Name: "resolution", Default: interpreter.NewObjectNone()}, // TODO: Handle
 		},
 	}, nil
