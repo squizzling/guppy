@@ -27,19 +27,25 @@ func (f FFIDetect) Params(i *interpreter.Interpreter) (*interpreter.Params, erro
 
 func (f FFIDetect) resolveOn(i *interpreter.Interpreter) (Stream, error) {
 	// TODO: Make sure it's a stream of bool somehow
-	if predicate, err := interpreter.ArgAs[Stream](i, "on"); err != nil {
+	if on, err := interpreter.ArgAs[Stream](i, "on"); err != nil {
 		return nil, err
 	} else {
-		return predicate, err
+		return on, err
 	}
 }
 
 func (f FFIDetect) resolveOff(i *interpreter.Interpreter) (Stream, error) {
 	// TODO: Make sure it's a stream of bool somehow
-	if off, err := interpreter.ArgAs[Stream](i, "off"); err != nil {
+	if off, err := i.Scope.GetArg("off"); err != nil {
 		return nil, err
+	} else if _, isNone := off.(*interpreter.ObjectNone); isNone {
+		return nil, nil
+	} else if off == nil {
+		return nil, nil
+	} else if offStream, isStream := off.(Stream); isStream {
+		return offStream, nil
 	} else {
-		return off, err
+		return nil, fmt.Errorf("detect(off) is %T not *interpreter.ObjectNone, stream.Stream, or nil", off)
 	}
 }
 
