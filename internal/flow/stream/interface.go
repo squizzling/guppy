@@ -11,6 +11,39 @@ func newStreamAlertObject() interpreter.Object {
 	})
 }
 
+// Stream[bool]
+func newStreamBoolObject() interpreter.Object {
+	return interpreter.NewObject(map[string]interpreter.Object{
+		"publish":   methodPublish{interpreter.NewObject(nil)},
+		"timeshift": methodTimeShift{interpreter.NewObject(nil)},
+
+		// generic
+		"dimensions": methodGeneric{interpreter.NewObject(nil), "dimensions"},
+		"equals":     methodGeneric{interpreter.NewObject(nil), "equals"},
+		"map":        methodGeneric{interpreter.NewObject(nil), "map"},
+		"not_equals": methodGeneric{interpreter.NewObject(nil), "not_equals"},
+		"promote":    methodGeneric{interpreter.NewObject(nil), "promote"},
+
+		// Aggregations + transforms
+		"count": methodStreamAggregateTransform{interpreter.NewObject(nil), "count"},
+
+		// Comparison operations
+		"__eq__":  methodStreamOp{interpreter.NewObject(nil), "==", false},
+		"__req__": methodStreamOp{interpreter.NewObject(nil), "==", true},
+		"__ne__":  methodStreamOp{interpreter.NewObject(nil), "!=", false},
+		"__rne__": methodStreamOp{interpreter.NewObject(nil), "!=", true},
+
+		// is/is not
+		"__is__":     methodStreamIs{interpreter.NewObject(nil), false, false},
+		"__isnot__":  methodStreamIs{interpreter.NewObject(nil), true, false},
+		"__ris__":    methodStreamIs{interpreter.NewObject(nil), false, true},
+		"__risnot__": methodStreamIs{interpreter.NewObject(nil), true, true},
+
+		// Ternary
+		"__ternary__": methodStreamOpTernary{interpreter.NewObject(nil)},
+	})
+}
+
 // Stream[Unspecified]
 func newStreamObject() interpreter.Object {
 	return interpreter.NewObject(map[string]interpreter.Object{

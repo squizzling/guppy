@@ -59,7 +59,7 @@ func (f FFIWhen) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
 	} else if atLeast, err := f.resolveAtLeast(i); err != nil {
 		return nil, err
 	} else {
-		return NewStreamWhen(newStreamObject(), predicate, lasting, atLeast), nil
+		return NewStreamWhen(newStreamBoolObject(), predicate, lasting, atLeast), nil
 	}
 }
 
