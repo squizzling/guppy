@@ -8,43 +8,44 @@ import (
 )
 
 type VisitorStream interface {
-	VisitStreamAbove(sa StreamAbove) (any, error)
-	VisitStreamAbs(sa StreamAbs) (any, error)
-	VisitStreamAggregate(sa StreamAggregate) (any, error)
-	VisitStreamAlerts(sa StreamAlerts) (any, error)
-	VisitStreamBelow(sb StreamBelow) (any, error)
-	VisitStreamConstDouble(scd StreamConstDouble) (any, error)
-	VisitStreamConstInt(sci StreamConstInt) (any, error)
-	VisitStreamData(sd StreamData) (any, error)
-	VisitStreamDetect(sd StreamDetect) (any, error)
-	VisitStreamEvents(se StreamEvents) (any, error)
-	VisitStreamFill(sf StreamFill) (any, error)
-	VisitStreamGeneric(sg StreamGeneric) (any, error)
-	VisitStreamIsNone(sin StreamIsNone) (any, error)
-	VisitStreamMax(sm StreamMax) (any, error)
-	VisitStreamMean(sm StreamMean) (any, error)
-	VisitStreamMedian(sm StreamMedian) (any, error)
-	VisitStreamMin(sm StreamMin) (any, error)
-	VisitStreamMathOpDouble(smod StreamMathOpDouble) (any, error)
-	VisitStreamMathOpInt(smoi StreamMathOpInt) (any, error)
-	VisitStreamMathOpStream(smos StreamMathOpStream) (any, error)
-	VisitStreamMathOpUnaryMinus(smoum StreamMathOpUnaryMinus) (any, error)
-	VisitStreamPercentile(sp StreamPercentile) (any, error)
-	VisitStreamPublish(sp StreamPublish) (any, error)
-	VisitStreamScale(ss StreamScale) (any, error)
-	VisitStreamTernary(st StreamTernary) (any, error)
-	VisitStreamThreshold(st StreamThreshold) (any, error)
-	VisitStreamTimeShift(sts StreamTimeShift) (any, error)
-	VisitStreamTop(st StreamTop) (any, error)
-	VisitStreamTransform(st StreamTransform) (any, error)
-	VisitStreamTransformCycle(stc StreamTransformCycle) (any, error)
-	VisitStreamUnion(su StreamUnion) (any, error)
-	VisitStreamWhen(sw StreamWhen) (any, error)
+	VisitStreamAbove(sa *StreamAbove) (any, error)
+	VisitStreamAbs(sa *StreamAbs) (any, error)
+	VisitStreamAggregate(sa *StreamAggregate) (any, error)
+	VisitStreamAlerts(sa *StreamAlerts) (any, error)
+	VisitStreamBelow(sb *StreamBelow) (any, error)
+	VisitStreamConstDouble(scd *StreamConstDouble) (any, error)
+	VisitStreamConstInt(sci *StreamConstInt) (any, error)
+	VisitStreamData(sd *StreamData) (any, error)
+	VisitStreamDetect(sd *StreamDetect) (any, error)
+	VisitStreamEvents(se *StreamEvents) (any, error)
+	VisitStreamFill(sf *StreamFill) (any, error)
+	VisitStreamGeneric(sg *StreamGeneric) (any, error)
+	VisitStreamIsNone(sin *StreamIsNone) (any, error)
+	VisitStreamMax(sm *StreamMax) (any, error)
+	VisitStreamMean(sm *StreamMean) (any, error)
+	VisitStreamMedian(sm *StreamMedian) (any, error)
+	VisitStreamMin(sm *StreamMin) (any, error)
+	VisitStreamMathOpDouble(smod *StreamMathOpDouble) (any, error)
+	VisitStreamMathOpInt(smoi *StreamMathOpInt) (any, error)
+	VisitStreamMathOpStream(smos *StreamMathOpStream) (any, error)
+	VisitStreamMathOpUnaryMinus(smoum *StreamMathOpUnaryMinus) (any, error)
+	VisitStreamPercentile(sp *StreamPercentile) (any, error)
+	VisitStreamPublish(sp *StreamPublish) (any, error)
+	VisitStreamScale(ss *StreamScale) (any, error)
+	VisitStreamTernary(st *StreamTernary) (any, error)
+	VisitStreamThreshold(st *StreamThreshold) (any, error)
+	VisitStreamTimeShift(sts *StreamTimeShift) (any, error)
+	VisitStreamTop(st *StreamTop) (any, error)
+	VisitStreamTransform(st *StreamTransform) (any, error)
+	VisitStreamTransformCycle(stc *StreamTransformCycle) (any, error)
+	VisitStreamUnion(su *StreamUnion) (any, error)
+	VisitStreamWhen(sw *StreamWhen) (any, error)
 }
 
 type Stream interface {
 	interpreter.Object
 	Accept(vs VisitorStream) (any, error)
+	Clone() Stream
 }
 
 type StreamAbove struct {
@@ -62,8 +63,15 @@ func NewStreamAbove(
 	}
 }
 
-func (sa StreamAbove) Accept(vs VisitorStream) (any, error) {
+func (sa *StreamAbove) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamAbove(sa)
+}
+
+func (sa *StreamAbove) Clone() Stream {
+	return &StreamAbove{
+		Object: sa.Object,
+		Source: sa.Source.Clone(),
+	}
 }
 
 type StreamAbs struct {
@@ -81,8 +89,15 @@ func NewStreamAbs(
 	}
 }
 
-func (sa StreamAbs) Accept(vs VisitorStream) (any, error) {
+func (sa *StreamAbs) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamAbs(sa)
+}
+
+func (sa *StreamAbs) Clone() Stream {
+	return &StreamAbs{
+		Object: sa.Object,
+		Source: sa.Source.Clone(),
+	}
 }
 
 type StreamAggregate struct {
@@ -112,8 +127,19 @@ func NewStreamAggregate(
 	}
 }
 
-func (sa StreamAggregate) Accept(vs VisitorStream) (any, error) {
+func (sa *StreamAggregate) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamAggregate(sa)
+}
+
+func (sa *StreamAggregate) Clone() Stream {
+	return &StreamAggregate{
+		Object:          sa.Object,
+		Source:          sa.Source.Clone(),
+		Fn:              sa.Fn,
+		By:              sa.By,
+		AllowAllMissing: sa.AllowAllMissing,
+		AllowMissing:    sa.AllowMissing,
+	}
 }
 
 type StreamAlerts struct {
@@ -128,8 +154,14 @@ func NewStreamAlerts(
 	}
 }
 
-func (sa StreamAlerts) Accept(vs VisitorStream) (any, error) {
+func (sa *StreamAlerts) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamAlerts(sa)
+}
+
+func (sa *StreamAlerts) Clone() Stream {
+	return &StreamAlerts{
+		Object: sa.Object,
+	}
 }
 
 type StreamBelow struct {
@@ -147,8 +179,15 @@ func NewStreamBelow(
 	}
 }
 
-func (sb StreamBelow) Accept(vs VisitorStream) (any, error) {
+func (sb *StreamBelow) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamBelow(sb)
+}
+
+func (sb *StreamBelow) Clone() Stream {
+	return &StreamBelow{
+		Object: sb.Object,
+		Source: sb.Source.Clone(),
+	}
 }
 
 type StreamConstDouble struct {
@@ -169,8 +208,16 @@ func NewStreamConstDouble(
 	}
 }
 
-func (scd StreamConstDouble) Accept(vs VisitorStream) (any, error) {
+func (scd *StreamConstDouble) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamConstDouble(scd)
+}
+
+func (scd *StreamConstDouble) Clone() Stream {
+	return &StreamConstDouble{
+		Object: scd.Object,
+		Value:  scd.Value,
+		Key:    scd.Key,
+	}
 }
 
 type StreamConstInt struct {
@@ -191,8 +238,16 @@ func NewStreamConstInt(
 	}
 }
 
-func (sci StreamConstInt) Accept(vs VisitorStream) (any, error) {
+func (sci *StreamConstInt) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamConstInt(sci)
+}
+
+func (sci *StreamConstInt) Clone() Stream {
+	return &StreamConstInt{
+		Object: sci.Object,
+		Value:  sci.Value,
+		Key:    sci.Key,
+	}
 }
 
 type StreamData struct {
@@ -222,8 +277,19 @@ func NewStreamData(
 	}
 }
 
-func (sd StreamData) Accept(vs VisitorStream) (any, error) {
+func (sd *StreamData) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamData(sd)
+}
+
+func (sd *StreamData) Clone() Stream {
+	return &StreamData{
+		Object:            sd.Object,
+		MetricName:        sd.MetricName,
+		Filter:            sd.Filter,
+		Rollup:            sd.Rollup,
+		Extrapolation:     sd.Extrapolation,
+		MaxExtrapolations: sd.MaxExtrapolations,
+	}
 }
 
 type StreamDetect struct {
@@ -256,8 +322,20 @@ func NewStreamDetect(
 	}
 }
 
-func (sd StreamDetect) Accept(vs VisitorStream) (any, error) {
+func (sd *StreamDetect) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamDetect(sd)
+}
+
+func (sd *StreamDetect) Clone() Stream {
+	return &StreamDetect{
+		Object:           sd.Object,
+		On:               sd.On.Clone(),
+		Off:              sd.Off.Clone(),
+		Mode:             sd.Mode,
+		Annotations:      sd.Annotations,
+		EventAnnotations: sd.EventAnnotations,
+		AutoResolveAfter: sd.AutoResolveAfter,
+	}
 }
 
 type StreamEvents struct {
@@ -272,8 +350,14 @@ func NewStreamEvents(
 	}
 }
 
-func (se StreamEvents) Accept(vs VisitorStream) (any, error) {
+func (se *StreamEvents) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamEvents(se)
+}
+
+func (se *StreamEvents) Clone() Stream {
+	return &StreamEvents{
+		Object: se.Object,
+	}
 }
 
 type StreamFill struct {
@@ -300,8 +384,18 @@ func NewStreamFill(
 	}
 }
 
-func (sf StreamFill) Accept(vs VisitorStream) (any, error) {
+func (sf *StreamFill) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamFill(sf)
+}
+
+func (sf *StreamFill) Clone() Stream {
+	return &StreamFill{
+		Object:   sf.Object,
+		Source:   sf.Source.Clone(),
+		Value:    sf.Value,
+		Duration: sf.Duration,
+		MaxCount: sf.MaxCount,
+	}
 }
 
 type StreamGeneric struct {
@@ -322,8 +416,16 @@ func NewStreamGeneric(
 	}
 }
 
-func (sg StreamGeneric) Accept(vs VisitorStream) (any, error) {
+func (sg *StreamGeneric) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamGeneric(sg)
+}
+
+func (sg *StreamGeneric) Clone() Stream {
+	return &StreamGeneric{
+		Object: sg.Object,
+		Source: sg.Source.Clone(),
+		Call:   sg.Call,
+	}
 }
 
 type StreamIsNone struct {
@@ -344,8 +446,16 @@ func NewStreamIsNone(
 	}
 }
 
-func (sin StreamIsNone) Accept(vs VisitorStream) (any, error) {
+func (sin *StreamIsNone) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamIsNone(sin)
+}
+
+func (sin *StreamIsNone) Clone() Stream {
+	return &StreamIsNone{
+		Object: sin.Object,
+		Source: sin.Source.Clone(),
+		Invert: sin.Invert,
+	}
 }
 
 type StreamMax struct {
@@ -366,8 +476,16 @@ func NewStreamMax(
 	}
 }
 
-func (sm StreamMax) Accept(vs VisitorStream) (any, error) {
+func (sm *StreamMax) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamMax(sm)
+}
+
+func (sm *StreamMax) Clone() Stream {
+	return &StreamMax{
+		Object:  sm.Object,
+		Sources: sm.Sources,
+		Value:   sm.Value,
+	}
 }
 
 type StreamMean struct {
@@ -388,8 +506,16 @@ func NewStreamMean(
 	}
 }
 
-func (sm StreamMean) Accept(vs VisitorStream) (any, error) {
+func (sm *StreamMean) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamMean(sm)
+}
+
+func (sm *StreamMean) Clone() Stream {
+	return &StreamMean{
+		Object:    sm.Object,
+		Sources:   sm.Sources,
+		Constants: sm.Constants,
+	}
 }
 
 type StreamMedian struct {
@@ -410,8 +536,16 @@ func NewStreamMedian(
 	}
 }
 
-func (sm StreamMedian) Accept(vs VisitorStream) (any, error) {
+func (sm *StreamMedian) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamMedian(sm)
+}
+
+func (sm *StreamMedian) Clone() Stream {
+	return &StreamMedian{
+		Object:    sm.Object,
+		Sources:   sm.Sources,
+		Constants: sm.Constants,
+	}
 }
 
 type StreamMin struct {
@@ -432,8 +566,16 @@ func NewStreamMin(
 	}
 }
 
-func (sm StreamMin) Accept(vs VisitorStream) (any, error) {
+func (sm *StreamMin) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamMin(sm)
+}
+
+func (sm *StreamMin) Clone() Stream {
+	return &StreamMin{
+		Object:  sm.Object,
+		Sources: sm.Sources,
+		Value:   sm.Value,
+	}
 }
 
 type StreamMathOpDouble struct {
@@ -460,8 +602,18 @@ func NewStreamMathOpDouble(
 	}
 }
 
-func (smod StreamMathOpDouble) Accept(vs VisitorStream) (any, error) {
+func (smod *StreamMathOpDouble) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamMathOpDouble(smod)
+}
+
+func (smod *StreamMathOpDouble) Clone() Stream {
+	return &StreamMathOpDouble{
+		Object:  smod.Object,
+		Stream:  smod.Stream.Clone(),
+		Op:      smod.Op,
+		Other:   smod.Other,
+		Reverse: smod.Reverse,
+	}
 }
 
 type StreamMathOpInt struct {
@@ -488,8 +640,18 @@ func NewStreamMathOpInt(
 	}
 }
 
-func (smoi StreamMathOpInt) Accept(vs VisitorStream) (any, error) {
+func (smoi *StreamMathOpInt) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamMathOpInt(smoi)
+}
+
+func (smoi *StreamMathOpInt) Clone() Stream {
+	return &StreamMathOpInt{
+		Object:  smoi.Object,
+		Stream:  smoi.Stream.Clone(),
+		Op:      smoi.Op,
+		Other:   smoi.Other,
+		Reverse: smoi.Reverse,
+	}
 }
 
 type StreamMathOpStream struct {
@@ -513,8 +675,17 @@ func NewStreamMathOpStream(
 	}
 }
 
-func (smos StreamMathOpStream) Accept(vs VisitorStream) (any, error) {
+func (smos *StreamMathOpStream) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamMathOpStream(smos)
+}
+
+func (smos *StreamMathOpStream) Clone() Stream {
+	return &StreamMathOpStream{
+		Object: smos.Object,
+		Left:   smos.Left.Clone(),
+		Op:     smos.Op,
+		Right:  smos.Right.Clone(),
+	}
 }
 
 type StreamMathOpUnaryMinus struct {
@@ -532,8 +703,15 @@ func NewStreamMathOpUnaryMinus(
 	}
 }
 
-func (smoum StreamMathOpUnaryMinus) Accept(vs VisitorStream) (any, error) {
+func (smoum *StreamMathOpUnaryMinus) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamMathOpUnaryMinus(smoum)
+}
+
+func (smoum *StreamMathOpUnaryMinus) Clone() Stream {
+	return &StreamMathOpUnaryMinus{
+		Object: smoum.Object,
+		Stream: smoum.Stream.Clone(),
+	}
 }
 
 type StreamPercentile struct {
@@ -551,8 +729,15 @@ func NewStreamPercentile(
 	}
 }
 
-func (sp StreamPercentile) Accept(vs VisitorStream) (any, error) {
+func (sp *StreamPercentile) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamPercentile(sp)
+}
+
+func (sp *StreamPercentile) Clone() Stream {
+	return &StreamPercentile{
+		Object: sp.Object,
+		Source: sp.Source.Clone(),
+	}
 }
 
 type StreamPublish struct {
@@ -576,8 +761,17 @@ func NewStreamPublish(
 	}
 }
 
-func (sp StreamPublish) Accept(vs VisitorStream) (any, error) {
+func (sp *StreamPublish) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamPublish(sp)
+}
+
+func (sp *StreamPublish) Clone() Stream {
+	return &StreamPublish{
+		Object: sp.Object,
+		Source: sp.Source.Clone(),
+		Label:  sp.Label,
+		Enable: sp.Enable,
+	}
 }
 
 type StreamScale struct {
@@ -598,8 +792,16 @@ func NewStreamScale(
 	}
 }
 
-func (ss StreamScale) Accept(vs VisitorStream) (any, error) {
+func (ss *StreamScale) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamScale(ss)
+}
+
+func (ss *StreamScale) Clone() Stream {
+	return &StreamScale{
+		Object:   ss.Object,
+		Source:   ss.Source.Clone(),
+		Multiple: ss.Multiple,
+	}
 }
 
 type StreamTernary struct {
@@ -623,8 +825,17 @@ func NewStreamTernary(
 	}
 }
 
-func (st StreamTernary) Accept(vs VisitorStream) (any, error) {
+func (st *StreamTernary) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamTernary(st)
+}
+
+func (st *StreamTernary) Clone() Stream {
+	return &StreamTernary{
+		Object:    st.Object,
+		Condition: st.Condition.Clone(),
+		Left:      st.Left.Clone(),
+		Right:     st.Right.Clone(),
+	}
 }
 
 type StreamThreshold struct {
@@ -642,8 +853,15 @@ func NewStreamThreshold(
 	}
 }
 
-func (st StreamThreshold) Accept(vs VisitorStream) (any, error) {
+func (st *StreamThreshold) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamThreshold(st)
+}
+
+func (st *StreamThreshold) Clone() Stream {
+	return &StreamThreshold{
+		Object: st.Object,
+		Value:  st.Value,
+	}
 }
 
 type StreamTimeShift struct {
@@ -664,8 +882,16 @@ func NewStreamTimeShift(
 	}
 }
 
-func (sts StreamTimeShift) Accept(vs VisitorStream) (any, error) {
+func (sts *StreamTimeShift) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamTimeShift(sts)
+}
+
+func (sts *StreamTimeShift) Clone() Stream {
+	return &StreamTimeShift{
+		Object: sts.Object,
+		Source: sts.Source.Clone(),
+		Offset: sts.Offset,
+	}
 }
 
 type StreamTop struct {
@@ -683,8 +909,15 @@ func NewStreamTop(
 	}
 }
 
-func (st StreamTop) Accept(vs VisitorStream) (any, error) {
+func (st *StreamTop) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamTop(st)
+}
+
+func (st *StreamTop) Clone() Stream {
+	return &StreamTop{
+		Object: st.Object,
+		Source: st.Source.Clone(),
+	}
 }
 
 type StreamTransform struct {
@@ -708,8 +941,17 @@ func NewStreamTransform(
 	}
 }
 
-func (st StreamTransform) Accept(vs VisitorStream) (any, error) {
+func (st *StreamTransform) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamTransform(st)
+}
+
+func (st *StreamTransform) Clone() Stream {
+	return &StreamTransform{
+		Object: st.Object,
+		Source: st.Source.Clone(),
+		Fn:     st.Fn,
+		Over:   st.Over,
+	}
 }
 
 type StreamTransformCycle struct {
@@ -745,8 +987,21 @@ func NewStreamTransformCycle(
 	}
 }
 
-func (stc StreamTransformCycle) Accept(vs VisitorStream) (any, error) {
+func (stc *StreamTransformCycle) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamTransformCycle(stc)
+}
+
+func (stc *StreamTransformCycle) Clone() Stream {
+	return &StreamTransformCycle{
+		Object:        stc.Object,
+		Source:        stc.Source.Clone(),
+		Fn:            stc.Fn,
+		Cycle:         stc.Cycle,
+		CycleStart:    stc.CycleStart,
+		Timezone:      stc.Timezone,
+		PartialValues: stc.PartialValues,
+		ShiftCycles:   stc.ShiftCycles,
+	}
 }
 
 type StreamUnion struct {
@@ -764,8 +1019,15 @@ func NewStreamUnion(
 	}
 }
 
-func (su StreamUnion) Accept(vs VisitorStream) (any, error) {
+func (su *StreamUnion) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamUnion(su)
+}
+
+func (su *StreamUnion) Clone() Stream {
+	return &StreamUnion{
+		Object:  su.Object,
+		Sources: su.Sources,
+	}
 }
 
 type StreamWhen struct {
@@ -789,6 +1051,15 @@ func NewStreamWhen(
 	}
 }
 
-func (sw StreamWhen) Accept(vs VisitorStream) (any, error) {
+func (sw *StreamWhen) Accept(vs VisitorStream) (any, error) {
 	return vs.VisitStreamWhen(sw)
+}
+
+func (sw *StreamWhen) Clone() Stream {
+	return &StreamWhen{
+		Object:    sw.Object,
+		Predicate: sw.Predicate.Clone(),
+		Lasting:   sw.Lasting,
+		AtLeast:   sw.AtLeast,
+	}
 }

@@ -18,18 +18,6 @@ type GraphWriter struct {
 	StreamNodes map[string]string
 }
 
-/*
-digraph G {
-  _node1 [label="data()"]
-  _node2 [label="data()"]
-  _node3 [label="A<B"]
-  _node4 label="publish"]
-  _node1 -> _node3
-  _node2 -> _node3
-  _node3 -> _node4
-}
-*/
-
 func escape(s string) string {
 	s = strings.ReplaceAll(s, "\\", "\\\\")
 	s = strings.ReplaceAll(s, "\"", "\\\"")
@@ -63,17 +51,17 @@ func (g *GraphWriter) DefineEdge(to string, from string, label string) {
 	_, _ = g.Writer.Write([]byte(fmt.Sprintf("  %s -> %s [label=\"%s\"]\n", from, to, escape(label))))
 }
 
-func (g *GraphWriter) VisitStreamAbove(sa stream.StreamAbove) (any, error) {
+func (g *GraphWriter) VisitStreamAbove(sa *stream.StreamAbove) (any, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (g *GraphWriter) VisitStreamAbs(sa stream.StreamAbs) (any, error) {
+func (g *GraphWriter) VisitStreamAbs(sa *stream.StreamAbs) (any, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (g *GraphWriter) VisitStreamAggregate(sa stream.StreamAggregate) (any, error) {
+func (g *GraphWriter) VisitStreamAggregate(sa *stream.StreamAggregate) (any, error) {
 	if nodeId, ok := g.GetNode(sa); ok {
 		return nodeId, nil
 	}
@@ -100,22 +88,22 @@ func (g *GraphWriter) VisitStreamAggregate(sa stream.StreamAggregate) (any, erro
 	return nodeId, nil
 }
 
-func (g *GraphWriter) VisitStreamAlerts(sa stream.StreamAlerts) (any, error) {
+func (g *GraphWriter) VisitStreamAlerts(sa *stream.StreamAlerts) (any, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (g *GraphWriter) VisitStreamBelow(sb stream.StreamBelow) (any, error) {
+func (g *GraphWriter) VisitStreamBelow(sb *stream.StreamBelow) (any, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (g *GraphWriter) VisitStreamConstDouble(scd stream.StreamConstDouble) (any, error) {
+func (g *GraphWriter) VisitStreamConstDouble(scd *stream.StreamConstDouble) (any, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (g *GraphWriter) VisitStreamConstInt(sci stream.StreamConstInt) (any, error) {
+func (g *GraphWriter) VisitStreamConstInt(sci *stream.StreamConstInt) (any, error) {
 	if nodeId, ok := g.GetNode(sci); ok {
 		return nodeId, nil
 	}
@@ -127,7 +115,7 @@ func (g *GraphWriter) VisitStreamConstInt(sci stream.StreamConstInt) (any, error
 	return g.DefineNode(sci, sb.String()), nil
 }
 
-func (g *GraphWriter) VisitStreamData(sd stream.StreamData) (any, error) {
+func (g *GraphWriter) VisitStreamData(sd *stream.StreamData) (any, error) {
 	if nodeId, ok := g.GetNode(sd); ok {
 		return nodeId, nil
 	}
@@ -153,7 +141,7 @@ func (g *GraphWriter) VisitStreamData(sd stream.StreamData) (any, error) {
 	return g.DefineNode(sd, sb.String()), nil
 }
 
-func (g *GraphWriter) VisitStreamDetect(sd stream.StreamDetect) (any, error) {
+func (g *GraphWriter) VisitStreamDetect(sd *stream.StreamDetect) (any, error) {
 	if nodeId, ok := g.GetNode(sd); ok {
 		return nodeId, nil
 	}
@@ -196,17 +184,17 @@ func (g *GraphWriter) VisitStreamDetect(sd stream.StreamDetect) (any, error) {
 	return nodeId, nil
 }
 
-func (g *GraphWriter) VisitStreamEvents(se stream.StreamEvents) (any, error) {
+func (g *GraphWriter) VisitStreamEvents(se *stream.StreamEvents) (any, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (g *GraphWriter) VisitStreamFill(sf stream.StreamFill) (any, error) {
+func (g *GraphWriter) VisitStreamFill(sf *stream.StreamFill) (any, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (g *GraphWriter) VisitStreamGeneric(sg stream.StreamGeneric) (any, error) {
+func (g *GraphWriter) VisitStreamGeneric(sg *stream.StreamGeneric) (any, error) {
 	if nodeId, ok := g.GetNode(sg); ok {
 		return nodeId, nil
 	}
@@ -227,12 +215,12 @@ func (g *GraphWriter) VisitStreamGeneric(sg stream.StreamGeneric) (any, error) {
 	return nodeId, nil
 }
 
-func (g *GraphWriter) VisitStreamIsNone(sin stream.StreamIsNone) (any, error) {
+func (g *GraphWriter) VisitStreamIsNone(sin *stream.StreamIsNone) (any, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (g *GraphWriter) VisitStreamMax(sm stream.StreamMax) (any, error) {
+func (g *GraphWriter) VisitStreamMax(sm *stream.StreamMax) (any, error) {
 	if nodeId, ok := g.GetNode(sm); ok {
 		return nodeId, nil
 	}
@@ -260,12 +248,12 @@ func (g *GraphWriter) VisitStreamMax(sm stream.StreamMax) (any, error) {
 	return nodeId, nil
 }
 
-func (g *GraphWriter) VisitStreamMean(sm stream.StreamMean) (any, error) {
+func (g *GraphWriter) VisitStreamMean(sm *stream.StreamMean) (any, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (g *GraphWriter) VisitStreamMedian(sm stream.StreamMedian) (any, error) {
+func (g *GraphWriter) VisitStreamMedian(sm *stream.StreamMedian) (any, error) {
 	if nodeId, ok := g.GetNode(sm); ok {
 		return nodeId, nil
 	}
@@ -295,7 +283,7 @@ func (g *GraphWriter) VisitStreamMedian(sm stream.StreamMedian) (any, error) {
 	return nodeId, nil
 }
 
-func (g *GraphWriter) VisitStreamMin(sm stream.StreamMin) (any, error) {
+func (g *GraphWriter) VisitStreamMin(sm *stream.StreamMin) (any, error) {
 	if nodeId, ok := g.GetNode(sm); ok {
 		return nodeId, nil
 	}
@@ -323,12 +311,12 @@ func (g *GraphWriter) VisitStreamMin(sm stream.StreamMin) (any, error) {
 	return nodeId, nil
 }
 
-func (g *GraphWriter) VisitStreamMathOpDouble(smod stream.StreamMathOpDouble) (any, error) {
+func (g *GraphWriter) VisitStreamMathOpDouble(smod *stream.StreamMathOpDouble) (any, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (g *GraphWriter) VisitStreamMathOpInt(smoi stream.StreamMathOpInt) (any, error) {
+func (g *GraphWriter) VisitStreamMathOpInt(smoi *stream.StreamMathOpInt) (any, error) {
 	if nodeId, ok := g.GetNode(smoi); ok {
 		return nodeId, nil
 	}
@@ -351,7 +339,7 @@ func (g *GraphWriter) VisitStreamMathOpInt(smoi stream.StreamMathOpInt) (any, er
 	return nodeId, nil
 }
 
-func (g *GraphWriter) VisitStreamMathOpStream(smos stream.StreamMathOpStream) (any, error) {
+func (g *GraphWriter) VisitStreamMathOpStream(smos *stream.StreamMathOpStream) (any, error) {
 	if nodeId, ok := g.GetNode(smos); ok {
 		return nodeId, nil
 	}
@@ -379,17 +367,17 @@ func (g *GraphWriter) VisitStreamMathOpStream(smos stream.StreamMathOpStream) (a
 	return nodeId, nil
 }
 
-func (g *GraphWriter) VisitStreamMathOpUnaryMinus(smoum stream.StreamMathOpUnaryMinus) (any, error) {
+func (g *GraphWriter) VisitStreamMathOpUnaryMinus(smoum *stream.StreamMathOpUnaryMinus) (any, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (g *GraphWriter) VisitStreamPercentile(sp stream.StreamPercentile) (any, error) {
+func (g *GraphWriter) VisitStreamPercentile(sp *stream.StreamPercentile) (any, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (g *GraphWriter) VisitStreamPublish(sp stream.StreamPublish) (any, error) {
+func (g *GraphWriter) VisitStreamPublish(sp *stream.StreamPublish) (any, error) {
 	if nodeId, ok := g.GetNode(sp); ok {
 		return nodeId, nil
 	}
@@ -409,12 +397,12 @@ func (g *GraphWriter) VisitStreamPublish(sp stream.StreamPublish) (any, error) {
 	return nodeId, nil
 }
 
-func (g *GraphWriter) VisitStreamScale(ss stream.StreamScale) (any, error) {
+func (g *GraphWriter) VisitStreamScale(ss *stream.StreamScale) (any, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (g *GraphWriter) VisitStreamTernary(st stream.StreamTernary) (any, error) {
+func (g *GraphWriter) VisitStreamTernary(st *stream.StreamTernary) (any, error) {
 	if nodeId, ok := g.GetNode(st); ok {
 		return nodeId, nil
 	}
@@ -444,12 +432,12 @@ func (g *GraphWriter) VisitStreamTernary(st stream.StreamTernary) (any, error) {
 	return nodeId, nil
 }
 
-func (g *GraphWriter) VisitStreamThreshold(st stream.StreamThreshold) (any, error) {
+func (g *GraphWriter) VisitStreamThreshold(st *stream.StreamThreshold) (any, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (g *GraphWriter) VisitStreamTimeShift(sts stream.StreamTimeShift) (any, error) {
+func (g *GraphWriter) VisitStreamTimeShift(sts *stream.StreamTimeShift) (any, error) {
 	if nodeId, ok := g.GetNode(sts); ok {
 		return nodeId, nil
 	}
@@ -467,12 +455,12 @@ func (g *GraphWriter) VisitStreamTimeShift(sts stream.StreamTimeShift) (any, err
 	return nodeId, nil
 }
 
-func (g *GraphWriter) VisitStreamTop(st stream.StreamTop) (any, error) {
+func (g *GraphWriter) VisitStreamTop(st *stream.StreamTop) (any, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (g *GraphWriter) VisitStreamTransform(st stream.StreamTransform) (any, error) {
+func (g *GraphWriter) VisitStreamTransform(st *stream.StreamTransform) (any, error) {
 	if nodeId, ok := g.GetNode(st); ok {
 		return nodeId, nil
 	}
@@ -492,18 +480,18 @@ func (g *GraphWriter) VisitStreamTransform(st stream.StreamTransform) (any, erro
 	return nodeId, nil
 }
 
-func (g *GraphWriter) VisitStreamTransformCycle(stc stream.StreamTransformCycle) (any, error) {
+func (g *GraphWriter) VisitStreamTransformCycle(stc *stream.StreamTransformCycle) (any, error) {
 	//TODO implement me
 	panic(stc.Fn)
 	panic("implement me")
 }
 
-func (g *GraphWriter) VisitStreamUnion(su stream.StreamUnion) (any, error) {
+func (g *GraphWriter) VisitStreamUnion(su *stream.StreamUnion) (any, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (g *GraphWriter) VisitStreamWhen(sw stream.StreamWhen) (any, error) {
+func (g *GraphWriter) VisitStreamWhen(sw *stream.StreamWhen) (any, error) {
 	if nodeId, ok := g.GetNode(sw); ok {
 		return nodeId, nil
 	}

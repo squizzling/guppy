@@ -25,7 +25,7 @@ func s(a any, err error) string {
 	return a.(string)
 }
 
-func (dw DebugWriter) VisitStreamAbove(sa StreamAbove) (any, error) {
+func (dw DebugWriter) VisitStreamAbove(sa *StreamAbove) (any, error) {
 	_s := "StreamAbove(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
@@ -40,7 +40,7 @@ func (dw DebugWriter) VisitStreamAbove(sa StreamAbove) (any, error) {
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamAbs(sa StreamAbs) (any, error) {
+func (dw DebugWriter) VisitStreamAbs(sa *StreamAbs) (any, error) {
 	_s := "StreamAbs(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
@@ -55,7 +55,7 @@ func (dw DebugWriter) VisitStreamAbs(sa StreamAbs) (any, error) {
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamAggregate(sa StreamAggregate) (any, error) {
+func (dw DebugWriter) VisitStreamAggregate(sa *StreamAggregate) (any, error) {
 	_s := "StreamAggregate(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
@@ -98,7 +98,7 @@ func (dw DebugWriter) VisitStreamAggregate(sa StreamAggregate) (any, error) {
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamAlerts(sa StreamAlerts) (any, error) {
+func (dw DebugWriter) VisitStreamAlerts(sa *StreamAlerts) (any, error) {
 	_s := "StreamAlerts(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
@@ -108,7 +108,7 @@ func (dw DebugWriter) VisitStreamAlerts(sa StreamAlerts) (any, error) {
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamBelow(sb StreamBelow) (any, error) {
+func (dw DebugWriter) VisitStreamBelow(sb *StreamBelow) (any, error) {
 	_s := "StreamBelow(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
@@ -123,7 +123,7 @@ func (dw DebugWriter) VisitStreamBelow(sb StreamBelow) (any, error) {
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamConstDouble(scd StreamConstDouble) (any, error) {
+func (dw DebugWriter) VisitStreamConstDouble(scd *StreamConstDouble) (any, error) {
 	_s := "StreamConstDouble(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
@@ -137,7 +137,7 @@ func (dw DebugWriter) VisitStreamConstDouble(scd StreamConstDouble) (any, error)
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamConstInt(sci StreamConstInt) (any, error) {
+func (dw DebugWriter) VisitStreamConstInt(sci *StreamConstInt) (any, error) {
 	_s := "StreamConstInt(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
@@ -151,7 +151,7 @@ func (dw DebugWriter) VisitStreamConstInt(sci StreamConstInt) (any, error) {
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamData(sd StreamData) (any, error) {
+func (dw DebugWriter) VisitStreamData(sd *StreamData) (any, error) {
 	_s := "StreamData(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
@@ -168,7 +168,7 @@ func (dw DebugWriter) VisitStreamData(sd StreamData) (any, error) {
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamDetect(sd StreamDetect) (any, error) {
+func (dw DebugWriter) VisitStreamDetect(sd *StreamDetect) (any, error) {
 	_s := "StreamDetect(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
@@ -195,7 +195,7 @@ func (dw DebugWriter) VisitStreamDetect(sd StreamDetect) (any, error) {
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamEvents(se StreamEvents) (any, error) {
+func (dw DebugWriter) VisitStreamEvents(se *StreamEvents) (any, error) {
 	_s := "StreamEvents(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
@@ -205,7 +205,7 @@ func (dw DebugWriter) VisitStreamEvents(se StreamEvents) (any, error) {
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamFill(sf StreamFill) (any, error) {
+func (dw DebugWriter) VisitStreamFill(sf *StreamFill) (any, error) {
 	_s := "StreamFill(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
@@ -226,7 +226,7 @@ func (dw DebugWriter) VisitStreamFill(sf StreamFill) (any, error) {
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamGeneric(sg StreamGeneric) (any, error) {
+func (dw DebugWriter) VisitStreamGeneric(sg *StreamGeneric) (any, error) {
 	_s := "StreamGeneric(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
@@ -242,7 +242,7 @@ func (dw DebugWriter) VisitStreamGeneric(sg StreamGeneric) (any, error) {
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamIsNone(sin StreamIsNone) (any, error) {
+func (dw DebugWriter) VisitStreamIsNone(sin *StreamIsNone) (any, error) {
 	_s := "StreamIsNone(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
@@ -258,7 +258,7 @@ func (dw DebugWriter) VisitStreamIsNone(sin StreamIsNone) (any, error) {
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamMax(sm StreamMax) (any, error) {
+func (dw DebugWriter) VisitStreamMax(sm *StreamMax) (any, error) {
 	_s := "StreamMax(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
@@ -283,7 +283,7 @@ func (dw DebugWriter) VisitStreamMax(sm StreamMax) (any, error) {
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamMean(sm StreamMean) (any, error) {
+func (dw DebugWriter) VisitStreamMean(sm *StreamMean) (any, error) {
 	_s := "StreamMean(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
@@ -308,7 +308,7 @@ func (dw DebugWriter) VisitStreamMean(sm StreamMean) (any, error) {
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamMedian(sm StreamMedian) (any, error) {
+func (dw DebugWriter) VisitStreamMedian(sm *StreamMedian) (any, error) {
 	_s := "StreamMedian(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
@@ -333,7 +333,7 @@ func (dw DebugWriter) VisitStreamMedian(sm StreamMedian) (any, error) {
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamMin(sm StreamMin) (any, error) {
+func (dw DebugWriter) VisitStreamMin(sm *StreamMin) (any, error) {
 	_s := "StreamMin(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
@@ -358,7 +358,7 @@ func (dw DebugWriter) VisitStreamMin(sm StreamMin) (any, error) {
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamMathOpDouble(smod StreamMathOpDouble) (any, error) {
+func (dw DebugWriter) VisitStreamMathOpDouble(smod *StreamMathOpDouble) (any, error) {
 	_s := "StreamMathOpDouble(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
@@ -377,7 +377,7 @@ func (dw DebugWriter) VisitStreamMathOpDouble(smod StreamMathOpDouble) (any, err
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamMathOpInt(smoi StreamMathOpInt) (any, error) {
+func (dw DebugWriter) VisitStreamMathOpInt(smoi *StreamMathOpInt) (any, error) {
 	_s := "StreamMathOpInt(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
@@ -396,7 +396,7 @@ func (dw DebugWriter) VisitStreamMathOpInt(smoi StreamMathOpInt) (any, error) {
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamMathOpStream(smos StreamMathOpStream) (any, error) {
+func (dw DebugWriter) VisitStreamMathOpStream(smos *StreamMathOpStream) (any, error) {
 	_s := "StreamMathOpStream(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
@@ -417,7 +417,7 @@ func (dw DebugWriter) VisitStreamMathOpStream(smos StreamMathOpStream) (any, err
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamMathOpUnaryMinus(smoum StreamMathOpUnaryMinus) (any, error) {
+func (dw DebugWriter) VisitStreamMathOpUnaryMinus(smoum *StreamMathOpUnaryMinus) (any, error) {
 	_s := "StreamMathOpUnaryMinus(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
@@ -432,7 +432,7 @@ func (dw DebugWriter) VisitStreamMathOpUnaryMinus(smoum StreamMathOpUnaryMinus) 
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamPercentile(sp StreamPercentile) (any, error) {
+func (dw DebugWriter) VisitStreamPercentile(sp *StreamPercentile) (any, error) {
 	_s := "StreamPercentile(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
@@ -447,7 +447,7 @@ func (dw DebugWriter) VisitStreamPercentile(sp StreamPercentile) (any, error) {
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamPublish(sp StreamPublish) (any, error) {
+func (dw DebugWriter) VisitStreamPublish(sp *StreamPublish) (any, error) {
 	_s := "StreamPublish(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
@@ -464,7 +464,7 @@ func (dw DebugWriter) VisitStreamPublish(sp StreamPublish) (any, error) {
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamScale(ss StreamScale) (any, error) {
+func (dw DebugWriter) VisitStreamScale(ss *StreamScale) (any, error) {
 	_s := "StreamScale(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
@@ -481,7 +481,7 @@ func (dw DebugWriter) VisitStreamScale(ss StreamScale) (any, error) {
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamTernary(st StreamTernary) (any, error) {
+func (dw DebugWriter) VisitStreamTernary(st *StreamTernary) (any, error) {
 	_s := "StreamTernary(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
@@ -506,7 +506,7 @@ func (dw DebugWriter) VisitStreamTernary(st StreamTernary) (any, error) {
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamThreshold(st StreamThreshold) (any, error) {
+func (dw DebugWriter) VisitStreamThreshold(st *StreamThreshold) (any, error) {
 	_s := "StreamThreshold(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
@@ -518,7 +518,7 @@ func (dw DebugWriter) VisitStreamThreshold(st StreamThreshold) (any, error) {
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamTimeShift(sts StreamTimeShift) (any, error) {
+func (dw DebugWriter) VisitStreamTimeShift(sts *StreamTimeShift) (any, error) {
 	_s := "StreamTimeShift(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
@@ -534,7 +534,7 @@ func (dw DebugWriter) VisitStreamTimeShift(sts StreamTimeShift) (any, error) {
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamTop(st StreamTop) (any, error) {
+func (dw DebugWriter) VisitStreamTop(st *StreamTop) (any, error) {
 	_s := "StreamTop(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
@@ -549,7 +549,7 @@ func (dw DebugWriter) VisitStreamTop(st StreamTop) (any, error) {
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamTransform(st StreamTransform) (any, error) {
+func (dw DebugWriter) VisitStreamTransform(st *StreamTransform) (any, error) {
 	_s := "StreamTransform(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
@@ -567,7 +567,7 @@ func (dw DebugWriter) VisitStreamTransform(st StreamTransform) (any, error) {
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamTransformCycle(stc StreamTransformCycle) (any, error) {
+func (dw DebugWriter) VisitStreamTransformCycle(stc *StreamTransformCycle) (any, error) {
 	_s := "StreamTransformCycle(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
@@ -591,7 +591,7 @@ func (dw DebugWriter) VisitStreamTransformCycle(stc StreamTransformCycle) (any, 
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamUnion(su StreamUnion) (any, error) {
+func (dw DebugWriter) VisitStreamUnion(su *StreamUnion) (any, error) {
 	_s := "StreamUnion(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
@@ -614,7 +614,7 @@ func (dw DebugWriter) VisitStreamUnion(su StreamUnion) (any, error) {
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamWhen(sw StreamWhen) (any, error) {
+func (dw DebugWriter) VisitStreamWhen(sw *StreamWhen) (any, error) {
 	_s := "StreamWhen(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
