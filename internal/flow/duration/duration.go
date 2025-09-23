@@ -1,8 +1,8 @@
 package duration
 
 import (
+	"errors"
 	"fmt"
-	"strconv"
 	"strings"
 	"time"
 
@@ -21,41 +21,33 @@ func (f FFIDuration) Params(i *interpreter.Interpreter) (*interpreter.Params, er
 	}, nil
 }
 
-func splitAndParseType(value string, typeSpecifier string, typeName string, full string, scale time.Duration) (time.Duration, string, error) {
-	parts := strings.SplitN(value, typeSpecifier, 2)
-	if len(parts) == 1 {
-		return 0, parts[0], nil
-	} else if val, err := strconv.Atoi(parts[0]); err != nil {
-		return 0, "", fmt.Errorf("failed to decode %s in %s (%s): %w", typeName, full, parts[0], err)
-	} else {
-		return time.Duration(val) * scale, parts[1], nil
-	}
+var unitScale = map[string]time.Duration{
+	"w":   7 * 24 * time.Hour,
+	"d":   24 * time.Hour,
+	"h":   time.Hour,
+	"m":   time.Minute,
+	"min": time.Minute,
+	"s":   time.Second,
+	"ms":  time.Millisecond,
 }
 
-func parseDurationType(value string, typeName string, full string, scale time.Duration) (time.Duration, error) {
-	if v, err := strconv.Atoi(value); err != nil {
-		return 0, fmt.Errorf("failed to decode %s in %s (%s): %w", typeName, full, value, err)
-	} else {
-		return time.Duration(v) * scale, nil
-	}
+var unitRank = map[string]int{
+	"w":   6,
+	"d":   5,
+	"h":   4,
+	"m":   3,
+	"min": 3,
+	"s":   2,
+	"ms":  1,
 }
 
-var fmts = map[int]string{
-	6: "week",
-	5: "day",
-	4: "hour",
-	3: "minute",
-	2: "second",
-	1: "millisecond",
-}
-
-var scales = map[int]time.Duration{
-	6: 7 * 24 * time.Hour,
-	5: 24 * time.Hour,
-	4: time.Hour,
-	3: time.Minute,
-	2: time.Second,
-	1: time.Millisecond,
+var rankUnit = map[int]string{
+	6: "w",
+	5: "d",
+	4: "h",
+	3: "m",
+	2: "s",
+	1: "ms",
 }
 
 func ParseDuration(s string) (time.Duration, error) {
@@ -68,52 +60,62 @@ func ParseDuration(s string) (time.Duration, error) {
 	// Remove whitespace
 	d := strings.NewReplacer(" ", "", "\n", "", "\t", "").Replace(s)
 
-	haveDur := false
-	parseDur := time.Duration(0)
-	accumDur := time.Duration(0)
-	maxUnit := 6
+	var values []time.Duration
+	var units []string
 
-	for idx := 0; idx < len(d); idx++ {
-		ch := d[idx]
+	value := time.Duration(0)
+	var unit strings.Builder
+	readValue := true
 
-		if ch >= '0' && ch <= '9' {
-			parseDur = (parseDur * 10) + time.Duration(ch-'0')
-			haveDur = true
-			continue
-		} else if !haveDur {
-			return 0, fmt.Errorf("format specifier (%c) without value", ch)
-		}
+	if len(d) == 0 {
+		return 0, errors.New("empty duration")
+	} else if d[0] < '0' || d[0] > '9' { // Make sure it starts with a digit, because it simplifies everything the main loop
+		return 0, fmt.Errorf("duration without value: %s", d)
+	}
 
-		formatSpecifier := 0
-		if ch == 'w' {
-			formatSpecifier = 6
-		} else if ch == 'd' {
-			formatSpecifier = 5
-		} else if ch == 'h' {
-			formatSpecifier = 4
-		} else if ch == 'm' {
-			if len(d)-1 > idx && d[idx+1] == 's' {
-				formatSpecifier = 1
-				idx++
+	for _, ch := range d {
+		if readValue {
+			if ch >= '0' && ch <= '9' {
+				value = (value * 10) + time.Duration(ch-'0')
 			} else {
-				formatSpecifier = 3
+				values = append(values, value) // Store the value
+				value = 0                      // Reset the value for next time
+				readValue = false              // Switch to reading units
+				unit.WriteRune(ch)             // Store the first unit
 			}
-		} else if ch == 's' {
-			formatSpecifier = 2
+		} else {
+			if ch >= '0' && ch <= '9' {
+				units = append(units, unit.String()) // Store the unit
+				unit.Reset()                         // Reset the unit for next time
+				readValue = true                     // Switch to reading values
+				value = time.Duration(ch - '0')      // Store the first value digit
+			} else {
+				unit.WriteRune(ch)
+			}
+		}
+	}
+
+	if readValue {
+		// If we're reading a value, then we don't have a unit
+		return 0, fmt.Errorf("duration without unit: %s", d)
+	}
+	units = append(units, unit.String())
+
+	maxRank := 6
+	accumDur := time.Duration(0)
+	for i, value := range values {
+		unit := units[i]
+
+		rank, ok := unitRank[unit]
+		if !ok {
+			return 0, fmt.Errorf("unit %s not recognized in %s", unit, d)
+		}
+		if rank > maxRank {
+			return 0, fmt.Errorf("unit %s is higher than max unit (%s)", unit, rankUnit[maxRank])
 		}
 
-		if formatSpecifier == 0 {
-			return 0, fmt.Errorf("format specifier (%c) not recognized", ch)
-		}
-
-		if formatSpecifier > maxUnit {
-			return 0, fmt.Errorf("format specifier (%s) is higher than max unit (%s)", fmts[formatSpecifier], fmts[maxUnit])
-		}
-
-		accumDur += parseDur * scales[formatSpecifier]
-		parseDur = 0
-		maxUnit = formatSpecifier - 1
-		haveDur = false
+		accumDur += value * unitScale[unit]
+		maxRank = rank - 1
 	}
 
 	return accumDur, nil

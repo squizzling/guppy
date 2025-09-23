@@ -60,6 +60,9 @@ func TestParseDurationNoZero(t *testing.T) {
 							if ms > 0 {
 								input += "1ms"
 							}
+							if w == 0 && d == 0 && h == 0 && m == 0 && ms == 0 { // This is invalid
+								continue
+							}
 							t.Run("no-zero-"+input, func(t *testing.T) {
 								output, err := ParseDuration(input)
 								require.NoError(t, err)
@@ -78,9 +81,10 @@ func TestParseDurationErrors(t *testing.T) {
 		in  string
 		err string
 	}{
-		{"1h m", "format specifier (m) without value"},
-		{"m", "format specifier (m) without value"},
-		{"1m 1h", "format specifier (hour) is higher than max unit (second)"},
+		{"1h m", "unit hm not recognized in 1hm"},
+		{"m", "duration without value: m"},
+		{"1m 1h", "unit h is higher than max unit (s)"},
+		{"", "empty duration"},
 	} {
 		t.Run(ts.in, func(t *testing.T) {
 			d, err := ParseDuration(ts.in)
