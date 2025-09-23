@@ -21,7 +21,7 @@ func (mf methodFill) Params(i *interpreter.Interpreter) (*interpreter.Params, er
 	}, nil
 }
 
-func resolveDuration(i *interpreter.Interpreter) (int, error) {
+func (mf methodFill) resolveDuration(i *interpreter.Interpreter) (int, error) {
 	if by, err := i.Scope.GetArg("duration"); err != nil {
 		return 0, err
 	} else {
@@ -34,7 +34,7 @@ func resolveDuration(i *interpreter.Interpreter) (int, error) {
 	}
 }
 
-func resolveMaxCount(i *interpreter.Interpreter) (int, error) {
+func (mf methodFill) resolveMaxCount(i *interpreter.Interpreter) (int, error) {
 	if by, err := i.Scope.GetArg("maxCount"); err != nil {
 		return 0, err
 	} else {
@@ -52,9 +52,9 @@ func (mf methodFill) Call(i *interpreter.Interpreter) (interpreter.Object, error
 		return nil, err
 	} else if value, err := i.Scope.Get("value"); err != nil {
 		return nil, err
-	} else if duration, err := resolveDuration(i); err != nil {
+	} else if duration, err := mf.resolveDuration(i); err != nil {
 		return nil, err
-	} else if maxCount, err := resolveMaxCount(i); err != nil {
+	} else if maxCount, err := mf.resolveMaxCount(i); err != nil {
 		return nil, err
 	} else {
 		return NewStreamFill(newStreamObject(), unpublish(self), value, duration, maxCount), nil
