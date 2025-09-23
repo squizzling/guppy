@@ -4,3 +4,5 @@
 *.flow
 *.swp
 *.prof
+*.dot
+*.png
