@@ -31,6 +31,6 @@ func (mts methodTimeShift) Call(i *interpreter.Interpreter) (interpreter.Object,
 	} else if offset, err := resolveOffset(i); err != nil {
 		return nil, err
 	} else {
-		return NewStreamTimeShift(newStreamObject(), self, offset), nil
+		return NewStreamTimeShift(newStreamObject(), self.Clone(), offset), nil
 	}
 }
