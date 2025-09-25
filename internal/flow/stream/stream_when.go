@@ -37,8 +37,12 @@ func (f FFIWhen) resolveLasting(i *interpreter.Interpreter) (*time.Duration, err
 		return nil, nil
 	} else if dur, isDuration := lasting.(*duration.Duration); isDuration {
 		return &dur.Duration, nil
+	} else if objStr, ok := lasting.(*interpreter.ObjectString); !ok {
+		return nil, fmt.Errorf("lasting is %T not *interpreter.ObjectNone, *duration.Duration, or *interpreter.ObjectString", lasting)
+	} else if dur, err := duration.ParseDuration(objStr.Value); err != nil {
+		return nil, err
 	} else {
-		return nil, fmt.Errorf("lasting is %T not *interpreter.ObjectNone or *duration.Duration", lasting)
+		return &dur, nil
 	}
 }
 
