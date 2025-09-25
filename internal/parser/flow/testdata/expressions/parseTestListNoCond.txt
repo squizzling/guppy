@@ -1,11 +1,7 @@
 a
 -----
-ExpressionList(
-  Expressions: [
-    ExpressionVariable(
-      Identifier: string(a)
-    )
-  ]
+ExpressionVariable(
+  Identifier: string(a)
 )
 =====
 a,

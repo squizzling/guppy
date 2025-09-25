@@ -1255,7 +1255,7 @@ func parseTestListNoCond(p *parser.Parser) (ast.Expression, *parser.ParseError) 
 				if len(exprList) > 1 {
 					return ast.NewExpressionTuple(exprList), nil
 				} else {
-					return ast.NewExpressionList(exprList), nil
+					return exprList[0], nil
 				}
 			} else if !isAtomStart(p) {
 				return ast.NewExpressionTuple(exprList), nil

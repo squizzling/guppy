@@ -4,12 +4,8 @@ DataListFor(
   Idents: [
     a
   ]
-  Expr: ExpressionList(
-    Expressions: [
-      ExpressionVariable(
-        Identifier: string(b)
-      )
-    ]
+  Expr: ExpressionVariable(
+    Identifier: string(b)
   )
   Iter: nil
 )
@@ -20,12 +16,8 @@ DataListFor(
   Idents: [
     a
   ]
-  Expr: ExpressionList(
-    Expressions: [
-      ExpressionVariable(
-        Identifier: string(b)
-      )
-    ]
+  Expr: ExpressionVariable(
+    Identifier: string(b)
   )
   Iter: DataListIter(
     For: nil
@@ -44,24 +36,16 @@ DataListFor(
   Idents: [
     a
   ]
-  Expr: ExpressionList(
-    Expressions: [
-      ExpressionVariable(
-        Identifier: string(b)
-      )
-    ]
+  Expr: ExpressionVariable(
+    Identifier: string(b)
   )
   Iter: DataListIter(
     For: DataListFor(
       Idents: [
         c
       ]
-      Expr: ExpressionList(
-        Expressions: [
-          ExpressionVariable(
-            Identifier: string(d)
-          )
-        ]
+      Expr: ExpressionVariable(
+        Identifier: string(d)
       )
       Iter: nil
     )

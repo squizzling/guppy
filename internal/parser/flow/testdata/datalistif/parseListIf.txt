@@ -35,12 +35,8 @@ DataListIf(
       Idents: [
         b
       ]
-      Expr: ExpressionList(
-        Expressions: [
-          ExpressionVariable(
-            Identifier: string(c)
-          )
-        ]
+      Expr: ExpressionVariable(
+        Identifier: string(c)
       )
       Iter: nil
     )
