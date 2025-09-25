@@ -6,23 +6,21 @@ ExpressionList(
       Identifier: string(a)
     )
   ]
-  Tuple: bool(false)
 )
 =====
 a,
 -----
-ExpressionList(
+ExpressionTuple(
   Expressions: [
     ExpressionVariable(
       Identifier: string(a)
     )
   ]
-  Tuple: bool(true)
 )
 =====
 a,b
 -----
-ExpressionList(
+ExpressionTuple(
   Expressions: [
     ExpressionVariable(
       Identifier: string(a)
@@ -31,12 +29,11 @@ ExpressionList(
       Identifier: string(b)
     )
   ]
-  Tuple: bool(true)
 )
 =====
 a,b,c
 -----
-ExpressionList(
+ExpressionTuple(
   Expressions: [
     ExpressionVariable(
       Identifier: string(a)
@@ -48,12 +45,11 @@ ExpressionList(
       Identifier: string(c)
     )
   ]
-  Tuple: bool(true)
 )
 =====
 a,b,c,
 -----
-ExpressionList(
+ExpressionTuple(
   Expressions: [
     ExpressionVariable(
       Identifier: string(a)
@@ -65,7 +61,6 @@ ExpressionList(
       Identifier: string(c)
     )
   ]
-  Tuple: bool(true)
 )
 =====
 a + ?

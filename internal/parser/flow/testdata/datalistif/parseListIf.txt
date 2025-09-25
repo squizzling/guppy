@@ -41,7 +41,6 @@ DataListIf(
             Identifier: string(c)
           )
         ]
-        Tuple: bool(false)
       )
       Iter: nil
     )

@@ -429,6 +429,7 @@ type VisitorExpression interface {
 	VisitExpressionLiteral(el ExpressionLiteral) (any, error)
 	VisitExpressionLogical(el ExpressionLogical) (any, error)
 	VisitExpressionTernary(et ExpressionTernary) (any, error)
+	VisitExpressionTuple(et ExpressionTuple) (any, error)
 	VisitExpressionUnary(eu ExpressionUnary) (any, error)
 	VisitExpressionVariable(ev ExpressionVariable) (any, error)
 	VisitExpressionMember(em ExpressionMember) (any, error)
@@ -442,16 +443,13 @@ type Expression interface {
 
 type ExpressionList struct {
 	Expressions []Expression
-	Tuple       bool
 }
 
 func NewExpressionList(
 	Expressions []Expression,
-	Tuple bool,
-) *ExpressionList {
-	return &ExpressionList{
+) Expression {
+	return ExpressionList{
 		Expressions: Expressions,
-		Tuple:       Tuple,
 	}
 }
 
@@ -612,6 +610,22 @@ func NewExpressionTernary(
 
 func (et ExpressionTernary) Accept(ve VisitorExpression) (any, error) {
 	return ve.VisitExpressionTernary(et)
+}
+
+type ExpressionTuple struct {
+	Expressions []Expression
+}
+
+func NewExpressionTuple(
+	Expressions []Expression,
+) Expression {
+	return ExpressionTuple{
+		Expressions: Expressions,
+	}
+}
+
+func (et ExpressionTuple) Accept(ve VisitorExpression) (any, error) {
+	return ve.VisitExpressionTuple(et)
 }
 
 type ExpressionUnary struct {

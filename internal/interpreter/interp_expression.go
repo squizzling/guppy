@@ -405,6 +405,28 @@ func (i *Interpreter) VisitExpressionTernary(et ast.ExpressionTernary) (returnVa
 	}
 }
 
+func (i *Interpreter) VisitExpressionTuple(et ast.ExpressionTuple) (returnValue any, errOut error) {
+	defer i.trace()(&returnValue, &errOut)
+
+	var o []Object
+	var desired []string
+	for _, expr := range et.Expressions {
+		exprResult, err := r(expr.Accept(i))
+		if err != nil {
+			return nil, err
+		} else if od, ok := exprResult.(*ObjectDeferred); ok {
+			desired = append(desired, od.desired...)
+		}
+		o = append(o, exprResult)
+	}
+
+	if len(desired) > 0 {
+		return NewObjectDeferred(et, desired...), nil
+	}
+
+	return NewObjectTuple(o...), nil
+}
+
 func (i *Interpreter) VisitExpressionUnary(eu ast.ExpressionUnary) (returnValue any, errOut error) {
 	defer i.trace()(&returnValue, &errOut)
 

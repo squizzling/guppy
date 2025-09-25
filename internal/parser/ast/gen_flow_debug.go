@@ -484,7 +484,6 @@ func (dw DebugWriter) VisitExpressionList(el ExpressionList) (any, error) {
 		dw.o()
 		_s += dw.p() + "]\n"
 	}
-	_s += dw.p() + "Tuple: bool(" + fmt.Sprintf("%t", el.Tuple) + ")\n"
 	dw.o()
 	_s += dw.p() + ")\n"
 	return _s, nil
@@ -637,6 +636,27 @@ func (dw DebugWriter) VisitExpressionTernary(et ExpressionTernary) (any, error) 
 		_s += dw.p() + "Right: " + s(et.Right.Accept(dw)) // IsInterface
 	} else {
 		_s += dw.p() + "Right: nil\n"
+	}
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
+func (dw DebugWriter) VisitExpressionTuple(et ExpressionTuple) (any, error) {
+	_s := "ExpressionTuple(\n"
+	dw.i()
+	if et.Expressions == nil {
+		_s += dw.p() + "Expressions: nil\n"
+	} else if len(et.Expressions) == 0 {
+		_s += dw.p() + "Expressions: []\n"
+	} else {
+		_s += dw.p() + "Expressions: [\n"
+		dw.i()
+		for _, _r := range et.Expressions {
+			_s += dw.p() + s(_r.Accept(dw)) // IsInterfaceArray
+		}
+		dw.o()
+		_s += dw.p() + "]\n"
 	}
 	dw.o()
 	_s += dw.p() + ")\n"

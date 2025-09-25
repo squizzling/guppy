@@ -96,9 +96,8 @@ var Interfaces = ast.Interfaces{
 		}},
 	}, nil},
 	{"Expression", []ast.Node{
-		{"List", true, []ast.Field{ // Make this a concrete return type
+		{"List", false, []ast.Field{
 			{"Expressions", "[]Expression", false},
-			{"Tuple", "bool", false},
 		}},
 		{"ListMaker", false, []ast.Field{
 			{"Expr", "Expression", false},
@@ -132,6 +131,9 @@ var Interfaces = ast.Interfaces{
 			{"Left", "Expression", false},
 			{"Cond", "Expression", false},
 			{"Right", "Expression", false},
+		}},
+		{"Tuple", false, []ast.Field{
+			{"Expressions", "[]Expression", false},
 		}},
 		{"Unary", false, []ast.Field{
 			{"Op", "tokenizer.TokenType", false},

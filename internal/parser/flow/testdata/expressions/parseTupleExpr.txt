@@ -1,8 +1,7 @@
 ()
 -----
-ExpressionList(
+ExpressionTuple(
   Expressions: []
-  Tuple: bool(true)
 )
 =====
 (x)
@@ -13,18 +12,17 @@ ExpressionVariable(
 =====
 (x,)
 -----
-ExpressionList(
+ExpressionTuple(
   Expressions: [
     ExpressionVariable(
       Identifier: string(x)
     )
   ]
-  Tuple: bool(true)
 )
 =====
 (x, y)
 -----
-ExpressionList(
+ExpressionTuple(
   Expressions: [
     ExpressionVariable(
       Identifier: string(x)
@@ -33,12 +31,11 @@ ExpressionList(
       Identifier: string(y)
     )
   ]
-  Tuple: bool(true)
 )
 =====
 (x, y,)
 -----
-ExpressionList(
+ExpressionTuple(
   Expressions: [
     ExpressionVariable(
       Identifier: string(x)
@@ -47,7 +44,6 @@ ExpressionList(
       Identifier: string(y)
     )
   ]
-  Tuple: bool(true)
 )
 =====
 (x, (for))

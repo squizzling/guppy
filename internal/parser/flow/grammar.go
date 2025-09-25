@@ -554,10 +554,10 @@ func parseTestList(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 				if len(exprList) == 1 {
 					return exprList[0], nil
 				} else {
-					return ast.NewExpressionList(exprList, true), nil
+					return ast.NewExpressionTuple(exprList), nil
 				}
 			} else if !isAtomStart(p) {
-				return ast.NewExpressionList(exprList, true), nil
+				return ast.NewExpressionTuple(exprList), nil
 			} else {
 				// loop
 			}
@@ -1177,7 +1177,7 @@ func parseListExpr(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 		if err = p.MatchErr(tokenizer.TokenTypeRightSquare); err != nil {
 			return nil, parser.FailErr(err)
 		} else {
-			return ast.NewExpressionList(nil, false), nil
+			return ast.NewExpressionList(nil), nil
 		}
 	} else if expr, err := parseListMaker(p); err != nil {
 		return nil, parser.FailErr(err)
@@ -1252,9 +1252,13 @@ func parseTestListNoCond(p *parser.Parser) (ast.Expression, *parser.ParseError) 
 		} else {
 			exprList = append(exprList, expr)
 			if !p.Match(tokenizer.TokenTypeComma) {
-				return ast.NewExpressionList(exprList, len(exprList) > 1), nil
+				if len(exprList) > 1 {
+					return ast.NewExpressionTuple(exprList), nil
+				} else {
+					return ast.NewExpressionList(exprList), nil
+				}
 			} else if !isAtomStart(p) {
-				return ast.NewExpressionList(exprList, true), nil
+				return ast.NewExpressionTuple(exprList), nil
 			} else {
 				// loop
 			}
@@ -1354,9 +1358,9 @@ func parseListMaker(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 				break
 			}
 		}
-		return ast.NewExpressionList(out, false), nil
+		return ast.NewExpressionList(out), nil
 	} else {
-		return ast.NewExpressionList([]ast.Expression{expr}, false), nil
+		return ast.NewExpressionList([]ast.Expression{expr}), nil
 	}
 }
 
@@ -1371,7 +1375,7 @@ func parseTupleExpr(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 	}
 
 	if p.Match(tokenizer.TokenTypeRightParen) {
-		return ast.NewExpressionList([]ast.Expression{}, true), nil
+		return ast.NewExpressionTuple([]ast.Expression{}), nil
 	}
 
 	if expr, err := parseTestListComp(p); err != nil {
@@ -1422,7 +1426,12 @@ func parseTestListComp(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 		// This is a grouping, not a tuple
 		return exprList[0], nil
 	}
-	return ast.NewExpressionList(exprList, isTuple), nil
+
+	if isTuple {
+		return ast.NewExpressionTuple(exprList), nil
+	} else {
+		return ast.NewExpressionList(exprList), nil
+	}
 }
 
 func parseDictExpr(p *parser.Parser) (ast.Expression, *parser.ParseError) {

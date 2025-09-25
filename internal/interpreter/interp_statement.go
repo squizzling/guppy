@@ -32,7 +32,7 @@ func (i *Interpreter) VisitStatementDecorated(sd ast.StatementDecorated) (return
 func (i *Interpreter) VisitStatementExpression(se ast.StatementExpression) (returnValue any, errOut error) {
 	defer i.trace()(&returnValue, &errOut)
 
-	valuesAny, err := se.Expr.Accept(i)
+	valuesAny, err := r(se.Expr.Accept(i))
 	if err != nil {
 		return nil, err
 	}
@@ -52,13 +52,20 @@ func (i *Interpreter) VisitStatementExpression(se ast.StatementExpression) (retu
 	// TODO: Clean up this mess.  Originally we returned a list of length 1 from functions,
 	//       but now we don't.  This turns it back in to a list of length 1, but that's also
 	//       kinda dumb.
-	var values *ObjectList
-	var ok bool
-	if values, ok = valuesAny.(*ObjectList); !ok {
-		values = NewObjectList(valuesAny.(Object)).(*ObjectList)
-	}
 	if len(se.Assign) == 0 { // Do nothing
 		return nil, nil
+	}
+
+	var values []Object
+	switch valuesAny := valuesAny.(type) {
+	case *ObjectList:
+		values = valuesAny.Items
+	case *ObjectTuple:
+		values = valuesAny.Items
+	case Object:
+		values = []Object{valuesAny}
+	default:
+		return nil, fmt.Errorf("assigning from %T not *ObjectList, *ObjectTuple, or Object", valuesAny)
 	}
 
 	// Signalflow grammar doesn't do arbitrary tuple unpacking.  ie, it can handle:
@@ -73,16 +80,16 @@ func (i *Interpreter) VisitStatementExpression(se ast.StatementExpression) (retu
 	// > (a, b) = 1, 2
 	//
 	// TODO: The grammar can handle it, but it may not be supported in reality.
-	if len(values.Items) != len(se.Assign) {
+	if len(values) != len(se.Assign) {
 		if len(se.Assign) != 1 {
-			return nil, fmt.Errorf("assigning invalid count (assign %d, return %d)", len(se.Assign), len(values.Items))
+			return nil, fmt.Errorf("assigning invalid count (assign %d, return %d)", len(se.Assign), len(values))
 		}
 
-		if err := i.Scope.Set(se.Assign[0], values); err != nil {
+		if err := i.Scope.Set(se.Assign[0], valuesAny); err != nil {
 			return nil, err
 		}
 	} else {
-		for idx, value := range values.Items {
+		for idx, value := range values {
 			if err := i.Scope.Set(se.Assign[idx], value); err != nil {
 				return nil, err
 			}

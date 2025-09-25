@@ -10,7 +10,6 @@ DataListFor(
         Identifier: string(b)
       )
     ]
-    Tuple: bool(false)
   )
   Iter: nil
 )
@@ -27,7 +26,6 @@ DataListFor(
         Identifier: string(b)
       )
     ]
-    Tuple: bool(false)
   )
   Iter: DataListIter(
     For: nil
@@ -52,7 +50,6 @@ DataListFor(
         Identifier: string(b)
       )
     ]
-    Tuple: bool(false)
   )
   Iter: DataListIter(
     For: DataListFor(
@@ -65,7 +62,6 @@ DataListFor(
             Identifier: string(d)
           )
         ]
-        Tuple: bool(false)
       )
       Iter: nil
     )
