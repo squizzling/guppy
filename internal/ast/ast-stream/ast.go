@@ -55,6 +55,7 @@ var Interfaces = []ast.Interface{
 			{"Rollup", "string", false},
 			{"Extrapolation", "string", false},
 			{"MaxExtrapolations", "int", false},
+			{"TimeShift", "time.Duration", false},
 		}},
 		{"Detect", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
@@ -157,7 +158,7 @@ var Interfaces = []ast.Interface{
 		{"TimeShift", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
 			{"Source", "Stream", false},
-			{"Offset", "string", false},
+			{"Offset", "time.Duration", false},
 		}},
 		{"Top", true, []ast.Field{
 			{"Object", "interpreter.Object", true},

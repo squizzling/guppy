@@ -163,6 +163,8 @@ func (dw DebugWriter) VisitStreamData(sd *StreamData) (any, error) {
 	_s += dw.p() + "Extrapolation: string(" + sd.Extrapolation + ")\n"
 	// TODO: 5 MaxExtrapolations int
 	_s += dw.p() + fmt.Sprintf("MaxExtrapolations: %T(%v)\n", sd.MaxExtrapolations, sd.MaxExtrapolations)
+	// TODO: 6 TimeShift time.Duration
+	_s += dw.p() + fmt.Sprintf("TimeShift: %T(%v)\n", sd.TimeShift, sd.TimeShift)
 	dw.o()
 	_s += dw.p() + ")\n"
 	return _s, nil
@@ -528,7 +530,8 @@ func (dw DebugWriter) VisitStreamTimeShift(sts *StreamTimeShift) (any, error) {
 	} else {
 		_s += dw.p() + "Source: nil\n"
 	}
-	_s += dw.p() + "Offset: string(" + sts.Offset + ")\n"
+	// TODO: 2 Offset time.Duration
+	_s += dw.p() + fmt.Sprintf("Offset: %T(%v)\n", sts.Offset, sts.Offset)
 	dw.o()
 	_s += dw.p() + ")\n"
 	return _s, nil

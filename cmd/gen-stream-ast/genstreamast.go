@@ -43,7 +43,7 @@ func defineAst(packageName string, imports []string, interfaces ast.Interfaces) 
 			fmt.Printf("\t%s\n", f)
 		}
 		fmt.Printf("\tAccept(v%s Visitor%s) (any, error)\n", genReceiverName(iface.Name), iface.Name)
-		fmt.Printf("\tClone() Stream\n")
+		fmt.Printf("\tCloneTimeShift(amount time.Duration) Stream\n")
 		fmt.Printf("}\n")
 		for _, t := range iface.Nodes {
 			defineType(iface.Name, t)
@@ -114,14 +114,14 @@ func defineType(interfaceName string, t ast.Node) {
 	fmt.Printf("\treturn %s.Visit%s(%s)\n", parameterName, structName, receiverName)
 	fmt.Printf("}\n")
 	fmt.Printf("\n")
-	fmt.Printf("func (%s *%s) Clone() Stream {\n", receiverName, structName)
+	fmt.Printf("func (%s *%s) CloneTimeShift(amount time.Duration) Stream {\n", receiverName, structName)
 	if len(t.Fields) == 0 {
 		fmt.Printf("\treturn %s{}\n", typeName)
 	} else {
 		fmt.Printf("\treturn %s{\n", typeName)
 		for _, field := range t.Fields {
 			if field.Type == "Stream" {
-				fmt.Printf("\t\t%-*s %s.%s.Clone(),\n", maxFuncNameLen+1, field.Name+":", receiverName, field.Name)
+				fmt.Printf("\t\t%-*s cloneTimeshift(%s.%s, amount),\n", maxFuncNameLen+1, field.Name+":", receiverName, field.Name)
 			} else {
 				fmt.Printf("\t\t%-*s %s.%s,\n", maxFuncNameLen+1, field.Name+":", receiverName, field.Name)
 			}

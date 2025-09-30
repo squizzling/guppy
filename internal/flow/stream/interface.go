@@ -136,6 +136,7 @@ var _ = interpreter.FlowCall(methodStreamOp{})
 // unpublish will remove any publish called on a Stream. This is because a publish
 // is not actually useful from a dataflow perspective.
 func unpublish(s Stream) Stream {
+	return s // TODO: Understand if this should be done or not.
 	if p, ok := s.(*StreamPublish); ok {
 		return unpublish(p.Source)
 	}

@@ -444,7 +444,7 @@ func (g *GraphWriter) VisitStreamTimeShift(sts *stream.StreamTimeShift) (any, er
 
 	var sb strings.Builder
 	sb.WriteString("timeshift block\n")
-	sb.WriteString("Offset: " + sts.Offset + "\n")
+	sb.WriteString("Offset: " + sts.Offset.String() + "\n")
 	nodeId := g.DefineNode(sts, sb.String())
 
 	sourceNodeId, err := sts.Source.Accept(g)
