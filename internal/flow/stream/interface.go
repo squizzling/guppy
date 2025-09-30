@@ -27,6 +27,9 @@ func newStreamBoolObject() interpreter.Object {
 		// Aggregations + transforms
 		"count": methodStreamAggregateTransform{interpreter.NewObject(nil), "count"},
 
+		"__binary_and__": methodStreamOpBool{interpreter.NewObject(nil), "and", false},
+		"__binary_or__":  methodStreamOpBool{interpreter.NewObject(nil), "or", false},
+
 		// Comparison operations
 		"__eq__":  methodStreamOpBool{interpreter.NewObject(nil), "==", false},
 		"__req__": methodStreamOpBool{interpreter.NewObject(nil), "==", true},
