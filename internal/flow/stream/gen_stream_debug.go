@@ -123,6 +123,22 @@ func (dw DebugWriter) VisitStreamBelow(sb *StreamBelow) (any, error) {
 	return _s, nil
 }
 
+func (dw DebugWriter) VisitStreamCombine(sc *StreamCombine) (any, error) {
+	_s := "StreamCombine(\n"
+	dw.i()
+	// TODO: 0 Object interpreter.Object
+	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sc.Object, sc.Object)
+	if sc.Source != nil {
+		_s += dw.p() + "Source: " + s(sc.Source.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "Source: nil\n"
+	}
+	_s += dw.p() + "Mode: string(" + sc.Mode + ")\n"
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
 func (dw DebugWriter) VisitStreamConstDouble(scd *StreamConstDouble) (any, error) {
 	_s := "StreamConstDouble(\n"
 	dw.i()

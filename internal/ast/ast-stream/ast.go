@@ -38,6 +38,11 @@ var Interfaces = []ast.Interface{
 			{"Object", "interpreter.Object", true},
 			{"Source", "Stream", false},
 		}},
+		{"Combine", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Source", "Stream", false},
+			{"Mode", "string", false},
+		}},
 		{"ConstDouble", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
 			{"Value", "float64", false},

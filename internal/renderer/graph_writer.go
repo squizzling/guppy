@@ -213,6 +213,27 @@ func (g *GraphWriter) VisitStreamBinaryOpStream(sbos *stream.StreamBinaryOpStrea
 	return nodeId, nil
 }
 
+func (g *GraphWriter) VisitStreamCombine(sc *stream.StreamCombine) (any, error) {
+	if nodeId, ok := g.GetNode(sc); ok {
+		return nodeId, nil
+	}
+
+	var sb strings.Builder
+	sb.WriteString("combine block\n")
+	if sc.Mode != "" {
+		sb.WriteString("Mode: " + sc.Mode)
+	}
+
+	nodeId := g.DefineNode(sc, sb.String())
+
+	sourceNodeId, err := sc.Source.Accept(g)
+	if err != nil {
+		return "", err
+	}
+	g.DefineEdge(nodeId, sourceNodeId.(string), "Source")
+	return nodeId, nil
+}
+
 func (g *GraphWriter) VisitStreamConstDouble(scd *stream.StreamConstDouble) (any, error) {
 	//TODO implement me
 	panic("implement me")

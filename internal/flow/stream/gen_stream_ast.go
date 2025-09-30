@@ -13,6 +13,7 @@ type VisitorStream interface {
 	VisitStreamAggregate(sa *StreamAggregate) (any, error)
 	VisitStreamAlerts(sa *StreamAlerts) (any, error)
 	VisitStreamBelow(sb *StreamBelow) (any, error)
+	VisitStreamCombine(sc *StreamCombine) (any, error)
 	VisitStreamConstDouble(scd *StreamConstDouble) (any, error)
 	VisitStreamConstInt(sci *StreamConstInt) (any, error)
 	VisitStreamData(sd *StreamData) (any, error)
@@ -187,6 +188,36 @@ func (sb *StreamBelow) CloneTimeShift(amount time.Duration) Stream {
 	return &StreamBelow{
 		Object: sb.Object,
 		Source: cloneTimeshift(sb.Source, amount),
+	}
+}
+
+type StreamCombine struct {
+	interpreter.Object
+	Source Stream
+	Mode   string
+}
+
+func NewStreamCombine(
+	Object interpreter.Object,
+	Source Stream,
+	Mode string,
+) *StreamCombine {
+	return &StreamCombine{
+		Object: Object,
+		Source: Source,
+		Mode:   Mode,
+	}
+}
+
+func (sc *StreamCombine) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamCombine(sc)
+}
+
+func (sc *StreamCombine) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamCombine{
+		Object: sc.Object,
+		Source: cloneTimeshift(sc.Source, amount),
+		Mode:   sc.Mode,
 	}
 }
 
