@@ -28,10 +28,10 @@ func newStreamBoolObject() interpreter.Object {
 		"count": methodStreamAggregateTransform{interpreter.NewObject(nil), "count"},
 
 		// Comparison operations
-		"__eq__":  methodStreamOp{interpreter.NewObject(nil), "==", false},
-		"__req__": methodStreamOp{interpreter.NewObject(nil), "==", true},
-		"__ne__":  methodStreamOp{interpreter.NewObject(nil), "!=", false},
-		"__rne__": methodStreamOp{interpreter.NewObject(nil), "!=", true},
+		"__eq__":  methodStreamOpBool{interpreter.NewObject(nil), "==", false},
+		"__req__": methodStreamOpBool{interpreter.NewObject(nil), "==", true},
+		"__ne__":  methodStreamOpBool{interpreter.NewObject(nil), "!=", false},
+		"__rne__": methodStreamOpBool{interpreter.NewObject(nil), "!=", true},
 
 		// is/is not
 		"__is__":     methodStreamIs{interpreter.NewObject(nil), false, false},
@@ -103,18 +103,18 @@ func newStreamObject() interpreter.Object {
 		"__unary_minus__": methodStreamUnaryMinus{interpreter.NewObject(nil)},
 
 		// Comparison operations
-		"__ge__":  methodStreamOp{interpreter.NewObject(nil), ">=", false},
-		"__rge__": methodStreamOp{interpreter.NewObject(nil), ">=", true},
-		"__gt__":  methodStreamOp{interpreter.NewObject(nil), ">", false},
-		"__rgt__": methodStreamOp{interpreter.NewObject(nil), ">", true},
-		"__le__":  methodStreamOp{interpreter.NewObject(nil), "<=", false},
-		"__rle__": methodStreamOp{interpreter.NewObject(nil), "<=", true},
-		"__lt__":  methodStreamOp{interpreter.NewObject(nil), "<", false},
-		"__rlt__": methodStreamOp{interpreter.NewObject(nil), "<", true},
-		"__eq__":  methodStreamOp{interpreter.NewObject(nil), "==", false},
-		"__req__": methodStreamOp{interpreter.NewObject(nil), "==", true},
-		"__ne__":  methodStreamOp{interpreter.NewObject(nil), "!=", false},
-		"__rne__": methodStreamOp{interpreter.NewObject(nil), "!=", true},
+		"__ge__":  methodStreamOpBool{interpreter.NewObject(nil), ">=", false},
+		"__rge__": methodStreamOpBool{interpreter.NewObject(nil), ">=", true},
+		"__gt__":  methodStreamOpBool{interpreter.NewObject(nil), ">", false},
+		"__rgt__": methodStreamOpBool{interpreter.NewObject(nil), ">", true},
+		"__le__":  methodStreamOpBool{interpreter.NewObject(nil), "<=", false},
+		"__rle__": methodStreamOpBool{interpreter.NewObject(nil), "<=", true},
+		"__lt__":  methodStreamOpBool{interpreter.NewObject(nil), "<", false},
+		"__rlt__": methodStreamOpBool{interpreter.NewObject(nil), "<", true},
+		"__eq__":  methodStreamOpBool{interpreter.NewObject(nil), "==", false},
+		"__req__": methodStreamOpBool{interpreter.NewObject(nil), "==", true},
+		"__ne__":  methodStreamOpBool{interpreter.NewObject(nil), "!=", false},
+		"__rne__": methodStreamOpBool{interpreter.NewObject(nil), "!=", true},
 
 		// is/is not
 		"__is__":     methodStreamIs{interpreter.NewObject(nil), false, false},
