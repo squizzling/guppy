@@ -39,6 +39,10 @@ func main() {
 	published := rawPublished.(*iflow.Published)
 
 	fmt.Printf("digraph G {\n")
+	fmt.Printf("rankdir=\"BT\"")
+	fmt.Printf("graph [bgcolor=\"black\"]\n")
+	fmt.Printf("node [fontcolor=\"white\", color=\"white\", shape=\"box\", fontname=\"Helvetica\"]\n")
+	fmt.Printf("edge [fontcolor=\"white\", fillcolor=\"white\", color=\"white\"]\n")
 	gw := &renderer.GraphWriter{Writer: os.Stdout, StreamNodes: map[string]string{}}
 	for _, stream := range published.Streams {
 		_, err2 := stream.Accept(gw)

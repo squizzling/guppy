@@ -31,7 +31,41 @@ func (g *GraphWriter) GetNode(stream stream.Stream) (string, bool) {
 	return nodeId, ok
 }
 
-func (g *GraphWriter) DefineNode(stream stream.Stream, label string) string {
+type opt func(n *node)
+
+type node struct {
+	shape     string
+	color     string
+	fillColor string
+	fontColor string
+}
+
+func Shape(s string) opt {
+	return func(n *node) {
+		n.shape = s
+	}
+}
+
+func Color(s string) opt {
+	return func(n *node) {
+		n.color = s
+	}
+}
+
+func FillColor(s string) opt {
+	return func(n *node) {
+		n.fillColor = s
+	}
+}
+
+func FontColor(s string) opt {
+	return func(n *node) {
+		n.fontColor = s
+	}
+}
+
+func (g *GraphWriter) DefineNode(stream stream.Stream, label string, nodeOpt ...opt) string {
+
 	key := fmt.Sprintf("%p", stream)
 	if stream != nil {
 		if nodeId, ok := g.StreamNodes[key]; ok {
@@ -40,7 +74,32 @@ func (g *GraphWriter) DefineNode(stream stream.Stream, label string) string {
 	}
 	nodeId := "_" + strconv.Itoa(g.NextID)
 	g.NextID++
-	_, _ = g.Writer.Write([]byte(fmt.Sprintf("  %s [label=\"%s\"]\n", nodeId, escape(label))))
+	n := &node{
+		shape: "box",
+	}
+
+	for _, o := range nodeOpt {
+		o(n)
+	}
+
+	var sb strings.Builder
+	sb.WriteString("  " + nodeId + "[label=\"" + escape(label) + "\"")
+	if n.shape != "" {
+		sb.WriteString(", shape=\"" + n.shape + "\"")
+	}
+	if n.color != "" {
+		sb.WriteString(", color=\"" + n.color + "\"")
+	}
+	if n.fillColor != "" {
+		sb.WriteString(", fillcolor=\"" + n.fillColor + "\"")
+	}
+	if n.fontColor != "" {
+		sb.WriteString(", fontcolor=\"" + n.fontColor + "\"")
+	}
+	sb.WriteString("]\n")
+
+	//_, _ = g.Writer.Write([]byte(fmt.Sprintf("  %s [label=\"%s\", shape=\"box\"]\n", nodeId, escape(label))))
+	_, _ = g.Writer.Write([]byte(sb.String()))
 	if stream != nil {
 		g.StreamNodes[key] = nodeId
 	}
@@ -138,7 +197,7 @@ func (g *GraphWriter) VisitStreamData(sd *stream.StreamData) (any, error) {
 		}
 	}
 
-	return g.DefineNode(sd, sb.String()), nil
+	return g.DefineNode(sd, sb.String(), Color("red")), nil
 }
 
 func (g *GraphWriter) VisitStreamDetect(sd *stream.StreamDetect) (any, error) {
@@ -387,7 +446,7 @@ func (g *GraphWriter) VisitStreamPublish(sp *stream.StreamPublish) (any, error) 
 	sb.WriteString(fmt.Sprintf("Enable: %t\n", sp.Enable))
 	sb.WriteString("Label: " + sp.Label + "\n")
 
-	nodeId := g.DefineNode(sp, sb.String())
+	nodeId := g.DefineNode(sp, sb.String(), Color("green"))
 
 	sourceNodeId, err := sp.Source.Accept(g)
 	if err != nil {
