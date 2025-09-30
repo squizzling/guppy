@@ -360,57 +360,57 @@ func (dw DebugWriter) VisitStreamMin(sm *StreamMin) (any, error) {
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamMathOpDouble(smod *StreamMathOpDouble) (any, error) {
-	_s := "StreamMathOpDouble(\n"
+func (dw DebugWriter) VisitStreamBinaryOpDouble(sbod *StreamBinaryOpDouble) (any, error) {
+	_s := "StreamBinaryOpDouble(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
-	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", smod.Object, smod.Object)
-	if smod.Stream != nil {
-		_s += dw.p() + "Stream: " + s(smod.Stream.Accept(dw)) // IsInterface
+	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sbod.Object, sbod.Object)
+	if sbod.Stream != nil {
+		_s += dw.p() + "Stream: " + s(sbod.Stream.Accept(dw)) // IsInterface
 	} else {
 		_s += dw.p() + "Stream: nil\n"
 	}
-	_s += dw.p() + "Op: string(" + smod.Op + ")\n"
+	_s += dw.p() + "Op: string(" + sbod.Op + ")\n"
 	// TODO: 3 Other float64
-	_s += dw.p() + fmt.Sprintf("Other: %T(%v)\n", smod.Other, smod.Other)
-	_s += dw.p() + "Reverse: bool(" + fmt.Sprintf("%t", smod.Reverse) + ")\n"
+	_s += dw.p() + fmt.Sprintf("Other: %T(%v)\n", sbod.Other, sbod.Other)
+	_s += dw.p() + "Reverse: bool(" + fmt.Sprintf("%t", sbod.Reverse) + ")\n"
 	dw.o()
 	_s += dw.p() + ")\n"
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamMathOpInt(smoi *StreamMathOpInt) (any, error) {
-	_s := "StreamMathOpInt(\n"
+func (dw DebugWriter) VisitStreamBinaryOpInt(sboi *StreamBinaryOpInt) (any, error) {
+	_s := "StreamBinaryOpInt(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
-	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", smoi.Object, smoi.Object)
-	if smoi.Stream != nil {
-		_s += dw.p() + "Stream: " + s(smoi.Stream.Accept(dw)) // IsInterface
+	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sboi.Object, sboi.Object)
+	if sboi.Stream != nil {
+		_s += dw.p() + "Stream: " + s(sboi.Stream.Accept(dw)) // IsInterface
 	} else {
 		_s += dw.p() + "Stream: nil\n"
 	}
-	_s += dw.p() + "Op: string(" + smoi.Op + ")\n"
+	_s += dw.p() + "Op: string(" + sboi.Op + ")\n"
 	// TODO: 3 Other int
-	_s += dw.p() + fmt.Sprintf("Other: %T(%v)\n", smoi.Other, smoi.Other)
-	_s += dw.p() + "Reverse: bool(" + fmt.Sprintf("%t", smoi.Reverse) + ")\n"
+	_s += dw.p() + fmt.Sprintf("Other: %T(%v)\n", sboi.Other, sboi.Other)
+	_s += dw.p() + "Reverse: bool(" + fmt.Sprintf("%t", sboi.Reverse) + ")\n"
 	dw.o()
 	_s += dw.p() + ")\n"
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamMathOpStream(smos *StreamMathOpStream) (any, error) {
-	_s := "StreamMathOpStream(\n"
+func (dw DebugWriter) VisitStreamBinaryOpStream(sbos *StreamBinaryOpStream) (any, error) {
+	_s := "StreamBinaryOpStream(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
-	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", smos.Object, smos.Object)
-	if smos.Left != nil {
-		_s += dw.p() + "Left: " + s(smos.Left.Accept(dw)) // IsInterface
+	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sbos.Object, sbos.Object)
+	if sbos.Left != nil {
+		_s += dw.p() + "Left: " + s(sbos.Left.Accept(dw)) // IsInterface
 	} else {
 		_s += dw.p() + "Left: nil\n"
 	}
-	_s += dw.p() + "Op: string(" + smos.Op + ")\n"
-	if smos.Right != nil {
-		_s += dw.p() + "Right: " + s(smos.Right.Accept(dw)) // IsInterface
+	_s += dw.p() + "Op: string(" + sbos.Op + ")\n"
+	if sbos.Right != nil {
+		_s += dw.p() + "Right: " + s(sbos.Right.Accept(dw)) // IsInterface
 	} else {
 		_s += dw.p() + "Right: nil\n"
 	}
@@ -419,13 +419,13 @@ func (dw DebugWriter) VisitStreamMathOpStream(smos *StreamMathOpStream) (any, er
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamMathOpUnaryMinus(smoum *StreamMathOpUnaryMinus) (any, error) {
-	_s := "StreamMathOpUnaryMinus(\n"
+func (dw DebugWriter) VisitStreamUnaryOpMinus(suom *StreamUnaryOpMinus) (any, error) {
+	_s := "StreamUnaryOpMinus(\n"
 	dw.i()
 	// TODO: 0 Object interpreter.Object
-	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", smoum.Object, smoum.Object)
-	if smoum.Stream != nil {
-		_s += dw.p() + "Stream: " + s(smoum.Stream.Accept(dw)) // IsInterface
+	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", suom.Object, suom.Object)
+	if suom.Stream != nil {
+		_s += dw.p() + "Stream: " + s(suom.Stream.Accept(dw)) // IsInterface
 	} else {
 		_s += dw.p() + "Stream: nil\n"
 	}

@@ -25,10 +25,10 @@ type VisitorStream interface {
 	VisitStreamMean(sm *StreamMean) (any, error)
 	VisitStreamMedian(sm *StreamMedian) (any, error)
 	VisitStreamMin(sm *StreamMin) (any, error)
-	VisitStreamMathOpDouble(smod *StreamMathOpDouble) (any, error)
-	VisitStreamMathOpInt(smoi *StreamMathOpInt) (any, error)
-	VisitStreamMathOpStream(smos *StreamMathOpStream) (any, error)
-	VisitStreamMathOpUnaryMinus(smoum *StreamMathOpUnaryMinus) (any, error)
+	VisitStreamBinaryOpDouble(sbod *StreamBinaryOpDouble) (any, error)
+	VisitStreamBinaryOpInt(sboi *StreamBinaryOpInt) (any, error)
+	VisitStreamBinaryOpStream(sbos *StreamBinaryOpStream) (any, error)
+	VisitStreamUnaryOpMinus(suom *StreamUnaryOpMinus) (any, error)
 	VisitStreamPercentile(sp *StreamPercentile) (any, error)
 	VisitStreamPublish(sp *StreamPublish) (any, error)
 	VisitStreamScale(ss *StreamScale) (any, error)
@@ -582,7 +582,7 @@ func (sm *StreamMin) CloneTimeShift(amount time.Duration) Stream {
 	}
 }
 
-type StreamMathOpDouble struct {
+type StreamBinaryOpDouble struct {
 	interpreter.Object
 	Stream  Stream
 	Op      string
@@ -590,14 +590,14 @@ type StreamMathOpDouble struct {
 	Reverse bool
 }
 
-func NewStreamMathOpDouble(
+func NewStreamBinaryOpDouble(
 	Object interpreter.Object,
 	Stream Stream,
 	Op string,
 	Other float64,
 	Reverse bool,
-) *StreamMathOpDouble {
-	return &StreamMathOpDouble{
+) *StreamBinaryOpDouble {
+	return &StreamBinaryOpDouble{
 		Object:  Object,
 		Stream:  Stream,
 		Op:      Op,
@@ -606,21 +606,21 @@ func NewStreamMathOpDouble(
 	}
 }
 
-func (smod *StreamMathOpDouble) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamMathOpDouble(smod)
+func (sbod *StreamBinaryOpDouble) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamBinaryOpDouble(sbod)
 }
 
-func (smod *StreamMathOpDouble) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamMathOpDouble{
-		Object:  smod.Object,
-		Stream:  cloneTimeshift(smod.Stream, amount),
-		Op:      smod.Op,
-		Other:   smod.Other,
-		Reverse: smod.Reverse,
+func (sbod *StreamBinaryOpDouble) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamBinaryOpDouble{
+		Object:  sbod.Object,
+		Stream:  cloneTimeshift(sbod.Stream, amount),
+		Op:      sbod.Op,
+		Other:   sbod.Other,
+		Reverse: sbod.Reverse,
 	}
 }
 
-type StreamMathOpInt struct {
+type StreamBinaryOpInt struct {
 	interpreter.Object
 	Stream  Stream
 	Op      string
@@ -628,14 +628,14 @@ type StreamMathOpInt struct {
 	Reverse bool
 }
 
-func NewStreamMathOpInt(
+func NewStreamBinaryOpInt(
 	Object interpreter.Object,
 	Stream Stream,
 	Op string,
 	Other int,
 	Reverse bool,
-) *StreamMathOpInt {
-	return &StreamMathOpInt{
+) *StreamBinaryOpInt {
+	return &StreamBinaryOpInt{
 		Object:  Object,
 		Stream:  Stream,
 		Op:      Op,
@@ -644,34 +644,34 @@ func NewStreamMathOpInt(
 	}
 }
 
-func (smoi *StreamMathOpInt) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamMathOpInt(smoi)
+func (sboi *StreamBinaryOpInt) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamBinaryOpInt(sboi)
 }
 
-func (smoi *StreamMathOpInt) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamMathOpInt{
-		Object:  smoi.Object,
-		Stream:  cloneTimeshift(smoi.Stream, amount),
-		Op:      smoi.Op,
-		Other:   smoi.Other,
-		Reverse: smoi.Reverse,
+func (sboi *StreamBinaryOpInt) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamBinaryOpInt{
+		Object:  sboi.Object,
+		Stream:  cloneTimeshift(sboi.Stream, amount),
+		Op:      sboi.Op,
+		Other:   sboi.Other,
+		Reverse: sboi.Reverse,
 	}
 }
 
-type StreamMathOpStream struct {
+type StreamBinaryOpStream struct {
 	interpreter.Object
 	Left  Stream
 	Op    string
 	Right Stream
 }
 
-func NewStreamMathOpStream(
+func NewStreamBinaryOpStream(
 	Object interpreter.Object,
 	Left Stream,
 	Op string,
 	Right Stream,
-) *StreamMathOpStream {
-	return &StreamMathOpStream{
+) *StreamBinaryOpStream {
+	return &StreamBinaryOpStream{
 		Object: Object,
 		Left:   Left,
 		Op:     Op,
@@ -679,42 +679,42 @@ func NewStreamMathOpStream(
 	}
 }
 
-func (smos *StreamMathOpStream) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamMathOpStream(smos)
+func (sbos *StreamBinaryOpStream) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamBinaryOpStream(sbos)
 }
 
-func (smos *StreamMathOpStream) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamMathOpStream{
-		Object: smos.Object,
-		Left:   cloneTimeshift(smos.Left, amount),
-		Op:     smos.Op,
-		Right:  cloneTimeshift(smos.Right, amount),
+func (sbos *StreamBinaryOpStream) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamBinaryOpStream{
+		Object: sbos.Object,
+		Left:   cloneTimeshift(sbos.Left, amount),
+		Op:     sbos.Op,
+		Right:  cloneTimeshift(sbos.Right, amount),
 	}
 }
 
-type StreamMathOpUnaryMinus struct {
+type StreamUnaryOpMinus struct {
 	interpreter.Object
 	Stream Stream
 }
 
-func NewStreamMathOpUnaryMinus(
+func NewStreamUnaryOpMinus(
 	Object interpreter.Object,
 	Stream Stream,
-) *StreamMathOpUnaryMinus {
-	return &StreamMathOpUnaryMinus{
+) *StreamUnaryOpMinus {
+	return &StreamUnaryOpMinus{
 		Object: Object,
 		Stream: Stream,
 	}
 }
 
-func (smoum *StreamMathOpUnaryMinus) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamMathOpUnaryMinus(smoum)
+func (suom *StreamUnaryOpMinus) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamUnaryOpMinus(suom)
 }
 
-func (smoum *StreamMathOpUnaryMinus) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamMathOpUnaryMinus{
-		Object: smoum.Object,
-		Stream: cloneTimeshift(smoum.Stream, amount),
+func (suom *StreamUnaryOpMinus) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamUnaryOpMinus{
+		Object: suom.Object,
+		Stream: cloneTimeshift(suom.Stream, amount),
 	}
 }
 

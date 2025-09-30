@@ -157,6 +157,62 @@ func (g *GraphWriter) VisitStreamBelow(sb *stream.StreamBelow) (any, error) {
 	panic("implement me")
 }
 
+func (g *GraphWriter) VisitStreamBinaryOpDouble(sbod *stream.StreamBinaryOpDouble) (any, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (g *GraphWriter) VisitStreamBinaryOpInt(sboi *stream.StreamBinaryOpInt) (any, error) {
+	if nodeId, ok := g.GetNode(sboi); ok {
+		return nodeId, nil
+	}
+
+	var sb strings.Builder
+	sb.WriteString("math op int block\n")
+	sb.WriteString("Op: " + sboi.Op + "\n")
+	sb.WriteString("Other: " + strconv.Itoa(sboi.Other) + "\n")
+	sb.WriteString("Reverse: " + strconv.FormatBool(sboi.Reverse) + "\n")
+
+	nodeId := g.DefineNode(sboi, sb.String())
+
+	if sboi.Stream != nil {
+		otherNodeId, err := sboi.Stream.Accept(g)
+		if err != nil {
+			return nil, err
+		}
+		g.DefineEdge(nodeId, otherNodeId.(string), "Other")
+	}
+	return nodeId, nil
+}
+
+func (g *GraphWriter) VisitStreamBinaryOpStream(sbos *stream.StreamBinaryOpStream) (any, error) {
+	if nodeId, ok := g.GetNode(sbos); ok {
+		return nodeId, nil
+	}
+
+	var sb strings.Builder
+	sb.WriteString("binary op stream block\n")
+	sb.WriteString("Op: " + sbos.Op + "\n")
+
+	nodeId := g.DefineNode(sbos, sb.String())
+
+	if sbos.Left != nil {
+		leftNodeId, err := sbos.Left.Accept(g)
+		if err != nil {
+			return nil, err
+		}
+		g.DefineEdge(nodeId, leftNodeId.(string), "Left")
+	}
+	if sbos.Right != nil {
+		rightNodeId, err := sbos.Right.Accept(g)
+		if err != nil {
+			return nil, err
+		}
+		g.DefineEdge(nodeId, rightNodeId.(string), "Right")
+	}
+	return nodeId, nil
+}
+
 func (g *GraphWriter) VisitStreamConstDouble(scd *stream.StreamConstDouble) (any, error) {
 	//TODO implement me
 	panic("implement me")
@@ -370,67 +426,6 @@ func (g *GraphWriter) VisitStreamMin(sm *stream.StreamMin) (any, error) {
 	return nodeId, nil
 }
 
-func (g *GraphWriter) VisitStreamMathOpDouble(smod *stream.StreamMathOpDouble) (any, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (g *GraphWriter) VisitStreamMathOpInt(smoi *stream.StreamMathOpInt) (any, error) {
-	if nodeId, ok := g.GetNode(smoi); ok {
-		return nodeId, nil
-	}
-
-	var sb strings.Builder
-	sb.WriteString("math op int block\n")
-	sb.WriteString("Op: " + smoi.Op + "\n")
-	sb.WriteString("Other: " + strconv.Itoa(smoi.Other) + "\n")
-	sb.WriteString("Reverse: " + strconv.FormatBool(smoi.Reverse) + "\n")
-
-	nodeId := g.DefineNode(smoi, sb.String())
-
-	if smoi.Stream != nil {
-		otherNodeId, err := smoi.Stream.Accept(g)
-		if err != nil {
-			return nil, err
-		}
-		g.DefineEdge(nodeId, otherNodeId.(string), "Other")
-	}
-	return nodeId, nil
-}
-
-func (g *GraphWriter) VisitStreamMathOpStream(smos *stream.StreamMathOpStream) (any, error) {
-	if nodeId, ok := g.GetNode(smos); ok {
-		return nodeId, nil
-	}
-
-	var sb strings.Builder
-	sb.WriteString("math op stream block\n")
-	sb.WriteString("Op: " + smos.Op + "\n")
-
-	nodeId := g.DefineNode(smos, sb.String())
-
-	if smos.Left != nil {
-		leftNodeId, err := smos.Left.Accept(g)
-		if err != nil {
-			return nil, err
-		}
-		g.DefineEdge(nodeId, leftNodeId.(string), "Left")
-	}
-	if smos.Right != nil {
-		rightNodeId, err := smos.Right.Accept(g)
-		if err != nil {
-			return nil, err
-		}
-		g.DefineEdge(nodeId, rightNodeId.(string), "Right")
-	}
-	return nodeId, nil
-}
-
-func (g *GraphWriter) VisitStreamMathOpUnaryMinus(smoum *stream.StreamMathOpUnaryMinus) (any, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
 func (g *GraphWriter) VisitStreamPercentile(sp *stream.StreamPercentile) (any, error) {
 	//TODO implement me
 	panic("implement me")
@@ -542,6 +537,11 @@ func (g *GraphWriter) VisitStreamTransform(st *stream.StreamTransform) (any, err
 func (g *GraphWriter) VisitStreamTransformCycle(stc *stream.StreamTransformCycle) (any, error) {
 	//TODO implement me
 	panic(stc.Fn)
+	panic("implement me")
+}
+
+func (g *GraphWriter) VisitStreamUnaryOpMinus(suom *stream.StreamUnaryOpMinus) (any, error) {
+	//TODO implement me
 	panic("implement me")
 }
 

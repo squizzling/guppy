@@ -16,6 +16,6 @@ func (msum methodStreamUnaryMinus) Call(i *interpreter.Interpreter) (interpreter
 	if self, err := interpreter.ArgAs[Stream](i, "self"); err != nil {
 		return nil, err
 	} else {
-		return NewStreamMathOpUnaryMinus(newStreamObject(), unpublish(self)), nil
+		return NewStreamUnaryOpMinus(newStreamObject(), unpublish(self)), nil
 	}
 }

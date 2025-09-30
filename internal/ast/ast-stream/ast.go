@@ -106,27 +106,27 @@ var Interfaces = []ast.Interface{
 			{"Sources", "[]Stream", false},
 			{"Value", "interpreter.Object", false},
 		}},
-		{"MathOpDouble", true, []ast.Field{
+		{"BinaryOpDouble", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
 			{"Stream", "Stream", false},
 			{"Op", "string", false},
 			{"Other", "float64", false},
 			{"Reverse", "bool", false},
 		}},
-		{"MathOpInt", true, []ast.Field{
+		{"BinaryOpInt", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
 			{"Stream", "Stream", false},
 			{"Op", "string", false},
 			{"Other", "int", false},
 			{"Reverse", "bool", false},
 		}},
-		{"MathOpStream", true, []ast.Field{
+		{"BinaryOpStream", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
 			{"Left", "Stream", false},
 			{"Op", "string", false},
 			{"Right", "Stream", false},
 		}},
-		{"MathOpUnaryMinus", true, []ast.Field{
+		{"UnaryOpMinus", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
 			{"Stream", "Stream", false},
 		}},
