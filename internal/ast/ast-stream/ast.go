@@ -131,6 +131,10 @@ var Interfaces = []ast.Interface{
 			{"Op", "string", false},
 			{"Right", "Stream", false},
 		}},
+		{"Count", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Sources", "[]Stream", false},
+		}},
 		{"UnaryOpMinus", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
 			{"Stream", "Stream", false},

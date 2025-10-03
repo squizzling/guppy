@@ -251,6 +251,25 @@ func (g *GraphWriter) VisitStreamConstInt(sci *stream.StreamConstInt) (any, erro
 	return g.DefineNode(sci, sb.String()), nil
 }
 
+func (g *GraphWriter) VisitStreamCount(sc *stream.StreamCount) (any, error) {
+	if nodeId, ok := g.GetNode(sc); ok {
+		return nodeId, nil
+	}
+
+	var sb strings.Builder
+
+	sb.WriteString("count block\n")
+	nodeId := g.DefineNode(sc, sb.String())
+	for _, source := range sc.Sources {
+		sourceNodeId, err := source.Accept(g)
+		if err != nil {
+			return "", err
+		}
+		g.DefineEdge(nodeId, sourceNodeId.(string), "Source")
+	}
+	return nodeId, nil
+}
+
 func (g *GraphWriter) VisitStreamData(sd *stream.StreamData) (any, error) {
 	if nodeId, ok := g.GetNode(sd); ok {
 		return nodeId, nil

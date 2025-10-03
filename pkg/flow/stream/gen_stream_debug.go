@@ -435,6 +435,29 @@ func (dw DebugWriter) VisitStreamBinaryOpStream(sbos *StreamBinaryOpStream) (any
 	return _s, nil
 }
 
+func (dw DebugWriter) VisitStreamCount(sc *StreamCount) (any, error) {
+	_s := "StreamCount(\n"
+	dw.i()
+	// TODO: 0 Object interpreter.Object
+	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sc.Object, sc.Object)
+	if sc.Sources == nil {
+		_s += dw.p() + "Sources: nil\n"
+	} else if len(sc.Sources) == 0 {
+		_s += dw.p() + "Sources: []\n"
+	} else {
+		_s += dw.p() + "Sources: [\n"
+		dw.i()
+		for _, _r := range sc.Sources {
+			_s += dw.p() + s(_r.Accept(dw)) // IsInterfaceArray
+		}
+		dw.o()
+		_s += dw.p() + "]\n"
+	}
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
 func (dw DebugWriter) VisitStreamUnaryOpMinus(suom *StreamUnaryOpMinus) (any, error) {
 	_s := "StreamUnaryOpMinus(\n"
 	dw.i()

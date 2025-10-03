@@ -29,6 +29,7 @@ type VisitorStream interface {
 	VisitStreamBinaryOpDouble(sbod *StreamBinaryOpDouble) (any, error)
 	VisitStreamBinaryOpInt(sboi *StreamBinaryOpInt) (any, error)
 	VisitStreamBinaryOpStream(sbos *StreamBinaryOpStream) (any, error)
+	VisitStreamCount(sc *StreamCount) (any, error)
 	VisitStreamUnaryOpMinus(suom *StreamUnaryOpMinus) (any, error)
 	VisitStreamPercentile(sp *StreamPercentile) (any, error)
 	VisitStreamPublish(sp *StreamPublish) (any, error)
@@ -720,6 +721,32 @@ func (sbos *StreamBinaryOpStream) CloneTimeShift(amount time.Duration) Stream {
 		Left:   cloneTimeshift(sbos.Left, amount),
 		Op:     sbos.Op,
 		Right:  cloneTimeshift(sbos.Right, amount),
+	}
+}
+
+type StreamCount struct {
+	interpreter.Object
+	Sources []Stream
+}
+
+func NewStreamCount(
+	Object interpreter.Object,
+	Sources []Stream,
+) *StreamCount {
+	return &StreamCount{
+		Object:  Object,
+		Sources: Sources,
+	}
+}
+
+func (sc *StreamCount) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamCount(sc)
+}
+
+func (sc *StreamCount) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamCount{
+		Object:  sc.Object,
+		Sources: sc.Sources,
 	}
 }
 

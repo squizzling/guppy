@@ -16,6 +16,7 @@ func NewInterpreter(enableTrace bool) *interpreter.Interpreter {
 	_ = i.Globals.Set("annotate", &annotate.FFIAnnotate{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("combine", &stream.FFICombine{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("const", &stream.FFIConst{Object: interpreter.NewObject(nil)})
+	_ = i.Globals.Set("count", &stream.FFICount{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("data", &stream.FFIData{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("detect", &stream.FFIDetect{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("events", &stream.FFIEvents{Object: interpreter.NewObject(nil)})
