@@ -28,6 +28,7 @@ func NewInterpreter(enableTrace bool) *interpreter.Interpreter {
 	_ = i.Globals.Set("min", &stream.FFIMin{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("partition_filter", &filter.FFIPartitionFilter{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("str", &interpreter.FFIStr{Object: interpreter.NewObject(nil)})
+	_ = i.Globals.Set("sum", &stream.FFISum{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("_print", &debug.FFIPrint{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("_published", NewPublished())
 	_ = i.Globals.Set("threshold", &stream.FFIThreshold{Object: interpreter.NewObject(nil)})

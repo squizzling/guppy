@@ -281,6 +281,31 @@ func (dw DebugWriter) VisitStreamFuncMin(sfm *StreamFuncMin) (any, error) {
 	return _s, nil
 }
 
+func (dw DebugWriter) VisitStreamFuncSum(sfs *StreamFuncSum) (any, error) {
+	_s := "StreamFuncSum(\n"
+	dw.i()
+	// TODO: 0 Object interpreter.Object
+	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sfs.Object, sfs.Object)
+	if sfs.Sources == nil {
+		_s += dw.p() + "Sources: nil\n"
+	} else if len(sfs.Sources) == 0 {
+		_s += dw.p() + "Sources: []\n"
+	} else {
+		_s += dw.p() + "Sources: [\n"
+		dw.i()
+		for _, _r := range sfs.Sources {
+			_s += dw.p() + s(_r.Accept(dw)) // IsInterfaceArray
+		}
+		dw.o()
+		_s += dw.p() + "]\n"
+	}
+	// TODO: 2 Constant float64
+	_s += dw.p() + fmt.Sprintf("Constant: %T(%v)\n", sfs.Constant, sfs.Constant)
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
 func (dw DebugWriter) VisitStreamFuncThreshold(sft *StreamFuncThreshold) (any, error) {
 	_s := "StreamFuncThreshold(\n"
 	dw.i()

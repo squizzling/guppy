@@ -356,6 +356,28 @@ func (g *GraphWriter) VisitStreamFuncMin(sfm *stream.StreamFuncMin) (any, error)
 	return nodeId, nil
 }
 
+func (g *GraphWriter) VisitStreamFuncSum(sfs *stream.StreamFuncSum) (any, error) {
+	if nodeId, ok := g.GetNode(sfs); ok {
+		return nodeId, nil
+	}
+
+	var sb strings.Builder
+	sb.WriteString("sum block\n")
+	if sfs.Constant != 0 {
+		sb.WriteString("Constant: " + strconv.FormatFloat(sfs.Constant, 'f', 6, 64) + "\n ")
+	}
+
+	nodeId := g.DefineNode(sfs, sb.String())
+	for _, source := range sfs.Sources {
+		sourceNodeId, err := source.Accept(g)
+		if err != nil {
+			return "", err
+		}
+		g.DefineEdge(nodeId, sourceNodeId.(string), "Source")
+	}
+	return nodeId, nil
+}
+
 func (g *GraphWriter) VisitStreamFuncThreshold(sft *stream.StreamFuncThreshold) (any, error) {
 	//TODO implement me
 	panic("implement me")

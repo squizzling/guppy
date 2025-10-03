@@ -163,6 +163,16 @@ func ArgAsDouble(i *Interpreter, argName string) (float64, error) {
 	}
 }
 
+func ArgAsLong(i *Interpreter, argName string) (int, error) {
+	if objArg, err := i.Scope.GetArg(argName); err != nil {
+		return 0, err
+	} else if intArg, ok := objArg.(*ObjectInt); !ok {
+		return 0, fmt.Errorf("%T is not *interpreter.ObjectInt", objArg)
+	} else {
+		return intArg.Value, nil
+	}
+}
+
 func ArgAs[T any](i *Interpreter, name string) (T, error) {
 	var zero T
 	if v, err := i.Scope.GetArg(name); err != nil {

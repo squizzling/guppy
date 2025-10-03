@@ -83,6 +83,11 @@ var Interfaces = []ast.Interface{
 			{"Sources", "[]Stream", false},
 			{"Value", "interpreter.Object", false},
 		}},
+		{"FuncSum", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Sources", "[]Stream", false},
+			{"Constant", "float64", false},
+		}},
 		{"FuncThreshold", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
 			{"Value", "float64", false},

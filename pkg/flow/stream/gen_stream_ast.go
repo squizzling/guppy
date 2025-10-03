@@ -21,6 +21,7 @@ type VisitorStream interface {
 	VisitStreamFuncMean(sfm *StreamFuncMean) (any, error)
 	VisitStreamFuncMedian(sfm *StreamFuncMedian) (any, error)
 	VisitStreamFuncMin(sfm *StreamFuncMin) (any, error)
+	VisitStreamFuncSum(sfs *StreamFuncSum) (any, error)
 	VisitStreamFuncThreshold(sft *StreamFuncThreshold) (any, error)
 	VisitStreamFuncUnion(sfu *StreamFuncUnion) (any, error)
 	VisitStreamFuncWhen(sfw *StreamFuncWhen) (any, error)
@@ -446,6 +447,36 @@ func (sfm *StreamFuncMin) CloneTimeShift(amount time.Duration) Stream {
 		Object:  sfm.Object,
 		Sources: sfm.Sources,
 		Value:   sfm.Value,
+	}
+}
+
+type StreamFuncSum struct {
+	interpreter.Object
+	Sources  []Stream
+	Constant float64
+}
+
+func NewStreamFuncSum(
+	Object interpreter.Object,
+	Sources []Stream,
+	Constant float64,
+) *StreamFuncSum {
+	return &StreamFuncSum{
+		Object:   Object,
+		Sources:  Sources,
+		Constant: Constant,
+	}
+}
+
+func (sfs *StreamFuncSum) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamFuncSum(sfs)
+}
+
+func (sfs *StreamFuncSum) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamFuncSum{
+		Object:   sfs.Object,
+		Sources:  sfs.Sources,
+		Constant: sfs.Constant,
 	}
 }
 
