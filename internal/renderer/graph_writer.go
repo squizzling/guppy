@@ -110,36 +110,36 @@ func (g *GraphWriter) DefineEdge(to string, from string, label string) {
 	_, _ = g.Writer.Write([]byte(fmt.Sprintf("  %s -> %s [label=\"%s\"]\n", from, to, escape(label))))
 }
 
-func (g *GraphWriter) VisitStreamAbove(sa *stream.StreamAbove) (any, error) {
+func (g *GraphWriter) VisitStreamMethodAbove(sma *stream.StreamMethodAbove) (any, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (g *GraphWriter) VisitStreamAbs(sa *stream.StreamAbs) (any, error) {
+func (g *GraphWriter) VisitStreamMethodAbs(sma *stream.StreamMethodAbs) (any, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (g *GraphWriter) VisitStreamAggregate(sa *stream.StreamAggregate) (any, error) {
-	if nodeId, ok := g.GetNode(sa); ok {
+func (g *GraphWriter) VisitStreamMethodAggregate(sma *stream.StreamMethodAggregate) (any, error) {
+	if nodeId, ok := g.GetNode(sma); ok {
 		return nodeId, nil
 	}
 
 	var sb strings.Builder
 	sb.WriteString("aggregate block\n")
 
-	sb.WriteString("Fn: " + sa.Fn + "\n")
-	if len(sa.By) > 0 {
-		sb.WriteString(fmt.Sprintf("By: [%s]\n", sa.By))
+	sb.WriteString("Fn: " + sma.Fn + "\n")
+	if len(sma.By) > 0 {
+		sb.WriteString(fmt.Sprintf("By: [%s]\n", sma.By))
 	}
-	if sa.AllowAllMissing {
+	if sma.AllowAllMissing {
 		sb.WriteString("AllowMissing: true")
-	} else if len(sa.AllowMissing) > 0 {
-		sb.WriteString(fmt.Sprintf("AllowMissing: [%s]\n", sa.AllowMissing))
+	} else if len(sma.AllowMissing) > 0 {
+		sb.WriteString(fmt.Sprintf("AllowMissing: [%s]\n", sma.AllowMissing))
 	}
 
-	nodeId := g.DefineNode(sa, sb.String())
-	sourceNodeId, err := sa.Source.Accept(g)
+	nodeId := g.DefineNode(sma, sb.String())
+	sourceNodeId, err := sma.Source.Accept(g)
 	if err != nil {
 		return nil, err
 	}
@@ -147,12 +147,12 @@ func (g *GraphWriter) VisitStreamAggregate(sa *stream.StreamAggregate) (any, err
 	return nodeId, nil
 }
 
-func (g *GraphWriter) VisitStreamAlerts(sa *stream.StreamAlerts) (any, error) {
+func (g *GraphWriter) VisitStreamFuncAlerts(sfa *stream.StreamFuncAlerts) (any, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (g *GraphWriter) VisitStreamBelow(sb *stream.StreamBelow) (any, error) {
+func (g *GraphWriter) VisitStreamMethodBelow(smb *stream.StreamMethodBelow) (any, error) {
 	//TODO implement me
 	panic("implement me")
 }
@@ -213,20 +213,20 @@ func (g *GraphWriter) VisitStreamBinaryOpStream(sbos *stream.StreamBinaryOpStrea
 	return nodeId, nil
 }
 
-func (g *GraphWriter) VisitStreamCombine(sc *stream.StreamCombine) (any, error) {
-	if nodeId, ok := g.GetNode(sc); ok {
+func (g *GraphWriter) VisitStreamFuncCombine(sfc *stream.StreamFuncCombine) (any, error) {
+	if nodeId, ok := g.GetNode(sfc); ok {
 		return nodeId, nil
 	}
 
 	var sb strings.Builder
 	sb.WriteString("combine block\n")
-	if sc.Mode != "" {
-		sb.WriteString("Mode: " + sc.Mode)
+	if sfc.Mode != "" {
+		sb.WriteString("Mode: " + sfc.Mode)
 	}
 
-	nodeId := g.DefineNode(sc, sb.String())
+	nodeId := g.DefineNode(sfc, sb.String())
 
-	sourceNodeId, err := sc.Source.Accept(g)
+	sourceNodeId, err := sfc.Source.Accept(g)
 	if err != nil {
 		return "", err
 	}
@@ -234,33 +234,33 @@ func (g *GraphWriter) VisitStreamCombine(sc *stream.StreamCombine) (any, error) 
 	return nodeId, nil
 }
 
-func (g *GraphWriter) VisitStreamConstDouble(scd *stream.StreamConstDouble) (any, error) {
+func (g *GraphWriter) VisitStreamFuncConstDouble(sfcd *stream.StreamFuncConstDouble) (any, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (g *GraphWriter) VisitStreamConstInt(sci *stream.StreamConstInt) (any, error) {
-	if nodeId, ok := g.GetNode(sci); ok {
+func (g *GraphWriter) VisitStreamFuncConstInt(sfci *stream.StreamFuncConstInt) (any, error) {
+	if nodeId, ok := g.GetNode(sfci); ok {
 		return nodeId, nil
 	}
 
 	var sb strings.Builder
 
 	sb.WriteString("const block\n")
-	sb.WriteString("Value: " + strconv.Itoa(sci.Value))
-	return g.DefineNode(sci, sb.String()), nil
+	sb.WriteString("Value: " + strconv.Itoa(sfci.Value))
+	return g.DefineNode(sfci, sb.String()), nil
 }
 
-func (g *GraphWriter) VisitStreamCount(sc *stream.StreamCount) (any, error) {
-	if nodeId, ok := g.GetNode(sc); ok {
+func (g *GraphWriter) VisitStreamFuncCount(sfc *stream.StreamFuncCount) (any, error) {
+	if nodeId, ok := g.GetNode(sfc); ok {
 		return nodeId, nil
 	}
 
 	var sb strings.Builder
 
 	sb.WriteString("count block\n")
-	nodeId := g.DefineNode(sc, sb.String())
-	for _, source := range sc.Sources {
+	nodeId := g.DefineNode(sfc, sb.String())
+	for _, source := range sfc.Sources {
 		sourceNodeId, err := source.Accept(g)
 		if err != nil {
 			return "", err
@@ -270,8 +270,8 @@ func (g *GraphWriter) VisitStreamCount(sc *stream.StreamCount) (any, error) {
 	return nodeId, nil
 }
 
-func (g *GraphWriter) VisitStreamData(sd *stream.StreamData) (any, error) {
-	if nodeId, ok := g.GetNode(sd); ok {
+func (g *GraphWriter) VisitStreamFuncData(sfd *stream.StreamFuncData) (any, error) {
+	if nodeId, ok := g.GetNode(sfd); ok {
 		return nodeId, nil
 	}
 
@@ -279,58 +279,58 @@ func (g *GraphWriter) VisitStreamData(sd *stream.StreamData) (any, error) {
 
 	var sb strings.Builder
 	sb.WriteString("data block\n")
-	sb.WriteString("Metric: " + sd.MetricName + "\n")
-	if sd.Filter != nil {
-		sb.WriteString("Filter: " + sd.Filter.RenderFilter() + "\n")
+	sb.WriteString("Metric: " + sfd.MetricName + "\n")
+	if sfd.Filter != nil {
+		sb.WriteString("Filter: " + sfd.Filter.RenderFilter() + "\n")
 	}
-	if sd.Rollup != "" {
-		sb.WriteString("Rollup: " + sd.Rollup + "\n")
+	if sfd.Rollup != "" {
+		sb.WriteString("Rollup: " + sfd.Rollup + "\n")
 	}
-	if sd.Extrapolation != "null" {
-		sb.WriteString("Extrapolation: " + sd.Extrapolation + "\n")
-		if sd.MaxExtrapolations != -1 {
-			sb.WriteString("MaxExtrapolation: " + strconv.Itoa(sd.MaxExtrapolations) + "\n")
+	if sfd.Extrapolation != "null" {
+		sb.WriteString("Extrapolation: " + sfd.Extrapolation + "\n")
+		if sfd.MaxExtrapolations != -1 {
+			sb.WriteString("MaxExtrapolation: " + strconv.Itoa(sfd.MaxExtrapolations) + "\n")
 		}
 	}
 
-	return g.DefineNode(sd, sb.String(), Color("red")), nil
+	return g.DefineNode(sfd, sb.String(), Color("red")), nil
 }
 
-func (g *GraphWriter) VisitStreamDetect(sd *stream.StreamDetect) (any, error) {
-	if nodeId, ok := g.GetNode(sd); ok {
+func (g *GraphWriter) VisitStreamFuncDetect(sfd *stream.StreamFuncDetect) (any, error) {
+	if nodeId, ok := g.GetNode(sfd); ok {
 		return nodeId, nil
 	}
 
 	var sb strings.Builder
 	sb.WriteString("detect block\n")
-	if sd.Mode != "paired" {
-		sb.WriteString("Mode: " + sd.Mode + "\n")
+	if sfd.Mode != "paired" {
+		sb.WriteString("Mode: " + sfd.Mode + "\n")
 	}
-	if sd.Annotations != nil {
-		if _, isNone := sd.Annotations.(*interpreter.ObjectNone); !isNone {
-			sb.WriteString(fmt.Sprintf("Annotations: %T\n", sd.Annotations))
+	if sfd.Annotations != nil {
+		if _, isNone := sfd.Annotations.(*interpreter.ObjectNone); !isNone {
+			sb.WriteString(fmt.Sprintf("Annotations: %T\n", sfd.Annotations))
 		}
 	}
-	if sd.EventAnnotations != nil {
-		if _, isNone := sd.EventAnnotations.(*interpreter.ObjectNone); !isNone {
-			sb.WriteString(fmt.Sprintf("EventAnnotations: %T\n", sd.EventAnnotations))
+	if sfd.EventAnnotations != nil {
+		if _, isNone := sfd.EventAnnotations.(*interpreter.ObjectNone); !isNone {
+			sb.WriteString(fmt.Sprintf("EventAnnotations: %T\n", sfd.EventAnnotations))
 		}
 	}
 
-	if sd.AutoResolveAfter != nil {
+	if sfd.AutoResolveAfter != nil {
 		// TODO: Render using SFX methods
-		sb.WriteString("AutoResolveAfter: " + sd.AutoResolveAfter.String() + "\n")
+		sb.WriteString("AutoResolveAfter: " + sfd.AutoResolveAfter.String() + "\n")
 	}
 
-	nodeId := g.DefineNode(sd, sb.String())
+	nodeId := g.DefineNode(sfd, sb.String())
 
-	nodeOnId, err := sd.On.Accept(g)
+	nodeOnId, err := sfd.On.Accept(g)
 	if err != nil {
 		return "", err
 	}
 	g.DefineEdge(nodeId, nodeOnId.(string), "On")
-	if sd.Off != nil {
-		nodeOffId, err := sd.Off.Accept(g)
+	if sfd.Off != nil {
+		nodeOffId, err := sfd.Off.Accept(g)
 		if err != nil {
 			return "", err
 		}
@@ -339,29 +339,29 @@ func (g *GraphWriter) VisitStreamDetect(sd *stream.StreamDetect) (any, error) {
 	return nodeId, nil
 }
 
-func (g *GraphWriter) VisitStreamEvents(se *stream.StreamEvents) (any, error) {
+func (g *GraphWriter) VisitStreamFuncEvents(sfe *stream.StreamFuncEvents) (any, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (g *GraphWriter) VisitStreamFill(sf *stream.StreamFill) (any, error) {
+func (g *GraphWriter) VisitStreamMethodFill(smf *stream.StreamMethodFill) (any, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (g *GraphWriter) VisitStreamGeneric(sg *stream.StreamGeneric) (any, error) {
-	if nodeId, ok := g.GetNode(sg); ok {
+func (g *GraphWriter) VisitStreamMethodGeneric(smg *stream.StreamMethodGeneric) (any, error) {
+	if nodeId, ok := g.GetNode(smg); ok {
 		return nodeId, nil
 	}
 
 	var sb strings.Builder
 	sb.WriteString("generic block\n")
-	sb.WriteString("Call: " + sg.Call + "\n")
+	sb.WriteString("Call: " + smg.Call + "\n")
 
-	nodeId := g.DefineNode(sg, sb.String())
+	nodeId := g.DefineNode(smg, sb.String())
 
-	if sg.Source != nil {
-		sourceNodeId, err := sg.Source.Accept(g)
+	if smg.Source != nil {
+		sourceNodeId, err := smg.Source.Accept(g)
 		if err != nil {
 			return nil, err
 		}
@@ -375,25 +375,25 @@ func (g *GraphWriter) VisitStreamIsNone(sin *stream.StreamIsNone) (any, error) {
 	panic("implement me")
 }
 
-func (g *GraphWriter) VisitStreamMax(sm *stream.StreamMax) (any, error) {
-	if nodeId, ok := g.GetNode(sm); ok {
+func (g *GraphWriter) VisitStreamFuncMax(sfm *stream.StreamFuncMax) (any, error) {
+	if nodeId, ok := g.GetNode(sfm); ok {
 		return nodeId, nil
 	}
 
 	var sb strings.Builder
 	sb.WriteString("max block\n")
-	if sm.Value != nil {
+	if sfm.Value != nil {
 		sb.WriteString("Value: ")
-		switch sm.Value.(type) {
+		switch sfm.Value.(type) {
 		default:
-			panic(fmt.Sprintf("Unknown type: %T", sm.Value))
+			panic(fmt.Sprintf("Unknown type: %T", sfm.Value))
 		}
 		sb.WriteString("\n")
 	}
 
-	nodeId := g.DefineNode(sm, sb.String())
+	nodeId := g.DefineNode(sfm, sb.String())
 
-	for _, source := range sm.Sources {
+	for _, source := range sfm.Sources {
 		sourceNodeId, err := source.Accept(g)
 		if err != nil {
 			return "", err
@@ -403,21 +403,21 @@ func (g *GraphWriter) VisitStreamMax(sm *stream.StreamMax) (any, error) {
 	return nodeId, nil
 }
 
-func (g *GraphWriter) VisitStreamMean(sm *stream.StreamMean) (any, error) {
+func (g *GraphWriter) VisitStreamFuncMean(sfm *stream.StreamFuncMean) (any, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (g *GraphWriter) VisitStreamMedian(sm *stream.StreamMedian) (any, error) {
-	if nodeId, ok := g.GetNode(sm); ok {
+func (g *GraphWriter) VisitStreamFuncMedian(sfm *stream.StreamFuncMedian) (any, error) {
+	if nodeId, ok := g.GetNode(sfm); ok {
 		return nodeId, nil
 	}
 
 	var sb strings.Builder
 	sb.WriteString("median block\n")
-	if len(sm.Constants) > 0 {
+	if len(sfm.Constants) > 0 {
 		sb.WriteString("Constants: [\n")
-		for _, constant := range sm.Constants {
+		for _, constant := range sfm.Constants {
 			switch constant.(type) {
 			default:
 				panic(fmt.Sprintf("Unknown type: %T", constant))
@@ -426,9 +426,9 @@ func (g *GraphWriter) VisitStreamMedian(sm *stream.StreamMedian) (any, error) {
 		sb.WriteString("]\n")
 	}
 
-	nodeId := g.DefineNode(sm, sb.String())
+	nodeId := g.DefineNode(sfm, sb.String())
 
-	for _, source := range sm.Sources {
+	for _, source := range sfm.Sources {
 		sourceNodeId, err := source.Accept(g)
 		if err != nil {
 			return "", err
@@ -438,25 +438,25 @@ func (g *GraphWriter) VisitStreamMedian(sm *stream.StreamMedian) (any, error) {
 	return nodeId, nil
 }
 
-func (g *GraphWriter) VisitStreamMin(sm *stream.StreamMin) (any, error) {
-	if nodeId, ok := g.GetNode(sm); ok {
+func (g *GraphWriter) VisitStreamFuncMin(sfm *stream.StreamFuncMin) (any, error) {
+	if nodeId, ok := g.GetNode(sfm); ok {
 		return nodeId, nil
 	}
 
 	var sb strings.Builder
 	sb.WriteString("min block\n")
-	if sm.Value != nil {
+	if sfm.Value != nil {
 		sb.WriteString("Value: ")
-		switch sm.Value.(type) {
+		switch sfm.Value.(type) {
 		default:
-			panic(fmt.Sprintf("Unknown type: %T", sm.Value))
+			panic(fmt.Sprintf("Unknown type: %T", sfm.Value))
 		}
 		sb.WriteString("\n")
 	}
 
-	nodeId := g.DefineNode(sm, sb.String())
+	nodeId := g.DefineNode(sfm, sb.String())
 
-	for _, source := range sm.Sources {
+	for _, source := range sfm.Sources {
 		sourceNodeId, err := source.Accept(g)
 		if err != nil {
 			return "", err
@@ -466,24 +466,24 @@ func (g *GraphWriter) VisitStreamMin(sm *stream.StreamMin) (any, error) {
 	return nodeId, nil
 }
 
-func (g *GraphWriter) VisitStreamPercentile(sp *stream.StreamPercentile) (any, error) {
+func (g *GraphWriter) VisitStreamMethodPercentile(smp *stream.StreamMethodPercentile) (any, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (g *GraphWriter) VisitStreamPublish(sp *stream.StreamPublish) (any, error) {
-	if nodeId, ok := g.GetNode(sp); ok {
+func (g *GraphWriter) VisitStreamMethodPublish(smp *stream.StreamMethodPublish) (any, error) {
+	if nodeId, ok := g.GetNode(smp); ok {
 		return nodeId, nil
 	}
 
 	var sb strings.Builder
 	sb.WriteString("publish block\n")
-	sb.WriteString(fmt.Sprintf("Enable: %t\n", sp.Enable))
-	sb.WriteString("Label: " + sp.Label + "\n")
+	sb.WriteString(fmt.Sprintf("Enable: %t\n", smp.Enable))
+	sb.WriteString("Label: " + smp.Label + "\n")
 
-	nodeId := g.DefineNode(sp, sb.String(), Color("green"))
+	nodeId := g.DefineNode(smp, sb.String(), Color("green"))
 
-	sourceNodeId, err := sp.Source.Accept(g)
+	sourceNodeId, err := smp.Source.Accept(g)
 	if err != nil {
 		return nil, err
 	}
@@ -491,7 +491,7 @@ func (g *GraphWriter) VisitStreamPublish(sp *stream.StreamPublish) (any, error) 
 	return nodeId, nil
 }
 
-func (g *GraphWriter) VisitStreamScale(ss *stream.StreamScale) (any, error) {
+func (g *GraphWriter) VisitStreamMethodScale(sms *stream.StreamMethodScale) (any, error) {
 	//TODO implement me
 	panic("implement me")
 }
@@ -526,22 +526,22 @@ func (g *GraphWriter) VisitStreamTernary(st *stream.StreamTernary) (any, error) 
 	return nodeId, nil
 }
 
-func (g *GraphWriter) VisitStreamThreshold(st *stream.StreamThreshold) (any, error) {
+func (g *GraphWriter) VisitStreamFuncThreshold(sft *stream.StreamFuncThreshold) (any, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (g *GraphWriter) VisitStreamTimeShift(sts *stream.StreamTimeShift) (any, error) {
-	if nodeId, ok := g.GetNode(sts); ok {
+func (g *GraphWriter) VisitStreamMethodTimeShift(smts *stream.StreamMethodTimeShift) (any, error) {
+	if nodeId, ok := g.GetNode(smts); ok {
 		return nodeId, nil
 	}
 
 	var sb strings.Builder
 	sb.WriteString("timeshift block\n")
-	sb.WriteString("Offset: " + sts.Offset.String() + "\n")
-	nodeId := g.DefineNode(sts, sb.String())
+	sb.WriteString("Offset: " + smts.Offset.String() + "\n")
+	nodeId := g.DefineNode(smts, sb.String())
 
-	sourceNodeId, err := sts.Source.Accept(g)
+	sourceNodeId, err := smts.Source.Accept(g)
 	if err != nil {
 		return nil, err
 	}
@@ -549,24 +549,24 @@ func (g *GraphWriter) VisitStreamTimeShift(sts *stream.StreamTimeShift) (any, er
 	return nodeId, nil
 }
 
-func (g *GraphWriter) VisitStreamTop(st *stream.StreamTop) (any, error) {
+func (g *GraphWriter) VisitStreamMethodTop(smt *stream.StreamMethodTop) (any, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (g *GraphWriter) VisitStreamTransform(st *stream.StreamTransform) (any, error) {
-	if nodeId, ok := g.GetNode(st); ok {
+func (g *GraphWriter) VisitStreamMethodTransform(smt *stream.StreamMethodTransform) (any, error) {
+	if nodeId, ok := g.GetNode(smt); ok {
 		return nodeId, nil
 	}
 
 	var sb strings.Builder
 	sb.WriteString("transform block\n")
 
-	sb.WriteString("Fn: " + st.Fn + "\n")
-	sb.WriteString("Over: " + st.Over.String() + "\n")
+	sb.WriteString("Fn: " + smt.Fn + "\n")
+	sb.WriteString("Over: " + smt.Over.String() + "\n")
 
-	nodeId := g.DefineNode(st, sb.String())
-	sourceNodeId, err := st.Source.Accept(g)
+	nodeId := g.DefineNode(smt, sb.String())
+	sourceNodeId, err := smt.Source.Accept(g)
 	if err != nil {
 		return nil, err
 	}
@@ -574,9 +574,9 @@ func (g *GraphWriter) VisitStreamTransform(st *stream.StreamTransform) (any, err
 	return nodeId, nil
 }
 
-func (g *GraphWriter) VisitStreamTransformCycle(stc *stream.StreamTransformCycle) (any, error) {
+func (g *GraphWriter) VisitStreamMethodTransformCycle(smtc *stream.StreamMethodTransformCycle) (any, error) {
 	//TODO implement me
-	panic(stc.Fn)
+	panic(smtc.Fn)
 	panic("implement me")
 }
 
@@ -585,28 +585,28 @@ func (g *GraphWriter) VisitStreamUnaryOpMinus(suom *stream.StreamUnaryOpMinus) (
 	panic("implement me")
 }
 
-func (g *GraphWriter) VisitStreamUnion(su *stream.StreamUnion) (any, error) {
+func (g *GraphWriter) VisitStreamFuncUnion(sfu *stream.StreamFuncUnion) (any, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (g *GraphWriter) VisitStreamWhen(sw *stream.StreamWhen) (any, error) {
-	if nodeId, ok := g.GetNode(sw); ok {
+func (g *GraphWriter) VisitStreamFuncWhen(sfw *stream.StreamFuncWhen) (any, error) {
+	if nodeId, ok := g.GetNode(sfw); ok {
 		return nodeId, nil
 	}
 
 	var sb strings.Builder
 	sb.WriteString("when block\n")
 
-	if sw.Lasting != nil {
-		sb.WriteString("Lasting: " + sw.Lasting.String() + "\n")
+	if sfw.Lasting != nil {
+		sb.WriteString("Lasting: " + sfw.Lasting.String() + "\n")
 	}
-	if sw.AtLeast != 1.0 {
-		sb.WriteString("AtLeast: " + strconv.FormatFloat(sw.AtLeast, 'g', 6, 64) + "\n")
+	if sfw.AtLeast != 1.0 {
+		sb.WriteString("AtLeast: " + strconv.FormatFloat(sfw.AtLeast, 'g', 6, 64) + "\n")
 	}
 
-	nodeId := g.DefineNode(sw, sb.String())
-	predicateNodeId, err := sw.Predicate.Accept(g)
+	nodeId := g.DefineNode(sfw, sb.String())
+	predicateNodeId, err := sfw.Predicate.Accept(g)
 	if err != nil {
 		return nil, err
 	}

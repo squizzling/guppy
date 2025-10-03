@@ -8,7 +8,7 @@ import (
 type Published struct {
 	interpreter.Object
 
-	Streams []*stream.StreamPublish
+	Streams []*stream.StreamMethodPublish
 }
 
 func NewPublished() *Published {
@@ -17,6 +17,6 @@ func NewPublished() *Published {
 	}
 }
 
-func (p *Published) Append(s *stream.StreamPublish) {
+func (p *Published) Append(s *stream.StreamMethodPublish) {
 	p.Streams = append(p.Streams, s)
 }

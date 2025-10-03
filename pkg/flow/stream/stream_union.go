@@ -28,7 +28,7 @@ func (f FFIUnion) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
 				return nil, fmt.Errorf("argument %d is %T not a Stream", idx, stream)
 			}
 		}
-		return NewStreamUnion(newStreamObject(), streams), nil
+		return NewStreamFuncUnion(newStreamObject(), streams), nil
 	}
 }
 

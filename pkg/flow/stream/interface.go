@@ -140,7 +140,7 @@ var _ = interpreter.FlowCall(methodStreamOp{})
 // is not actually useful from a dataflow perspective.
 func unpublish(s Stream) Stream {
 	return s // TODO: Understand if this should be done or not.
-	if p, ok := s.(*StreamPublish); ok {
+	if p, ok := s.(*StreamMethodPublish); ok {
 		return unpublish(p.Source)
 	}
 	return s

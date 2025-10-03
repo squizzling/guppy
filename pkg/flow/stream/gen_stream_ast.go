@@ -8,40 +8,40 @@ import (
 )
 
 type VisitorStream interface {
-	VisitStreamAbove(sa *StreamAbove) (any, error)
-	VisitStreamAbs(sa *StreamAbs) (any, error)
-	VisitStreamAggregate(sa *StreamAggregate) (any, error)
-	VisitStreamAlerts(sa *StreamAlerts) (any, error)
-	VisitStreamBelow(sb *StreamBelow) (any, error)
+	VisitStreamFuncAlerts(sfa *StreamFuncAlerts) (any, error)
+	VisitStreamFuncCombine(sfc *StreamFuncCombine) (any, error)
+	VisitStreamFuncConstDouble(sfcd *StreamFuncConstDouble) (any, error)
+	VisitStreamFuncConstInt(sfci *StreamFuncConstInt) (any, error)
+	VisitStreamFuncCount(sfc *StreamFuncCount) (any, error)
+	VisitStreamFuncData(sfd *StreamFuncData) (any, error)
+	VisitStreamFuncDetect(sfd *StreamFuncDetect) (any, error)
+	VisitStreamFuncEvents(sfe *StreamFuncEvents) (any, error)
+	VisitStreamFuncMax(sfm *StreamFuncMax) (any, error)
+	VisitStreamFuncMean(sfm *StreamFuncMean) (any, error)
+	VisitStreamFuncMedian(sfm *StreamFuncMedian) (any, error)
+	VisitStreamFuncMin(sfm *StreamFuncMin) (any, error)
+	VisitStreamFuncThreshold(sft *StreamFuncThreshold) (any, error)
+	VisitStreamFuncUnion(sfu *StreamFuncUnion) (any, error)
+	VisitStreamFuncWhen(sfw *StreamFuncWhen) (any, error)
+	VisitStreamMethodAbove(sma *StreamMethodAbove) (any, error)
+	VisitStreamMethodAbs(sma *StreamMethodAbs) (any, error)
+	VisitStreamMethodAggregate(sma *StreamMethodAggregate) (any, error)
+	VisitStreamMethodBelow(smb *StreamMethodBelow) (any, error)
+	VisitStreamMethodFill(smf *StreamMethodFill) (any, error)
+	VisitStreamMethodGeneric(smg *StreamMethodGeneric) (any, error)
+	VisitStreamMethodPercentile(smp *StreamMethodPercentile) (any, error)
+	VisitStreamMethodPublish(smp *StreamMethodPublish) (any, error)
+	VisitStreamMethodScale(sms *StreamMethodScale) (any, error)
+	VisitStreamMethodTimeShift(smts *StreamMethodTimeShift) (any, error)
+	VisitStreamMethodTop(smt *StreamMethodTop) (any, error)
+	VisitStreamMethodTransform(smt *StreamMethodTransform) (any, error)
+	VisitStreamMethodTransformCycle(smtc *StreamMethodTransformCycle) (any, error)
 	VisitStreamBinaryOpDouble(sbod *StreamBinaryOpDouble) (any, error)
 	VisitStreamBinaryOpInt(sboi *StreamBinaryOpInt) (any, error)
 	VisitStreamBinaryOpStream(sbos *StreamBinaryOpStream) (any, error)
-	VisitStreamCombine(sc *StreamCombine) (any, error)
-	VisitStreamConstDouble(scd *StreamConstDouble) (any, error)
-	VisitStreamConstInt(sci *StreamConstInt) (any, error)
-	VisitStreamCount(sc *StreamCount) (any, error)
-	VisitStreamData(sd *StreamData) (any, error)
-	VisitStreamDetect(sd *StreamDetect) (any, error)
-	VisitStreamEvents(se *StreamEvents) (any, error)
-	VisitStreamFill(sf *StreamFill) (any, error)
-	VisitStreamGeneric(sg *StreamGeneric) (any, error)
 	VisitStreamIsNone(sin *StreamIsNone) (any, error)
-	VisitStreamMax(sm *StreamMax) (any, error)
-	VisitStreamMean(sm *StreamMean) (any, error)
-	VisitStreamMedian(sm *StreamMedian) (any, error)
-	VisitStreamMin(sm *StreamMin) (any, error)
-	VisitStreamPercentile(sp *StreamPercentile) (any, error)
-	VisitStreamPublish(sp *StreamPublish) (any, error)
-	VisitStreamScale(ss *StreamScale) (any, error)
 	VisitStreamTernary(st *StreamTernary) (any, error)
-	VisitStreamThreshold(st *StreamThreshold) (any, error)
-	VisitStreamTimeShift(sts *StreamTimeShift) (any, error)
-	VisitStreamTop(st *StreamTop) (any, error)
-	VisitStreamTransform(st *StreamTransform) (any, error)
-	VisitStreamTransformCycle(stc *StreamTransformCycle) (any, error)
 	VisitStreamUnaryOpMinus(suom *StreamUnaryOpMinus) (any, error)
-	VisitStreamUnion(su *StreamUnion) (any, error)
-	VisitStreamWhen(sw *StreamWhen) (any, error)
 }
 
 type Stream interface {
@@ -50,59 +50,517 @@ type Stream interface {
 	CloneTimeShift(amount time.Duration) Stream
 }
 
-type StreamAbove struct {
+type StreamFuncAlerts struct {
+	interpreter.Object
+}
+
+func NewStreamFuncAlerts(
+	Object interpreter.Object,
+) *StreamFuncAlerts {
+	return &StreamFuncAlerts{
+		Object: Object,
+	}
+}
+
+func (sfa *StreamFuncAlerts) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamFuncAlerts(sfa)
+}
+
+func (sfa *StreamFuncAlerts) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamFuncAlerts{
+		Object: sfa.Object,
+	}
+}
+
+type StreamFuncCombine struct {
+	interpreter.Object
+	Source Stream
+	Mode   string
+}
+
+func NewStreamFuncCombine(
+	Object interpreter.Object,
+	Source Stream,
+	Mode string,
+) *StreamFuncCombine {
+	return &StreamFuncCombine{
+		Object: Object,
+		Source: Source,
+		Mode:   Mode,
+	}
+}
+
+func (sfc *StreamFuncCombine) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamFuncCombine(sfc)
+}
+
+func (sfc *StreamFuncCombine) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamFuncCombine{
+		Object: sfc.Object,
+		Source: cloneTimeshift(sfc.Source, amount),
+		Mode:   sfc.Mode,
+	}
+}
+
+type StreamFuncConstDouble struct {
+	interpreter.Object
+	Value float64
+	Key   map[string]string
+}
+
+func NewStreamFuncConstDouble(
+	Object interpreter.Object,
+	Value float64,
+	Key map[string]string,
+) *StreamFuncConstDouble {
+	return &StreamFuncConstDouble{
+		Object: Object,
+		Value:  Value,
+		Key:    Key,
+	}
+}
+
+func (sfcd *StreamFuncConstDouble) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamFuncConstDouble(sfcd)
+}
+
+func (sfcd *StreamFuncConstDouble) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamFuncConstDouble{
+		Object: sfcd.Object,
+		Value:  sfcd.Value,
+		Key:    sfcd.Key,
+	}
+}
+
+type StreamFuncConstInt struct {
+	interpreter.Object
+	Value int
+	Key   map[string]string
+}
+
+func NewStreamFuncConstInt(
+	Object interpreter.Object,
+	Value int,
+	Key map[string]string,
+) *StreamFuncConstInt {
+	return &StreamFuncConstInt{
+		Object: Object,
+		Value:  Value,
+		Key:    Key,
+	}
+}
+
+func (sfci *StreamFuncConstInt) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamFuncConstInt(sfci)
+}
+
+func (sfci *StreamFuncConstInt) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamFuncConstInt{
+		Object: sfci.Object,
+		Value:  sfci.Value,
+		Key:    sfci.Key,
+	}
+}
+
+type StreamFuncCount struct {
+	interpreter.Object
+	Sources []Stream
+}
+
+func NewStreamFuncCount(
+	Object interpreter.Object,
+	Sources []Stream,
+) *StreamFuncCount {
+	return &StreamFuncCount{
+		Object:  Object,
+		Sources: Sources,
+	}
+}
+
+func (sfc *StreamFuncCount) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamFuncCount(sfc)
+}
+
+func (sfc *StreamFuncCount) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamFuncCount{
+		Object:  sfc.Object,
+		Sources: sfc.Sources,
+	}
+}
+
+type StreamFuncData struct {
+	interpreter.Object
+	MetricName        string
+	Filter            filter.Filter
+	Rollup            string
+	Extrapolation     string
+	MaxExtrapolations int
+	TimeShift         time.Duration
+}
+
+func NewStreamFuncData(
+	Object interpreter.Object,
+	MetricName string,
+	Filter filter.Filter,
+	Rollup string,
+	Extrapolation string,
+	MaxExtrapolations int,
+	TimeShift time.Duration,
+) *StreamFuncData {
+	return &StreamFuncData{
+		Object:            Object,
+		MetricName:        MetricName,
+		Filter:            Filter,
+		Rollup:            Rollup,
+		Extrapolation:     Extrapolation,
+		MaxExtrapolations: MaxExtrapolations,
+		TimeShift:         TimeShift,
+	}
+}
+
+func (sfd *StreamFuncData) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamFuncData(sfd)
+}
+
+func (sfd *StreamFuncData) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamFuncData{
+		Object:            sfd.Object,
+		MetricName:        sfd.MetricName,
+		Filter:            sfd.Filter,
+		Rollup:            sfd.Rollup,
+		Extrapolation:     sfd.Extrapolation,
+		MaxExtrapolations: sfd.MaxExtrapolations,
+		TimeShift:         sfd.TimeShift,
+	}
+}
+
+type StreamFuncDetect struct {
+	interpreter.Object
+	On               Stream
+	Off              Stream
+	Mode             string
+	Annotations      interpreter.Object
+	EventAnnotations interpreter.Object
+	AutoResolveAfter *time.Duration
+}
+
+func NewStreamFuncDetect(
+	Object interpreter.Object,
+	On Stream,
+	Off Stream,
+	Mode string,
+	Annotations interpreter.Object,
+	EventAnnotations interpreter.Object,
+	AutoResolveAfter *time.Duration,
+) *StreamFuncDetect {
+	return &StreamFuncDetect{
+		Object:           Object,
+		On:               On,
+		Off:              Off,
+		Mode:             Mode,
+		Annotations:      Annotations,
+		EventAnnotations: EventAnnotations,
+		AutoResolveAfter: AutoResolveAfter,
+	}
+}
+
+func (sfd *StreamFuncDetect) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamFuncDetect(sfd)
+}
+
+func (sfd *StreamFuncDetect) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamFuncDetect{
+		Object:           sfd.Object,
+		On:               cloneTimeshift(sfd.On, amount),
+		Off:              cloneTimeshift(sfd.Off, amount),
+		Mode:             sfd.Mode,
+		Annotations:      sfd.Annotations,
+		EventAnnotations: sfd.EventAnnotations,
+		AutoResolveAfter: sfd.AutoResolveAfter,
+	}
+}
+
+type StreamFuncEvents struct {
+	interpreter.Object
+}
+
+func NewStreamFuncEvents(
+	Object interpreter.Object,
+) *StreamFuncEvents {
+	return &StreamFuncEvents{
+		Object: Object,
+	}
+}
+
+func (sfe *StreamFuncEvents) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamFuncEvents(sfe)
+}
+
+func (sfe *StreamFuncEvents) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamFuncEvents{
+		Object: sfe.Object,
+	}
+}
+
+type StreamFuncMax struct {
+	interpreter.Object
+	Sources []Stream
+	Value   interpreter.Object
+}
+
+func NewStreamFuncMax(
+	Object interpreter.Object,
+	Sources []Stream,
+	Value interpreter.Object,
+) *StreamFuncMax {
+	return &StreamFuncMax{
+		Object:  Object,
+		Sources: Sources,
+		Value:   Value,
+	}
+}
+
+func (sfm *StreamFuncMax) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamFuncMax(sfm)
+}
+
+func (sfm *StreamFuncMax) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamFuncMax{
+		Object:  sfm.Object,
+		Sources: sfm.Sources,
+		Value:   sfm.Value,
+	}
+}
+
+type StreamFuncMean struct {
+	interpreter.Object
+	Sources   []Stream
+	Constants []interpreter.Object
+}
+
+func NewStreamFuncMean(
+	Object interpreter.Object,
+	Sources []Stream,
+	Constants []interpreter.Object,
+) *StreamFuncMean {
+	return &StreamFuncMean{
+		Object:    Object,
+		Sources:   Sources,
+		Constants: Constants,
+	}
+}
+
+func (sfm *StreamFuncMean) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamFuncMean(sfm)
+}
+
+func (sfm *StreamFuncMean) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamFuncMean{
+		Object:    sfm.Object,
+		Sources:   sfm.Sources,
+		Constants: sfm.Constants,
+	}
+}
+
+type StreamFuncMedian struct {
+	interpreter.Object
+	Sources   []Stream
+	Constants []interpreter.Object
+}
+
+func NewStreamFuncMedian(
+	Object interpreter.Object,
+	Sources []Stream,
+	Constants []interpreter.Object,
+) *StreamFuncMedian {
+	return &StreamFuncMedian{
+		Object:    Object,
+		Sources:   Sources,
+		Constants: Constants,
+	}
+}
+
+func (sfm *StreamFuncMedian) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamFuncMedian(sfm)
+}
+
+func (sfm *StreamFuncMedian) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamFuncMedian{
+		Object:    sfm.Object,
+		Sources:   sfm.Sources,
+		Constants: sfm.Constants,
+	}
+}
+
+type StreamFuncMin struct {
+	interpreter.Object
+	Sources []Stream
+	Value   interpreter.Object
+}
+
+func NewStreamFuncMin(
+	Object interpreter.Object,
+	Sources []Stream,
+	Value interpreter.Object,
+) *StreamFuncMin {
+	return &StreamFuncMin{
+		Object:  Object,
+		Sources: Sources,
+		Value:   Value,
+	}
+}
+
+func (sfm *StreamFuncMin) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamFuncMin(sfm)
+}
+
+func (sfm *StreamFuncMin) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamFuncMin{
+		Object:  sfm.Object,
+		Sources: sfm.Sources,
+		Value:   sfm.Value,
+	}
+}
+
+type StreamFuncThreshold struct {
+	interpreter.Object
+	Value float64
+}
+
+func NewStreamFuncThreshold(
+	Object interpreter.Object,
+	Value float64,
+) *StreamFuncThreshold {
+	return &StreamFuncThreshold{
+		Object: Object,
+		Value:  Value,
+	}
+}
+
+func (sft *StreamFuncThreshold) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamFuncThreshold(sft)
+}
+
+func (sft *StreamFuncThreshold) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamFuncThreshold{
+		Object: sft.Object,
+		Value:  sft.Value,
+	}
+}
+
+type StreamFuncUnion struct {
+	interpreter.Object
+	Sources []Stream
+}
+
+func NewStreamFuncUnion(
+	Object interpreter.Object,
+	Sources []Stream,
+) *StreamFuncUnion {
+	return &StreamFuncUnion{
+		Object:  Object,
+		Sources: Sources,
+	}
+}
+
+func (sfu *StreamFuncUnion) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamFuncUnion(sfu)
+}
+
+func (sfu *StreamFuncUnion) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamFuncUnion{
+		Object:  sfu.Object,
+		Sources: sfu.Sources,
+	}
+}
+
+type StreamFuncWhen struct {
+	interpreter.Object
+	Predicate Stream
+	Lasting   *time.Duration
+	AtLeast   float64
+}
+
+func NewStreamFuncWhen(
+	Object interpreter.Object,
+	Predicate Stream,
+	Lasting *time.Duration,
+	AtLeast float64,
+) *StreamFuncWhen {
+	return &StreamFuncWhen{
+		Object:    Object,
+		Predicate: Predicate,
+		Lasting:   Lasting,
+		AtLeast:   AtLeast,
+	}
+}
+
+func (sfw *StreamFuncWhen) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamFuncWhen(sfw)
+}
+
+func (sfw *StreamFuncWhen) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamFuncWhen{
+		Object:    sfw.Object,
+		Predicate: cloneTimeshift(sfw.Predicate, amount),
+		Lasting:   sfw.Lasting,
+		AtLeast:   sfw.AtLeast,
+	}
+}
+
+type StreamMethodAbove struct {
 	interpreter.Object
 	Source Stream
 }
 
-func NewStreamAbove(
+func NewStreamMethodAbove(
 	Object interpreter.Object,
 	Source Stream,
-) *StreamAbove {
-	return &StreamAbove{
+) *StreamMethodAbove {
+	return &StreamMethodAbove{
 		Object: Object,
 		Source: Source,
 	}
 }
 
-func (sa *StreamAbove) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamAbove(sa)
+func (sma *StreamMethodAbove) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamMethodAbove(sma)
 }
 
-func (sa *StreamAbove) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamAbove{
-		Object: sa.Object,
-		Source: cloneTimeshift(sa.Source, amount),
+func (sma *StreamMethodAbove) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamMethodAbove{
+		Object: sma.Object,
+		Source: cloneTimeshift(sma.Source, amount),
 	}
 }
 
-type StreamAbs struct {
+type StreamMethodAbs struct {
 	interpreter.Object
 	Source Stream
 }
 
-func NewStreamAbs(
+func NewStreamMethodAbs(
 	Object interpreter.Object,
 	Source Stream,
-) *StreamAbs {
-	return &StreamAbs{
+) *StreamMethodAbs {
+	return &StreamMethodAbs{
 		Object: Object,
 		Source: Source,
 	}
 }
 
-func (sa *StreamAbs) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamAbs(sa)
+func (sma *StreamMethodAbs) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamMethodAbs(sma)
 }
 
-func (sa *StreamAbs) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamAbs{
-		Object: sa.Object,
-		Source: cloneTimeshift(sa.Source, amount),
+func (sma *StreamMethodAbs) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamMethodAbs{
+		Object: sma.Object,
+		Source: cloneTimeshift(sma.Source, amount),
 	}
 }
 
-type StreamAggregate struct {
+type StreamMethodAggregate struct {
 	interpreter.Object
 	Source          Stream
 	Fn              string
@@ -111,15 +569,15 @@ type StreamAggregate struct {
 	AllowMissing    []string
 }
 
-func NewStreamAggregate(
+func NewStreamMethodAggregate(
 	Object interpreter.Object,
 	Source Stream,
 	Fn string,
 	By []string,
 	AllowAllMissing bool,
 	AllowMissing []string,
-) *StreamAggregate {
-	return &StreamAggregate{
+) *StreamMethodAggregate {
+	return &StreamMethodAggregate{
 		Object:          Object,
 		Source:          Source,
 		Fn:              Fn,
@@ -129,66 +587,342 @@ func NewStreamAggregate(
 	}
 }
 
-func (sa *StreamAggregate) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamAggregate(sa)
+func (sma *StreamMethodAggregate) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamMethodAggregate(sma)
 }
 
-func (sa *StreamAggregate) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamAggregate{
-		Object:          sa.Object,
-		Source:          cloneTimeshift(sa.Source, amount),
-		Fn:              sa.Fn,
-		By:              sa.By,
-		AllowAllMissing: sa.AllowAllMissing,
-		AllowMissing:    sa.AllowMissing,
+func (sma *StreamMethodAggregate) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamMethodAggregate{
+		Object:          sma.Object,
+		Source:          cloneTimeshift(sma.Source, amount),
+		Fn:              sma.Fn,
+		By:              sma.By,
+		AllowAllMissing: sma.AllowAllMissing,
+		AllowMissing:    sma.AllowMissing,
 	}
 }
 
-type StreamAlerts struct {
-	interpreter.Object
-}
-
-func NewStreamAlerts(
-	Object interpreter.Object,
-) *StreamAlerts {
-	return &StreamAlerts{
-		Object: Object,
-	}
-}
-
-func (sa *StreamAlerts) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamAlerts(sa)
-}
-
-func (sa *StreamAlerts) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamAlerts{
-		Object: sa.Object,
-	}
-}
-
-type StreamBelow struct {
+type StreamMethodBelow struct {
 	interpreter.Object
 	Source Stream
 }
 
-func NewStreamBelow(
+func NewStreamMethodBelow(
 	Object interpreter.Object,
 	Source Stream,
-) *StreamBelow {
-	return &StreamBelow{
+) *StreamMethodBelow {
+	return &StreamMethodBelow{
 		Object: Object,
 		Source: Source,
 	}
 }
 
-func (sb *StreamBelow) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamBelow(sb)
+func (smb *StreamMethodBelow) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamMethodBelow(smb)
 }
 
-func (sb *StreamBelow) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamBelow{
-		Object: sb.Object,
-		Source: cloneTimeshift(sb.Source, amount),
+func (smb *StreamMethodBelow) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamMethodBelow{
+		Object: smb.Object,
+		Source: cloneTimeshift(smb.Source, amount),
+	}
+}
+
+type StreamMethodFill struct {
+	interpreter.Object
+	Source   Stream
+	Value    interpreter.Object
+	Duration int
+	MaxCount int
+}
+
+func NewStreamMethodFill(
+	Object interpreter.Object,
+	Source Stream,
+	Value interpreter.Object,
+	Duration int,
+	MaxCount int,
+) *StreamMethodFill {
+	return &StreamMethodFill{
+		Object:   Object,
+		Source:   Source,
+		Value:    Value,
+		Duration: Duration,
+		MaxCount: MaxCount,
+	}
+}
+
+func (smf *StreamMethodFill) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamMethodFill(smf)
+}
+
+func (smf *StreamMethodFill) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamMethodFill{
+		Object:   smf.Object,
+		Source:   cloneTimeshift(smf.Source, amount),
+		Value:    smf.Value,
+		Duration: smf.Duration,
+		MaxCount: smf.MaxCount,
+	}
+}
+
+type StreamMethodGeneric struct {
+	interpreter.Object
+	Source Stream
+	Call   string
+}
+
+func NewStreamMethodGeneric(
+	Object interpreter.Object,
+	Source Stream,
+	Call string,
+) *StreamMethodGeneric {
+	return &StreamMethodGeneric{
+		Object: Object,
+		Source: Source,
+		Call:   Call,
+	}
+}
+
+func (smg *StreamMethodGeneric) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamMethodGeneric(smg)
+}
+
+func (smg *StreamMethodGeneric) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamMethodGeneric{
+		Object: smg.Object,
+		Source: cloneTimeshift(smg.Source, amount),
+		Call:   smg.Call,
+	}
+}
+
+type StreamMethodPercentile struct {
+	interpreter.Object
+	Source Stream
+}
+
+func NewStreamMethodPercentile(
+	Object interpreter.Object,
+	Source Stream,
+) *StreamMethodPercentile {
+	return &StreamMethodPercentile{
+		Object: Object,
+		Source: Source,
+	}
+}
+
+func (smp *StreamMethodPercentile) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamMethodPercentile(smp)
+}
+
+func (smp *StreamMethodPercentile) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamMethodPercentile{
+		Object: smp.Object,
+		Source: cloneTimeshift(smp.Source, amount),
+	}
+}
+
+type StreamMethodPublish struct {
+	interpreter.Object
+	Source Stream
+	Label  string
+	Enable bool
+}
+
+func NewStreamMethodPublish(
+	Object interpreter.Object,
+	Source Stream,
+	Label string,
+	Enable bool,
+) *StreamMethodPublish {
+	return &StreamMethodPublish{
+		Object: Object,
+		Source: Source,
+		Label:  Label,
+		Enable: Enable,
+	}
+}
+
+func (smp *StreamMethodPublish) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamMethodPublish(smp)
+}
+
+func (smp *StreamMethodPublish) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamMethodPublish{
+		Object: smp.Object,
+		Source: cloneTimeshift(smp.Source, amount),
+		Label:  smp.Label,
+		Enable: smp.Enable,
+	}
+}
+
+type StreamMethodScale struct {
+	interpreter.Object
+	Source   Stream
+	Multiple float64
+}
+
+func NewStreamMethodScale(
+	Object interpreter.Object,
+	Source Stream,
+	Multiple float64,
+) *StreamMethodScale {
+	return &StreamMethodScale{
+		Object:   Object,
+		Source:   Source,
+		Multiple: Multiple,
+	}
+}
+
+func (sms *StreamMethodScale) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamMethodScale(sms)
+}
+
+func (sms *StreamMethodScale) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamMethodScale{
+		Object:   sms.Object,
+		Source:   cloneTimeshift(sms.Source, amount),
+		Multiple: sms.Multiple,
+	}
+}
+
+type StreamMethodTimeShift struct {
+	interpreter.Object
+	Source Stream
+	Offset time.Duration
+}
+
+func NewStreamMethodTimeShift(
+	Object interpreter.Object,
+	Source Stream,
+	Offset time.Duration,
+) *StreamMethodTimeShift {
+	return &StreamMethodTimeShift{
+		Object: Object,
+		Source: Source,
+		Offset: Offset,
+	}
+}
+
+func (smts *StreamMethodTimeShift) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamMethodTimeShift(smts)
+}
+
+func (smts *StreamMethodTimeShift) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamMethodTimeShift{
+		Object: smts.Object,
+		Source: cloneTimeshift(smts.Source, amount),
+		Offset: smts.Offset,
+	}
+}
+
+type StreamMethodTop struct {
+	interpreter.Object
+	Source Stream
+}
+
+func NewStreamMethodTop(
+	Object interpreter.Object,
+	Source Stream,
+) *StreamMethodTop {
+	return &StreamMethodTop{
+		Object: Object,
+		Source: Source,
+	}
+}
+
+func (smt *StreamMethodTop) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamMethodTop(smt)
+}
+
+func (smt *StreamMethodTop) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamMethodTop{
+		Object: smt.Object,
+		Source: cloneTimeshift(smt.Source, amount),
+	}
+}
+
+type StreamMethodTransform struct {
+	interpreter.Object
+	Source Stream
+	Fn     string
+	Over   time.Duration
+}
+
+func NewStreamMethodTransform(
+	Object interpreter.Object,
+	Source Stream,
+	Fn string,
+	Over time.Duration,
+) *StreamMethodTransform {
+	return &StreamMethodTransform{
+		Object: Object,
+		Source: Source,
+		Fn:     Fn,
+		Over:   Over,
+	}
+}
+
+func (smt *StreamMethodTransform) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamMethodTransform(smt)
+}
+
+func (smt *StreamMethodTransform) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamMethodTransform{
+		Object: smt.Object,
+		Source: cloneTimeshift(smt.Source, amount),
+		Fn:     smt.Fn,
+		Over:   smt.Over,
+	}
+}
+
+type StreamMethodTransformCycle struct {
+	interpreter.Object
+	Source        Stream
+	Fn            string
+	Cycle         string
+	CycleStart    *string
+	Timezone      *string
+	PartialValues bool
+	ShiftCycles   int
+}
+
+func NewStreamMethodTransformCycle(
+	Object interpreter.Object,
+	Source Stream,
+	Fn string,
+	Cycle string,
+	CycleStart *string,
+	Timezone *string,
+	PartialValues bool,
+	ShiftCycles int,
+) *StreamMethodTransformCycle {
+	return &StreamMethodTransformCycle{
+		Object:        Object,
+		Source:        Source,
+		Fn:            Fn,
+		Cycle:         Cycle,
+		CycleStart:    CycleStart,
+		Timezone:      Timezone,
+		PartialValues: PartialValues,
+		ShiftCycles:   ShiftCycles,
+	}
+}
+
+func (smtc *StreamMethodTransformCycle) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamMethodTransformCycle(smtc)
+}
+
+func (smtc *StreamMethodTransformCycle) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamMethodTransformCycle{
+		Object:        smtc.Object,
+		Source:        cloneTimeshift(smtc.Source, amount),
+		Fn:            smtc.Fn,
+		Cycle:         smtc.Cycle,
+		CycleStart:    smtc.CycleStart,
+		Timezone:      smtc.Timezone,
+		PartialValues: smtc.PartialValues,
+		ShiftCycles:   smtc.ShiftCycles,
 	}
 }
 
@@ -302,304 +1036,6 @@ func (sbos *StreamBinaryOpStream) CloneTimeShift(amount time.Duration) Stream {
 	}
 }
 
-type StreamCombine struct {
-	interpreter.Object
-	Source Stream
-	Mode   string
-}
-
-func NewStreamCombine(
-	Object interpreter.Object,
-	Source Stream,
-	Mode string,
-) *StreamCombine {
-	return &StreamCombine{
-		Object: Object,
-		Source: Source,
-		Mode:   Mode,
-	}
-}
-
-func (sc *StreamCombine) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamCombine(sc)
-}
-
-func (sc *StreamCombine) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamCombine{
-		Object: sc.Object,
-		Source: cloneTimeshift(sc.Source, amount),
-		Mode:   sc.Mode,
-	}
-}
-
-type StreamConstDouble struct {
-	interpreter.Object
-	Value float64
-	Key   map[string]string
-}
-
-func NewStreamConstDouble(
-	Object interpreter.Object,
-	Value float64,
-	Key map[string]string,
-) *StreamConstDouble {
-	return &StreamConstDouble{
-		Object: Object,
-		Value:  Value,
-		Key:    Key,
-	}
-}
-
-func (scd *StreamConstDouble) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamConstDouble(scd)
-}
-
-func (scd *StreamConstDouble) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamConstDouble{
-		Object: scd.Object,
-		Value:  scd.Value,
-		Key:    scd.Key,
-	}
-}
-
-type StreamConstInt struct {
-	interpreter.Object
-	Value int
-	Key   map[string]string
-}
-
-func NewStreamConstInt(
-	Object interpreter.Object,
-	Value int,
-	Key map[string]string,
-) *StreamConstInt {
-	return &StreamConstInt{
-		Object: Object,
-		Value:  Value,
-		Key:    Key,
-	}
-}
-
-func (sci *StreamConstInt) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamConstInt(sci)
-}
-
-func (sci *StreamConstInt) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamConstInt{
-		Object: sci.Object,
-		Value:  sci.Value,
-		Key:    sci.Key,
-	}
-}
-
-type StreamCount struct {
-	interpreter.Object
-	Sources []Stream
-}
-
-func NewStreamCount(
-	Object interpreter.Object,
-	Sources []Stream,
-) *StreamCount {
-	return &StreamCount{
-		Object:  Object,
-		Sources: Sources,
-	}
-}
-
-func (sc *StreamCount) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamCount(sc)
-}
-
-func (sc *StreamCount) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamCount{
-		Object:  sc.Object,
-		Sources: sc.Sources,
-	}
-}
-
-type StreamData struct {
-	interpreter.Object
-	MetricName        string
-	Filter            filter.Filter
-	Rollup            string
-	Extrapolation     string
-	MaxExtrapolations int
-	TimeShift         time.Duration
-}
-
-func NewStreamData(
-	Object interpreter.Object,
-	MetricName string,
-	Filter filter.Filter,
-	Rollup string,
-	Extrapolation string,
-	MaxExtrapolations int,
-	TimeShift time.Duration,
-) *StreamData {
-	return &StreamData{
-		Object:            Object,
-		MetricName:        MetricName,
-		Filter:            Filter,
-		Rollup:            Rollup,
-		Extrapolation:     Extrapolation,
-		MaxExtrapolations: MaxExtrapolations,
-		TimeShift:         TimeShift,
-	}
-}
-
-func (sd *StreamData) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamData(sd)
-}
-
-func (sd *StreamData) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamData{
-		Object:            sd.Object,
-		MetricName:        sd.MetricName,
-		Filter:            sd.Filter,
-		Rollup:            sd.Rollup,
-		Extrapolation:     sd.Extrapolation,
-		MaxExtrapolations: sd.MaxExtrapolations,
-		TimeShift:         sd.TimeShift,
-	}
-}
-
-type StreamDetect struct {
-	interpreter.Object
-	On               Stream
-	Off              Stream
-	Mode             string
-	Annotations      interpreter.Object
-	EventAnnotations interpreter.Object
-	AutoResolveAfter *time.Duration
-}
-
-func NewStreamDetect(
-	Object interpreter.Object,
-	On Stream,
-	Off Stream,
-	Mode string,
-	Annotations interpreter.Object,
-	EventAnnotations interpreter.Object,
-	AutoResolveAfter *time.Duration,
-) *StreamDetect {
-	return &StreamDetect{
-		Object:           Object,
-		On:               On,
-		Off:              Off,
-		Mode:             Mode,
-		Annotations:      Annotations,
-		EventAnnotations: EventAnnotations,
-		AutoResolveAfter: AutoResolveAfter,
-	}
-}
-
-func (sd *StreamDetect) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamDetect(sd)
-}
-
-func (sd *StreamDetect) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamDetect{
-		Object:           sd.Object,
-		On:               cloneTimeshift(sd.On, amount),
-		Off:              cloneTimeshift(sd.Off, amount),
-		Mode:             sd.Mode,
-		Annotations:      sd.Annotations,
-		EventAnnotations: sd.EventAnnotations,
-		AutoResolveAfter: sd.AutoResolveAfter,
-	}
-}
-
-type StreamEvents struct {
-	interpreter.Object
-}
-
-func NewStreamEvents(
-	Object interpreter.Object,
-) *StreamEvents {
-	return &StreamEvents{
-		Object: Object,
-	}
-}
-
-func (se *StreamEvents) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamEvents(se)
-}
-
-func (se *StreamEvents) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamEvents{
-		Object: se.Object,
-	}
-}
-
-type StreamFill struct {
-	interpreter.Object
-	Source   Stream
-	Value    interpreter.Object
-	Duration int
-	MaxCount int
-}
-
-func NewStreamFill(
-	Object interpreter.Object,
-	Source Stream,
-	Value interpreter.Object,
-	Duration int,
-	MaxCount int,
-) *StreamFill {
-	return &StreamFill{
-		Object:   Object,
-		Source:   Source,
-		Value:    Value,
-		Duration: Duration,
-		MaxCount: MaxCount,
-	}
-}
-
-func (sf *StreamFill) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamFill(sf)
-}
-
-func (sf *StreamFill) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamFill{
-		Object:   sf.Object,
-		Source:   cloneTimeshift(sf.Source, amount),
-		Value:    sf.Value,
-		Duration: sf.Duration,
-		MaxCount: sf.MaxCount,
-	}
-}
-
-type StreamGeneric struct {
-	interpreter.Object
-	Source Stream
-	Call   string
-}
-
-func NewStreamGeneric(
-	Object interpreter.Object,
-	Source Stream,
-	Call string,
-) *StreamGeneric {
-	return &StreamGeneric{
-		Object: Object,
-		Source: Source,
-		Call:   Call,
-	}
-}
-
-func (sg *StreamGeneric) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamGeneric(sg)
-}
-
-func (sg *StreamGeneric) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamGeneric{
-		Object: sg.Object,
-		Source: cloneTimeshift(sg.Source, amount),
-		Call:   sg.Call,
-	}
-}
-
 type StreamIsNone struct {
 	interpreter.Object
 	Source Stream
@@ -627,216 +1063,6 @@ func (sin *StreamIsNone) CloneTimeShift(amount time.Duration) Stream {
 		Object: sin.Object,
 		Source: cloneTimeshift(sin.Source, amount),
 		Invert: sin.Invert,
-	}
-}
-
-type StreamMax struct {
-	interpreter.Object
-	Sources []Stream
-	Value   interpreter.Object
-}
-
-func NewStreamMax(
-	Object interpreter.Object,
-	Sources []Stream,
-	Value interpreter.Object,
-) *StreamMax {
-	return &StreamMax{
-		Object:  Object,
-		Sources: Sources,
-		Value:   Value,
-	}
-}
-
-func (sm *StreamMax) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamMax(sm)
-}
-
-func (sm *StreamMax) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamMax{
-		Object:  sm.Object,
-		Sources: sm.Sources,
-		Value:   sm.Value,
-	}
-}
-
-type StreamMean struct {
-	interpreter.Object
-	Sources   []Stream
-	Constants []interpreter.Object
-}
-
-func NewStreamMean(
-	Object interpreter.Object,
-	Sources []Stream,
-	Constants []interpreter.Object,
-) *StreamMean {
-	return &StreamMean{
-		Object:    Object,
-		Sources:   Sources,
-		Constants: Constants,
-	}
-}
-
-func (sm *StreamMean) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamMean(sm)
-}
-
-func (sm *StreamMean) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamMean{
-		Object:    sm.Object,
-		Sources:   sm.Sources,
-		Constants: sm.Constants,
-	}
-}
-
-type StreamMedian struct {
-	interpreter.Object
-	Sources   []Stream
-	Constants []interpreter.Object
-}
-
-func NewStreamMedian(
-	Object interpreter.Object,
-	Sources []Stream,
-	Constants []interpreter.Object,
-) *StreamMedian {
-	return &StreamMedian{
-		Object:    Object,
-		Sources:   Sources,
-		Constants: Constants,
-	}
-}
-
-func (sm *StreamMedian) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamMedian(sm)
-}
-
-func (sm *StreamMedian) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamMedian{
-		Object:    sm.Object,
-		Sources:   sm.Sources,
-		Constants: sm.Constants,
-	}
-}
-
-type StreamMin struct {
-	interpreter.Object
-	Sources []Stream
-	Value   interpreter.Object
-}
-
-func NewStreamMin(
-	Object interpreter.Object,
-	Sources []Stream,
-	Value interpreter.Object,
-) *StreamMin {
-	return &StreamMin{
-		Object:  Object,
-		Sources: Sources,
-		Value:   Value,
-	}
-}
-
-func (sm *StreamMin) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamMin(sm)
-}
-
-func (sm *StreamMin) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamMin{
-		Object:  sm.Object,
-		Sources: sm.Sources,
-		Value:   sm.Value,
-	}
-}
-
-type StreamPercentile struct {
-	interpreter.Object
-	Source Stream
-}
-
-func NewStreamPercentile(
-	Object interpreter.Object,
-	Source Stream,
-) *StreamPercentile {
-	return &StreamPercentile{
-		Object: Object,
-		Source: Source,
-	}
-}
-
-func (sp *StreamPercentile) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamPercentile(sp)
-}
-
-func (sp *StreamPercentile) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamPercentile{
-		Object: sp.Object,
-		Source: cloneTimeshift(sp.Source, amount),
-	}
-}
-
-type StreamPublish struct {
-	interpreter.Object
-	Source Stream
-	Label  string
-	Enable bool
-}
-
-func NewStreamPublish(
-	Object interpreter.Object,
-	Source Stream,
-	Label string,
-	Enable bool,
-) *StreamPublish {
-	return &StreamPublish{
-		Object: Object,
-		Source: Source,
-		Label:  Label,
-		Enable: Enable,
-	}
-}
-
-func (sp *StreamPublish) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamPublish(sp)
-}
-
-func (sp *StreamPublish) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamPublish{
-		Object: sp.Object,
-		Source: cloneTimeshift(sp.Source, amount),
-		Label:  sp.Label,
-		Enable: sp.Enable,
-	}
-}
-
-type StreamScale struct {
-	interpreter.Object
-	Source   Stream
-	Multiple float64
-}
-
-func NewStreamScale(
-	Object interpreter.Object,
-	Source Stream,
-	Multiple float64,
-) *StreamScale {
-	return &StreamScale{
-		Object:   Object,
-		Source:   Source,
-		Multiple: Multiple,
-	}
-}
-
-func (ss *StreamScale) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamScale(ss)
-}
-
-func (ss *StreamScale) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamScale{
-		Object:   ss.Object,
-		Source:   cloneTimeshift(ss.Source, amount),
-		Multiple: ss.Multiple,
 	}
 }
 
@@ -874,172 +1100,6 @@ func (st *StreamTernary) CloneTimeShift(amount time.Duration) Stream {
 	}
 }
 
-type StreamThreshold struct {
-	interpreter.Object
-	Value float64
-}
-
-func NewStreamThreshold(
-	Object interpreter.Object,
-	Value float64,
-) *StreamThreshold {
-	return &StreamThreshold{
-		Object: Object,
-		Value:  Value,
-	}
-}
-
-func (st *StreamThreshold) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamThreshold(st)
-}
-
-func (st *StreamThreshold) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamThreshold{
-		Object: st.Object,
-		Value:  st.Value,
-	}
-}
-
-type StreamTimeShift struct {
-	interpreter.Object
-	Source Stream
-	Offset time.Duration
-}
-
-func NewStreamTimeShift(
-	Object interpreter.Object,
-	Source Stream,
-	Offset time.Duration,
-) *StreamTimeShift {
-	return &StreamTimeShift{
-		Object: Object,
-		Source: Source,
-		Offset: Offset,
-	}
-}
-
-func (sts *StreamTimeShift) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamTimeShift(sts)
-}
-
-func (sts *StreamTimeShift) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamTimeShift{
-		Object: sts.Object,
-		Source: cloneTimeshift(sts.Source, amount),
-		Offset: sts.Offset,
-	}
-}
-
-type StreamTop struct {
-	interpreter.Object
-	Source Stream
-}
-
-func NewStreamTop(
-	Object interpreter.Object,
-	Source Stream,
-) *StreamTop {
-	return &StreamTop{
-		Object: Object,
-		Source: Source,
-	}
-}
-
-func (st *StreamTop) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamTop(st)
-}
-
-func (st *StreamTop) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamTop{
-		Object: st.Object,
-		Source: cloneTimeshift(st.Source, amount),
-	}
-}
-
-type StreamTransform struct {
-	interpreter.Object
-	Source Stream
-	Fn     string
-	Over   time.Duration
-}
-
-func NewStreamTransform(
-	Object interpreter.Object,
-	Source Stream,
-	Fn string,
-	Over time.Duration,
-) *StreamTransform {
-	return &StreamTransform{
-		Object: Object,
-		Source: Source,
-		Fn:     Fn,
-		Over:   Over,
-	}
-}
-
-func (st *StreamTransform) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamTransform(st)
-}
-
-func (st *StreamTransform) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamTransform{
-		Object: st.Object,
-		Source: cloneTimeshift(st.Source, amount),
-		Fn:     st.Fn,
-		Over:   st.Over,
-	}
-}
-
-type StreamTransformCycle struct {
-	interpreter.Object
-	Source        Stream
-	Fn            string
-	Cycle         string
-	CycleStart    *string
-	Timezone      *string
-	PartialValues bool
-	ShiftCycles   int
-}
-
-func NewStreamTransformCycle(
-	Object interpreter.Object,
-	Source Stream,
-	Fn string,
-	Cycle string,
-	CycleStart *string,
-	Timezone *string,
-	PartialValues bool,
-	ShiftCycles int,
-) *StreamTransformCycle {
-	return &StreamTransformCycle{
-		Object:        Object,
-		Source:        Source,
-		Fn:            Fn,
-		Cycle:         Cycle,
-		CycleStart:    CycleStart,
-		Timezone:      Timezone,
-		PartialValues: PartialValues,
-		ShiftCycles:   ShiftCycles,
-	}
-}
-
-func (stc *StreamTransformCycle) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamTransformCycle(stc)
-}
-
-func (stc *StreamTransformCycle) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamTransformCycle{
-		Object:        stc.Object,
-		Source:        cloneTimeshift(stc.Source, amount),
-		Fn:            stc.Fn,
-		Cycle:         stc.Cycle,
-		CycleStart:    stc.CycleStart,
-		Timezone:      stc.Timezone,
-		PartialValues: stc.PartialValues,
-		ShiftCycles:   stc.ShiftCycles,
-	}
-}
-
 type StreamUnaryOpMinus struct {
 	interpreter.Object
 	Stream Stream
@@ -1063,65 +1123,5 @@ func (suom *StreamUnaryOpMinus) CloneTimeShift(amount time.Duration) Stream {
 	return &StreamUnaryOpMinus{
 		Object: suom.Object,
 		Stream: cloneTimeshift(suom.Stream, amount),
-	}
-}
-
-type StreamUnion struct {
-	interpreter.Object
-	Sources []Stream
-}
-
-func NewStreamUnion(
-	Object interpreter.Object,
-	Sources []Stream,
-) *StreamUnion {
-	return &StreamUnion{
-		Object:  Object,
-		Sources: Sources,
-	}
-}
-
-func (su *StreamUnion) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamUnion(su)
-}
-
-func (su *StreamUnion) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamUnion{
-		Object:  su.Object,
-		Sources: su.Sources,
-	}
-}
-
-type StreamWhen struct {
-	interpreter.Object
-	Predicate Stream
-	Lasting   *time.Duration
-	AtLeast   float64
-}
-
-func NewStreamWhen(
-	Object interpreter.Object,
-	Predicate Stream,
-	Lasting *time.Duration,
-	AtLeast float64,
-) *StreamWhen {
-	return &StreamWhen{
-		Object:    Object,
-		Predicate: Predicate,
-		Lasting:   Lasting,
-		AtLeast:   AtLeast,
-	}
-}
-
-func (sw *StreamWhen) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamWhen(sw)
-}
-
-func (sw *StreamWhen) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamWhen{
-		Object:    sw.Object,
-		Predicate: cloneTimeshift(sw.Predicate, amount),
-		Lasting:   sw.Lasting,
-		AtLeast:   sw.AtLeast,
 	}
 }

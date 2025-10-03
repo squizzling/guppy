@@ -15,15 +15,95 @@ var Imports = []string{
 
 var Interfaces = []ast.Interface{
 	{"Stream", []ast.Node{
-		{"Above", true, []ast.Field{
+		// Top level
+		{"FuncAlerts", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+		}},
+		{"FuncCombine", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Source", "Stream", false},
+			{"Mode", "string", false},
+		}},
+		{"FuncConstDouble", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Value", "float64", false},
+			{"Key", "map[string]string", false},
+		}},
+		{"FuncConstInt", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Value", "int", false},
+			{"Key", "map[string]string", false},
+		}},
+		{"FuncCount", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Sources", "[]Stream", false},
+		}},
+		{"FuncData", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"MetricName", "string", false},
+			{"Filter", "filter.Filter", false},
+			{"Rollup", "string", false},
+			{"Extrapolation", "string", false},
+			{"MaxExtrapolations", "int", false},
+			{"TimeShift", "time.Duration", false},
+		}},
+		{"FuncDetect", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"On", "Stream", false},
+			{"Off", "Stream", false},
+			{"Mode", "string", false},
+			{"Annotations", "interpreter.Object", false},
+			{"EventAnnotations", "interpreter.Object", false},
+			{"AutoResolveAfter", "*time.Duration", false},
+		}},
+		{"FuncEvents", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+		}},
+		{"FuncMax", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Sources", "[]Stream", false},
+			{"Value", "interpreter.Object", false},
+		}},
+		{"FuncMean", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Sources", "[]Stream", false},
+			{"Constants", "[]interpreter.Object", false},
+		}},
+		{"FuncMedian", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Sources", "[]Stream", false},
+			{"Constants", "[]interpreter.Object", false},
+		}},
+		{"FuncMin", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Sources", "[]Stream", false},
+			{"Value", "interpreter.Object", false},
+		}},
+		{"FuncThreshold", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Value", "float64", false},
+		}},
+		{"FuncUnion", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Sources", "[]Stream", false},
+		}},
+		{"FuncWhen", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Predicate", "Stream", false},
+			{"Lasting", "*time.Duration", false},
+			{"AtLeast", "float64", false},
+		}},
+
+		// Chained methods
+		{"MethodAbove", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
 			{"Source", "Stream", false},
 		}},
-		{"Abs", true, []ast.Field{
+		{"MethodAbs", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
 			{"Source", "Stream", false},
 		}},
-		{"Aggregate", true, []ast.Field{
+		{"MethodAggregate", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
 			{"Source", "Stream", false},
 			{"Fn", "string", false},
@@ -31,13 +111,64 @@ var Interfaces = []ast.Interface{
 			{"AllowAllMissing", "bool", false},
 			{"AllowMissing", "[]string", false},
 		}},
-		{"Alerts", true, []ast.Field{
-			{"Object", "interpreter.Object", true},
-		}},
-		{"Below", true, []ast.Field{
+		{"MethodBelow", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
 			{"Source", "Stream", false},
 		}},
+		{"MethodFill", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Source", "Stream", false},
+			{"Value", "interpreter.Object", false},
+			{"Duration", "int", false},
+			{"MaxCount", "int", false},
+		}},
+		{"MethodGeneric", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Source", "Stream", false},
+			{"Call", "string", false},
+		}},
+		{"MethodPercentile", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Source", "Stream", false},
+		}},
+		{"MethodPublish", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Source", "Stream", false},
+			{"Label", "string", false},
+			{"Enable", "bool", false},
+		}},
+		{"MethodScale", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Source", "Stream", false},
+			{"Multiple", "float64", false},
+		}},
+		{"MethodTimeShift", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Source", "Stream", false},
+			{"Offset", "time.Duration", false},
+		}},
+		{"MethodTop", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Source", "Stream", false},
+		}},
+		{"MethodTransform", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Source", "Stream", false},
+			{"Fn", "string", false},
+			{"Over", "time.Duration", false},
+		}},
+		{"MethodTransformCycle", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Source", "Stream", false},
+			{"Fn", "string", false},
+			{"Cycle", "string", false},
+			{"CycleStart", "*string", false},
+			{"Timezone", "*string", false},
+			{"PartialValues", "bool", false},
+			{"ShiftCycles", "int", false},
+		}},
+
+		// Operations
 		{"BinaryOpDouble", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
 			{"Stream", "Stream", false},
@@ -58,97 +189,10 @@ var Interfaces = []ast.Interface{
 			{"Op", "string", false},
 			{"Right", "Stream", false},
 		}},
-		{"Combine", true, []ast.Field{
-			{"Object", "interpreter.Object", true},
-			{"Source", "Stream", false},
-			{"Mode", "string", false},
-		}},
-		{"ConstDouble", true, []ast.Field{
-			{"Object", "interpreter.Object", true},
-			{"Value", "float64", false},
-			{"Key", "map[string]string", false},
-		}},
-		{"ConstInt", true, []ast.Field{
-			{"Object", "interpreter.Object", true},
-			{"Value", "int", false},
-			{"Key", "map[string]string", false},
-		}},
-		{"Count", true, []ast.Field{
-			{"Object", "interpreter.Object", true},
-			{"Sources", "[]Stream", false},
-		}},
-		{"Data", true, []ast.Field{
-			{"Object", "interpreter.Object", true},
-			{"MetricName", "string", false},
-			{"Filter", "filter.Filter", false},
-			{"Rollup", "string", false},
-			{"Extrapolation", "string", false},
-			{"MaxExtrapolations", "int", false},
-			{"TimeShift", "time.Duration", false},
-		}},
-		{"Detect", true, []ast.Field{
-			{"Object", "interpreter.Object", true},
-			{"On", "Stream", false},
-			{"Off", "Stream", false},
-			{"Mode", "string", false},
-			{"Annotations", "interpreter.Object", false},
-			{"EventAnnotations", "interpreter.Object", false},
-			{"AutoResolveAfter", "*time.Duration", false},
-		}},
-		{"Events", true, []ast.Field{
-			{"Object", "interpreter.Object", true},
-		}},
-		{"Fill", true, []ast.Field{
-			{"Object", "interpreter.Object", true},
-			{"Source", "Stream", false},
-			{"Value", "interpreter.Object", false},
-			{"Duration", "int", false},
-			{"MaxCount", "int", false},
-		}},
-		{"Generic", true, []ast.Field{
-			{"Object", "interpreter.Object", true},
-			{"Source", "Stream", false},
-			{"Call", "string", false},
-		}},
 		{"IsNone", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
 			{"Source", "Stream", false},
 			{"Invert", "bool", false},
-		}},
-		{"Max", true, []ast.Field{
-			{"Object", "interpreter.Object", true},
-			{"Sources", "[]Stream", false},
-			{"Value", "interpreter.Object", false},
-		}},
-		{"Mean", true, []ast.Field{
-			{"Object", "interpreter.Object", true},
-			{"Sources", "[]Stream", false},
-			{"Constants", "[]interpreter.Object", false},
-		}},
-		{"Median", true, []ast.Field{
-			{"Object", "interpreter.Object", true},
-			{"Sources", "[]Stream", false},
-			{"Constants", "[]interpreter.Object", false},
-		}},
-		{"Min", true, []ast.Field{
-			{"Object", "interpreter.Object", true},
-			{"Sources", "[]Stream", false},
-			{"Value", "interpreter.Object", false},
-		}},
-		{"Percentile", true, []ast.Field{
-			{"Object", "interpreter.Object", true},
-			{"Source", "Stream", false},
-		}},
-		{"Publish", true, []ast.Field{
-			{"Object", "interpreter.Object", true},
-			{"Source", "Stream", false},
-			{"Label", "string", false},
-			{"Enable", "bool", false},
-		}},
-		{"Scale", true, []ast.Field{
-			{"Object", "interpreter.Object", true},
-			{"Source", "Stream", false},
-			{"Multiple", "float64", false},
 		}},
 		{"Ternary", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
@@ -156,48 +200,9 @@ var Interfaces = []ast.Interface{
 			{"Left", "Stream", false},
 			{"Right", "Stream", false},
 		}},
-		{"Threshold", true, []ast.Field{
-			{"Object", "interpreter.Object", true},
-			{"Value", "float64", false},
-		}},
-		{"TimeShift", true, []ast.Field{
-			{"Object", "interpreter.Object", true},
-			{"Source", "Stream", false},
-			{"Offset", "time.Duration", false},
-		}},
-		{"Top", true, []ast.Field{
-			{"Object", "interpreter.Object", true},
-			{"Source", "Stream", false},
-		}},
-		{"Transform", true, []ast.Field{
-			{"Object", "interpreter.Object", true},
-			{"Source", "Stream", false},
-			{"Fn", "string", false},
-			{"Over", "time.Duration", false},
-		}},
-		{"TransformCycle", true, []ast.Field{
-			{"Object", "interpreter.Object", true},
-			{"Source", "Stream", false},
-			{"Fn", "string", false},
-			{"Cycle", "string", false},
-			{"CycleStart", "*string", false},
-			{"Timezone", "*string", false},
-			{"PartialValues", "bool", false},
-			{"ShiftCycles", "int", false},
-		}},
 		{"UnaryOpMinus", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
 			{"Stream", "Stream", false},
-		}},
-		{"Union", true, []ast.Field{
-			{"Object", "interpreter.Object", true},
-			{"Sources", "[]Stream", false},
-		}},
-		{"When", true, []ast.Field{
-			{"Object", "interpreter.Object", true},
-			{"Predicate", "Stream", false},
-			{"Lasting", "*time.Duration", false},
-			{"AtLeast", "float64", false},
 		}},
 	}, []string{
 		"interpreter.Object",

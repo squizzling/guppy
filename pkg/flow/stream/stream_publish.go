@@ -30,10 +30,10 @@ func (mp methodPublish) Call(i *interpreter.Interpreter) (interpreter.Object, er
 		return nil, err
 	} else {
 		// TODO: This whole thing is a hack to expose published data
-		pub := NewStreamPublish(newStreamObject(), unpublish(self), label, enable)
+		pub := NewStreamMethodPublish(newStreamObject(), unpublish(self), label, enable)
 		if rawPublished, err := i.Globals.Get("_published"); err != nil {
 			return nil, err
-		} else if published, ok := rawPublished.(interface{ Append(s *StreamPublish) }); !ok {
+		} else if published, ok := rawPublished.(interface{ Append(s *StreamMethodPublish) }); !ok {
 			return nil, fmt.Errorf("invalid type")
 		} else {
 			published.Append(pub)

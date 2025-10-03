@@ -22,7 +22,7 @@ func (f FFIThreshold) Call(i *interpreter.Interpreter) (interpreter.Object, erro
 	if value, err := interpreter.ArgAsDouble(i, "object"); err != nil {
 		return nil, err
 	} else {
-		return NewStreamThreshold(newStreamObject(), value), nil
+		return NewStreamFuncThreshold(newStreamObject(), value), nil
 	}
 }
 

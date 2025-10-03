@@ -26,6 +26,6 @@ func (mp methodPercentile) Call(i *interpreter.Interpreter) (interpreter.Object,
 	if self, err := interpreter.ArgAs[Stream](i, "self"); err != nil {
 		return nil, err
 	} else {
-		return NewStreamPercentile(newStreamObject(), unpublish(self)), nil
+		return NewStreamMethodPercentile(newStreamObject(), unpublish(self)), nil
 	}
 }

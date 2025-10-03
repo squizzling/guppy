@@ -24,6 +24,6 @@ func (mg methodGeneric) Call(i *interpreter.Interpreter) (interpreter.Object, er
 	if self, err := interpreter.ArgAs[Stream](i, "self"); err != nil {
 		return nil, err
 	} else {
-		return NewStreamGeneric(newStreamObject(), unpublish(self), mg.Function), nil
+		return NewStreamMethodGeneric(newStreamObject(), unpublish(self), mg.Function), nil
 	}
 }

@@ -57,6 +57,6 @@ func (mf methodFill) Call(i *interpreter.Interpreter) (interpreter.Object, error
 	} else if maxCount, err := mf.resolveMaxCount(i); err != nil {
 		return nil, err
 	} else {
-		return NewStreamFill(newStreamObject(), unpublish(self), value, duration, maxCount), nil
+		return NewStreamMethodFill(newStreamObject(), unpublish(self), value, duration, maxCount), nil
 	}
 }

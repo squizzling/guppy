@@ -45,7 +45,7 @@ func (f FFIMean) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
 	}
 
 	// streamValues are already unpublished
-	return NewStreamMean(newStreamObject(), streamValues, meanConstants), nil
+	return NewStreamFuncMean(newStreamObject(), streamValues, meanConstants), nil
 }
 
 var _ = interpreter.FlowCall(FFIMean{})

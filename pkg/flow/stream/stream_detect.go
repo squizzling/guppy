@@ -106,7 +106,7 @@ func (f FFIDetect) Call(i *interpreter.Interpreter) (interpreter.Object, error) 
 	} else if autoResolveAfter, err := f.resolveAutoResolveAfter(i); err != nil {
 		return nil, err
 	} else {
-		return NewStreamDetect(newStreamAlertObject(), on, off, mode, annotations, eventAnnotations, autoResolveAfter), nil
+		return NewStreamFuncDetect(newStreamAlertObject(), on, off, mode, annotations, eventAnnotations, autoResolveAfter), nil
 	}
 }
 

@@ -67,7 +67,7 @@ func (f FFIMax) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
 	}
 
 	// streamValues are already unpublished
-	return NewStreamMax(newStreamObject(), streamValues, maxConstant), nil
+	return NewStreamFuncMax(newStreamObject(), streamValues, maxConstant), nil
 }
 
 var _ = interpreter.FlowCall(FFIMax{})

@@ -22,9 +22,9 @@ func (msot methodStreamOpTernary) resolveStream(i *interpreter.Interpreter, argN
 		case Stream:
 			return in, nil
 		case *interpreter.ObjectInt:
-			return NewStreamConstInt(newStreamObject(), in.Value, nil), nil
+			return NewStreamFuncConstInt(newStreamObject(), in.Value, nil), nil
 		case *interpreter.ObjectDouble:
-			return NewStreamConstDouble(newStreamObject(), in.Value, nil), nil
+			return NewStreamFuncConstDouble(newStreamObject(), in.Value, nil), nil
 		default:
 			return nil, fmt.Errorf("%s is %T not Stream, *interpreter.ObjectInt, or *interpreter.ObjectDouble", argName, in)
 		}

@@ -24,7 +24,7 @@ func (f FFIAlerts) Params(i *interpreter.Interpreter) (*interpreter.Params, erro
 func (f FFIAlerts) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
 	// TODO: Process arguments
 	// TODO: This doesn't have the usual stream methods
-	return NewStreamAlerts(newStreamObject()), nil
+	return NewStreamFuncAlerts(newStreamObject()), nil
 }
 
 var _ = interpreter.FlowCall(FFIAlerts{})

@@ -19,7 +19,7 @@ func (f FFIEvents) Params(i *interpreter.Interpreter) (*interpreter.Params, erro
 
 func (f FFIEvents) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
 	// TODO: These probably aren't the right attributes for an event stream
-	return NewStreamEvents(newStreamObject()), nil
+	return NewStreamFuncEvents(newStreamObject()), nil
 }
 
 var _ = interpreter.FlowCall(FFIEvents{})

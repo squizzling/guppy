@@ -45,7 +45,7 @@ func (f FFIMedian) Call(i *interpreter.Interpreter) (interpreter.Object, error) 
 	}
 
 	// streamValues are already unpublished
-	return NewStreamMedian(newStreamObject(), streamValues, medianConstants), nil
+	return NewStreamFuncMedian(newStreamObject(), streamValues, medianConstants), nil
 }
 
 var _ = interpreter.FlowCall(FFIMedian{})

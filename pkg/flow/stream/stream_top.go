@@ -26,6 +26,6 @@ func (mt methodTop) Call(i *interpreter.Interpreter) (interpreter.Object, error)
 	if self, err := interpreter.ArgAs[Stream](i, "self"); err != nil {
 		return nil, err
 	} else {
-		return NewStreamTop(newStreamObject(), unpublish(self)), nil
+		return NewStreamMethodTop(newStreamObject(), unpublish(self)), nil
 	}
 }

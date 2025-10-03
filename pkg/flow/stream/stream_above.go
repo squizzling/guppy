@@ -25,6 +25,6 @@ func (ma methodAbove) Call(i *interpreter.Interpreter) (interpreter.Object, erro
 	if self, err := interpreter.ArgAs[Stream](i, "self"); err != nil {
 		return nil, err
 	} else {
-		return NewStreamAbove(newStreamObject(), unpublish(self)), nil
+		return NewStreamMethodAbove(newStreamObject(), unpublish(self)), nil
 	}
 }

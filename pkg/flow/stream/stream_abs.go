@@ -22,6 +22,6 @@ func (m methodAbs) Call(i *interpreter.Interpreter) (interpreter.Object, error) 
 	if self, err := interpreter.ArgAs[Stream](i, "self"); err != nil {
 		return nil, err
 	} else {
-		return NewStreamAbs(newStreamObject(), unpublish(self)), nil
+		return NewStreamMethodAbs(newStreamObject(), unpublish(self)), nil
 	}
 }

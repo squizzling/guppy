@@ -67,7 +67,7 @@ func (f FFIMin) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
 	}
 
 	// streamValues are already unpublished
-	return NewStreamMin(newStreamObject(), streamValues, minConstant), nil
+	return NewStreamFuncMin(newStreamObject(), streamValues, minConstant), nil
 }
 
 var _ = interpreter.FlowCall(FFIMin{})

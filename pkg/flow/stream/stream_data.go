@@ -82,7 +82,7 @@ func (f FFIData) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
 	} else if maxExtrapolations, err := resolveMaxExtrapolations(i); err != nil {
 		return nil, err
 	} else {
-		return NewStreamData(newStreamObject(), metricName, fltr, rollup, extrapolation, maxExtrapolations, 0), nil
+		return NewStreamFuncData(newStreamObject(), metricName, fltr, rollup, extrapolation, maxExtrapolations, 0), nil
 	}
 }
 

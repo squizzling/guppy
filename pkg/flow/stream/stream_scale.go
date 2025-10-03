@@ -40,6 +40,6 @@ func (ms methodScale) Call(i *interpreter.Interpreter) (interpreter.Object, erro
 	} else if multiple, err := ms.resolveMultiple(i); err != nil {
 		return nil, err
 	} else {
-		return NewStreamScale(newStreamObject(), unpublish(self), multiple), nil
+		return NewStreamMethodScale(newStreamObject(), unpublish(self), multiple), nil
 	}
 }

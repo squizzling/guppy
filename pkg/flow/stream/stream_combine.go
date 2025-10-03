@@ -43,7 +43,7 @@ func (f FFICombine) Call(i *interpreter.Interpreter) (interpreter.Object, error)
 	} else if err = f.resolveMode(i); err != nil {
 		return nil, err
 	} else {
-		return NewStreamCombine(newStreamObject(), expression, ""), nil
+		return NewStreamFuncCombine(newStreamObject(), expression, ""), nil
 	}
 }
 

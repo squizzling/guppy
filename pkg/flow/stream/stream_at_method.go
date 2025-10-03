@@ -209,10 +209,10 @@ func (msat methodStreamAggregateTransform) Call(i *interpreter.Interpreter) (int
 	} else if (over != nil && len(by) > 0) || (over != nil && cycle != nil) || (len(by) > 0 && cycle != nil) {
 		return nil, fmt.Errorf("only one argument of [by, over, cycle] may be specified")
 	} else if over != nil {
-		return NewStreamTransform(newStreamObject(), unpublish(self), msat.name, *over), nil
+		return NewStreamMethodTransform(newStreamObject(), unpublish(self), msat.name, *over), nil
 	} else if cycle != nil {
-		return NewStreamTransformCycle(newStreamObject(), unpublish(self), msat.name, *cycle, cycleStart, timezone, partialValues, shiftCycles), nil
+		return NewStreamMethodTransformCycle(newStreamObject(), unpublish(self), msat.name, *cycle, cycleStart, timezone, partialValues, shiftCycles), nil
 	} else {
-		return NewStreamAggregate(newStreamObject(), unpublish(self), msat.name, by, allowAllMissing, allowMissing), nil
+		return NewStreamMethodAggregate(newStreamObject(), unpublish(self), msat.name, by, allowAllMissing, allowMissing), nil
 	}
 }
