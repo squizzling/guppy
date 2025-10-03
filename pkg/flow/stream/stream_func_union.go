@@ -32,4 +32,4 @@ func (f FFIUnion) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
 	}
 }
 
-var _ = interpreter.FlowCall(FFIData{})
+var _ = interpreter.FlowCall(FFIUnion{})
