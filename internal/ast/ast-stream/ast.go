@@ -38,6 +38,26 @@ var Interfaces = []ast.Interface{
 			{"Object", "interpreter.Object", true},
 			{"Source", "Stream", false},
 		}},
+		{"BinaryOpDouble", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Stream", "Stream", false},
+			{"Op", "string", false},
+			{"Other", "float64", false},
+			{"Reverse", "bool", false},
+		}},
+		{"BinaryOpInt", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Stream", "Stream", false},
+			{"Op", "string", false},
+			{"Other", "int", false},
+			{"Reverse", "bool", false},
+		}},
+		{"BinaryOpStream", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Left", "Stream", false},
+			{"Op", "string", false},
+			{"Right", "Stream", false},
+		}},
 		{"Combine", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
 			{"Source", "Stream", false},
@@ -52,6 +72,10 @@ var Interfaces = []ast.Interface{
 			{"Object", "interpreter.Object", true},
 			{"Value", "int", false},
 			{"Key", "map[string]string", false},
+		}},
+		{"Count", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Sources", "[]Stream", false},
 		}},
 		{"Data", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
@@ -111,34 +135,6 @@ var Interfaces = []ast.Interface{
 			{"Sources", "[]Stream", false},
 			{"Value", "interpreter.Object", false},
 		}},
-		{"BinaryOpDouble", true, []ast.Field{
-			{"Object", "interpreter.Object", true},
-			{"Stream", "Stream", false},
-			{"Op", "string", false},
-			{"Other", "float64", false},
-			{"Reverse", "bool", false},
-		}},
-		{"BinaryOpInt", true, []ast.Field{
-			{"Object", "interpreter.Object", true},
-			{"Stream", "Stream", false},
-			{"Op", "string", false},
-			{"Other", "int", false},
-			{"Reverse", "bool", false},
-		}},
-		{"BinaryOpStream", true, []ast.Field{
-			{"Object", "interpreter.Object", true},
-			{"Left", "Stream", false},
-			{"Op", "string", false},
-			{"Right", "Stream", false},
-		}},
-		{"Count", true, []ast.Field{
-			{"Object", "interpreter.Object", true},
-			{"Sources", "[]Stream", false},
-		}},
-		{"UnaryOpMinus", true, []ast.Field{
-			{"Object", "interpreter.Object", true},
-			{"Stream", "Stream", false},
-		}},
 		{"Percentile", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
 			{"Source", "Stream", false},
@@ -188,6 +184,10 @@ var Interfaces = []ast.Interface{
 			{"Timezone", "*string", false},
 			{"PartialValues", "bool", false},
 			{"ShiftCycles", "int", false},
+		}},
+		{"UnaryOpMinus", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Stream", "Stream", false},
 		}},
 		{"Union", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
