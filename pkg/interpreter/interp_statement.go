@@ -153,11 +153,13 @@ func (i *Interpreter) VisitStatementIf(si ast.StatementIf) (returnValue any, err
 		} else if cond, err := isTruthy(cond); err != nil {
 			return nil, err
 		} else if cond {
-			return si.Statement[idx].Accept(i)
+			_, err := si.Statement[idx].Accept(i)
+			return nil, err
 		}
 	}
 	if si.StatementElse != nil {
-		return si.StatementElse.Accept(i)
+		_, err := si.StatementElse.Accept(i)
+		return nil, err
 	} else {
 		return nil, nil
 	}
