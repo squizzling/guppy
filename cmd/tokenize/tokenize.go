@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"guppy/internal/parser/tokenizer"
+	"guppy/pkg/parser/tokenizer"
 )
 
 func escape(s string) string {

@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"os"
 
-	iflow "guppy/internal/flow"
-	"guppy/internal/parser/flow"
-	"guppy/internal/parser/parser"
-	"guppy/internal/parser/tokenizer"
 	"guppy/internal/renderer"
+	pflow "guppy/pkg/flow"
+	"guppy/pkg/parser/flow"
+	"guppy/pkg/parser/parser"
+	"guppy/pkg/parser/tokenizer"
 )
 
 func main() {
@@ -25,7 +25,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	i := iflow.NewInterpreter(false)
+	i := pflow.NewInterpreter(false)
 	errProgram := i.Execute(program)
 	if errProgram != nil {
 		fmt.Printf("%v\n", errProgram)
@@ -36,7 +36,7 @@ func main() {
 		fmt.Printf("Failed to get _published: %s", err)
 	}
 
-	published := rawPublished.(*iflow.Published)
+	published := rawPublished.(*pflow.Published)
 
 	fmt.Printf("digraph G {\n")
 	fmt.Printf("rankdir=\"BT\"")

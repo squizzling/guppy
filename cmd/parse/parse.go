@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"os"
 
-	"guppy/internal/parser/ast"
-	"guppy/internal/parser/flow"
-	"guppy/internal/parser/parser"
-	"guppy/internal/parser/tokenizer"
+	"guppy/pkg/parser/ast"
+	"guppy/pkg/parser/flow"
+	"guppy/pkg/parser/parser"
+	"guppy/pkg/parser/tokenizer"
 )
 
 func main() {

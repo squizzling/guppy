@@ -1,0 +1,312 @@
+package stream
+
+import (
+	"fmt"
+	"strconv"
+	"strings"
+	"time"
+
+	"guppy/internal/interpreter"
+)
+
+type SignalFlowWriter struct {
+}
+
+func r(a any, err error) string {
+	return a.(string)
+}
+
+func (sfw *SignalFlowWriter) VisitStreamAbove(sa *StreamAbove) (any, error) {
+	return fmt.Sprintf("%s.above()", r(sa.Source.Accept(sfw))), nil
+}
+
+func (sfw *SignalFlowWriter) VisitStreamAbs(sa *StreamAbs) (any, error) {
+	return fmt.Sprintf("%s.abs()", r(sa.Source.Accept(sfw))), nil
+}
+
+func (sfw *SignalFlowWriter) VisitStreamAggregate(sa *StreamAggregate) (any, error) {
+	by := ""
+	if len(sa.By) > 0 {
+		by = "by=["
+		for idx, b := range sa.By {
+			if idx > 0 {
+				by += ", "
+			}
+			by += "'" + b + "'"
+		}
+	}
+
+	return fmt.Sprintf("%s.%s(%s)", r(sa.Source.Accept(sfw)), sa.Fn, by), nil
+}
+
+func (sfw *SignalFlowWriter) VisitStreamAlerts(sa *StreamAlerts) (any, error) {
+	return "alerts()", nil
+}
+
+func (sfw *SignalFlowWriter) VisitStreamBelow(sb *StreamBelow) (any, error) {
+	return fmt.Sprintf("%s.below()", r(sb.Source.Accept(sfw))), nil
+}
+
+func (sfw *SignalFlowWriter) VisitStreamBinaryOpDouble(smod *StreamBinaryOpDouble) (any, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (sfw *SignalFlowWriter) VisitStreamBinaryOpInt(smoi *StreamBinaryOpInt) (any, error) {
+	if smoi.Reverse {
+		return fmt.Sprintf("(%d %s %s)", smoi.Other, smoi.Op, r(smoi.Stream.Accept(sfw))), nil
+	} else {
+		return fmt.Sprintf("(%s %s %d)", r(smoi.Stream.Accept(sfw)), smoi.Op, smoi.Other), nil
+	}
+}
+
+func (sfw *SignalFlowWriter) VisitStreamBinaryOpStream(smos *StreamBinaryOpStream) (any, error) {
+	return fmt.Sprintf("(%s %s %s)", r(smos.Left.Accept(sfw)), smos.Op, r(smos.Right.Accept(sfw))), nil
+}
+
+func (sfw *SignalFlowWriter) VisitStreamCombine(sc *StreamCombine) (any, error) {
+	panic("StreamCombine")
+}
+
+func (sfw *SignalFlowWriter) VisitStreamConstDouble(scd *StreamConstDouble) (any, error) {
+	return fmt.Sprintf("const(%g)", scd.Value), nil
+
+}
+
+func (sfw *SignalFlowWriter) VisitStreamConstInt(sci *StreamConstInt) (any, error) {
+	return fmt.Sprintf("const(%d)", sci.Value), nil
+}
+
+func (sfw *SignalFlowWriter) VisitStreamData(sd *StreamData) (any, error) {
+	filter := ""
+	if sd.Filter != nil {
+		filter = ", filter=" + sd.Filter.RenderFilter()
+	}
+	extrapolation := ""
+	if sd.Extrapolation != "" {
+		extrapolation = ", extrapolation='" + sd.Extrapolation + "'"
+	}
+	maxExtrapolations := ""
+	if sd.MaxExtrapolations > 0 { // TODO: Check default value
+		maxExtrapolations = ", maxExtrapolations=" + strconv.Itoa(sd.MaxExtrapolations)
+	}
+	rollup := ""
+	if sd.Rollup != "" {
+		rollup = ", rollup='" + sd.Rollup + "'"
+	}
+
+	return fmt.Sprintf("data('%s'%s%s%s%s)", sd.MetricName, filter, extrapolation, maxExtrapolations, rollup), nil
+}
+
+func (sfw *SignalFlowWriter) VisitStreamDetect(sd *StreamDetect) (any, error) {
+	var sb strings.Builder
+	sb.WriteString("detect(")
+
+	// On
+	sb.WriteString(r(sd.On.Accept(sfw)))
+
+	// Off
+	if sd.Off != nil {
+		sb.WriteString("off=")
+		sb.WriteString(r(sd.Off.Accept(sfw)))
+		sb.WriteString(", ")
+	}
+
+	// Mode
+	sb.WriteString("mode=\"")
+	sb.WriteString(sd.Mode)
+	sb.WriteString("\", ")
+
+	// Annotations
+	sb.WriteString("annotations=\"")
+	sb.WriteString("(annotations)")
+	sb.WriteString("\", ")
+
+	// Event annotations
+	sb.WriteString("event_annotations=\"")
+	sb.WriteString("(event_annotations)")
+	sb.WriteString("\", ")
+
+	if sd.AutoResolveAfter != nil {
+		sb.WriteString("auto_resolve_after=")
+		sb.WriteString(resolveDuration(sd.AutoResolveAfter))
+	}
+
+	sb.WriteString(")")
+
+	return sb.String(), nil
+}
+
+func (sfw *SignalFlowWriter) VisitStreamEvents(se *StreamEvents) (any, error) {
+	return "events()", nil
+}
+
+func (sfw *SignalFlowWriter) VisitStreamFill(sf *StreamFill) (any, error) {
+	return fmt.Sprintf("%s.fill(%s)", r(sf.Source.Accept(sfw)), interpreter.Repr(sf.Value)), nil
+}
+
+func (sfw *SignalFlowWriter) VisitStreamGeneric(sg *StreamGeneric) (any, error) {
+	return fmt.Sprintf("%s.%s()", r(sg.Source.Accept(sfw)), sg.Call), nil
+}
+
+func (sfw *SignalFlowWriter) VisitStreamIsNone(sin *StreamIsNone) (any, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (sfw *SignalFlowWriter) VisitStreamMax(sm *StreamMax) (any, error) {
+	var sb strings.Builder
+	sb.WriteString("max(")
+	switch c := sm.Value.(type) {
+	case *interpreter.ObjectInt:
+		sb.WriteString(fmt.Sprintf("%d,", c.Value))
+	case *interpreter.ObjectDouble:
+		sb.WriteString(fmt.Sprintf("%g,", c.Value))
+	case nil:
+		// None
+	default:
+		panic(fmt.Sprintf("unrecognized type in max: %T", c))
+	}
+	for _, s := range sm.Sources {
+		sb.WriteString(fmt.Sprintf("%s, ", r(s.Accept(sfw))))
+	}
+	sb.WriteString(")")
+	return sb.String(), nil
+}
+
+func (sfw *SignalFlowWriter) VisitStreamMean(sm *StreamMean) (any, error) {
+	var sb strings.Builder
+	sb.WriteString("mean(")
+	for _, c := range sm.Constants {
+		switch c := c.(type) {
+		case *interpreter.ObjectInt:
+			sb.WriteString(fmt.Sprintf("%d,", c.Value))
+		case *interpreter.ObjectDouble:
+			sb.WriteString(fmt.Sprintf("%g,", c.Value))
+		default:
+			panic(fmt.Sprintf("unrecognized type in mean: %T", c))
+		}
+	}
+	for _, s := range sm.Sources {
+		sb.WriteString(fmt.Sprintf("%s, ", r(s.Accept(sfw))))
+	}
+	sb.WriteString(")")
+	return sb.String(), nil
+}
+
+func (sfw *SignalFlowWriter) VisitStreamMedian(sm *StreamMedian) (any, error) {
+	var sb strings.Builder
+	sb.WriteString("median(")
+	for _, c := range sm.Constants {
+		switch c := c.(type) {
+		case *interpreter.ObjectInt:
+			sb.WriteString(fmt.Sprintf("%d,", c.Value))
+		case *interpreter.ObjectDouble:
+			sb.WriteString(fmt.Sprintf("%g,", c.Value))
+		default:
+			panic(fmt.Sprintf("unrecognized type in median: %T", c))
+		}
+	}
+	for _, s := range sm.Sources {
+		sb.WriteString(fmt.Sprintf("%s, ", r(s.Accept(sfw))))
+	}
+	sb.WriteString(")")
+	return sb.String(), nil
+}
+
+func (sfw *SignalFlowWriter) VisitStreamMin(sm *StreamMin) (any, error) {
+	var sb strings.Builder
+	sb.WriteString("min(")
+	switch c := sm.Value.(type) {
+	case *interpreter.ObjectInt:
+		sb.WriteString(fmt.Sprintf("%d,", c.Value))
+	case *interpreter.ObjectDouble:
+		sb.WriteString(fmt.Sprintf("%g,", c.Value))
+	case nil:
+		// None
+	default:
+		panic(fmt.Sprintf("unrecognized type in min: %T", c))
+	}
+	for _, s := range sm.Sources {
+		sb.WriteString(fmt.Sprintf("%s, ", r(s.Accept(sfw))))
+	}
+	sb.WriteString(")")
+	return sb.String(), nil
+}
+
+func (sfw *SignalFlowWriter) VisitStreamPercentile(sp *StreamPercentile) (any, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (sfw *SignalFlowWriter) VisitStreamPublish(sp *StreamPublish) (any, error) {
+	return fmt.Sprintf("%s.publish('%s', enable=%t)", r(sp.Source.Accept(sfw)), sp.Label, sp.Enable), nil
+}
+
+func (sfw *SignalFlowWriter) VisitStreamScale(ss *StreamScale) (any, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (sfw *SignalFlowWriter) VisitStreamTernary(st *StreamTernary) (any, error) {
+	return fmt.Sprintf(
+		"%s if %s else %s",
+		r(st.Left.Accept(sfw)),
+		r(st.Condition.Accept(sfw)),
+		r(st.Right.Accept(sfw)),
+	), nil
+}
+
+func (sfw *SignalFlowWriter) VisitStreamThreshold(st *StreamThreshold) (any, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (sfw *SignalFlowWriter) VisitStreamTimeShift(sts *StreamTimeShift) (any, error) {
+	return fmt.Sprintf("%s.timeshift(over=%s)", r(sts.Source.Accept(sfw)), sts.Offset), nil
+}
+
+func (sfw *SignalFlowWriter) VisitStreamTop(st *StreamTop) (any, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (sfw *SignalFlowWriter) VisitStreamTransform(st *StreamTransform) (any, error) {
+	return fmt.Sprintf("%s.%s(over=%s)", r(st.Source.Accept(sfw)), st.Fn, st.Over), nil
+}
+
+func (sfw *SignalFlowWriter) VisitStreamTransformCycle(stc *StreamTransformCycle) (any, error) {
+	panic("implement me")
+}
+
+func (sfw *SignalFlowWriter) VisitStreamUnaryOpMinus(smoum *StreamUnaryOpMinus) (any, error) {
+	return fmt.Sprintf("-(%s)", r(smoum.Stream.Accept(sfw))), nil
+}
+
+func (sfw *SignalFlowWriter) VisitStreamUnion(su *StreamUnion) (any, error) {
+	sources := ""
+	for idx, source := range su.Sources {
+		if idx > 0 {
+			sources += ", "
+		}
+		sources += r(source.Accept(sfw))
+	}
+	return fmt.Sprintf("union(%s)", sources), nil
+}
+
+func (sfw *SignalFlowWriter) VisitStreamWhen(sw *StreamWhen) (any, error) {
+	return fmt.Sprintf(
+		"when(predicate=%s, lasting=\"%s\", at_least=%g)",
+		r(sw.Predicate.Accept(sfw)),
+		resolveDuration(sw.Lasting),
+		sw.AtLeast,
+	), nil
+}
+
+func resolveDuration(d *time.Duration) string {
+	// TODO: Render with SFX style
+	if d == nil {
+		return "None"
+	}
+	return d.String()
+}

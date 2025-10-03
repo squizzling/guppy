@@ -9,8 +9,8 @@ const Package = "stream"
 var Imports = []string{
 	"time",
 	"",
-	"guppy/internal/flow/filter",
-	"guppy/internal/interpreter",
+	"guppy/pkg/flow/filter",
+	"guppy/pkg/interpreter",
 }
 
 var Interfaces = []ast.Interface{

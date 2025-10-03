@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"strings"
 
-	"guppy/internal/flow/stream"
-	"guppy/internal/interpreter"
+	"guppy/pkg/flow/stream"
+	"guppy/pkg/interpreter"
 )
 
 type GraphWriter struct {

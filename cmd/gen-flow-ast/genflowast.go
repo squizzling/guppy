@@ -18,7 +18,7 @@ func defineAst(packageName string, interfaces ast.Interfaces) {
 	fmt.Printf("package %s\n", packageName)
 	fmt.Printf("\n")
 	fmt.Printf("import (\n")
-	fmt.Printf("\t\"guppy/internal/parser/tokenizer\"\n")
+	fmt.Printf("\t\"guppy/pkg/parser/tokenizer\"\n")
 	fmt.Printf(")\n")
 
 	for _, iface := range interfaces {
