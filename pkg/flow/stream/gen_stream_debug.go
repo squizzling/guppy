@@ -25,6 +25,29 @@ func s(a any, err error) string {
 	return a.(string)
 }
 
+func (dw DebugWriter) VisitStreamFuncAbs(sfa *StreamFuncAbs) (any, error) {
+	_s := "StreamFuncAbs(\n"
+	dw.i()
+	// TODO: 0 Object interpreter.Object
+	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sfa.Object, sfa.Object)
+	if sfa.Sources == nil {
+		_s += dw.p() + "Sources: nil\n"
+	} else if len(sfa.Sources) == 0 {
+		_s += dw.p() + "Sources: []\n"
+	} else {
+		_s += dw.p() + "Sources: [\n"
+		dw.i()
+		for _, _r := range sfa.Sources {
+			_s += dw.p() + s(_r.Accept(dw)) // IsInterfaceArray
+		}
+		dw.o()
+		_s += dw.p() + "]\n"
+	}
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
 func (dw DebugWriter) VisitStreamFuncAlerts(sfa *StreamFuncAlerts) (any, error) {
 	_s := "StreamFuncAlerts(\n"
 	dw.i()

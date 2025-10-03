@@ -110,6 +110,25 @@ func (g *GraphWriter) DefineEdge(to string, from string, label string) {
 	_, _ = g.Writer.Write([]byte(fmt.Sprintf("  %s -> %s [label=\"%s\"]\n", from, to, escape(label))))
 }
 
+func (g *GraphWriter) VisitStreamFuncAbs(sfa *stream.StreamFuncAbs) (any, error) {
+	if nodeId, ok := g.GetNode(sfa); ok {
+		return nodeId, nil
+	}
+
+	var sb strings.Builder
+
+	sb.WriteString("abs block\n")
+	nodeId := g.DefineNode(sfa, sb.String())
+	for _, source := range sfa.Sources {
+		sourceNodeId, err := source.Accept(g)
+		if err != nil {
+			return "", err
+		}
+		g.DefineEdge(nodeId, sourceNodeId.(string), "Source")
+	}
+	return nodeId, nil
+}
+
 func (g *GraphWriter) VisitStreamFuncAlerts(sfa *stream.StreamFuncAlerts) (any, error) {
 	//TODO implement me
 	panic("implement me")

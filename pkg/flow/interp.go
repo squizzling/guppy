@@ -12,6 +12,7 @@ import (
 func NewInterpreter(enableTrace bool) *interpreter.Interpreter {
 	i := interpreter.NewInterpreter(enableTrace)
 
+	_ = i.Globals.Set("abs", &stream.FFIAbs{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("alerts", &stream.FFIAlerts{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("annotate", &annotate.FFIAnnotate{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("combine", &stream.FFICombine{Object: interpreter.NewObject(nil)})

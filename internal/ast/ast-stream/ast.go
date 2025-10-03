@@ -16,6 +16,10 @@ var Imports = []string{
 var Interfaces = []ast.Interface{
 	{"Stream", []ast.Node{
 		// Top level
+		{"FuncAbs", true, []ast.Field{
+			{"Object", "interpreter.Object", true},
+			{"Sources", "[]Stream", false},
+		}},
 		{"FuncAlerts", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
 		}},

@@ -8,6 +8,7 @@ import (
 )
 
 type VisitorStream interface {
+	VisitStreamFuncAbs(sfa *StreamFuncAbs) (any, error)
 	VisitStreamFuncAlerts(sfa *StreamFuncAlerts) (any, error)
 	VisitStreamFuncCombine(sfc *StreamFuncCombine) (any, error)
 	VisitStreamFuncConstDouble(sfcd *StreamFuncConstDouble) (any, error)
@@ -48,6 +49,32 @@ type Stream interface {
 	interpreter.Object
 	Accept(vs VisitorStream) (any, error)
 	CloneTimeShift(amount time.Duration) Stream
+}
+
+type StreamFuncAbs struct {
+	interpreter.Object
+	Sources []Stream
+}
+
+func NewStreamFuncAbs(
+	Object interpreter.Object,
+	Sources []Stream,
+) *StreamFuncAbs {
+	return &StreamFuncAbs{
+		Object:  Object,
+		Sources: Sources,
+	}
+}
+
+func (sfa *StreamFuncAbs) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamFuncAbs(sfa)
+}
+
+func (sfa *StreamFuncAbs) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamFuncAbs{
+		Object:  sfa.Object,
+		Sources: sfa.Sources,
+	}
 }
 
 type StreamFuncAlerts struct {
