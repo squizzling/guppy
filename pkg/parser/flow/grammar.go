@@ -588,18 +588,10 @@ func parseTest(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 		} else if exprRight, err := parseTest(p); err != nil {
 			return nil, parser.FailErr(err)
 		} else {
-			return ast.NewExpressionCall(
-				ast.NewExpressionMember(
-					exprCond,
-					"__ternary__",
-				),
-				[]ast.Expression{
-					exprLeft,
-					exprRight,
-				},
-				nil,
-				nil,
-				nil,
+			return ast.NewExpressionTernary(
+				exprLeft,
+				exprCond,
+				exprRight,
 			), nil
 		}
 

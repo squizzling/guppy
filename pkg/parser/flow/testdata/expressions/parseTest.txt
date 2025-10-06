@@ -1,23 +1,15 @@
 a if b else c
 -----
-ExpressionCall(
-  Expr: ExpressionMember(
-    Expr: ExpressionVariable(
-      Identifier: string(b)
-    )
-    Identifier: string(__ternary__)
+ExpressionTernary(
+  Left: ExpressionVariable(
+    Identifier: string(a)
   )
-  Args: [
-    ExpressionVariable(
-      Identifier: string(a)
-    )
-    ExpressionVariable(
-      Identifier: string(c)
-    )
-  ]
-  NamedArgs: nil
-  StarArg: nil
-  KeywordArg: nil
+  Cond: ExpressionVariable(
+    Identifier: string(b)
+  )
+  Right: ExpressionVariable(
+    Identifier: string(c)
+  )
 )
 =====
 a if ?

@@ -41,9 +41,6 @@ func newStreamBoolObject() interpreter.Object {
 		"__isnot__":  methodStreamIs{interpreter.NewObject(nil), true, false},
 		"__ris__":    methodStreamIs{interpreter.NewObject(nil), false, true},
 		"__risnot__": methodStreamIs{interpreter.NewObject(nil), true, true},
-
-		// Ternary
-		"__ternary__": methodStreamOpTernary{interpreter.NewObject(nil)},
 	})
 }
 
@@ -124,9 +121,6 @@ func newStreamObject() interpreter.Object {
 		"__isnot__":  methodStreamIs{interpreter.NewObject(nil), true, false},
 		"__ris__":    methodStreamIs{interpreter.NewObject(nil), false, true},
 		"__risnot__": methodStreamIs{interpreter.NewObject(nil), true, true},
-
-		// Ternary
-		"__ternary__": methodStreamOpTernary{interpreter.NewObject(nil)},
 	})
 }
 
