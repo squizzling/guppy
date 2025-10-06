@@ -952,7 +952,7 @@ func parseTrailer(p *parser.Parser, expr ast.Expression) (ast.Expression, *parse
 		} else {
 			return ast.NewExpressionCall(
 				ast.NewExpressionMember(expr, "__subscript_range__"),
-				[]ast.Expression{subscript.Start},
+				[]ast.Expression{subscript.Start, subscript.End},
 				nil,
 				nil,
 				nil,
@@ -1106,9 +1106,9 @@ func parseSubscript(p *parser.Parser) (*ast.DataSubscript, *parser.ParseError) {
 		if exprStart, err := parseTest(p); err != nil {
 			return nil, parser.FailErr(err)
 		} else if !p.Match(tokenizer.TokenTypeColon) {
-			return ast.NewDataSubscript(exprStart, nil, false), nil
+			return ast.NewDataSubscript(exprStart, ast.NewExpressionLiteral(nil), false), nil
 		} else if !isAtomStart(p) {
-			return ast.NewDataSubscript(exprStart, nil, true), nil
+			return ast.NewDataSubscript(exprStart, ast.NewExpressionLiteral(nil), true), nil
 		} else if exprEnd, err := parseTest(p); err != nil {
 			return nil, parser.FailErr(err)
 		} else {
@@ -1117,11 +1117,11 @@ func parseSubscript(p *parser.Parser) (*ast.DataSubscript, *parser.ParseError) {
 	} else if err := p.MatchErr(tokenizer.TokenTypeColon); err != nil {
 		return nil, parser.FailErr(err)
 	} else if !isAtomStart(p) {
-		return ast.NewDataSubscript(nil, nil, true), nil
+		return ast.NewDataSubscript(ast.NewExpressionLiteral(nil), ast.NewExpressionLiteral(nil), true), nil
 	} else if exprEnd, err := parseTest(p); err != nil {
 		return nil, parser.FailErr(err)
 	} else {
-		return ast.NewDataSubscript(nil, exprEnd, true), nil
+		return ast.NewDataSubscript(ast.NewExpressionLiteral(nil), exprEnd, true), nil
 	}
 }
 

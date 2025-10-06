@@ -4,7 +4,9 @@ DataSubscript(
   Start: ExpressionVariable(
     Identifier: string(a)
   )
-  End: nil
+  End: ExpressionLiteral(
+    Value: <nil>(<nil>)
+  )
   Range: bool(false)
 )
 =====
@@ -14,14 +16,18 @@ DataSubscript(
   Start: ExpressionVariable(
     Identifier: string(a)
   )
-  End: nil
+  End: ExpressionLiteral(
+    Value: <nil>(<nil>)
+  )
   Range: bool(true)
 )
 =====
 :a
 -----
 DataSubscript(
-  Start: nil
+  Start: ExpressionLiteral(
+    Value: <nil>(<nil>)
+  )
   End: ExpressionVariable(
     Identifier: string(a)
   )
@@ -31,8 +37,12 @@ DataSubscript(
 :
 -----
 DataSubscript(
-  Start: nil
-  End: nil
+  Start: ExpressionLiteral(
+    Value: <nil>(<nil>)
+  )
+  End: ExpressionLiteral(
+    Value: <nil>(<nil>)
+  )
   Range: bool(true)
 )
 =====
