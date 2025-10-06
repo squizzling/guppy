@@ -17,10 +17,12 @@ func NewObjectBool(v bool) Object {
 	}
 }
 
-func (ob *ObjectBool) VisitExpressionTernary(i *Interpreter, left ast.Expression, right ast.Expression) (any, error) {
+func (ob *ObjectBool) VisitExpressionTernary(i *Interpreter, left ast.Expression, cond Object, right ast.Expression) (any, error) {
 	if ob.Value {
 		return left.Accept(i)
 	} else {
 		return right.Accept(i)
 	}
 }
+
+var _ FlowTernary = (*ObjectBool)(nil)

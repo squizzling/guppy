@@ -180,6 +180,7 @@ var Interfaces = []ast.Interface{
 		// Operations
 		{"BinaryOpDouble", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
+			{"ObjectStreamTernary", "*ObjectStreamTernary", true},
 			{"Stream", "Stream", false},
 			{"Op", "string", false},
 			{"Other", "float64", false},
@@ -187,6 +188,7 @@ var Interfaces = []ast.Interface{
 		}},
 		{"BinaryOpInt", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
+			{"ObjectStreamTernary", "*ObjectStreamTernary", true},
 			{"Stream", "Stream", false},
 			{"Op", "string", false},
 			{"Other", "int", false},
@@ -194,19 +196,21 @@ var Interfaces = []ast.Interface{
 		}},
 		{"BinaryOpStream", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
+			{"ObjectStreamTernary", "*ObjectStreamTernary", true},
 			{"Left", "Stream", false},
 			{"Op", "string", false},
 			{"Right", "Stream", false},
 		}},
 		{"IsNone", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
+			{"ObjectStreamTernary", "*ObjectStreamTernary", true},
 			{"Source", "Stream", false},
 			{"Invert", "bool", false},
 		}},
 		{"Ternary", true, []ast.Field{
 			{"Object", "interpreter.Object", true},
-			{"Condition", "Stream", false},
 			{"Left", "Stream", false},
+			{"Condition", "Stream", false},
 			{"Right", "Stream", false},
 		}},
 		{"UnaryOpMinus", true, []ast.Field{

@@ -431,7 +431,10 @@ func (i *Interpreter) VisitExpressionTernary(et ast.ExpressionTernary) (returnVa
 	if cond, err := r(et.Cond.Accept(i)); err != nil {
 		return nil, err
 	} else if ternary, ok := cond.(FlowTernary); ok {
-		return ternary.VisitExpressionTernary(i, et.Left, et.Right)
+		// We explicitly pass cond, because the interface may be (is) being satisfied
+		// by an embedded field, and still needs to know the containing object.  That
+		// is, cond doesn't necessarily equal ternary.
+		return ternary.VisitExpressionTernary(i, et.Left, cond, et.Right)
 	} else {
 		return nil, fmt.Errorf("condition is %T not FlowTernary", cond)
 	}

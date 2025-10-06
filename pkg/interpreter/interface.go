@@ -203,5 +203,5 @@ func isTruthy(o Object) (bool, error) {
 }
 
 type FlowTernary interface {
-	VisitExpressionTernary(i *Interpreter, left ast.Expression, right ast.Expression) (any, error)
+	VisitExpressionTernary(i *Interpreter, left ast.Expression, cond Object, right ast.Expression) (any, error)
 }

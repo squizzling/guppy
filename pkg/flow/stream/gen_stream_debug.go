@@ -613,13 +613,15 @@ func (dw DebugWriter) VisitStreamBinaryOpDouble(sbod *StreamBinaryOpDouble) (any
 	dw.i()
 	// TODO: 0 Object interpreter.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sbod.Object, sbod.Object)
+	// TODO: 1 ObjectStreamTernary *ObjectStreamTernary
+	_s += dw.p() + fmt.Sprintf("ObjectStreamTernary: %T(%v)\n", sbod.ObjectStreamTernary, sbod.ObjectStreamTernary)
 	if sbod.Stream != nil {
 		_s += dw.p() + "Stream: " + s(sbod.Stream.Accept(dw)) // IsInterface
 	} else {
 		_s += dw.p() + "Stream: nil\n"
 	}
 	_s += dw.p() + "Op: string(" + sbod.Op + ")\n"
-	// TODO: 3 Other float64
+	// TODO: 4 Other float64
 	_s += dw.p() + fmt.Sprintf("Other: %T(%v)\n", sbod.Other, sbod.Other)
 	_s += dw.p() + "Reverse: bool(" + fmt.Sprintf("%t", sbod.Reverse) + ")\n"
 	dw.o()
@@ -632,13 +634,15 @@ func (dw DebugWriter) VisitStreamBinaryOpInt(sboi *StreamBinaryOpInt) (any, erro
 	dw.i()
 	// TODO: 0 Object interpreter.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sboi.Object, sboi.Object)
+	// TODO: 1 ObjectStreamTernary *ObjectStreamTernary
+	_s += dw.p() + fmt.Sprintf("ObjectStreamTernary: %T(%v)\n", sboi.ObjectStreamTernary, sboi.ObjectStreamTernary)
 	if sboi.Stream != nil {
 		_s += dw.p() + "Stream: " + s(sboi.Stream.Accept(dw)) // IsInterface
 	} else {
 		_s += dw.p() + "Stream: nil\n"
 	}
 	_s += dw.p() + "Op: string(" + sboi.Op + ")\n"
-	// TODO: 3 Other int
+	// TODO: 4 Other int
 	_s += dw.p() + fmt.Sprintf("Other: %T(%v)\n", sboi.Other, sboi.Other)
 	_s += dw.p() + "Reverse: bool(" + fmt.Sprintf("%t", sboi.Reverse) + ")\n"
 	dw.o()
@@ -651,6 +655,8 @@ func (dw DebugWriter) VisitStreamBinaryOpStream(sbos *StreamBinaryOpStream) (any
 	dw.i()
 	// TODO: 0 Object interpreter.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sbos.Object, sbos.Object)
+	// TODO: 1 ObjectStreamTernary *ObjectStreamTernary
+	_s += dw.p() + fmt.Sprintf("ObjectStreamTernary: %T(%v)\n", sbos.ObjectStreamTernary, sbos.ObjectStreamTernary)
 	if sbos.Left != nil {
 		_s += dw.p() + "Left: " + s(sbos.Left.Accept(dw)) // IsInterface
 	} else {
@@ -672,6 +678,8 @@ func (dw DebugWriter) VisitStreamIsNone(sin *StreamIsNone) (any, error) {
 	dw.i()
 	// TODO: 0 Object interpreter.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sin.Object, sin.Object)
+	// TODO: 1 ObjectStreamTernary *ObjectStreamTernary
+	_s += dw.p() + fmt.Sprintf("ObjectStreamTernary: %T(%v)\n", sin.ObjectStreamTernary, sin.ObjectStreamTernary)
 	if sin.Source != nil {
 		_s += dw.p() + "Source: " + s(sin.Source.Accept(dw)) // IsInterface
 	} else {
@@ -688,15 +696,15 @@ func (dw DebugWriter) VisitStreamTernary(st *StreamTernary) (any, error) {
 	dw.i()
 	// TODO: 0 Object interpreter.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", st.Object, st.Object)
-	if st.Condition != nil {
-		_s += dw.p() + "Condition: " + s(st.Condition.Accept(dw)) // IsInterface
-	} else {
-		_s += dw.p() + "Condition: nil\n"
-	}
 	if st.Left != nil {
 		_s += dw.p() + "Left: " + s(st.Left.Accept(dw)) // IsInterface
 	} else {
 		_s += dw.p() + "Left: nil\n"
+	}
+	if st.Condition != nil {
+		_s += dw.p() + "Condition: " + s(st.Condition.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "Condition: nil\n"
 	}
 	if st.Right != nil {
 		_s += dw.p() + "Right: " + s(st.Right.Accept(dw)) // IsInterface

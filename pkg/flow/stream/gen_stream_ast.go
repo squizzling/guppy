@@ -986,6 +986,7 @@ func (smtc *StreamMethodTransformCycle) CloneTimeShift(amount time.Duration) Str
 
 type StreamBinaryOpDouble struct {
 	interpreter.Object
+	*ObjectStreamTernary
 	Stream  Stream
 	Op      string
 	Other   float64
@@ -994,17 +995,19 @@ type StreamBinaryOpDouble struct {
 
 func NewStreamBinaryOpDouble(
 	Object interpreter.Object,
+	ObjectStreamTernary *ObjectStreamTernary,
 	Stream Stream,
 	Op string,
 	Other float64,
 	Reverse bool,
 ) *StreamBinaryOpDouble {
 	return &StreamBinaryOpDouble{
-		Object:  Object,
-		Stream:  Stream,
-		Op:      Op,
-		Other:   Other,
-		Reverse: Reverse,
+		Object:              Object,
+		ObjectStreamTernary: ObjectStreamTernary,
+		Stream:              Stream,
+		Op:                  Op,
+		Other:               Other,
+		Reverse:             Reverse,
 	}
 }
 
@@ -1014,16 +1017,18 @@ func (sbod *StreamBinaryOpDouble) Accept(vs VisitorStream) (any, error) {
 
 func (sbod *StreamBinaryOpDouble) CloneTimeShift(amount time.Duration) Stream {
 	return &StreamBinaryOpDouble{
-		Object:  sbod.Object,
-		Stream:  cloneTimeshift(sbod.Stream, amount),
-		Op:      sbod.Op,
-		Other:   sbod.Other,
-		Reverse: sbod.Reverse,
+		Object:              sbod.Object,
+		ObjectStreamTernary: sbod.ObjectStreamTernary,
+		Stream:              cloneTimeshift(sbod.Stream, amount),
+		Op:                  sbod.Op,
+		Other:               sbod.Other,
+		Reverse:             sbod.Reverse,
 	}
 }
 
 type StreamBinaryOpInt struct {
 	interpreter.Object
+	*ObjectStreamTernary
 	Stream  Stream
 	Op      string
 	Other   int
@@ -1032,17 +1037,19 @@ type StreamBinaryOpInt struct {
 
 func NewStreamBinaryOpInt(
 	Object interpreter.Object,
+	ObjectStreamTernary *ObjectStreamTernary,
 	Stream Stream,
 	Op string,
 	Other int,
 	Reverse bool,
 ) *StreamBinaryOpInt {
 	return &StreamBinaryOpInt{
-		Object:  Object,
-		Stream:  Stream,
-		Op:      Op,
-		Other:   Other,
-		Reverse: Reverse,
+		Object:              Object,
+		ObjectStreamTernary: ObjectStreamTernary,
+		Stream:              Stream,
+		Op:                  Op,
+		Other:               Other,
+		Reverse:             Reverse,
 	}
 }
 
@@ -1052,16 +1059,18 @@ func (sboi *StreamBinaryOpInt) Accept(vs VisitorStream) (any, error) {
 
 func (sboi *StreamBinaryOpInt) CloneTimeShift(amount time.Duration) Stream {
 	return &StreamBinaryOpInt{
-		Object:  sboi.Object,
-		Stream:  cloneTimeshift(sboi.Stream, amount),
-		Op:      sboi.Op,
-		Other:   sboi.Other,
-		Reverse: sboi.Reverse,
+		Object:              sboi.Object,
+		ObjectStreamTernary: sboi.ObjectStreamTernary,
+		Stream:              cloneTimeshift(sboi.Stream, amount),
+		Op:                  sboi.Op,
+		Other:               sboi.Other,
+		Reverse:             sboi.Reverse,
 	}
 }
 
 type StreamBinaryOpStream struct {
 	interpreter.Object
+	*ObjectStreamTernary
 	Left  Stream
 	Op    string
 	Right Stream
@@ -1069,15 +1078,17 @@ type StreamBinaryOpStream struct {
 
 func NewStreamBinaryOpStream(
 	Object interpreter.Object,
+	ObjectStreamTernary *ObjectStreamTernary,
 	Left Stream,
 	Op string,
 	Right Stream,
 ) *StreamBinaryOpStream {
 	return &StreamBinaryOpStream{
-		Object: Object,
-		Left:   Left,
-		Op:     Op,
-		Right:  Right,
+		Object:              Object,
+		ObjectStreamTernary: ObjectStreamTernary,
+		Left:                Left,
+		Op:                  Op,
+		Right:               Right,
 	}
 }
 
@@ -1087,28 +1098,32 @@ func (sbos *StreamBinaryOpStream) Accept(vs VisitorStream) (any, error) {
 
 func (sbos *StreamBinaryOpStream) CloneTimeShift(amount time.Duration) Stream {
 	return &StreamBinaryOpStream{
-		Object: sbos.Object,
-		Left:   cloneTimeshift(sbos.Left, amount),
-		Op:     sbos.Op,
-		Right:  cloneTimeshift(sbos.Right, amount),
+		Object:              sbos.Object,
+		ObjectStreamTernary: sbos.ObjectStreamTernary,
+		Left:                cloneTimeshift(sbos.Left, amount),
+		Op:                  sbos.Op,
+		Right:               cloneTimeshift(sbos.Right, amount),
 	}
 }
 
 type StreamIsNone struct {
 	interpreter.Object
+	*ObjectStreamTernary
 	Source Stream
 	Invert bool
 }
 
 func NewStreamIsNone(
 	Object interpreter.Object,
+	ObjectStreamTernary *ObjectStreamTernary,
 	Source Stream,
 	Invert bool,
 ) *StreamIsNone {
 	return &StreamIsNone{
-		Object: Object,
-		Source: Source,
-		Invert: Invert,
+		Object:              Object,
+		ObjectStreamTernary: ObjectStreamTernary,
+		Source:              Source,
+		Invert:              Invert,
 	}
 }
 
@@ -1118,29 +1133,30 @@ func (sin *StreamIsNone) Accept(vs VisitorStream) (any, error) {
 
 func (sin *StreamIsNone) CloneTimeShift(amount time.Duration) Stream {
 	return &StreamIsNone{
-		Object: sin.Object,
-		Source: cloneTimeshift(sin.Source, amount),
-		Invert: sin.Invert,
+		Object:              sin.Object,
+		ObjectStreamTernary: sin.ObjectStreamTernary,
+		Source:              cloneTimeshift(sin.Source, amount),
+		Invert:              sin.Invert,
 	}
 }
 
 type StreamTernary struct {
 	interpreter.Object
-	Condition Stream
 	Left      Stream
+	Condition Stream
 	Right     Stream
 }
 
 func NewStreamTernary(
 	Object interpreter.Object,
-	Condition Stream,
 	Left Stream,
+	Condition Stream,
 	Right Stream,
 ) *StreamTernary {
 	return &StreamTernary{
 		Object:    Object,
-		Condition: Condition,
 		Left:      Left,
+		Condition: Condition,
 		Right:     Right,
 	}
 }
@@ -1152,8 +1168,8 @@ func (st *StreamTernary) Accept(vs VisitorStream) (any, error) {
 func (st *StreamTernary) CloneTimeShift(amount time.Duration) Stream {
 	return &StreamTernary{
 		Object:    st.Object,
-		Condition: cloneTimeshift(st.Condition, amount),
 		Left:      cloneTimeshift(st.Left, amount),
+		Condition: cloneTimeshift(st.Condition, amount),
 		Right:     cloneTimeshift(st.Right, amount),
 	}
 }
