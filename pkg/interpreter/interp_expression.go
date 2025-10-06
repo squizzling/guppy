@@ -430,12 +430,10 @@ func (i *Interpreter) VisitExpressionTernary(et ast.ExpressionTernary) (returnVa
 
 	if cond, err := r(et.Cond.Accept(i)); err != nil {
 		return nil, err
-	} else if truthy, err := isTruthy(cond); err != nil {
-		return nil, err
-	} else if truthy {
-		return et.Left.Accept(i)
+	} else if ternary, ok := cond.(FlowTernary); ok {
+		return ternary.VisitExpressionTernary(i, et.Left, et.Right)
 	} else {
-		return et.Right.Accept(i)
+		return nil, fmt.Errorf("condition is %T not FlowTernary", cond)
 	}
 }
 

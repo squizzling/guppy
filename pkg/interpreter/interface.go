@@ -2,6 +2,8 @@ package interpreter
 
 import (
 	"fmt"
+
+	"guppy/pkg/parser/ast"
 )
 
 var TernaryParams = &Params{
@@ -198,4 +200,8 @@ func isTruthy(o Object) (bool, error) {
 	default:
 		return false, fmt.Errorf("isTruthy condition is %T not *interpreter.ObjectBool", o)
 	}
+}
+
+type FlowTernary interface {
+	VisitExpressionTernary(i *Interpreter, left ast.Expression, right ast.Expression) (any, error)
 }

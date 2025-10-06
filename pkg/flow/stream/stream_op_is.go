@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"guppy/pkg/interpreter"
+	"guppy/pkg/parser/ast"
 )
 
 type methodStreamIs struct {
@@ -32,5 +33,30 @@ func (msi methodStreamIs) Call(i *interpreter.Interpreter) (interpreter.Object, 
 		} else {
 			return NewStreamIsNone(newStreamObject(), selfStream, msi.invert), nil
 		}
+	}
+}
+
+func (sin *StreamIsNone) resolveStream(o any) (Stream, error) {
+	switch o := o.(type) {
+	case Stream:
+		return o, nil
+	case *interpreter.ObjectInt:
+		return NewStreamFuncConstInt(newStreamObject(), o.Value, nil), nil
+	default:
+		return nil, fmt.Errorf("StreamIsNone.resolveStream got %T expecting Stream", o)
+	}
+}
+
+func (sin *StreamIsNone) VisitExpressionTernary(i *interpreter.Interpreter, left ast.Expression, right ast.Expression) (any, error) {
+	if left, err := left.Accept(i); err != nil {
+		return nil, err
+	} else if right, err := right.Accept(i); err != nil {
+		return nil, err
+	} else if leftStream, err := sin.resolveStream(left); err != nil {
+		return nil, err
+	} else if rightStream, err := sin.resolveStream(right); err != nil {
+		return nil, err
+	} else {
+		return NewStreamTernary(newStreamObject(), sin, leftStream, rightStream), nil
 	}
 }

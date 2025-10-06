@@ -616,8 +616,23 @@ func (g *GraphWriter) VisitStreamBinaryOpStream(sbos *stream.StreamBinaryOpStrea
 }
 
 func (g *GraphWriter) VisitStreamIsNone(sin *stream.StreamIsNone) (any, error) {
-	//TODO implement me
-	panic("implement me")
+	if nodeId, ok := g.GetNode(sin); ok {
+		return nodeId, nil
+	}
+
+	var sb strings.Builder
+	sb.WriteString("stream is none block\n")
+	if sin.Invert {
+		sb.WriteString(fmt.Sprintf("Invert: %t\n", sin.Invert))
+	}
+	nodeId := g.DefineNode(sin, sb.String())
+
+	sourceNodeId, err := sin.Source.Accept(g)
+	if err != nil {
+		return nil, err
+	}
+	g.DefineEdge(nodeId, sourceNodeId.(string), "Source")
+	return nodeId, nil
 }
 
 func (g *GraphWriter) VisitStreamTernary(st *stream.StreamTernary) (any, error) {
