@@ -153,13 +153,11 @@ func (i *Interpreter) VisitStatementIf(si ast.StatementIf) (returnValue any, err
 		} else if cond, err := isTruthy(cond); err != nil {
 			return nil, err
 		} else if cond {
-			_, err := si.Statement[idx].Accept(i)
-			return nil, err
+			return si.Statement[idx].Accept(i)
 		}
 	}
 	if si.StatementElse != nil {
-		_, err := si.StatementElse.Accept(i)
-		return nil, err
+		return si.StatementElse.Accept(i)
 	} else {
 		return nil, nil
 	}
@@ -195,7 +193,7 @@ func (i *Interpreter) VisitStatementList(sl ast.StatementList) (returnValue any,
 			return ret, nil
 		}
 	}
-	return NewObjectNone(), nil
+	return nil, nil
 }
 
 func (i *Interpreter) VisitStatementProgram(sp ast.StatementProgram) (returnValue any, errOut error) {
