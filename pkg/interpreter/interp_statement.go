@@ -65,6 +65,13 @@ func (i *Interpreter) VisitStatementExpression(se ast.StatementExpression) (retu
 		return nil, nil
 	}
 
+	if len(se.Assign) == 1 { // Always assign it, never unpack it
+		if err := i.Scope.Set(se.Assign[0], valuesAny); err != nil {
+			return nil, err
+		}
+		return nil, nil
+	}
+
 	var values []Object
 	switch valuesAny := valuesAny.(type) {
 	case *ObjectList:
