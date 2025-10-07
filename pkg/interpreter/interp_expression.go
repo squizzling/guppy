@@ -367,6 +367,8 @@ func (i *Interpreter) evalDataListFor(dlf *ast.DataListFor, expr ast.Expression)
 		values = o.Items
 	case *ObjectTuple:
 		values = o.Items
+	case *ObjectDeferred:
+		return o, nil
 	default:
 		return nil, fmt.Errorf("for over a %T, expecting *ObjectList, or *ObjectTuple", o)
 	}
