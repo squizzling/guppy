@@ -356,7 +356,7 @@ func (i *Interpreter) VisitExpressionListMaker(elm ast.ExpressionListMaker) (ret
 func (i *Interpreter) evalDataListFor(dlf *ast.DataListFor, expr ast.Expression) (returnValue any, errOut error) {
 	defer i.trace()(&returnValue, &errOut)
 
-	o, err := dlf.Expr.Accept(i) // this should produce an iterable
+	o, err := dlf.Expr.Accept(i)
 	if err != nil {
 		return nil, err
 	}
@@ -375,10 +375,28 @@ func (i *Interpreter) evalDataListFor(dlf *ast.DataListFor, expr ast.Expression)
 		panic("dlf.Iter")
 	}
 
-	panic("no iter")
-	_ = values
+	if len(dlf.Idents) != 1 {
+		// I think we just need to unpack each element
+		panic("dlf.Idents != 1")
+	}
 
-	return nil, nil
+	var newValues []Object
+	for _, value := range values {
+		err := i.withScope(func() error {
+			if err := i.Scope.Set(dlf.Idents[0], value); err != nil {
+				return err
+			} else if newValue, err := r(expr.Accept(i)); err != nil {
+				return err
+			} else {
+				newValues = append(newValues, newValue)
+			}
+			return nil
+		})
+		if err != nil {
+			return
+		}
+	}
+	return NewObjectList(newValues...), nil
 
 }
 

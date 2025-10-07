@@ -33,6 +33,12 @@ func (i *Interpreter) pushScope() {
 	}
 }
 
+func (i *Interpreter) withScope(fn func() error) error {
+	i.pushScope()
+	defer i.popScope()
+	return fn()
+}
+
 func (i *Interpreter) pushClosure(s *scope) {
 	i.Scope = &scope{
 		isDefined:      make(map[string]bool),
