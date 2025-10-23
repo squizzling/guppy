@@ -24,7 +24,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	errProgram := iflow.NewInterpreter(false).Execute(program)
+	trace := len(os.Args) == 3 && os.Args[2] == "-v"
+
+	errProgram := iflow.NewInterpreter(trace).Execute(program)
 	if errProgram != nil {
 		fmt.Printf("%v\n", errProgram)
 	}
