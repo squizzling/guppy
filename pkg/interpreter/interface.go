@@ -86,6 +86,36 @@ type Params struct {
 	KWParam   string
 }
 
+func (pd *Params) Dump(i *Interpreter) {
+	fmt.Printf("Params:\n")
+	for _, param := range pd.Params {
+		if param.Default != nil {
+			s, err := i.DoString(param.Default)
+			if err != nil {
+				panic(err)
+			}
+			fmt.Printf("- %s (%s)\n", param.Name, s)
+		} else {
+			fmt.Printf("- %s required\n", param.Name)
+		}
+	}
+	fmt.Printf("StarParam: %s\n", pd.StarParam)
+	fmt.Printf("KWParams:\n")
+	for _, param := range pd.KWParams {
+		if param.Default != nil {
+			s, err := i.DoString(param.Default)
+			if err != nil {
+				panic(err)
+			}
+			fmt.Printf("- %s (%s)\n", param.Name, s)
+		} else {
+			fmt.Printf("- %s required\n", param.Name)
+		}
+	}
+	fmt.Printf("KWParam: %s\n", pd.KWParam)
+
+}
+
 type FlowCall interface {
 	Params(i *Interpreter) (*Params, error)
 	Call(i *Interpreter) (Object, error)
