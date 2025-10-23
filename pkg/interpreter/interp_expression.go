@@ -82,20 +82,15 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (returnValue an
 	// TODO: I think there's some weirdness happening with calls and self, but
 	//       because flow doesn't support classes, it might not be a problem?
 
-	expr, err := r(ec.Expr.Accept(i))
+	// Convert expressions and splat expression in to objects
+	objFunc, unnamedArgs, err := i.resolveUnnamedArgs(ec.Expr, ec.Args, ec.StarArg)
 	if err != nil {
 		return nil, err
 	}
 
-	paramData, err := i.doParams(expr)
+	paramData, err := i.doParams(objFunc)
 	if err != nil {
 		return nil, err
-	}
-
-	unnamedArgs := ec.Args
-	if lv, ok := expr.(*ObjectLValue); ok {
-		// TODO: Can we push this up to *ObjectLValue.Call?
-		unnamedArgs = append([]ast.Expression{ast.NewExpressionLiteral(lv.left)}, unnamedArgs...)
 	}
 
 	/*
@@ -104,13 +99,6 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (returnValue an
 	  unless a formal parameter using the syntax *identifier is present; in this case,
 	    that formal parameter receives a tuple containing the excess positional arguments (or an empty tuple if there were no excess positional arguments).
 	*/
-	if len(unnamedArgs) > len(paramData.Params) {
-		if paramData.StarParam == "" { // No star param
-			return nil, fmt.Errorf("too many params (1)")
-		} else if ec.StarArg != nil { // Star param is already occupied
-			return nil, fmt.Errorf("too many params (2)")
-		}
-	}
 
 	// If keyword arguments are present, they are first converted to positional arguments, as follows.
 	//        First, a list of unfilled slots is created for the formal parameters.
@@ -123,13 +111,9 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (returnValue an
 	for idx, arg := range unnamedArgs[:min(len(unnamedArgs), len(paramData.Params))] {
 		// Note: we only want to fill up to len(paramData.Params), not up to the full slice.  The second half of
 		// the slice is for KWParams.
-		if o, err := r(arg.Accept(i)); err != nil {
-			return nil, err
-		} else {
-			formalParams[idx] = o
-			formalNames[idx] = paramData.Params[idx].Name
-			occupiedParam[idx] = true
-		}
+		formalParams[idx] = arg
+		formalNames[idx] = paramData.Params[idx].Name
+		occupiedParam[idx] = true
 	}
 
 	var kwArguments map[string]Object
@@ -197,9 +181,13 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (returnValue an
 	//	  Otherwise,
 	//	   the list of filled slots is used as the argument list for the call.
 
-	starArgs, err := i.resolveStarArgs(unnamedArgs, len(formalParams), paramData)
-	if err != nil {
-		return nil, err
+	var starArgs []Object
+	if len(unnamedArgs)-len(formalParams) > 0 {
+		if !(paramData.StarParam != "") {
+			return nil, fmt.Errorf("passing extra arguments to function not expecting it")
+		} else {
+			starArgs = unnamedArgs[len(formalParams):]
+		}
 	}
 
 	// If any of our arguments are deferred, then we're deferred
@@ -224,7 +212,7 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (returnValue an
 	}
 
 	// Perform all argument resolution above here, so we don't pollute the scope as we evaluate things.
-	if s, ok := expr.(*ObjectFunction); ok {
+	if s, ok := objFunc.(*ObjectFunction); ok {
 		i.pushClosure(s.scope)
 	} else {
 		i.pushClosure(i.Globals)
@@ -239,7 +227,44 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (returnValue an
 		return nil, err
 	}
 
-	return i.doCall(expr)
+	return i.doCall(objFunc)
+}
+
+func (i *Interpreter) resolveUnnamedArgs(exprFunction ast.Expression, unnamedArgExpressions []ast.Expression, starArg ast.Expression) (Object, []Object, error) {
+	objFunction, err := r(exprFunction.Accept(i))
+	if err != nil {
+		return nil, nil, err
+	}
+
+	if lv, ok := objFunction.(*ObjectLValue); ok {
+		// TODO: Can we push this up to *ObjectLValue.Call?
+		unnamedArgExpressions = append([]ast.Expression{ast.NewExpressionLiteral(lv.left)}, unnamedArgExpressions...)
+	}
+
+	var unnamedArgs []Object
+	for _, expr := range unnamedArgExpressions {
+		if o, err := r(expr.Accept(i)); err != nil {
+			return nil, nil, err
+		} else {
+			unnamedArgs = append(unnamedArgs, o)
+		}
+	}
+
+	if starArg != nil {
+		if starArgs, err := r(starArg.Accept(i)); err != nil {
+			return nil, nil, err
+		} else {
+			switch starArgs := starArgs.(type) {
+			case *ObjectList:
+				unnamedArgs = append(unnamedArgs, starArgs.Items...)
+			case *ObjectTuple:
+				unnamedArgs = append(unnamedArgs, starArgs.Items...)
+			default:
+				return nil, nil, fmt.Errorf("[resolveStarArgs] expecting *interpreter.ObjectList or *interpreter.ObjectTuple got %T", starArgs)
+			}
+		}
+	}
+	return objFunction, unnamedArgs, nil
 }
 
 func (i *Interpreter) assignArgs(
@@ -269,24 +294,6 @@ func (i *Interpreter) assignArgs(
 		}
 	}
 	return nil
-}
-
-func (i *Interpreter) resolveStarArgs(unnamedArgs []ast.Expression, formalParamCount int, paramData *Params) ([]Object, error) {
-	// TODO: I don't love this signature
-	var starArgs []Object
-	if len(unnamedArgs)-formalParamCount > 0 {
-		if paramData.StarParam == "" {
-			return nil, fmt.Errorf("too many params (3)")
-		}
-		for _, arg := range unnamedArgs[formalParamCount:] {
-			if o, err := r(arg.Accept(i)); err != nil {
-				return nil, err
-			} else {
-				starArgs = append(starArgs, o)
-			}
-		}
-	}
-	return starArgs, nil
 }
 
 func (i *Interpreter) VisitExpressionDict(ed ast.ExpressionDict) (returnValue any, errOut error) {
