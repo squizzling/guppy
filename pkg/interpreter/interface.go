@@ -175,6 +175,18 @@ func ArgAsLong(i *Interpreter, argName string) (int, error) {
 	}
 }
 
+func ArgAsOptLong(i *Interpreter, argName string) (*int, error) {
+	if objArg, err := i.Scope.GetArg(argName); err != nil {
+		return nil, err
+	} else if intArg, ok := objArg.(*ObjectInt); ok {
+		return &intArg.Value, nil
+	} else if _, ok := objArg.(*ObjectNone); ok {
+		return nil, nil
+	} else {
+		return nil, fmt.Errorf("arg %s is %T not *interpreter.ObjectInt or *interpreter.ObjectNone", argName, objArg)
+	}
+}
+
 func ArgAs[T any](i *Interpreter, name string) (T, error) {
 	var zero T
 	if v, err := i.Scope.GetArg(name); err != nil {
