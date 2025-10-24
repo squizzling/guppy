@@ -44,6 +44,9 @@ func findParamSlot(params *Params, name string) int {
 
 func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (returnValue any, errOut error) {
 	defer i.trace()(&returnValue, &errOut)
+
+	i.debug("Entering %#v", ec.Expr)
+
 	/*
 	  If keyword arguments are present, they are first converted to positional arguments, as follows.
 	  First, a list of unfilled slots is created for the formal parameters.
@@ -88,10 +91,17 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (returnValue an
 		return nil, err
 	}
 
+	i.debug("%d unnamed args", len(unnamedArgs))
+	for idx, a := range unnamedArgs {
+		i.debug("%d: %#v", idx, a)
+	}
+
 	paramData, err := i.doParams(objFunc)
 	if err != nil {
 		return nil, err
 	}
+
+	paramData.Dump(i)
 
 	/*
 	  If there are more positional arguments than there are formal parameter slots,
@@ -105,6 +115,7 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (returnValue an
 	formalParams := make([]Object, len(paramData.Params)+len(paramData.KWParams))
 	formalNames := make([]string, len(paramData.Params)+len(paramData.KWParams))
 	occupiedParam := make([]bool, len(paramData.Params)+len(paramData.KWParams))
+	i.debug("formalParams: %d", len(formalParams))
 
 	//        If there are N positional arguments,
 	//          they are placed in the first N slots.
@@ -231,17 +242,16 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (returnValue an
 }
 
 func (i *Interpreter) resolveUnnamedArgs(exprFunction ast.Expression, unnamedArgExpressions []ast.Expression, starArg ast.Expression) (Object, []Object, error) {
+	var unnamedArgs []Object
+
+	// This effectively resolves "self", or the x in `x.y(...)` (which is y(x, ...))
 	objFunction, err := r(exprFunction.Accept(i))
 	if err != nil {
 		return nil, nil, err
+	} else if lv, ok := objFunction.(*ObjectLValue); ok {
+		unnamedArgs = append(unnamedArgs, lv.left)
 	}
 
-	if lv, ok := objFunction.(*ObjectLValue); ok {
-		// TODO: Can we push this up to *ObjectLValue.Call?
-		unnamedArgExpressions = append([]ast.Expression{ast.NewExpressionLiteral(lv.left)}, unnamedArgExpressions...)
-	}
-
-	var unnamedArgs []Object
 	for _, expr := range unnamedArgExpressions {
 		if o, err := r(expr.Accept(i)); err != nil {
 			return nil, nil, err
@@ -259,8 +269,10 @@ func (i *Interpreter) resolveUnnamedArgs(exprFunction ast.Expression, unnamedArg
 				unnamedArgs = append(unnamedArgs, starArgs.Items...)
 			case *ObjectTuple:
 				unnamedArgs = append(unnamedArgs, starArgs.Items...)
+			case *ObjectDeferred:
+				unnamedArgs = append(unnamedArgs, starArgs)
 			default:
-				return nil, nil, fmt.Errorf("[resolveStarArgs] expecting *interpreter.ObjectList or *interpreter.ObjectTuple got %T", starArgs)
+				return nil, nil, fmt.Errorf("[resolveUnnamedArgs] expecting *interpreter.ObjectList or *interpreter.ObjectTuple got %T", starArgs)
 			}
 		}
 	}

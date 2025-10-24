@@ -43,6 +43,13 @@ func Repr(o any) string {
 	}
 }
 
+func (i *Interpreter) debug(f string, args ...any) {
+	if !i.enableTrace {
+		return
+	}
+	fmt.Printf("%sdebug %s\n", strings.Repeat(" ", i.debugDepth), fmt.Sprintf(f, args...))
+}
+
 func (i *Interpreter) trace(a ...any) func(returnValue *any, err *error) {
 	if !i.enableTrace {
 		return func(returnValue *any, err *error) {}
