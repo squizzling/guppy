@@ -32,7 +32,8 @@ func (of *ObjectFunction) Call(i *Interpreter) (Object, error) {
 	// This is where we would evaluate deferred statements, except SFX doesn't.
 	o, err := of.body.Accept(i)
 	if err != nil {
-		panic(err)
+		//panic(err)
+		return nil, err
 	}
 	if o == nil {
 		return NewObjectNone(), nil

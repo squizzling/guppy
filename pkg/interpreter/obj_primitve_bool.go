@@ -1,6 +1,8 @@
 package interpreter
 
 import (
+	"fmt"
+
 	"guppy/pkg/parser/ast"
 )
 
@@ -17,6 +19,10 @@ func NewObjectBool(v bool) Object {
 		}),
 		Value: v,
 	}
+}
+
+func (ob *ObjectBool) String(i *Interpreter) (string, error) {
+	return fmt.Sprintf("%t", ob.Value), nil
 }
 
 func (ob *ObjectBool) VisitExpressionTernary(i *Interpreter, left ast.Expression, cond Object, right ast.Expression) (any, error) {

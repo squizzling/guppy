@@ -144,6 +144,9 @@ func (i *Interpreter) VisitStatementFunction(sf ast.StatementFunction) (returnVa
 		}
 	}
 
+	i.debug("defining function: %s", sf.Token)
+	params.Dump(i)
+
 	err := i.Scope.Set(sf.Token, NewObjectFunction(sf.Token, params, i.Scope, sf.Body))
 	return nil, err
 }

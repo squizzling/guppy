@@ -87,32 +87,32 @@ type Params struct {
 }
 
 func (pd *Params) Dump(i *Interpreter) {
-	fmt.Printf("Params:\n")
+	i.debug("Params:")
 	for _, param := range pd.Params {
 		if param.Default != nil {
 			s, err := i.DoString(param.Default)
 			if err != nil {
 				panic(err)
 			}
-			fmt.Printf("- %s (%s)\n", param.Name, s)
+			i.debug("- %s (%s)", param.Name, s)
 		} else {
-			fmt.Printf("- %s required\n", param.Name)
+			i.debug("- %s required", param.Name)
 		}
 	}
-	fmt.Printf("StarParam: %s\n", pd.StarParam)
-	fmt.Printf("KWParams:\n")
+	i.debug("StarParam: %s", pd.StarParam)
+	i.debug("KWParams:")
 	for _, param := range pd.KWParams {
 		if param.Default != nil {
 			s, err := i.DoString(param.Default)
 			if err != nil {
 				panic(err)
 			}
-			fmt.Printf("- %s (%s)\n", param.Name, s)
+			i.debug("- %s (%s)", param.Name, s)
 		} else {
-			fmt.Printf("- %s required\n", param.Name)
+			i.debug("- %s required", param.Name)
 		}
 	}
-	fmt.Printf("KWParam: %s\n", pd.KWParam)
+	i.debug("KWParam: %s", pd.KWParam)
 
 }
 

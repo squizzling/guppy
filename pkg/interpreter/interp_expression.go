@@ -44,43 +44,8 @@ func findParamSlot(params *Params, name string) int {
 
 func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (returnValue any, errOut error) {
 	defer i.trace()(&returnValue, &errOut)
-	/*
-	  If keyword arguments are present, they are first converted to positional arguments, as follows.
-	  First, a list of unfilled slots is created for the formal parameters.
-	  If there are N positional arguments,
-	    they are placed in the first N slots.
-	  Next, for each keyword argument, the identifier is used to determine the corresponding slot (if the identifier is the same as the first formal parameter name, the first slot is used, and so on).
-	  If the slot is already filled,
-	    a TypeError exception is raised.
-	  Otherwise,
-	    the value of the argument is placed in the slot, filling it (even if the expression is None, it fills the slot).
-	  When all arguments have been processed, the slots that are still unfilled are filled with the corresponding default value from the function definition.
-	  (Default values are calculated, once, when the function is defined; thus, a mutable object such as a list or dictionary used as default value will be shared by all calls that don’t specify an argument value for the corresponding slot; this should usually be avoided.)
-	  If there are any unfilled slots for which no default value is specified,
-	    a TypeError exception is raised.
-	  Otherwise,
-	   the list of filled slots is used as the argument list for the call.
-	*/
-	/*
-	  If there are more positional arguments than there are formal parameter slots,
-	    a TypeError exception is raised,
-	  unless a formal parameter using the syntax *identifier is present; in this case,
-	    that formal parameter receives a tuple containing the excess positional arguments (or an empty tuple if there were no excess positional arguments).
-	*/
-	/*
-	  If any keyword argument does not correspond to a formal parameter name,
-	    a TypeError exception is raised,
-	  unless a formal parameter using the syntax **identifier is present; in this case,
-	    that formal parameter receives a dictionary containing the excess keyword arguments (using the keywords as keys and the argument values as corresponding values), or a (new) empty dictionary if there were no excess keyword arguments.
-	*/
 
-	// We don't perfectly implement this, because this is 3 distinct sections, but the last 2 are done inline with the first.
-	// We're trying to do it exactly like that, however flow is somewhere between py2 and py3, so it's a bit of a mess.
-	// Once this is stable, as verified by hammering existing flow in the wild, we'll add some tests to verify the interface,
-	// and clean it all up.
-
-	// TODO: I think there's some weirdness happening with calls and self, but
-	//       because flow doesn't support classes, it might not be a problem?
+	//i.debug("Entering %#v", ec.Expr)
 
 	// Convert expressions and splat expression in to objects
 	objFunc, unnamedArgs, err := i.resolveUnnamedArgs(ec.Expr, ec.Args, ec.StarArg)
@@ -88,111 +53,91 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (returnValue an
 		return nil, err
 	}
 
+	// Convert keyword expression and kwargs expression in to a map
+	namedArgs, err := i.resolveNamedArgs(ec.NamedArgs, ec.KeywordArg)
+	if err != nil {
+		return nil, err
+	}
+
+	/*i.debug("%d unnamed args", len(unnamedArgs))
+	for idx, a := range unnamedArgs {
+		i.debug("%d: %#v", idx, a)
+	}
+
+	i.debug("%d named args", len(namedArgs))
+	for key, value := range namedArgs {
+		i.debug("%s: %#v", key, value)
+	}*/
+
 	paramData, err := i.doParams(objFunc)
 	if err != nil {
 		return nil, err
 	}
 
-	/*
-	  If there are more positional arguments than there are formal parameter slots,
-	    a TypeError exception is raised,
-	  unless a formal parameter using the syntax *identifier is present; in this case,
-	    that formal parameter receives a tuple containing the excess positional arguments (or an empty tuple if there were no excess positional arguments).
-	*/
+	paramData.Dump(i)
 
-	// If keyword arguments are present, they are first converted to positional arguments, as follows.
-	//        First, a list of unfilled slots is created for the formal parameters.
-	formalParams := make([]Object, len(paramData.Params)+len(paramData.KWParams))
-	formalNames := make([]string, len(paramData.Params)+len(paramData.KWParams))
-	occupiedParam := make([]bool, len(paramData.Params)+len(paramData.KWParams))
+	paramCount := len(paramData.Params) + len(paramData.KWParams)
+	paramName := make([]string, paramCount)
+	paramValue := make([]Object, paramCount)
 
-	//        If there are N positional arguments,
-	//          they are placed in the first N slots.
 	for idx, arg := range unnamedArgs[:min(len(unnamedArgs), len(paramData.Params))] {
 		// Note: we only want to fill up to len(paramData.Params), not up to the full slice.  The second half of
 		// the slice is for KWParams.
-		formalParams[idx] = arg
-		formalNames[idx] = paramData.Params[idx].Name
-		occupiedParam[idx] = true
+		paramName[idx] = paramData.Params[idx].Name
+		paramValue[idx] = arg
 	}
 
-	var kwArguments map[string]Object
-	if paramData.KWParam != "" {
-		kwArguments = make(map[string]Object)
-	}
-
-	// Next, for each keyword argument,
-	for _, arg := range ec.NamedArgs {
-		// the identifier is used to determine the corresponding slot (if the identifier is the same as the first formal parameter name, the first slot is used, and so on).
-		slotIndex := findParamSlot(paramData, arg.Assign)
-
-		//        If the slot is already filled,
-		//          a TypeError exception is raised.
-		if slotIndex == -1 {
-			if paramData.KWParam == "" {
-				return nil, fmt.Errorf("got an unexpected keyword argument: '%s'", arg.Assign)
-			} else if o, err := r(arg.Expr.Accept(i)); err != nil {
-				return nil, err
-			} else {
-				// TODO: Check if it's already present
-				kwArguments[arg.Assign] = o
-				continue
-			}
-		}
-		if occupiedParam[slotIndex] {
-			return nil, fmt.Errorf("got multiple values for keyword argument '%s'", arg.Assign)
-		}
-
-		//        Otherwise,
-		//          the value of the argument is placed in the slot, filling it (even if the expression is None, it fills the slot).
-		if o, err := r(arg.Expr.Accept(i)); err != nil {
-			return nil, err
+	// Anything remaining after all the non-keyword params goes in to starArgs
+	var starArgs []Object
+	if len(unnamedArgs)-len(paramData.Params) > 0 {
+		if paramData.StarParam == "" {
+			return nil, fmt.Errorf("passing extra arguments to function not expecting it")
 		} else {
-			//fmt.Printf("Filling slot %d\n", slotIndex)
-			formalParams[slotIndex] = o
-			formalNames[slotIndex] = arg.Assign
-			occupiedParam[slotIndex] = true
+			starArgs = unnamedArgs[len(paramData.Params):]
+		}
+	}
+
+	for name, value := range namedArgs {
+		idx := findParamSlot(paramData, name)
+		if idx == -1 {
+			if paramData.KWParam == "" {
+				return nil, fmt.Errorf("got an unexpected keyword argument: '%s'", name)
+			} else {
+				// It remains in the map
+			}
+		} else {
+			if paramValue[idx] != nil {
+				return nil, fmt.Errorf("duplicate keyword argument: '%s'", name)
+			} else {
+				paramName[idx] = name
+				paramValue[idx] = value
+				delete(namedArgs, name) // It's safe to delete from a map during iteration.
+			}
 		}
 	}
 
 	for idx, param := range paramData.Params {
-		if !occupiedParam[idx] && param.Default != nil {
-			formalParams[idx] = param.Default
-			formalNames[idx] = param.Name
-			occupiedParam[idx] = true
+		if paramValue[idx] == nil && param.Default != nil {
+			paramName[idx] = param.Name
+			paramValue[idx] = param.Default
 		}
 	}
 	for idx, param := range paramData.KWParams {
-		if !occupiedParam[idx+len(paramData.Params)] && param.Default != nil {
-			formalParams[idx+len(paramData.Params)] = param.Default
-			formalNames[idx+len(paramData.Params)] = param.Name
-			occupiedParam[idx+len(paramData.Params)] = true
+		if paramValue[idx+len(paramData.Params)] == nil {
+			paramName[idx+len(paramData.Params)] = param.Name
+			paramValue[idx+len(paramData.Params)] = param.Default
 		}
 	}
 
-	// 	  If there are any unfilled slots for which no default value is specified,
-	//	    a TypeError exception is raised.
-	for idx, occupied := range occupiedParam {
-		if !occupied {
+	for idx, value := range paramValue {
+		if value == nil {
 			return nil, fmt.Errorf("parameter %d is not occupied", idx)
-		}
-	}
-
-	//	  Otherwise,
-	//	   the list of filled slots is used as the argument list for the call.
-
-	var starArgs []Object
-	if len(unnamedArgs)-len(formalParams) > 0 {
-		if !(paramData.StarParam != "") {
-			return nil, fmt.Errorf("passing extra arguments to function not expecting it")
-		} else {
-			starArgs = unnamedArgs[len(formalParams):]
 		}
 	}
 
 	// If any of our arguments are deferred, then we're deferred
 	desired := []string{}
-	for _, p := range formalParams {
+	for _, p := range paramValue {
 		if od, ok := p.(*ObjectDeferred); ok {
 			desired = append(desired, od.desired...)
 		}
@@ -202,7 +147,7 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (returnValue an
 			desired = append(desired, od.desired...)
 		}
 	}
-	for _, p := range kwArguments {
+	for _, p := range namedArgs {
 		if od, ok := p.(*ObjectDeferred); ok {
 			desired = append(desired, od.desired...)
 		}
@@ -220,9 +165,9 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (returnValue an
 	defer i.popScope()
 
 	if err := i.assignArgs(
-		formalNames, formalParams,
+		paramName, paramValue,
 		paramData.StarParam, starArgs,
-		paramData.KWParam, kwArguments,
+		paramData.KWParam, namedArgs,
 	); err != nil {
 		return nil, err
 	}
@@ -231,17 +176,16 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (returnValue an
 }
 
 func (i *Interpreter) resolveUnnamedArgs(exprFunction ast.Expression, unnamedArgExpressions []ast.Expression, starArg ast.Expression) (Object, []Object, error) {
+	var unnamedArgs []Object
+
+	// This effectively resolves "self", or the x in `x.y(...)` (which is y(x, ...))
 	objFunction, err := r(exprFunction.Accept(i))
 	if err != nil {
 		return nil, nil, err
+	} else if lv, ok := objFunction.(*ObjectLValue); ok {
+		unnamedArgs = append(unnamedArgs, lv.left)
 	}
 
-	if lv, ok := objFunction.(*ObjectLValue); ok {
-		// TODO: Can we push this up to *ObjectLValue.Call?
-		unnamedArgExpressions = append([]ast.Expression{ast.NewExpressionLiteral(lv.left)}, unnamedArgExpressions...)
-	}
-
-	var unnamedArgs []Object
 	for _, expr := range unnamedArgExpressions {
 		if o, err := r(expr.Accept(i)); err != nil {
 			return nil, nil, err
@@ -259,12 +203,47 @@ func (i *Interpreter) resolveUnnamedArgs(exprFunction ast.Expression, unnamedArg
 				unnamedArgs = append(unnamedArgs, starArgs.Items...)
 			case *ObjectTuple:
 				unnamedArgs = append(unnamedArgs, starArgs.Items...)
+			case *ObjectDeferred:
+				unnamedArgs = append(unnamedArgs, starArgs)
 			default:
-				return nil, nil, fmt.Errorf("[resolveStarArgs] expecting *interpreter.ObjectList or *interpreter.ObjectTuple got %T", starArgs)
+				return nil, nil, fmt.Errorf("[resolveUnnamedArgs] expecting *interpreter.ObjectList or *interpreter.ObjectTuple got %T", starArgs)
 			}
 		}
 	}
 	return objFunction, unnamedArgs, nil
+}
+
+func (i *Interpreter) resolveNamedArgs(namedExpression []*ast.DataArgument, kwArgs ast.Expression) (map[string]Object, error) {
+	out := make(map[string]Object)
+	for _, ne := range namedExpression {
+		if obj, err := r(ne.Expr.Accept(i)); err != nil {
+			return nil, err
+		} else if _, ok := out[ne.Assign]; ok {
+			return nil, fmt.Errorf("duplicate key") // TODO: Check if we enforce this in the grammar
+		} else {
+			out[ne.Assign] = obj
+		}
+	}
+
+	if kwArgs != nil {
+		if obj, err := r(kwArgs.Accept(i)); err != nil {
+			return nil, err
+		} else if objDict, ok := obj.(*ObjectDict); !ok {
+			return nil, fmt.Errorf("not a dict")
+		} else {
+			for _, keyValue := range objDict.items {
+				if keyStr, ok := keyValue.Key.(*ObjectString); !ok {
+					return nil, fmt.Errorf("kwargs not a string")
+				} else if _, ok := out[keyStr.Value]; ok {
+					return nil, fmt.Errorf("duplicate key") // TODO: Check if we enforce this in the grammar
+				} else {
+					out[keyStr.Value] = keyValue.Value
+				}
+			}
+		}
+	}
+
+	return out, nil
 }
 
 func (i *Interpreter) assignArgs(
