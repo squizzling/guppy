@@ -80,10 +80,17 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (returnValue an
 	paramName := make([]string, paramCount)
 	paramValue := make([]Object, paramCount)
 
+	for idx := range len(paramName) {
+		if idx < len(paramData.Params) {
+			paramName[idx] = paramData.Params[idx].Name
+		} else {
+			paramName[idx] = paramData.KWParams[idx-len(paramData.Params)].Name
+		}
+	}
+
 	for idx, arg := range unnamedArgs[:min(len(unnamedArgs), len(paramData.Params))] {
 		// Note: we only want to fill up to len(paramData.Params), not up to the full slice.  The second half of
 		// the slice is for KWParams.
-		paramName[idx] = paramData.Params[idx].Name
 		paramValue[idx] = arg
 	}
 
@@ -109,7 +116,6 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (returnValue an
 			if paramValue[idx] != nil {
 				return nil, fmt.Errorf("duplicate keyword argument: '%s'", name)
 			} else {
-				paramName[idx] = name
 				paramValue[idx] = value
 				delete(namedArgs, name) // It's safe to delete from a map during iteration.
 			}
@@ -118,20 +124,18 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (returnValue an
 
 	for idx, param := range paramData.Params {
 		if paramValue[idx] == nil && param.Default != nil {
-			paramName[idx] = param.Name
 			paramValue[idx] = param.Default
 		}
 	}
 	for idx, param := range paramData.KWParams {
 		if paramValue[idx+len(paramData.Params)] == nil {
-			paramName[idx+len(paramData.Params)] = param.Name
 			paramValue[idx+len(paramData.Params)] = param.Default
 		}
 	}
 
 	for idx, value := range paramValue {
 		if value == nil {
-			return nil, fmt.Errorf("parameter %d is not occupied", idx)
+			return nil, fmt.Errorf("parameter `%s` is not occupied", paramName[idx])
 		}
 	}
 
