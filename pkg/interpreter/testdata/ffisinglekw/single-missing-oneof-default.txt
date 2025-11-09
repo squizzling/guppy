@@ -1,0 +1,31 @@
+o = ffisinglekw()
+-----
+*parameter `single` is not occupied
+=====
+o = ffisinglekw(4)
+-----
+*parameter `single` is not occupied
+=====
+o = ffisinglekw(4, 8)
+-----
+*passing extra arguments to function not expecting it
+=====
+o = ffisinglekw(single=4)
+-----
+6
+=====
+o = ffisinglekw(oneof=8)
+-----
+*parameter `single` is not occupied
+=====
+o = ffisinglekw(single=4,oneof=8)
+-----
+12
+=====
+o = ffisinglekw(oneof=8,single=4)
+-----
+12
+=====
+o = ffisinglekw(4,oneof=8)
+-----
+*duplicate keyword argument: 'oneof'

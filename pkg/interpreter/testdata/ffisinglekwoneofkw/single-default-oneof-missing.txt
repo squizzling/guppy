@@ -1,0 +1,31 @@
+o = ffisinglekwoneofkw()
+-----
+*parameter `oneof` is not occupied
+=====
+o = ffisinglekwoneofkw(4)
+-----
+*passing extra arguments to function not expecting it
+=====
+o = ffisinglekwoneofkw(4, 8)
+-----
+*passing extra arguments to function not expecting it
+=====
+o = ffisinglekwoneofkw(single=4)
+-----
+*parameter `oneof` is not occupied
+=====
+o = ffisinglekwoneofkw(oneof=8)
+-----
+9
+=====
+o = ffisinglekwoneofkw(single=4,oneof=8)
+-----
+12
+=====
+o = ffisinglekwoneofkw(oneof=8,single=4)
+-----
+12
+=====
+o = ffisinglekwoneofkw(4,oneof=8)
+-----
+*passing extra arguments to function not expecting it

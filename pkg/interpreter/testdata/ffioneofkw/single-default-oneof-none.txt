@@ -1,0 +1,31 @@
+o = ffioneofkw()
+-----
+1
+=====
+o = ffioneofkw(4)
+-----
+4
+=====
+o = ffioneofkw(4, 8)
+-----
+*passing extra arguments to function not expecting it
+=====
+o = ffioneofkw(single=4)
+-----
+4
+=====
+o = ffioneofkw(oneof=8)
+-----
+9
+=====
+o = ffioneofkw(single=4,oneof=8)
+-----
+12
+=====
+o = ffioneofkw(oneof=8,single=4)
+-----
+12
+=====
+o = ffioneofkw(4,oneof=8)
+-----
+12

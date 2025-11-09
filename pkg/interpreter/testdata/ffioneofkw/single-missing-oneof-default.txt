@@ -1,0 +1,31 @@
+o = ffioneofkw()
+-----
+*parameter `single` is not occupied
+=====
+o = ffioneofkw(4)
+-----
+6
+=====
+o = ffioneofkw(4, 8)
+-----
+*passing extra arguments to function not expecting it
+=====
+o = ffioneofkw(single=4)
+-----
+6
+=====
+o = ffioneofkw(oneof=8)
+-----
+*parameter `single` is not occupied
+=====
+o = ffioneofkw(single=4,oneof=8)
+-----
+12
+=====
+o = ffioneofkw(oneof=8,single=4)
+-----
+12
+=====
+o = ffioneofkw(4,oneof=8)
+-----
+12

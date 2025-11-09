@@ -1,0 +1,31 @@
+o = ffi()
+-----
+*parameter `oneof` is not occupied
+=====
+o = ffi(4)
+-----
+*parameter `oneof` is not occupied
+=====
+o = ffi(4, 8)
+-----
+12
+=====
+o = ffi(single=4)
+-----
+*parameter `oneof` is not occupied
+=====
+o = ffi(oneof=8)
+-----
+9
+=====
+o = ffi(single=4,oneof=8)
+-----
+12
+=====
+o = ffi(oneof=8,single=4)
+-----
+12
+=====
+o = ffi(4,oneof=8)
+-----
+12
