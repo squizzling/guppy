@@ -10,7 +10,7 @@ type ObjectString struct {
 	Value string
 }
 
-func NewObjectString(s string) Object {
+func NewObjectString(s string) *ObjectString {
 	return &ObjectString{
 		Object: NewObject(map[string]Object{
 			"__add__": methodStringAdd{Object: NewObject(nil)},

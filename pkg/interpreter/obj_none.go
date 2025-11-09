@@ -4,7 +4,7 @@ type ObjectNone struct {
 	Object
 }
 
-func NewObjectNone() Object {
+func NewObjectNone() *ObjectNone {
 	return &ObjectNone{
 		NewObject(map[string]Object{
 			"__eq__":    methodNoneEqual{Object: NewObject(nil)},

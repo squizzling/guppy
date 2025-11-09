@@ -117,6 +117,7 @@ func (pd *Params) Dump(i *Interpreter) {
 }
 
 type FlowCall interface {
+	Object
 	Params(i *Interpreter) (*Params, error)
 	Call(i *Interpreter) (Object, error)
 }

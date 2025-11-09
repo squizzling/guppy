@@ -22,7 +22,7 @@ type methodIntNeg struct {
 	Object
 }
 
-func NewObjectInt(i int) Object {
+func NewObjectInt(i int) *ObjectInt {
 	return &ObjectInt{
 		Object: NewObject(map[string]Object{
 			"__add__":         methodIntOp{Object: NewObject(nil), op: "+", reverse: "__radd__"},
