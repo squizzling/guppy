@@ -7,11 +7,16 @@ import (
 	"guppy/pkg/flow/filter"
 	"guppy/pkg/flow/stream"
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/ffi"
 )
 
 func NewInterpreter(enableTrace bool) *interpreter.Interpreter {
 	i := interpreter.NewInterpreter(enableTrace)
 
+	// New style
+	_ = i.Globals.Set("range", ffi.NewFFIRange())
+
+	// Old style
 	_ = i.Globals.Set("abs", &stream.FFIAbs{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("alerts", &stream.FFIAlerts{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("annotate", &annotate.FFIAnnotate{Object: interpreter.NewObject(nil)})
@@ -28,7 +33,6 @@ func NewInterpreter(enableTrace bool) *interpreter.Interpreter {
 	_ = i.Globals.Set("median", &stream.FFIMedian{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("min", &stream.FFIMin{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("partition_filter", &filter.FFIPartitionFilter{Object: interpreter.NewObject(nil)})
-	_ = i.Globals.Set("range", &interpreter.FFIRange{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("str", &interpreter.FFIStr{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("sum", &stream.FFISum{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("_print", &debug.FFIPrint{Object: interpreter.NewObject(nil)})
