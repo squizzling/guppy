@@ -1,0 +1,32 @@
+package ffi
+
+import (
+	"fmt"
+
+	"guppy/pkg/interpreter"
+)
+
+type FFILen struct {
+	Value struct {
+		List   *interpreter.ObjectList
+		Tuple  *interpreter.ObjectTuple
+		String *interpreter.ObjectString
+	} `ffi:"value"`
+}
+
+func NewFFILen() interpreter.FlowCall {
+	return interpreter.NewFFI(FFILen{})
+}
+
+func (f FFILen) Call() (interpreter.Object, error) {
+	switch {
+	case f.Value.List != nil:
+		return interpreter.NewObjectInt(len(f.Value.List.Items)), nil
+	case f.Value.Tuple != nil:
+		return interpreter.NewObjectInt(len(f.Value.Tuple.Items)), nil
+	case f.Value.String != nil:
+		return interpreter.NewObjectInt(len(f.Value.String.Value)), nil
+	default:
+		return nil, fmt.Errorf("FFILen.Call: FFILen.Value is not set")
+	}
+}

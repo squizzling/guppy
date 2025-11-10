@@ -12,7 +12,7 @@ type ObjectList struct {
 	Items []Object
 }
 
-func NewObjectList(items ...Object) Object {
+func NewObjectList(items ...Object) *ObjectList {
 	return &ObjectList{
 		Object: NewObject(map[string]Object{
 			"__add__":       methodListAdd{Object: NewObject(nil)},

@@ -14,6 +14,7 @@ func NewInterpreter(enableTrace bool) *interpreter.Interpreter {
 	i := interpreter.NewInterpreter(enableTrace)
 
 	// New style
+	_ = i.Globals.Set("len", ffi.NewFFILen())
 	_ = i.Globals.Set("range", ffi.NewFFIRange())
 
 	// Old style
@@ -27,7 +28,6 @@ func NewInterpreter(enableTrace bool) *interpreter.Interpreter {
 	_ = i.Globals.Set("detect", &stream.FFIDetect{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("events", &stream.FFIEvents{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("filter", &filter.FFIFilter{Object: interpreter.NewObject(nil)})
-	_ = i.Globals.Set("len", &interpreter.FFILen{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("max", &stream.FFIMax{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("mean", &stream.FFIMean{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("median", &stream.FFIMedian{Object: interpreter.NewObject(nil)})

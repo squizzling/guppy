@@ -7,7 +7,7 @@ type ObjectTuple struct {
 	Items []Object
 }
 
-func NewObjectTuple(items ...Object) Object {
+func NewObjectTuple(items ...Object) *ObjectTuple {
 	return &ObjectTuple{
 		Object: NewObject(nil),
 		Items:  items,
