@@ -1,10 +1,11 @@
-package interpreter
+package ffi
 
 import (
 	"fmt"
 	"reflect"
 	"strings"
 
+	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
 )
 
@@ -42,7 +43,7 @@ func (f *ffi[T]) Call(i itypes.Interpreter) (itypes.Object, error) {
 	return data.Call(i)
 }
 
-func NewFFI[T FFICall](defaults T) FlowCall {
+func NewFFI[T FFICall](defaults T) interpreter.FlowCall {
 	ffiDefaults := reflect.ValueOf(defaults)
 	if ffiDefaults.Kind() == reflect.Pointer {
 		ffiDefaults = ffiDefaults.Elem()
@@ -131,7 +132,7 @@ func NewFFI[T FFICall](defaults T) FlowCall {
 	}
 
 	return &ffi[T]{
-		Object:    NewObject(nil),
+		Object:    interpreter.NewObject(nil),
 		params:    params,
 		defaults:  defaults,
 		setFields: setFields,

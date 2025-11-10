@@ -7,16 +7,16 @@ import (
 	"guppy/pkg/flow/filter"
 	"guppy/pkg/flow/stream"
 	"guppy/pkg/interpreter"
-	"guppy/pkg/interpreter/ffi"
+	"guppy/pkg/interpreter/builtin"
 )
 
 func NewInterpreter(enableTrace bool) *interpreter.Interpreter {
 	i := interpreter.NewInterpreter(enableTrace)
 
 	// New style
-	_ = i.Globals.Set("len", ffi.NewFFILen())
-	_ = i.Globals.Set("range", ffi.NewFFIRange())
-	_ = i.Globals.Set("str", ffi.NewFFIStr())
+	_ = i.Globals.Set("len", builtin.NewFFILen())
+	_ = i.Globals.Set("range", builtin.NewFFIRange())
+	_ = i.Globals.Set("str", builtin.NewFFIStr())
 
 	// Old style
 	_ = i.Globals.Set("abs", &stream.FFIAbs{Object: interpreter.NewObject(nil)})

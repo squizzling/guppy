@@ -1,7 +1,8 @@
-package ffi
+package builtin
 
 import (
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/ffi"
 	"guppy/pkg/interpreter/itypes"
 )
 
@@ -10,7 +11,7 @@ type FFIStr struct {
 }
 
 func NewFFIStr() interpreter.FlowCall {
-	return interpreter.NewFFI(FFIStr{})
+	return ffi.NewFFI(FFIStr{})
 }
 
 func (f FFIStr) Call(i itypes.Interpreter) (itypes.Object, error) {

@@ -1,4 +1,4 @@
-package interpreter
+package ffi
 
 import (
 	"fmt"
@@ -9,6 +9,7 @@ import (
 	"strings"
 	"testing"
 
+	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
 	"guppy/pkg/parser/flow"
 	"guppy/pkg/parser/parser"
@@ -19,60 +20,60 @@ import (
 )
 
 type TestFFI struct {
-	Single *ObjectInt              `ffi:"single"`
-	OneOf  ThingOrNone[*ObjectInt] `ffi:"oneof"`
+	Single *interpreter.ObjectInt              `ffi:"single"`
+	OneOf  ThingOrNone[*interpreter.ObjectInt] `ffi:"oneof"`
 }
 
 func (t TestFFI) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if t.OneOf.Thing != nil {
-		return NewObjectInt(t.Single.Value + t.OneOf.Thing.Value), nil
+		return interpreter.NewObjectInt(t.Single.Value + t.OneOf.Thing.Value), nil
 	} else if t.OneOf.None != nil {
-		return NewObjectInt(t.Single.Value), nil
+		return interpreter.NewObjectInt(t.Single.Value), nil
 	} else {
 		panic("neither OneOf nor Thing are set")
 	}
 }
 
 type TestFFISingleKW struct {
-	Single *ObjectInt              `ffi:"single,kw"`
-	OneOf  ThingOrNone[*ObjectInt] `ffi:"oneof"`
+	Single *interpreter.ObjectInt              `ffi:"single,kw"`
+	OneOf  ThingOrNone[*interpreter.ObjectInt] `ffi:"oneof"`
 }
 
 func (t TestFFISingleKW) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if t.OneOf.Thing != nil {
-		return NewObjectInt(t.Single.Value + t.OneOf.Thing.Value), nil
+		return interpreter.NewObjectInt(t.Single.Value + t.OneOf.Thing.Value), nil
 	} else if t.OneOf.None != nil {
-		return NewObjectInt(t.Single.Value), nil
+		return interpreter.NewObjectInt(t.Single.Value), nil
 	} else {
 		panic("neither OneOf nor Thing are set")
 	}
 }
 
 type TestFFIOneOfKW struct {
-	Single *ObjectInt              `ffi:"single"`
-	OneOf  ThingOrNone[*ObjectInt] `ffi:"oneof,kw"`
+	Single *interpreter.ObjectInt              `ffi:"single"`
+	OneOf  ThingOrNone[*interpreter.ObjectInt] `ffi:"oneof,kw"`
 }
 
 func (t TestFFIOneOfKW) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if t.OneOf.Thing != nil {
-		return NewObjectInt(t.Single.Value + t.OneOf.Thing.Value), nil
+		return interpreter.NewObjectInt(t.Single.Value + t.OneOf.Thing.Value), nil
 	} else if t.OneOf.None != nil {
-		return NewObjectInt(t.Single.Value), nil
+		return interpreter.NewObjectInt(t.Single.Value), nil
 	} else {
 		panic("neither OneOf nor Thing are set")
 	}
 }
 
 type TestFFISingleKWOneOfKW struct {
-	Single *ObjectInt              `ffi:"single,kw"`
-	OneOf  ThingOrNone[*ObjectInt] `ffi:"oneof,kw"`
+	Single *interpreter.ObjectInt              `ffi:"single,kw"`
+	OneOf  ThingOrNone[*interpreter.ObjectInt] `ffi:"oneof,kw"`
 }
 
 func (t TestFFISingleKWOneOfKW) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if t.OneOf.Thing != nil {
-		return NewObjectInt(t.Single.Value + t.OneOf.Thing.Value), nil
+		return interpreter.NewObjectInt(t.Single.Value + t.OneOf.Thing.Value), nil
 	} else if t.OneOf.None != nil {
-		return NewObjectInt(t.Single.Value), nil
+		return interpreter.NewObjectInt(t.Single.Value), nil
 	} else {
 		panic("neither OneOf nor Thing are set")
 	}
@@ -85,33 +86,33 @@ func TestNewtFFIDefaults(t *testing.T) {
 		t.Run(fn, func(t *testing.T) {
 			for _, ts := range []struct {
 				name          string
-				defaultSingle *ObjectInt
-				defaultOneOf  ThingOrNone[*ObjectInt]
+				defaultSingle *interpreter.ObjectInt
+				defaultOneOf  ThingOrNone[*interpreter.ObjectInt]
 			}{
 				{
 					"single-default-oneof-default",
-					NewObjectInt(1),
-					ThingOrNone[*ObjectInt]{nil, NewObjectInt(2)},
+					interpreter.NewObjectInt(1),
+					ThingOrNone[*interpreter.ObjectInt]{nil, interpreter.NewObjectInt(2)},
 				}, {
 					"single-default-oneof-missing",
-					NewObjectInt(1),
-					ThingOrNone[*ObjectInt]{nil, nil},
+					interpreter.NewObjectInt(1),
+					ThingOrNone[*interpreter.ObjectInt]{nil, nil},
 				}, {
 					"single-default-oneof-none",
-					NewObjectInt(1),
-					ThingOrNone[*ObjectInt]{NewObjectNone(), nil},
+					interpreter.NewObjectInt(1),
+					ThingOrNone[*interpreter.ObjectInt]{interpreter.NewObjectNone(), nil},
 				}, {
 					"single-missing-oneof-default",
 					nil,
-					ThingOrNone[*ObjectInt]{nil, NewObjectInt(2)},
+					ThingOrNone[*interpreter.ObjectInt]{nil, interpreter.NewObjectInt(2)},
 				}, {
 					"single-missing-oneof-missing",
 					nil,
-					ThingOrNone[*ObjectInt]{nil, nil},
+					ThingOrNone[*interpreter.ObjectInt]{nil, nil},
 				}, {
 					"single-missing-oneof-none",
 					nil,
-					ThingOrNone[*ObjectInt]{NewObjectNone(), nil},
+					ThingOrNone[*interpreter.ObjectInt]{interpreter.NewObjectNone(), nil},
 				},
 			} {
 				t.Run(ts.name, func(t *testing.T) {
@@ -122,7 +123,7 @@ func TestNewtFFIDefaults(t *testing.T) {
 					testFromFile(
 						t,
 						fmt.Sprintf("testdata/%s/%s.txt", fn, ts.name),
-						map[string]FlowCall{
+						map[string]interpreter.FlowCall{
 							"ffi":                ffi,
 							"ffioneofkw":         ffiOneOfKW,
 							"ffisinglekw":        ffiSingleKW,
@@ -145,7 +146,7 @@ func must1[T any](t T, err error) T {
 func testFromFile(
 	t *testing.T,
 	fullFilename string,
-	calls map[string]FlowCall,
+	calls map[string]interpreter.FlowCall,
 ) {
 	filename := path.Base(fullFilename)
 	fileContents := string(must1(os.ReadFile(fullFilename)))
@@ -170,7 +171,7 @@ func testFromFile(
 			if parseErr != nil {
 				panic("parse failed: " + parseErr.Error())
 			}
-			i := NewInterpreter(false)
+			i := interpreter.NewInterpreter(false)
 			for k, v := range calls {
 				require.NoError(t, i.Scope.Set(k, v))
 			}
@@ -184,7 +185,7 @@ func testFromFile(
 				require.NoError(t, err)
 				oVal, err := i.Scope.Get("o")
 				require.NoError(t, err)
-				assert.Equal(t, output, strconv.Itoa(oVal.(*ObjectInt).Value))
+				assert.Equal(t, output, strconv.Itoa(oVal.(*interpreter.ObjectInt).Value))
 			}
 		})
 	}
@@ -197,13 +198,13 @@ func TestFFIError(t *testing.T) {
 		oneOf         itypes.Object
 		expectedError string
 	}{
-		{"single-wrong-type", NewObjectNone(), NewObjectNone(), "param `single` for TestFFI.Single is *interpreter.ObjectNone not *interpreter.ObjectInt"},
-		{"single-missing", nil, NewObjectNone(), "param `single` for TestFFI.Single is missing, expecting *interpreter.ObjectInt"},
-		{"oneOf-wrong-type", NewObjectInt(1), NewObjectString(""), "param `oneof` for TestFFI.OneOf is *interpreter.ObjectString not *interpreter.ObjectNone, or *interpreter.ObjectInt"},
-		{"oneOf-missing", NewObjectInt(1), nil, "param `oneof` for TestFFI.OneOf is missing, expecting *interpreter.ObjectNone, or *interpreter.ObjectInt"},
+		{"single-wrong-type", interpreter.NewObjectNone(), interpreter.NewObjectNone(), "param `single` for TestFFI.Single is *interpreter.ObjectNone not *interpreter.ObjectInt"},
+		{"single-missing", nil, interpreter.NewObjectNone(), "param `single` for TestFFI.Single is missing, expecting *interpreter.ObjectInt"},
+		{"oneOf-wrong-type", interpreter.NewObjectInt(1), interpreter.NewObjectString(""), "param `oneof` for TestFFI.OneOf is *interpreter.ObjectString not *interpreter.ObjectNone, or *interpreter.ObjectInt"},
+		{"oneOf-missing", interpreter.NewObjectInt(1), nil, "param `oneof` for TestFFI.OneOf is missing, expecting *interpreter.ObjectNone, or *interpreter.ObjectInt"},
 	} {
 		t.Run(ts.name, func(t *testing.T) {
-			i := NewInterpreter(false)
+			i := interpreter.NewInterpreter(false)
 			f := NewFFI(TestFFI{})
 
 			if ts.single != nil {

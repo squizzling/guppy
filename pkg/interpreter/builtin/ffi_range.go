@@ -1,22 +1,23 @@
-package ffi
+package builtin
 
 import (
 	"fmt"
 
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/ffi"
 	"guppy/pkg/interpreter/itypes"
 )
 
 type FFIRange struct {
-	Start *interpreter.ObjectInt                          `ffi:"start"`
-	Stop  interpreter.ThingOrNone[*interpreter.ObjectInt] `ffi:"stop"`
-	Step  *interpreter.ObjectInt                          `ffi:"step"`
+	Start *interpreter.ObjectInt                  `ffi:"start"`
+	Stop  ffi.ThingOrNone[*interpreter.ObjectInt] `ffi:"stop"`
+	Step  *interpreter.ObjectInt                  `ffi:"step"`
 }
 
 func NewFFIRange() interpreter.FlowCall {
-	return interpreter.NewFFI(FFIRange{
+	return ffi.NewFFI(FFIRange{
 		Start: nil,
-		Stop: interpreter.ThingOrNone[*interpreter.ObjectInt]{
+		Stop: ffi.ThingOrNone[*interpreter.ObjectInt]{
 			None: interpreter.NewObjectNone(),
 		},
 		Step: interpreter.NewObjectInt(1),
