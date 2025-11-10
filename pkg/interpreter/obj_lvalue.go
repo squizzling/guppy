@@ -1,25 +1,29 @@
 package interpreter
 
+import (
+	"guppy/pkg/interpreter/itypes"
+)
+
 type ObjectLValue struct {
-	left  Object
-	right Object
+	left  itypes.Object
+	right itypes.Object
 }
 
-func NewLValue(left Object, right Object) Object {
+func NewLValue(left itypes.Object, right itypes.Object) itypes.Object {
 	return &ObjectLValue{
 		left:  left,
 		right: right,
 	}
 }
 
-func (lv *ObjectLValue) Params(i *Interpreter) (*Params, error) {
-	return i.doParams(lv.right)
+func (lv *ObjectLValue) Params(i itypes.Interpreter) (*itypes.Params, error) {
+	return i.DoParams(lv.right)
 }
 
-func (lv *ObjectLValue) Call(i *Interpreter) (Object, error) {
-	return i.doCall(lv.right)
+func (lv *ObjectLValue) Call(i itypes.Interpreter) (itypes.Object, error) {
+	return i.DoCall(lv.right)
 }
 
-func (lv *ObjectLValue) Member(i *Interpreter, obj Object, memberName string) (Object, error) {
+func (lv *ObjectLValue) Member(i itypes.Interpreter, obj itypes.Object, memberName string) (itypes.Object, error) {
 	return lv.right.Member(i, lv.right, memberName)
 }

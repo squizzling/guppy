@@ -4,29 +4,31 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+
+	"guppy/pkg/interpreter/itypes"
 )
 
-type funcFieldSetter func(i *Interpreter, tgt reflect.Value) error
+type funcFieldSetter func(i itypes.Interpreter, tgt reflect.Value) error
 
 // This amazing syntax brought to you courtesy of the golang design team
-var typeObject = reflect.TypeOf((*Object)(nil)).Elem()
+var typeObject = reflect.TypeOf((*itypes.Object)(nil)).Elem()
 
 type FFICall interface {
-	Call(i *Interpreter) (Object, error)
+	Call(i itypes.Interpreter) (itypes.Object, error)
 }
 
 type ffi[T FFICall] struct {
-	Object
-	params    *Params
+	itypes.Object
+	params    *itypes.Params
 	setFields []funcFieldSetter
 	defaults  T
 }
 
-func (f *ffi[T]) Params(i *Interpreter) (*Params, error) {
+func (f *ffi[T]) Params(i itypes.Interpreter) (*itypes.Params, error) {
 	return f.params, nil
 }
 
-func (f *ffi[T]) Call(i *Interpreter) (Object, error) {
+func (f *ffi[T]) Call(i itypes.Interpreter) (itypes.Object, error) {
 	data := f.defaults
 	valueDestination := reflect.ValueOf(&data).Elem()
 
@@ -56,7 +58,7 @@ func NewFFI[T FFICall](defaults T) FlowCall {
 
 	var setFields []funcFieldSetter
 
-	params := &Params{}
+	params := &itypes.Params{}
 
 	for idx := 0; idx < ffiDefaults.NumField(); idx++ {
 		fieldType := ffiDefaults.Type().Field(idx)
@@ -72,43 +74,43 @@ func NewFFI[T FFICall](defaults T) FlowCall {
 		structFieldName := ffiDefaults.Type().Name() + "." + fieldType.Name
 
 		fieldValue := ffiDefaults.Field(idx)
-		var defaultValue Object
+		var defaultValue itypes.Object
 		if fieldValue.Kind() == reflect.Struct {
 			for idx := 0; idx < fieldValue.Type().NumField(); idx++ {
 				fld := fieldValue.Field(idx)
 				if !fld.CanConvert(typeObject) {
 					panic(fmt.Sprintf(
-						"NewFFI: %s.%s does not have an underlying interpreter.Object type, kind=%s, type=%s",
+						"NewFFI: %s.%s does not have an underlying itypes.Object type, kind=%s, type=%s",
 						structFieldName,
 						fieldType.Type.Field(idx).Name,
 						fieldType.Type.Field(idx).Type.Kind().String(),
 						fieldType.Type.Field(idx).Type.String(),
 					))
 				} else if !fld.IsNil() {
-					defaultValue = fld.Interface().(Object)
+					defaultValue = fld.Interface().(itypes.Object)
 					break
 				}
 			}
 		} else if !fieldValue.Type().ConvertibleTo(typeObject) {
 			panic(fmt.Sprintf(
-				"NewFFI: %s does not have an underlying interpreter.Object or struct type, kind=%s, type=%s",
+				"NewFFI: %s does not have an underlying itypes.Object or struct type, kind=%s, type=%s",
 				structFieldName,
 				fieldType.Type.Kind().String(),
 				fieldType.Type.String(),
 			))
 		} else if !fieldValue.IsNil() {
-			defaultValue = fieldValue.Interface().(Object)
+			defaultValue = fieldValue.Interface().(itypes.Object)
 		}
 
 		switch {
 		case len(argParts) == 1:
-			params.Params = append(params.Params, ParamDef{Name: argParts[0], Default: defaultValue})
+			params.Params = append(params.Params, itypes.ParamDef{Name: argParts[0], Default: defaultValue})
 		case argParts[1] == "star":
 			// TODO: We need to do type checking on the destination
 			panic("star not yet supported")
 			params.StarParam = argParts[0]
 		case argParts[1] == "kw":
-			params.KWParams = append(params.KWParams, ParamDef{Name: argParts[0], Default: defaultValue})
+			params.KWParams = append(params.KWParams, itypes.ParamDef{Name: argParts[0], Default: defaultValue})
 		case argParts[1] == "kwargs":
 			// TODO: We need to do type checking on the destination
 			panic("kwargs not yet supported")
@@ -136,10 +138,10 @@ func NewFFI[T FFICall](defaults T) FlowCall {
 	}
 }
 
-func singleHandler(idx int, argName string, structFieldName string, typeString string) func(i *Interpreter, tgt reflect.Value) error {
-	return func(i *Interpreter, valueFFIStruct reflect.Value) error {
+func singleHandler(idx int, argName string, structFieldName string, typeString string) funcFieldSetter {
+	return func(i itypes.Interpreter, valueFFIStruct reflect.Value) error {
 		valueDestination := valueFFIStruct.Field(idx)
-		if argValue, err := i.Scope.GetArg(argName); err != nil {
+		if argValue, err := i.GetArg(argName); err != nil {
 			return handleArgMissing(argName, structFieldName, typeString, valueDestination)
 		} else {
 			return singlePresent(argName, structFieldName, typeString, valueDestination, argValue)
@@ -148,9 +150,9 @@ func singleHandler(idx int, argName string, structFieldName string, typeString s
 }
 
 func oneOfHandler(idx int, argName string, structFieldName string, typeString string) funcFieldSetter {
-	return func(i *Interpreter, valueFFIStruct reflect.Value) error {
+	return func(i itypes.Interpreter, valueFFIStruct reflect.Value) error {
 		valueOneOf := valueFFIStruct.Field(idx)
-		if argValue, err := i.Scope.GetArg(argName); err != nil {
+		if argValue, err := i.GetArg(argName); err != nil {
 			return handleArgMissing(argName, structFieldName, typeString, valueOneOf)
 		} else {
 			return oneOfPresent(argName, structFieldName, typeString, valueOneOf, argValue)
@@ -168,7 +170,7 @@ func handleArgMissing(argName string, structFieldName string, typeString string,
 	}
 }
 
-func singlePresent(argName string, structFieldName string, typeString string, valueDestination reflect.Value, argValue Object) error {
+func singlePresent(argName string, structFieldName string, typeString string, valueDestination reflect.Value, argValue itypes.Object) error {
 	if va := reflect.ValueOf(argValue); !va.CanConvert(valueDestination.Type()) {
 		return fmt.Errorf("param `%s` for %s is %T not %s", argName, structFieldName, argValue, typeString)
 	} else {
@@ -177,7 +179,7 @@ func singlePresent(argName string, structFieldName string, typeString string, va
 	}
 }
 
-func oneOfPresent(argName string, structFieldName string, typeString string, valueOneOf reflect.Value, argValue Object) error {
+func oneOfPresent(argName string, structFieldName string, typeString string, valueOneOf reflect.Value, argValue itypes.Object) error {
 	va := reflect.ValueOf(argValue)
 	isSet := false
 

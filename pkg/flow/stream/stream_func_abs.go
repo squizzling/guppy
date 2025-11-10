@@ -4,19 +4,20 @@ import (
 	"fmt"
 
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 )
 
 type FFIAbs struct {
-	interpreter.Object
+	itypes.Object
 }
 
-func (f FFIAbs) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
-	return &interpreter.Params{
+func (f FFIAbs) Params(i itypes.Interpreter) (*itypes.Params, error) {
+	return &itypes.Params{
 		StarParam: "streams",
 	}, nil
 }
 
-func (f FFIAbs) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
+func (f FFIAbs) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if streamsRaw, err := interpreter.ArgAs[*interpreter.ObjectTuple](i, "streams"); err != nil {
 		return nil, err
 	} else {

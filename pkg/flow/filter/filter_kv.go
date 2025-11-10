@@ -4,29 +4,30 @@ import (
 	"fmt"
 
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 )
 
 type FFIFilter struct {
-	interpreter.Object
+	itypes.Object
 }
 
-func (f FFIFilter) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
-	return &interpreter.Params{
-		Params: []interpreter.ParamDef{
+func (f FFIFilter) Params(i itypes.Interpreter) (*itypes.Params, error) {
+	return &itypes.Params{
+		Params: []itypes.ParamDef{
 			{Name: "field"},
 			{Name: "term", Default: interpreter.NewObjectNone()},
 		},
 		StarParam: "terms",
-		KWParams: []interpreter.ParamDef{
+		KWParams: []itypes.ParamDef{
 			{Name: "match_missing", Default: interpreter.NewObjectBool(false)},
 		},
 	}, nil
 }
 
-func (f FFIFilter) resolveTerms(i *interpreter.Interpreter) ([]string, error) {
+func (f FFIFilter) resolveTerms(i itypes.Interpreter) ([]string, error) {
 	var terms []string
 
-	if objTerm, err := i.Scope.GetArg("term"); err != nil {
+	if objTerm, err := i.GetArg("term"); err != nil {
 		return nil, err
 	} else if strTerm, ok := objTerm.(*interpreter.ObjectString); ok {
 		terms = append(terms, strTerm.Value)
@@ -36,7 +37,7 @@ func (f FFIFilter) resolveTerms(i *interpreter.Interpreter) ([]string, error) {
 		// nothing
 	}
 
-	if v, err := i.Scope.GetArg("terms"); err != nil {
+	if v, err := i.GetArg("terms"); err != nil {
 		return nil, err
 	} else {
 		switch v := v.(type) {
@@ -55,7 +56,7 @@ func (f FFIFilter) resolveTerms(i *interpreter.Interpreter) ([]string, error) {
 	}
 }
 
-func (f FFIFilter) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
+func (f FFIFilter) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if term, err := interpreter.ArgAsString(i, "field"); err != nil {
 		return nil, err
 	} else if terms, err := f.resolveTerms(i); err != nil {
@@ -68,7 +69,7 @@ func (f FFIFilter) Call(i *interpreter.Interpreter) (interpreter.Object, error) 
 }
 
 type kv struct {
-	interpreter.Object
+	itypes.Object
 
 	key          string
 	values       []string

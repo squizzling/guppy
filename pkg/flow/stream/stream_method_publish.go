@@ -4,15 +4,16 @@ import (
 	"fmt"
 
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 )
 
 type methodPublish struct {
-	interpreter.Object
+	itypes.Object
 }
 
-func (mp methodPublish) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
-	return &interpreter.Params{
-		Params: []interpreter.ParamDef{
+func (mp methodPublish) Params(i itypes.Interpreter) (*itypes.Params, error) {
+	return &itypes.Params{
+		Params: []itypes.ParamDef{
 			{Name: "self"},
 			{Name: "label", Default: interpreter.NewObjectString("")}, // TODO: Validate "" vs None
 			{Name: "enable", Default: interpreter.NewObjectBool(true)},
@@ -21,7 +22,7 @@ func (mp methodPublish) Params(i *interpreter.Interpreter) (*interpreter.Params,
 	}, nil
 }
 
-func (mp methodPublish) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
+func (mp methodPublish) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if self, err := interpreter.ArgAs[Stream](i, "self"); err != nil {
 		return nil, err
 	} else if label, err := interpreter.ArgAsString(i, "label"); err != nil {
@@ -31,7 +32,7 @@ func (mp methodPublish) Call(i *interpreter.Interpreter) (interpreter.Object, er
 	} else {
 		// TODO: This whole thing is a hack to expose published data
 		pub := NewStreamMethodPublish(newStreamObject(), unpublish(self), label, enable)
-		if rawPublished, err := i.Globals.Get("_published"); err != nil {
+		if rawPublished, err := i.GetGlobal("_published"); err != nil {
 			return nil, err
 		} else if published, ok := rawPublished.(interface{ Append(s *StreamMethodPublish) }); !ok {
 			return nil, fmt.Errorf("invalid type")

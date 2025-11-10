@@ -4,15 +4,16 @@ import (
 	"fmt"
 
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 )
 
 type methodFill struct {
-	interpreter.Object
+	itypes.Object
 }
 
-func (mf methodFill) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
-	return &interpreter.Params{
-		Params: []interpreter.ParamDef{
+func (mf methodFill) Params(i itypes.Interpreter) (*itypes.Params, error) {
+	return &itypes.Params{
+		Params: []itypes.ParamDef{
 			{Name: "self"},
 			{Name: "value", Default: interpreter.NewObjectNone()},
 			{Name: "duration", Default: interpreter.NewObjectNone()},
@@ -21,8 +22,8 @@ func (mf methodFill) Params(i *interpreter.Interpreter) (*interpreter.Params, er
 	}, nil
 }
 
-func (mf methodFill) resolveDuration(i *interpreter.Interpreter) (int, error) {
-	if by, err := i.Scope.GetArg("duration"); err != nil {
+func (mf methodFill) resolveDuration(i itypes.Interpreter) (int, error) {
+	if by, err := i.GetArg("duration"); err != nil {
 		return 0, err
 	} else {
 		switch by := by.(type) {
@@ -34,8 +35,8 @@ func (mf methodFill) resolveDuration(i *interpreter.Interpreter) (int, error) {
 	}
 }
 
-func (mf methodFill) resolveMaxCount(i *interpreter.Interpreter) (int, error) {
-	if by, err := i.Scope.GetArg("maxCount"); err != nil {
+func (mf methodFill) resolveMaxCount(i itypes.Interpreter) (int, error) {
+	if by, err := i.GetArg("maxCount"); err != nil {
 		return 0, err
 	} else {
 		switch by := by.(type) {
@@ -47,10 +48,10 @@ func (mf methodFill) resolveMaxCount(i *interpreter.Interpreter) (int, error) {
 	}
 }
 
-func (mf methodFill) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
+func (mf methodFill) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if self, err := interpreter.ArgAs[Stream](i, "self"); err != nil {
 		return nil, err
-	} else if value, err := i.Scope.Get("value"); err != nil {
+	} else if value, err := i.GetArg("value"); err != nil {
 		return nil, err
 	} else if duration, err := mf.resolveDuration(i); err != nil {
 		return nil, err

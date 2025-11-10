@@ -4,23 +4,24 @@ import (
 	"fmt"
 
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 )
 
 type methodStreamIs struct {
-	interpreter.Object
+	itypes.Object
 
 	invert  bool
 	reverse bool
 }
 
-func (msi methodStreamIs) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
+func (msi methodStreamIs) Params(i itypes.Interpreter) (*itypes.Params, error) {
 	return interpreter.BinaryParams, nil
 }
 
-func (msi methodStreamIs) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
-	if self, err := i.Scope.GetArg("self"); err != nil {
+func (msi methodStreamIs) Call(i itypes.Interpreter) (itypes.Object, error) {
+	if self, err := i.GetArg("self"); err != nil {
 		return nil, err
-	} else if right, err := i.Scope.GetArg("right"); err != nil {
+	} else if right, err := i.GetArg("right"); err != nil {
 		return nil, err
 	} else {
 		if msi.reverse {

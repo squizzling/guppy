@@ -4,23 +4,24 @@ import (
 	"fmt"
 
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 )
 
 type methodStreamOpBool struct {
-	interpreter.Object
+	itypes.Object
 
 	op      string
 	reverse bool
 }
 
-func (msob methodStreamOpBool) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
+func (msob methodStreamOpBool) Params(i itypes.Interpreter) (*itypes.Params, error) {
 	return interpreter.BinaryParams, nil
 }
 
-func (msob methodStreamOpBool) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
-	if self, err := i.Scope.GetArg("self"); err != nil {
+func (msob methodStreamOpBool) Call(i itypes.Interpreter) (itypes.Object, error) {
+	if self, err := i.GetArg("self"); err != nil {
 		return nil, err
-	} else if right, err := i.Scope.GetArg("right"); err != nil {
+	} else if right, err := i.GetArg("right"); err != nil {
 		return nil, err
 	} else {
 		if msob.reverse {

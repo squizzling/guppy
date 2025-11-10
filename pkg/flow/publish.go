@@ -3,10 +3,11 @@ package flow
 import (
 	"guppy/pkg/flow/stream"
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 )
 
 type Published struct {
-	interpreter.Object
+	itypes.Object
 
 	Streams []*stream.StreamMethodPublish
 }

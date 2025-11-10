@@ -6,6 +6,7 @@ import (
 	"slices"
 	"strings"
 
+	"guppy/pkg/interpreter/itypes"
 	"guppy/pkg/parser/ast"
 )
 
@@ -16,7 +17,7 @@ type deferAssign struct {
 
 type scope struct {
 	isDefined      map[string]bool
-	vars           map[string]Object
+	vars           map[string]itypes.Object
 	deferredAssign map[string]deferAssign
 	deferred       []*ObjectDeferred
 	popChain       *scope // Used when popping
@@ -26,7 +27,7 @@ type scope struct {
 func (i *Interpreter) pushScope() {
 	i.Scope = &scope{
 		isDefined:      make(map[string]bool),
-		vars:           make(map[string]Object),
+		vars:           make(map[string]itypes.Object),
 		deferredAssign: make(map[string]deferAssign),
 		popChain:       i.Scope,
 		lookupChain:    i.Scope,
@@ -42,7 +43,7 @@ func (i *Interpreter) withScope(fn func() error) error {
 func (i *Interpreter) pushClosure(s *scope) {
 	i.Scope = &scope{
 		isDefined:      make(map[string]bool),
-		vars:           make(map[string]Object),
+		vars:           make(map[string]itypes.Object),
 		deferredAssign: make(map[string]deferAssign),
 		popChain:       i.Scope,
 		lookupChain:    s,
@@ -68,7 +69,7 @@ func (s *scope) resolveDeferred(i *Interpreter) error {
 					for idx, value := range objList.Items {
 						s.vars[da.vars[idx]] = value
 					}
-				} else if obj, ok := maybeResolved.(Object); ok {
+				} else if obj, ok := maybeResolved.(itypes.Object); ok {
 					s.vars[da.vars[0]] = obj
 				} else {
 					return fmt.Errorf("expecting ObjectList or Object, found %T", maybeResolved)
@@ -100,7 +101,7 @@ func (s *scope) resolveDeferred(i *Interpreter) error {
 	return nil
 }
 
-func (s *scope) Set(key string, value Object) error {
+func (s *scope) Set(key string, value itypes.Object) error {
 	// Set is not allowed to look up the chain to find something, it can only set in the current context, and only if
 	// there's nothing there already.
 	if s.isDefined[key] {
@@ -129,7 +130,7 @@ func (s *scope) SetDefers(keys []string, d *ObjectDeferred) error {
 // GetArg is a hack to look up variables without deferred resolution.  It fails if it can't find
 // something.  It's meant for arguments, which we know much exist.  I don't love the interface
 // and it would be good to refactor at some point.
-func (s *scope) GetArg(key string) (Object, error) {
+func (s *scope) GetArg(key string) (itypes.Object, error) {
 	// TODO: Refactor.
 	if val, ok := s.vars[key]; ok {
 		return val, nil
@@ -141,7 +142,7 @@ func (s *scope) GetArg(key string) (Object, error) {
 	return s.lookupChain.GetArg(key)
 }
 
-func (s *scope) Get(key string) (Object, error) {
+func (s *scope) Get(key string) (itypes.Object, error) {
 	// Get is allowed to look up the chain to find something
 	if val, ok := s.vars[key]; ok {
 		return val, nil

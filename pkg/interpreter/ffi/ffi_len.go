@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 )
 
 type FFILen struct {
@@ -18,7 +19,7 @@ func NewFFILen() interpreter.FlowCall {
 	return interpreter.NewFFI(FFILen{})
 }
 
-func (f FFILen) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
+func (f FFILen) Call(i itypes.Interpreter) (itypes.Object, error) {
 	switch {
 	case f.Value.List != nil:
 		return interpreter.NewObjectInt(len(f.Value.List.Items)), nil

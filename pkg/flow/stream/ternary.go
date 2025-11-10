@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 	"guppy/pkg/parser/ast"
 )
 
@@ -24,7 +25,7 @@ func (ost *ObjectStreamTernary) resolveStream(i *interpreter.Interpreter, e ast.
 	}
 }
 
-func (ost *ObjectStreamTernary) VisitExpressionTernary(i *interpreter.Interpreter, left ast.Expression, cond interpreter.Object, right ast.Expression) (any, error) {
+func (ost *ObjectStreamTernary) VisitExpressionTernary(i *interpreter.Interpreter, left ast.Expression, cond itypes.Object, right ast.Expression) (any, error) {
 	if leftStream, err := ost.resolveStream(i, left); err != nil {
 		return nil, err
 	} else if condStream, ok := cond.(Stream); !ok {

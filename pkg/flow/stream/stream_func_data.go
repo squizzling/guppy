@@ -5,15 +5,16 @@ import (
 
 	"guppy/pkg/flow/filter"
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 )
 
 type FFIData struct {
-	interpreter.Object
+	itypes.Object
 }
 
-func (f FFIData) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
-	return &interpreter.Params{
-		Params: []interpreter.ParamDef{
+func (f FFIData) Params(i itypes.Interpreter) (*itypes.Params, error) {
+	return &itypes.Params{
+		Params: []itypes.ParamDef{
 			{Name: "metric"},
 			{Name: "filter", Default: interpreter.NewObjectNone()},
 			{Name: "rollup", Default: interpreter.NewObjectNone()},
@@ -24,8 +25,8 @@ func (f FFIData) Params(i *interpreter.Interpreter) (*interpreter.Params, error)
 	}, nil
 }
 
-func resolveFilter(i *interpreter.Interpreter) (filter.Filter, error) {
-	if fltr, err := i.Scope.GetArg("filter"); err != nil {
+func resolveFilter(i itypes.Interpreter) (filter.Filter, error) {
+	if fltr, err := i.GetArg("filter"); err != nil {
 		return nil, err
 	} else {
 		switch fltr := fltr.(type) {
@@ -39,8 +40,8 @@ func resolveFilter(i *interpreter.Interpreter) (filter.Filter, error) {
 	}
 }
 
-func resolveRollup(i *interpreter.Interpreter) (string, error) {
-	if rollup, err := i.Scope.GetArg("rollup"); err != nil {
+func resolveRollup(i itypes.Interpreter) (string, error) {
+	if rollup, err := i.GetArg("rollup"); err != nil {
 		return "", err
 	} else {
 		switch rollup := rollup.(type) {
@@ -54,7 +55,7 @@ func resolveRollup(i *interpreter.Interpreter) (string, error) {
 	}
 }
 
-func resolveExtrapolation(i *interpreter.Interpreter) (string, error) {
+func resolveExtrapolation(i itypes.Interpreter) (string, error) {
 	if extrapolation, err := interpreter.ArgAsString(i, "extrapolation"); err != nil {
 		return "", err
 	} else {
@@ -62,7 +63,7 @@ func resolveExtrapolation(i *interpreter.Interpreter) (string, error) {
 	}
 }
 
-func resolveMaxExtrapolations(i *interpreter.Interpreter) (int, error) {
+func resolveMaxExtrapolations(i itypes.Interpreter) (int, error) {
 	if maxExtrapolations, err := interpreter.ArgAs[*interpreter.ObjectInt](i, "maxExtrapolations"); err != nil {
 		return 0, err
 	} else {
@@ -70,7 +71,7 @@ func resolveMaxExtrapolations(i *interpreter.Interpreter) (int, error) {
 	}
 }
 
-func (f FFIData) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
+func (f FFIData) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if metricName, err := interpreter.ArgAsString(i, "metric"); err != nil {
 		return nil, err
 	} else if fltr, err := resolveFilter(i); err != nil {

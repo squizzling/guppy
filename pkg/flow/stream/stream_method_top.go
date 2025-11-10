@@ -2,17 +2,18 @@ package stream
 
 import (
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 )
 
 // TODO: All of this.
 
 type methodTop struct {
-	interpreter.Object
+	itypes.Object
 }
 
-func (mt methodTop) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
-	return &interpreter.Params{
-		Params: []interpreter.ParamDef{
+func (mt methodTop) Params(i itypes.Interpreter) (*itypes.Params, error) {
+	return &itypes.Params{
+		Params: []itypes.ParamDef{
 			{Name: "self"},
 			{Name: "count", Default: interpreter.NewObjectNone()},
 			{Name: "by", Default: interpreter.NewObjectNone()},
@@ -22,7 +23,7 @@ func (mt methodTop) Params(i *interpreter.Interpreter) (*interpreter.Params, err
 	}, nil
 }
 
-func (mt methodTop) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
+func (mt methodTop) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if self, err := interpreter.ArgAs[Stream](i, "self"); err != nil {
 		return nil, err
 	} else {

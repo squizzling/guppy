@@ -3,6 +3,7 @@ package interpreter
 import (
 	"strings"
 
+	"guppy/pkg/interpreter/itypes"
 	"guppy/pkg/parser/ast"
 )
 
@@ -11,7 +12,7 @@ type ObjectDeferred struct {
 	desired []string
 }
 
-func NewObjectDeferred(expr ast.Expression, desired ...string) Object {
+func NewObjectDeferred(expr ast.Expression, desired ...string) itypes.Object {
 	return &ObjectDeferred{
 		expr:    expr,
 		desired: desired,
@@ -31,17 +32,17 @@ func (o *ObjectDeferred) Repr() string {
 	return sb.String()
 }
 
-func (o *ObjectDeferred) Params(i *Interpreter) (*Params, error) {
-	return &Params{
+func (o *ObjectDeferred) Params(i itypes.Interpreter) (*itypes.Params, error) {
+	return &itypes.Params{
 		StarParam: "s",
 		KWParam:   "k",
 	}, nil
 }
 
-func (o *ObjectDeferred) Call(i *Interpreter) (Object, error) {
+func (o *ObjectDeferred) Call(i itypes.Interpreter) (itypes.Object, error) {
 	return o, nil
 }
 
-func (o *ObjectDeferred) Member(i *Interpreter, obj Object, memberName string) (Object, error) {
+func (o *ObjectDeferred) Member(i itypes.Interpreter, obj itypes.Object, memberName string) (itypes.Object, error) {
 	return o, nil
 }

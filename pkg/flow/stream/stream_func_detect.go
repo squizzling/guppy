@@ -6,15 +6,16 @@ import (
 
 	"guppy/pkg/flow/duration"
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 )
 
 type FFIDetect struct {
-	interpreter.Object
+	itypes.Object
 }
 
-func (f FFIDetect) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
-	return &interpreter.Params{
-		Params: []interpreter.ParamDef{
+func (f FFIDetect) Params(i itypes.Interpreter) (*itypes.Params, error) {
+	return &itypes.Params{
+		Params: []itypes.ParamDef{
 			{Name: "on"},
 			{Name: "off", Default: interpreter.NewObjectNone()},
 			{Name: "mode", Default: interpreter.NewObjectString("paired")},
@@ -25,7 +26,7 @@ func (f FFIDetect) Params(i *interpreter.Interpreter) (*interpreter.Params, erro
 	}, nil
 }
 
-func (f FFIDetect) resolveOn(i *interpreter.Interpreter) (Stream, error) {
+func (f FFIDetect) resolveOn(i itypes.Interpreter) (Stream, error) {
 	// TODO: Make sure it's a stream of bool somehow
 	if on, err := interpreter.ArgAs[Stream](i, "on"); err != nil {
 		return nil, err
@@ -34,9 +35,9 @@ func (f FFIDetect) resolveOn(i *interpreter.Interpreter) (Stream, error) {
 	}
 }
 
-func (f FFIDetect) resolveOff(i *interpreter.Interpreter) (Stream, error) {
+func (f FFIDetect) resolveOff(i itypes.Interpreter) (Stream, error) {
 	// TODO: Make sure it's a stream of bool somehow
-	if off, err := i.Scope.GetArg("off"); err != nil {
+	if off, err := i.GetArg("off"); err != nil {
 		return nil, err
 	} else if _, isNone := off.(*interpreter.ObjectNone); isNone {
 		return nil, nil
@@ -49,7 +50,7 @@ func (f FFIDetect) resolveOff(i *interpreter.Interpreter) (Stream, error) {
 	}
 }
 
-func (f FFIDetect) resolveMode(i *interpreter.Interpreter) (string, error) {
+func (f FFIDetect) resolveMode(i itypes.Interpreter) (string, error) {
 	if mode, err := interpreter.ArgAsString(i, "mode"); err != nil {
 		return "", err
 	} else if mode != "split" && mode != "paired" {
@@ -59,26 +60,26 @@ func (f FFIDetect) resolveMode(i *interpreter.Interpreter) (string, error) {
 	}
 }
 
-func (f FFIDetect) resolveAnnotations(i *interpreter.Interpreter) (interpreter.Object, error) {
+func (f FFIDetect) resolveAnnotations(i itypes.Interpreter) (itypes.Object, error) {
 	// TODO: Check type
-	if annotations, err := i.Scope.Get("annotations"); err != nil {
+	if annotations, err := i.GetArg("annotations"); err != nil {
 		return nil, err
 	} else {
 		return annotations, err
 	}
 }
 
-func (f FFIDetect) resolveEventAnnotations(i *interpreter.Interpreter) (interpreter.Object, error) {
+func (f FFIDetect) resolveEventAnnotations(i itypes.Interpreter) (itypes.Object, error) {
 	// TODO: Check type
-	if eventAnnotations, err := i.Scope.Get("event_annotations"); err != nil {
+	if eventAnnotations, err := i.GetArg("event_annotations"); err != nil {
 		return nil, err
 	} else {
 		return eventAnnotations, err
 	}
 }
 
-func (f FFIDetect) resolveAutoResolveAfter(i *interpreter.Interpreter) (*time.Duration, error) {
-	if autoResolveAfter, err := i.Scope.GetArg("auto_resolve_after"); err != nil {
+func (f FFIDetect) resolveAutoResolveAfter(i itypes.Interpreter) (*time.Duration, error) {
+	if autoResolveAfter, err := i.GetArg("auto_resolve_after"); err != nil {
 		return nil, err
 	} else if _, isNone := autoResolveAfter.(*interpreter.ObjectNone); isNone {
 		return nil, nil
@@ -92,7 +93,7 @@ func (f FFIDetect) resolveAutoResolveAfter(i *interpreter.Interpreter) (*time.Du
 	}
 }
 
-func (f FFIDetect) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
+func (f FFIDetect) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if on, err := f.resolveOn(i); err != nil {
 		return nil, err
 	} else if off, err := f.resolveOff(i); err != nil {

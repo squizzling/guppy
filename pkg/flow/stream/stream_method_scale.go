@@ -4,23 +4,24 @@ import (
 	"fmt"
 
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 )
 
 type methodScale struct {
-	interpreter.Object
+	itypes.Object
 }
 
-func (ms methodScale) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
-	return &interpreter.Params{
-		Params: []interpreter.ParamDef{
+func (ms methodScale) Params(i itypes.Interpreter) (*itypes.Params, error) {
+	return &itypes.Params{
+		Params: []itypes.ParamDef{
 			{Name: "self"},
 			{Name: "multiple"},
 		},
 	}, nil
 }
 
-func (ms methodScale) resolveMultiple(i *interpreter.Interpreter) (float64, error) {
-	if multiple, err := i.Scope.GetArg("multiple"); err != nil {
+func (ms methodScale) resolveMultiple(i itypes.Interpreter) (float64, error) {
+	if multiple, err := i.GetArg("multiple"); err != nil {
 		return 0, err
 	} else {
 		switch multiple := multiple.(type) {
@@ -34,7 +35,7 @@ func (ms methodScale) resolveMultiple(i *interpreter.Interpreter) (float64, erro
 	}
 }
 
-func (ms methodScale) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
+func (ms methodScale) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if self, err := interpreter.ArgAs[Stream](i, "self"); err != nil {
 		return nil, err
 	} else if multiple, err := ms.resolveMultiple(i); err != nil {

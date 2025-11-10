@@ -2,23 +2,24 @@ package stream
 
 import (
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 )
 
 // TODO: All of this.
 
 type methodAbs struct {
-	interpreter.Object
+	itypes.Object
 }
 
-func (m methodAbs) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
-	return &interpreter.Params{
-		Params: []interpreter.ParamDef{
+func (m methodAbs) Params(i itypes.Interpreter) (*itypes.Params, error) {
+	return &itypes.Params{
+		Params: []itypes.ParamDef{
 			{Name: "self"},
 		},
 	}, nil
 }
 
-func (m methodAbs) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
+func (m methodAbs) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if self, err := interpreter.ArgAs[Stream](i, "self"); err != nil {
 		return nil, err
 	} else {

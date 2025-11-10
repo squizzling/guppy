@@ -4,22 +4,24 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+
+	"guppy/pkg/interpreter/itypes"
 )
 
 type DictItem struct {
-	Key   Object
-	Value Object
+	Key   itypes.Object
+	Value itypes.Object
 }
 
 type ObjectDict struct {
-	Object
+	itypes.Object
 
 	items []DictItem
 }
 
-func NewObjectDict(items []DictItem) Object {
+func NewObjectDict(items []DictItem) itypes.Object {
 	return &ObjectDict{
-		Object: NewObject(map[string]Object{
+		Object: NewObject(map[string]itypes.Object{
 			"get":           methodDictGet{NewObject(nil)},
 			"__subscript__": methodDictSubscript{NewObject(nil)},
 		}),
@@ -28,7 +30,7 @@ func NewObjectDict(items []DictItem) Object {
 	}
 }
 
-func NewObjectDictFromMap(items map[string]Object) Object {
+func NewObjectDictFromMap(items map[string]itypes.Object) itypes.Object {
 	var itemList []DictItem
 	for key, value := range items {
 		itemList = append(itemList, DictItem{
@@ -61,7 +63,7 @@ func (od *ObjectDict) AsMapStringString() (map[string]string, error) {
 	return m, nil
 }
 
-func (od *ObjectDict) tryGet(key Object, def Object) (Object, error) {
+func (od *ObjectDict) tryGet(key itypes.Object, def itypes.Object) (itypes.Object, error) {
 	if obj, err := od.mustGet(key); err != nil {
 		return nil, err
 	} else if obj == nil {
@@ -71,7 +73,7 @@ func (od *ObjectDict) tryGet(key Object, def Object) (Object, error) {
 	}
 }
 
-func (od *ObjectDict) mustGet(key Object) (Object, error) {
+func (od *ObjectDict) mustGet(key itypes.Object) (itypes.Object, error) {
 	if len(od.items) == 0 {
 		return nil, nil
 	}
@@ -84,7 +86,7 @@ func (od *ObjectDict) mustGet(key Object) (Object, error) {
 	}
 }
 
-func (od *ObjectDict) mustGetString(key string) (Object, error) {
+func (od *ObjectDict) mustGetString(key string) (itypes.Object, error) {
 	for _, item := range od.items {
 		if itemKey, ok := item.Key.(*ObjectString); ok {
 			if itemKey.Value == key {
@@ -114,12 +116,12 @@ var _ = FlowCall(methodDictGet{})
 var _ = FlowCall(methodDictSubscript{})
 
 type methodDictGet struct {
-	Object
+	itypes.Object
 }
 
-func (mdg methodDictGet) Params(i *Interpreter) (*Params, error) {
-	return &Params{
-		Params: []ParamDef{
+func (mdg methodDictGet) Params(i itypes.Interpreter) (*itypes.Params, error) {
+	return &itypes.Params{
+		Params: []itypes.ParamDef{
 			{Name: "self"},
 			{Name: "key"},
 			{Name: "default", Default: NewObjectNone()},
@@ -127,23 +129,23 @@ func (mdg methodDictGet) Params(i *Interpreter) (*Params, error) {
 	}, nil
 }
 
-func resolveDictKey(i *Interpreter) (Object, error) {
-	if key, err := i.Scope.GetArg("key"); err != nil {
+func resolveDictKey(i itypes.Interpreter) (itypes.Object, error) {
+	if key, err := i.GetArg("key"); err != nil {
 		return nil, err
 	} else {
 		return key, nil
 	}
 }
 
-func resolveDictDefault(i *Interpreter) (Object, error) {
-	if key, err := i.Scope.GetArg("default"); err != nil {
+func resolveDictDefault(i itypes.Interpreter) (itypes.Object, error) {
+	if key, err := i.GetArg("default"); err != nil {
 		return nil, err
 	} else {
 		return key, nil
 	}
 }
 
-func (mdg methodDictGet) Call(i *Interpreter) (Object, error) {
+func (mdg methodDictGet) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if self, err := ArgAs[*ObjectDict](i, "self"); err != nil {
 		return nil, err
 	} else if key, err := resolveDictKey(i); err != nil {
@@ -156,27 +158,27 @@ func (mdg methodDictGet) Call(i *Interpreter) (Object, error) {
 }
 
 type methodDictSubscript struct {
-	Object
+	itypes.Object
 }
 
-func (mds methodDictSubscript) Params(i *Interpreter) (*Params, error) {
-	return &Params{
-		Params: []ParamDef{
+func (mds methodDictSubscript) Params(i itypes.Interpreter) (*itypes.Params, error) {
+	return &itypes.Params{
+		Params: []itypes.ParamDef{
 			{Name: "self"},
 			{Name: "start"},
 		},
 	}, nil
 }
 
-func (mds methodDictSubscript) resolveDictKey(i *Interpreter) (Object, error) {
-	if key, err := i.Scope.GetArg("start"); err != nil {
+func (mds methodDictSubscript) resolveDictKey(i itypes.Interpreter) (itypes.Object, error) {
+	if key, err := i.GetArg("start"); err != nil {
 		return nil, err
 	} else {
 		return key, nil
 	}
 }
 
-func (mds methodDictSubscript) Call(i *Interpreter) (Object, error) {
+func (mds methodDictSubscript) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if self, err := ArgAs[*ObjectDict](i, "self"); err != nil {
 		return nil, err
 	} else if start, err := mds.resolveDictKey(i); err != nil {

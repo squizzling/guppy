@@ -4,21 +4,22 @@ import (
 	"fmt"
 
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 )
 
 type methodBinaryNot struct {
-	interpreter.Object
+	itypes.Object
 }
 
-func (mba methodBinaryNot) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
-	return &interpreter.Params{
-		Params: []interpreter.ParamDef{
+func (mba methodBinaryNot) Params(i itypes.Interpreter) (*itypes.Params, error) {
+	return &itypes.Params{
+		Params: []itypes.ParamDef{
 			{Name: "self"},
 		},
 	}, nil
 }
 
-func (mba methodBinaryNot) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
+func (mba methodBinaryNot) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if self, err := interpreter.ArgAs[Filter](i, "self"); err != nil {
 		return nil, err
 	} else {
@@ -27,7 +28,7 @@ func (mba methodBinaryNot) Call(i *interpreter.Interpreter) (interpreter.Object,
 }
 
 type not struct {
-	interpreter.Object
+	itypes.Object
 
 	right Filter
 }

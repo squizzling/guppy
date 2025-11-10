@@ -3,6 +3,7 @@ package interpreter
 import (
 	"fmt"
 
+	"guppy/pkg/interpreter/itypes"
 	"guppy/pkg/parser/ast"
 )
 
@@ -41,7 +42,7 @@ func (i *Interpreter) VisitStatementExpression(se ast.StatementExpression) (retu
 		return nil, nil
 	}
 
-	valuesAny, isObject := raw.(Object)
+	valuesAny, isObject := raw.(itypes.Object)
 	if !isObject {
 		return nil, fmt.Errorf("assignment received %T not Object", raw)
 	}
@@ -69,14 +70,14 @@ func (i *Interpreter) VisitStatementExpression(se ast.StatementExpression) (retu
 		return nil, nil
 	}
 
-	var values []Object
+	var values []itypes.Object
 	switch valuesAny := valuesAny.(type) {
 	case *ObjectList:
 		values = valuesAny.Items
 	case *ObjectTuple:
 		values = valuesAny.Items
-	case Object:
-		values = []Object{valuesAny}
+	case itypes.Object:
+		values = []itypes.Object{valuesAny}
 	default:
 		return nil, fmt.Errorf("assigning from %T not *ObjectList, *ObjectTuple, or Object", valuesAny)
 	}
@@ -114,29 +115,29 @@ func (i *Interpreter) VisitStatementExpression(se ast.StatementExpression) (retu
 func (i *Interpreter) VisitStatementFunction(sf ast.StatementFunction) (returnValue any, errOut error) {
 	defer i.trace()(&returnValue, &errOut)
 
-	params := &Params{}
+	params := &itypes.Params{}
 	for _, param := range sf.Params.List {
 		if param.StarArg {
 			params.StarParam = param.Name
 		} else if param.KeywordArg {
 			params.KWParam = param.Name
 		} else {
-			var def Object
+			var def itypes.Object
 			if param.Default != nil {
 				var ok bool
 				if defRaw, err := param.Default.Accept(i); err != nil {
 					return nil, err
-				} else if def, ok = defRaw.(Object); !ok {
+				} else if def, ok = defRaw.(itypes.Object); !ok {
 					return nil, fmt.Errorf("default is a %T, not an Object", defRaw)
 				}
 			}
 			if params.StarParam == "" {
-				params.Params = append(params.Params, ParamDef{
+				params.Params = append(params.Params, itypes.ParamDef{
 					Name:    param.Name,
 					Default: def,
 				})
 			} else {
-				params.KWParams = append(params.KWParams, ParamDef{
+				params.KWParams = append(params.KWParams, itypes.ParamDef{
 					Name:    param.Name,
 					Default: def,
 				})
@@ -144,7 +145,7 @@ func (i *Interpreter) VisitStatementFunction(sf ast.StatementFunction) (returnVa
 		}
 	}
 
-	i.debug("defining function: %s", sf.Token)
+	i.Debug("defining function: %s", sf.Token)
 	params.Dump(i)
 
 	err := i.Scope.Set(sf.Token, NewObjectFunction(sf.Token, params, i.Scope, sf.Body))

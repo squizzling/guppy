@@ -5,24 +5,25 @@ import (
 	"strings"
 
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 )
 
 type FFIPrint struct {
-	interpreter.Object
+	itypes.Object
 }
 
 func (f FFIPrint) Repr() string {
 	return "_print"
 }
 
-func (f FFIPrint) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
-	return &interpreter.Params{
+func (f FFIPrint) Params(i itypes.Interpreter) (*itypes.Params, error) {
+	return &itypes.Params{
 		StarParam: "star",
 		//KWParam: "kw",
 	}, nil
 }
 
-func (f FFIPrint) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
+func (f FFIPrint) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if args, err := interpreter.ArgAs[*interpreter.ObjectTuple](i, "star"); err != nil {
 		return nil, err
 	} else {

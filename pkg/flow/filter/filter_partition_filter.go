@@ -4,22 +4,23 @@ import (
 	"fmt"
 
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 )
 
 type FFIPartitionFilter struct {
-	interpreter.Object
+	itypes.Object
 }
 
-func (f FFIPartitionFilter) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
-	return &interpreter.Params{
-		Params: []interpreter.ParamDef{
+func (f FFIPartitionFilter) Params(i itypes.Interpreter) (*itypes.Params, error) {
+	return &itypes.Params{
+		Params: []itypes.ParamDef{
 			{Name: "index"},
 			{Name: "total"},
 		},
 	}, nil
 }
 
-func (f FFIPartitionFilter) resolveIndex(i *interpreter.Interpreter) (int, error) {
+func (f FFIPartitionFilter) resolveIndex(i itypes.Interpreter) (int, error) {
 	if index, err := interpreter.ArgAsLong(i, "index"); err != nil {
 		return 0, err
 	} else {
@@ -27,7 +28,7 @@ func (f FFIPartitionFilter) resolveIndex(i *interpreter.Interpreter) (int, error
 	}
 }
 
-func (f FFIPartitionFilter) resolveTotal(i *interpreter.Interpreter) (int, error) {
+func (f FFIPartitionFilter) resolveTotal(i itypes.Interpreter) (int, error) {
 	if index, err := interpreter.ArgAsLong(i, "total"); err != nil {
 		return 0, err
 	} else {
@@ -35,7 +36,7 @@ func (f FFIPartitionFilter) resolveTotal(i *interpreter.Interpreter) (int, error
 	}
 }
 
-func (f FFIPartitionFilter) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
+func (f FFIPartitionFilter) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if index, err := f.resolveIndex(i); err != nil {
 		return nil, err
 	} else if total, err := f.resolveTotal(i); err != nil {
@@ -46,7 +47,7 @@ func (f FFIPartitionFilter) Call(i *interpreter.Interpreter) (interpreter.Object
 }
 
 type partitionFilter struct {
-	interpreter.Object
+	itypes.Object
 
 	index int
 	total int

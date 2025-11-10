@@ -9,6 +9,7 @@ import (
 	"strings"
 	"testing"
 
+	"guppy/pkg/interpreter/itypes"
 	"guppy/pkg/parser/flow"
 	"guppy/pkg/parser/parser"
 	"guppy/pkg/parser/tokenizer"
@@ -22,7 +23,7 @@ type TestFFI struct {
 	OneOf  ThingOrNone[*ObjectInt] `ffi:"oneof"`
 }
 
-func (t TestFFI) Call(i *Interpreter) (Object, error) {
+func (t TestFFI) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if t.OneOf.Thing != nil {
 		return NewObjectInt(t.Single.Value + t.OneOf.Thing.Value), nil
 	} else if t.OneOf.None != nil {
@@ -37,7 +38,7 @@ type TestFFISingleKW struct {
 	OneOf  ThingOrNone[*ObjectInt] `ffi:"oneof"`
 }
 
-func (t TestFFISingleKW) Call(i *Interpreter) (Object, error) {
+func (t TestFFISingleKW) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if t.OneOf.Thing != nil {
 		return NewObjectInt(t.Single.Value + t.OneOf.Thing.Value), nil
 	} else if t.OneOf.None != nil {
@@ -52,7 +53,7 @@ type TestFFIOneOfKW struct {
 	OneOf  ThingOrNone[*ObjectInt] `ffi:"oneof,kw"`
 }
 
-func (t TestFFIOneOfKW) Call(i *Interpreter) (Object, error) {
+func (t TestFFIOneOfKW) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if t.OneOf.Thing != nil {
 		return NewObjectInt(t.Single.Value + t.OneOf.Thing.Value), nil
 	} else if t.OneOf.None != nil {
@@ -67,7 +68,7 @@ type TestFFISingleKWOneOfKW struct {
 	OneOf  ThingOrNone[*ObjectInt] `ffi:"oneof,kw"`
 }
 
-func (t TestFFISingleKWOneOfKW) Call(i *Interpreter) (Object, error) {
+func (t TestFFISingleKWOneOfKW) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if t.OneOf.Thing != nil {
 		return NewObjectInt(t.Single.Value + t.OneOf.Thing.Value), nil
 	} else if t.OneOf.None != nil {
@@ -192,8 +193,8 @@ func testFromFile(
 func TestFFIError(t *testing.T) {
 	for _, ts := range []struct {
 		name          string
-		single        Object
-		oneOf         Object
+		single        itypes.Object
+		oneOf         itypes.Object
 		expectedError string
 	}{
 		{"single-wrong-type", NewObjectNone(), NewObjectNone(), "param `single` for TestFFI.Single is *interpreter.ObjectNone not *interpreter.ObjectInt"},

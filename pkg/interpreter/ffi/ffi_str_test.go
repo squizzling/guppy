@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -12,11 +13,11 @@ import (
 
 type failingStr struct{}
 
-func (f failingStr) Member(i *interpreter.Interpreter, obj interpreter.Object, memberName string) (interpreter.Object, error) {
+func (f failingStr) Member(i itypes.Interpreter, obj itypes.Object, memberName string) (itypes.Object, error) {
 	return nil, nil
 }
 
-func (f failingStr) String(i *interpreter.Interpreter) (string, error) {
+func (f failingStr) String(i itypes.Interpreter) (string, error) {
 	return "", fmt.Errorf("failingStr error")
 }
 

@@ -43,7 +43,7 @@ func Repr(o any) string {
 	}
 }
 
-func (i *Interpreter) debug(f string, args ...any) {
+func (i *Interpreter) Debug(f string, args ...any) {
 	if !i.enableTrace {
 		return
 	}

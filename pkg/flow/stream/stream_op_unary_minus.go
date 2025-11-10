@@ -2,17 +2,18 @@ package stream
 
 import (
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 )
 
 type methodStreamUnaryMinus struct {
-	interpreter.Object
+	itypes.Object
 }
 
-func (msum methodStreamUnaryMinus) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
+func (msum methodStreamUnaryMinus) Params(i itypes.Interpreter) (*itypes.Params, error) {
 	return interpreter.UnaryParams, nil
 }
 
-func (msum methodStreamUnaryMinus) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
+func (msum methodStreamUnaryMinus) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if self, err := interpreter.ArgAs[Stream](i, "self"); err != nil {
 		return nil, err
 	} else {

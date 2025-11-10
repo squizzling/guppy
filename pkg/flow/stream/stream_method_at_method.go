@@ -6,17 +6,18 @@ import (
 
 	"guppy/pkg/flow/duration"
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 )
 
 type methodStreamAggregateTransform struct {
-	interpreter.Object
+	itypes.Object
 
 	name string
 }
 
-func (msat methodStreamAggregateTransform) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
-	return &interpreter.Params{
-		Params: []interpreter.ParamDef{
+func (msat methodStreamAggregateTransform) Params(i itypes.Interpreter) (*itypes.Params, error) {
+	return &itypes.Params{
+		Params: []itypes.ParamDef{
 			{Name: "self"},
 			{Name: "by", Default: interpreter.NewObjectNone()},             // by
 			{Name: "allow_missing", Default: interpreter.NewObjectNone()},  // by
@@ -30,8 +31,8 @@ func (msat methodStreamAggregateTransform) Params(i *interpreter.Interpreter) (*
 	}, nil
 }
 
-func (msat methodStreamAggregateTransform) resolveBy(i *interpreter.Interpreter) ([]string, error) {
-	if by, err := i.Scope.GetArg("by"); err != nil {
+func (msat methodStreamAggregateTransform) resolveBy(i itypes.Interpreter) ([]string, error) {
+	if by, err := i.GetArg("by"); err != nil {
 		return nil, err
 	} else {
 		switch by := by.(type) {
@@ -55,8 +56,8 @@ func (msat methodStreamAggregateTransform) resolveBy(i *interpreter.Interpreter)
 	}
 }
 
-func (msat methodStreamAggregateTransform) resolveAllowMissing(i *interpreter.Interpreter) (bool, []string, error) {
-	if allowMissing, err := i.Scope.GetArg("allow_missing"); err != nil {
+func (msat methodStreamAggregateTransform) resolveAllowMissing(i itypes.Interpreter) (bool, []string, error) {
+	if allowMissing, err := i.GetArg("allow_missing"); err != nil {
 		return false, nil, err
 	} else {
 		switch allowMissing := allowMissing.(type) {
@@ -87,8 +88,8 @@ func (msat methodStreamAggregateTransform) resolveAllowMissing(i *interpreter.In
 	}
 }
 
-func (msat methodStreamAggregateTransform) resolveOver(i *interpreter.Interpreter) (*time.Duration, error) {
-	if over, err := i.Scope.GetArg("over"); err != nil {
+func (msat methodStreamAggregateTransform) resolveOver(i itypes.Interpreter) (*time.Duration, error) {
+	if over, err := i.GetArg("over"); err != nil {
 		return nil, err
 	} else {
 		switch over := over.(type) {
@@ -108,8 +109,8 @@ func (msat methodStreamAggregateTransform) resolveOver(i *interpreter.Interprete
 	}
 }
 
-func (msat methodStreamAggregateTransform) resolveCycle(i *interpreter.Interpreter) (*string, error) {
-	if cycle, err := i.Scope.GetArg("cycle"); err != nil {
+func (msat methodStreamAggregateTransform) resolveCycle(i itypes.Interpreter) (*string, error) {
+	if cycle, err := i.GetArg("cycle"); err != nil {
 		return nil, err
 	} else {
 		switch over := cycle.(type) {
@@ -127,8 +128,8 @@ func (msat methodStreamAggregateTransform) resolveCycle(i *interpreter.Interpret
 	}
 }
 
-func (msat methodStreamAggregateTransform) resolveCycleStart(i *interpreter.Interpreter) (*string, error) {
-	if cycleStart, err := i.Scope.GetArg("cycle_start"); err != nil {
+func (msat methodStreamAggregateTransform) resolveCycleStart(i itypes.Interpreter) (*string, error) {
+	if cycleStart, err := i.GetArg("cycle_start"); err != nil {
 		return nil, err
 	} else {
 		switch cycleStart := cycleStart.(type) {
@@ -142,8 +143,8 @@ func (msat methodStreamAggregateTransform) resolveCycleStart(i *interpreter.Inte
 	}
 }
 
-func (msat methodStreamAggregateTransform) resolveTimezone(i *interpreter.Interpreter) (*string, error) {
-	if timezone, err := i.Scope.GetArg("timezone"); err != nil {
+func (msat methodStreamAggregateTransform) resolveTimezone(i itypes.Interpreter) (*string, error) {
+	if timezone, err := i.GetArg("timezone"); err != nil {
 		return nil, err
 	} else {
 		switch timezone := timezone.(type) {
@@ -157,8 +158,8 @@ func (msat methodStreamAggregateTransform) resolveTimezone(i *interpreter.Interp
 	}
 }
 
-func (msat methodStreamAggregateTransform) resolvePartialValues(i *interpreter.Interpreter) (bool, error) {
-	if partialValues, err := i.Scope.GetArg("partial_values"); err != nil {
+func (msat methodStreamAggregateTransform) resolvePartialValues(i itypes.Interpreter) (bool, error) {
+	if partialValues, err := i.GetArg("partial_values"); err != nil {
 		return false, err
 	} else {
 		switch partialValues := partialValues.(type) {
@@ -172,8 +173,8 @@ func (msat methodStreamAggregateTransform) resolvePartialValues(i *interpreter.I
 	}
 }
 
-func (msat methodStreamAggregateTransform) resolveShiftCycles(i *interpreter.Interpreter) (int, error) {
-	if shiftCycles, err := i.Scope.GetArg("shift_cycles"); err != nil {
+func (msat methodStreamAggregateTransform) resolveShiftCycles(i itypes.Interpreter) (int, error) {
+	if shiftCycles, err := i.GetArg("shift_cycles"); err != nil {
 		return 0, err
 	} else {
 		switch shiftCycles := shiftCycles.(type) {
@@ -187,7 +188,7 @@ func (msat methodStreamAggregateTransform) resolveShiftCycles(i *interpreter.Int
 	}
 }
 
-func (msat methodStreamAggregateTransform) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
+func (msat methodStreamAggregateTransform) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if self, err := interpreter.ArgAs[Stream](i, "self"); err != nil {
 		return nil, err
 	} else if by, err := msat.resolveBy(i); err != nil {

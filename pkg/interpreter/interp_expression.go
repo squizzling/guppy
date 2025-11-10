@@ -3,6 +3,7 @@ package interpreter
 import (
 	"fmt"
 
+	"guppy/pkg/interpreter/itypes"
 	"guppy/pkg/parser/ast"
 	"guppy/pkg/parser/tokenizer"
 )
@@ -28,7 +29,7 @@ func (i *Interpreter) VisitExpressionBinary(eb ast.ExpressionBinary) (returnValu
 	}
 }
 
-func findParamSlot(params *Params, name string) int {
+func findParamSlot(params *itypes.Params, name string) int {
 	for idx, param := range params.Params {
 		if param.Name == name {
 			return idx
@@ -69,7 +70,7 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (returnValue an
 		i.debug("%s: %#v", key, value)
 	}*/
 
-	paramData, err := i.doParams(objFunc)
+	paramData, err := i.DoParams(objFunc)
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +79,7 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (returnValue an
 
 	paramCount := len(paramData.Params) + len(paramData.KWParams)
 	paramName := make([]string, paramCount)
-	paramValue := make([]Object, paramCount)
+	paramValue := make([]itypes.Object, paramCount)
 
 	for idx := range len(paramName) {
 		if idx < len(paramData.Params) {
@@ -95,7 +96,7 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (returnValue an
 	}
 
 	// Anything remaining after all the non-keyword params goes in to starArgs
-	var starArgs []Object
+	var starArgs []itypes.Object
 	if len(unnamedArgs)-len(paramData.Params) > 0 {
 		if paramData.StarParam == "" {
 			return nil, fmt.Errorf("passing extra arguments to function not expecting it")
@@ -176,11 +177,11 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (returnValue an
 		return nil, err
 	}
 
-	return i.doCall(objFunc)
+	return i.DoCall(objFunc)
 }
 
-func (i *Interpreter) resolveUnnamedArgs(exprFunction ast.Expression, unnamedArgExpressions []ast.Expression, starArg ast.Expression) (Object, []Object, error) {
-	var unnamedArgs []Object
+func (i *Interpreter) resolveUnnamedArgs(exprFunction ast.Expression, unnamedArgExpressions []ast.Expression, starArg ast.Expression) (itypes.Object, []itypes.Object, error) {
+	var unnamedArgs []itypes.Object
 
 	// This effectively resolves "self", or the x in `x.y(...)` (which is y(x, ...))
 	objFunction, err := r(exprFunction.Accept(i))
@@ -217,8 +218,8 @@ func (i *Interpreter) resolveUnnamedArgs(exprFunction ast.Expression, unnamedArg
 	return objFunction, unnamedArgs, nil
 }
 
-func (i *Interpreter) resolveNamedArgs(namedExpression []*ast.DataArgument, kwArgs ast.Expression) (map[string]Object, error) {
-	out := make(map[string]Object)
+func (i *Interpreter) resolveNamedArgs(namedExpression []*ast.DataArgument, kwArgs ast.Expression) (map[string]itypes.Object, error) {
+	out := make(map[string]itypes.Object)
 	for _, ne := range namedExpression {
 		if obj, err := r(ne.Expr.Accept(i)); err != nil {
 			return nil, err
@@ -252,13 +253,13 @@ func (i *Interpreter) resolveNamedArgs(namedExpression []*ast.DataArgument, kwAr
 
 func (i *Interpreter) assignArgs(
 	formalNames []string,
-	formalParams []Object,
+	formalParams []itypes.Object,
 
 	starParamName string,
-	starArgs []Object,
+	starArgs []itypes.Object,
 
 	kwParamName string,
-	kwArgs map[string]Object,
+	kwArgs map[string]itypes.Object,
 ) error {
 	if starParamName != "" {
 		if err := i.Scope.Set(starParamName, NewObjectTuple(starArgs...)); err != nil {
@@ -313,7 +314,7 @@ func (i *Interpreter) VisitExpressionLambda(el ast.ExpressionLambda) (returnValu
 func (i *Interpreter) VisitExpressionList(el ast.ExpressionList) (returnValue any, errOut error) {
 	defer i.trace()(&returnValue, &errOut)
 
-	var o []Object
+	var o []itypes.Object
 	var desired []string
 	for _, expr := range el.Expressions {
 		exprResult, err := r(expr.Accept(i))
@@ -351,7 +352,7 @@ func (i *Interpreter) evalDataListFor(dlf *ast.DataListFor, expr ast.Expression)
 		return nil, err
 	}
 
-	var values []Object
+	var values []itypes.Object
 	switch o := o.(type) {
 	case *ObjectList:
 		values = o.Items
@@ -372,7 +373,7 @@ func (i *Interpreter) evalDataListFor(dlf *ast.DataListFor, expr ast.Expression)
 		panic("dlf.Idents != 1")
 	}
 
-	var newValues []Object
+	var newValues []itypes.Object
 	for _, value := range values {
 		err := i.withScope(func() error {
 			if err := i.Scope.Set(dlf.Idents[0], value); err != nil {
@@ -404,7 +405,7 @@ func (i *Interpreter) VisitExpressionLiteral(el ast.ExpressionLiteral) (returnVa
 		return NewObjectString(v), nil
 	case nil:
 		return NewObjectNone(), nil
-	case Object:
+	case itypes.Object:
 		return v, nil
 	case bool:
 		return NewObjectBool(v), nil
@@ -453,7 +454,7 @@ func (i *Interpreter) VisitExpressionTernary(et ast.ExpressionTernary) (returnVa
 func (i *Interpreter) VisitExpressionTuple(et ast.ExpressionTuple) (returnValue any, errOut error) {
 	defer i.trace()(&returnValue, &errOut)
 
-	var o []Object
+	var o []itypes.Object
 	var desired []string
 	for _, expr := range et.Expressions {
 		exprResult, err := r(expr.Accept(i))

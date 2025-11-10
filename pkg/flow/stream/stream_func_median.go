@@ -4,20 +4,21 @@ import (
 	"fmt"
 
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 )
 
 type FFIMedian struct {
-	interpreter.Object
+	itypes.Object
 }
 
-func (f FFIMedian) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
-	return &interpreter.Params{
+func (f FFIMedian) Params(i itypes.Interpreter) (*itypes.Params, error) {
+	return &itypes.Params{
 		StarParam: "values",
 	}, nil
 }
 
-func (f FFIMedian) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
-	var medianConstants []interpreter.Object
+func (f FFIMedian) Call(i itypes.Interpreter) (itypes.Object, error) {
+	var medianConstants []itypes.Object
 	var streamValues []Stream
 	if values, err := interpreter.ArgAs[*interpreter.ObjectTuple](i, "values"); err != nil {
 		return nil, err

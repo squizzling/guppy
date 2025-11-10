@@ -4,19 +4,20 @@ import (
 	"fmt"
 
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 )
 
 type FFISum struct {
-	interpreter.Object
+	itypes.Object
 }
 
-func (f FFISum) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
-	return &interpreter.Params{
+func (f FFISum) Params(i itypes.Interpreter) (*itypes.Params, error) {
+	return &itypes.Params{
 		StarParam: "values",
 	}, nil
 }
 
-func (f FFISum) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
+func (f FFISum) Call(i itypes.Interpreter) (itypes.Object, error) {
 	haveConstant := false
 	var sumConstant float64
 	var streamValues []Stream

@@ -3,28 +3,30 @@ package interpreter
 import (
 	"fmt"
 	"strconv"
+
+	"guppy/pkg/interpreter/itypes"
 )
 
 type ObjectInt struct {
-	Object
+	itypes.Object
 
 	Value int
 }
 
 type methodIntOp struct {
-	Object
+	itypes.Object
 
 	op      string
 	reverse string
 }
 
 type methodIntNeg struct {
-	Object
+	itypes.Object
 }
 
 func NewObjectInt(i int) *ObjectInt {
 	return &ObjectInt{
-		Object: NewObject(map[string]Object{
+		Object: NewObject(map[string]itypes.Object{
 			"__add__":         methodIntOp{Object: NewObject(nil), op: "+", reverse: "__radd__"},
 			"__mul__":         methodIntOp{Object: NewObject(nil), op: "*", reverse: "__rmul__"},
 			"__sub__":         methodIntOp{Object: NewObject(nil), op: "-", reverse: "__rsub__"},
@@ -46,16 +48,16 @@ func (oi *ObjectInt) Repr() string {
 	return fmt.Sprintf("int(%d)", oi.Value)
 }
 
-func (oi *ObjectInt) String(i *Interpreter) (string, error) {
+func (oi *ObjectInt) String(i itypes.Interpreter) (string, error) {
 	return strconv.Itoa(oi.Value), nil
 }
 
-func (mio methodIntOp) Params(i *Interpreter) (*Params, error) {
+func (mio methodIntOp) Params(i itypes.Interpreter) (*itypes.Params, error) {
 	return BinaryParams, nil
 }
 
-func (mio methodIntOp) Call(i *Interpreter) (Object, error) {
-	if right, err := i.Scope.GetArg("right"); err != nil {
+func (mio methodIntOp) Call(i itypes.Interpreter) (itypes.Object, error) {
+	if right, err := i.GetArg("right"); err != nil {
 		return nil, err
 	} else if reverseOp, err := right.Member(i, right, mio.reverse); err == nil {
 		// If it exists, we always use the reverse method, because it's more likely to be the intended behavior.
@@ -67,7 +69,7 @@ func (mio methodIntOp) Call(i *Interpreter) (Object, error) {
 
 	if self, err := ArgAs[*ObjectInt](i, "self"); err != nil {
 		return nil, err
-	} else if right, err := i.Scope.GetArg("right"); err != nil {
+	} else if right, err := i.GetArg("right"); err != nil {
 		return nil, err
 	} else {
 		var rightVal int
@@ -109,11 +111,11 @@ func (mio methodIntOp) Call(i *Interpreter) (Object, error) {
 
 var _ = FlowCall(methodIntOp{})
 
-func (min methodIntNeg) Params(i *Interpreter) (*Params, error) {
+func (min methodIntNeg) Params(i itypes.Interpreter) (*itypes.Params, error) {
 	return UnaryParams, nil
 }
 
-func (min methodIntNeg) Call(i *Interpreter) (Object, error) {
+func (min methodIntNeg) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if self, err := ArgAs[*ObjectInt](i, "self"); err != nil {
 		return nil, err
 	} else {

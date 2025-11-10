@@ -2,18 +2,19 @@ package stream
 
 import (
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 )
 
 // Stream[Alert]
-func newStreamAlertObject() interpreter.Object {
-	return interpreter.NewObject(map[string]interpreter.Object{
+func newStreamAlertObject() itypes.Object {
+	return interpreter.NewObject(map[string]itypes.Object{
 		"publish": methodPublish{interpreter.NewObject(nil)},
 	})
 }
 
 // Stream[bool]
-func newStreamBoolObject() interpreter.Object {
-	return interpreter.NewObject(map[string]interpreter.Object{
+func newStreamBoolObject() itypes.Object {
+	return interpreter.NewObject(map[string]itypes.Object{
 		"publish":   methodPublish{interpreter.NewObject(nil)},
 		"timeshift": methodTimeShift{interpreter.NewObject(nil)},
 
@@ -45,8 +46,8 @@ func newStreamBoolObject() interpreter.Object {
 }
 
 // Stream[Unspecified]
-func newStreamObject() interpreter.Object {
-	return interpreter.NewObject(map[string]interpreter.Object{
+func newStreamObject() itypes.Object {
+	return interpreter.NewObject(map[string]itypes.Object{
 		// misc
 		"above":      methodAbove{interpreter.NewObject(nil)},
 		"abs":        methodAbs{interpreter.NewObject(nil)},

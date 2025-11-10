@@ -7,12 +7,12 @@ import (
 // TODO: All of this.
 
 type methodXXX struct {
-	interpreter.Object
+	itypes.Object
 }
 
-func (m methodXXX) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
-	return &interpreter.Params{
-		Params: []interpreter.ParamDef{
+func (m methodXXX) Params(i *interpreter.Interpreter) (*itypes.Params, error) {
+	return &itypes.Params{
+		Params: []itypes.ParamDef{
 			{Name: "self"},
 		},
 		StarParam: "s",
@@ -20,7 +20,7 @@ func (m methodXXX) Params(i *interpreter.Interpreter) (*interpreter.Params, erro
 	}, nil
 }
 
-func (m methodXXX) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
+func (m methodXXX) Call(i *interpreter.Interpreter) (itypes.Object, error) {
 	if self, err := interpreter.ArgAs[Stream](i, "self"); err != nil {
 		return nil, err
 	} else {
@@ -30,7 +30,7 @@ func (m methodXXX) Call(i *interpreter.Interpreter) (interpreter.Object, error) 
 
 /*
 type XXX struct {
-	interpreter.Object
+	itypes.Object
 
 	source Stream
 }

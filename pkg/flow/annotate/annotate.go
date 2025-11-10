@@ -4,15 +4,16 @@ import (
 	"fmt"
 
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 )
 
 type FFIAnnotate struct {
-	interpreter.Object
+	itypes.Object
 }
 
-func (f FFIAnnotate) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
-	return &interpreter.Params{
-		Params: []interpreter.ParamDef{
+func (f FFIAnnotate) Params(i itypes.Interpreter) (*itypes.Params, error) {
+	return &itypes.Params{
+		Params: []itypes.ParamDef{
 			{Name: "value"},
 			{Name: "label"},
 			{Name: "extra_props", Default: interpreter.NewObjectNone()},
@@ -21,26 +22,26 @@ func (f FFIAnnotate) Params(i *interpreter.Interpreter) (*interpreter.Params, er
 	}, nil
 }
 
-func (f FFIAnnotate) resolveValue(i *interpreter.Interpreter) (interpreter.Object, error) {
+func (f FFIAnnotate) resolveValue(i itypes.Interpreter) (itypes.Object, error) {
 	// TODO: This is probably a Stream, try and assert it
-	if value, err := i.Scope.GetArg("value"); err != nil {
+	if value, err := i.GetArg("value"); err != nil {
 		return nil, err
 	} else {
 		return value, nil
 	}
 }
 
-func (f FFIAnnotate) resolveLabel(i *interpreter.Interpreter) (interpreter.Object, error) {
+func (f FFIAnnotate) resolveLabel(i itypes.Interpreter) (itypes.Object, error) {
 	// TODO: This is probably a string, try and assert it
-	if label, err := i.Scope.GetArg("label"); err != nil {
+	if label, err := i.GetArg("label"); err != nil {
 		return nil, err
 	} else {
 		return label, nil
 	}
 }
 
-func (f FFIAnnotate) resolveExtraProps(i *interpreter.Interpreter) (*interpreter.ObjectDict, error) {
-	if extraProps, err := i.Scope.GetArg("extra_props"); err != nil {
+func (f FFIAnnotate) resolveExtraProps(i itypes.Interpreter) (*interpreter.ObjectDict, error) {
+	if extraProps, err := i.GetArg("extra_props"); err != nil {
 		return nil, err
 	} else if _, ok := extraProps.(*interpreter.ObjectMissing); ok {
 		return interpreter.NewObjectDict(nil).(*interpreter.ObjectDict), nil
@@ -51,16 +52,16 @@ func (f FFIAnnotate) resolveExtraProps(i *interpreter.Interpreter) (*interpreter
 	}
 }
 
-func (f FFIAnnotate) resolvePublish(i *interpreter.Interpreter) (interpreter.Object, error) {
+func (f FFIAnnotate) resolvePublish(i itypes.Interpreter) (itypes.Object, error) {
 	// TODO: No idea what this is, maybe a string?
-	if publish, err := i.Scope.GetArg("publish"); err != nil {
+	if publish, err := i.GetArg("publish"); err != nil {
 		return nil, err
 	} else {
 		return publish, nil
 	}
 }
 
-func (f FFIAnnotate) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
+func (f FFIAnnotate) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if value, err := f.resolveValue(i); err != nil {
 		return nil, err
 	} else if label, err := f.resolveLabel(i); err != nil {
@@ -77,15 +78,15 @@ func (f FFIAnnotate) Call(i *interpreter.Interpreter) (interpreter.Object, error
 var _ = interpreter.FlowCall(FFIAnnotate{})
 
 type Annotated struct {
-	interpreter.Object
+	itypes.Object
 
-	Value      interpreter.Object
-	Label      interpreter.Object
+	Value      itypes.Object
+	Label      itypes.Object
 	ExtraProps *interpreter.ObjectDict
-	Publish    interpreter.Object
+	Publish    itypes.Object
 }
 
-func NewAnnotated(value interpreter.Object, label interpreter.Object, extraProps *interpreter.ObjectDict, publish interpreter.Object) *Annotated {
+func NewAnnotated(value itypes.Object, label itypes.Object, extraProps *interpreter.ObjectDict, publish itypes.Object) *Annotated {
 	return &Annotated{
 		Object:     interpreter.NewObject(nil),
 		Value:      value,

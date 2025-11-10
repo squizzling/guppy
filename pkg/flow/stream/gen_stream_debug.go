@@ -28,7 +28,7 @@ func s(a any, err error) string {
 func (dw DebugWriter) VisitStreamFuncAbs(sfa *StreamFuncAbs) (any, error) {
 	_s := "StreamFuncAbs(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sfa.Object, sfa.Object)
 	if sfa.Sources == nil {
 		_s += dw.p() + "Sources: nil\n"
@@ -51,7 +51,7 @@ func (dw DebugWriter) VisitStreamFuncAbs(sfa *StreamFuncAbs) (any, error) {
 func (dw DebugWriter) VisitStreamFuncAlerts(sfa *StreamFuncAlerts) (any, error) {
 	_s := "StreamFuncAlerts(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sfa.Object, sfa.Object)
 	dw.o()
 	_s += dw.p() + ")\n"
@@ -61,7 +61,7 @@ func (dw DebugWriter) VisitStreamFuncAlerts(sfa *StreamFuncAlerts) (any, error) 
 func (dw DebugWriter) VisitStreamFuncCombine(sfc *StreamFuncCombine) (any, error) {
 	_s := "StreamFuncCombine(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sfc.Object, sfc.Object)
 	if sfc.Source != nil {
 		_s += dw.p() + "Source: " + s(sfc.Source.Accept(dw)) // IsInterface
@@ -77,7 +77,7 @@ func (dw DebugWriter) VisitStreamFuncCombine(sfc *StreamFuncCombine) (any, error
 func (dw DebugWriter) VisitStreamFuncConstDouble(sfcd *StreamFuncConstDouble) (any, error) {
 	_s := "StreamFuncConstDouble(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sfcd.Object, sfcd.Object)
 	// TODO: 1 Value float64
 	_s += dw.p() + fmt.Sprintf("Value: %T(%v)\n", sfcd.Value, sfcd.Value)
@@ -91,7 +91,7 @@ func (dw DebugWriter) VisitStreamFuncConstDouble(sfcd *StreamFuncConstDouble) (a
 func (dw DebugWriter) VisitStreamFuncConstInt(sfci *StreamFuncConstInt) (any, error) {
 	_s := "StreamFuncConstInt(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sfci.Object, sfci.Object)
 	// TODO: 1 Value int
 	_s += dw.p() + fmt.Sprintf("Value: %T(%v)\n", sfci.Value, sfci.Value)
@@ -105,7 +105,7 @@ func (dw DebugWriter) VisitStreamFuncConstInt(sfci *StreamFuncConstInt) (any, er
 func (dw DebugWriter) VisitStreamFuncCount(sfc *StreamFuncCount) (any, error) {
 	_s := "StreamFuncCount(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sfc.Object, sfc.Object)
 	if sfc.Sources == nil {
 		_s += dw.p() + "Sources: nil\n"
@@ -128,7 +128,7 @@ func (dw DebugWriter) VisitStreamFuncCount(sfc *StreamFuncCount) (any, error) {
 func (dw DebugWriter) VisitStreamFuncData(sfd *StreamFuncData) (any, error) {
 	_s := "StreamFuncData(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sfd.Object, sfd.Object)
 	_s += dw.p() + "MetricName: string(" + sfd.MetricName + ")\n"
 	// TODO: 2 Filter filter.Filter
@@ -147,7 +147,7 @@ func (dw DebugWriter) VisitStreamFuncData(sfd *StreamFuncData) (any, error) {
 func (dw DebugWriter) VisitStreamFuncDetect(sfd *StreamFuncDetect) (any, error) {
 	_s := "StreamFuncDetect(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sfd.Object, sfd.Object)
 	if sfd.On != nil {
 		_s += dw.p() + "On: " + s(sfd.On.Accept(dw)) // IsInterface
@@ -160,9 +160,9 @@ func (dw DebugWriter) VisitStreamFuncDetect(sfd *StreamFuncDetect) (any, error) 
 		_s += dw.p() + "Off: nil\n"
 	}
 	_s += dw.p() + "Mode: string(" + sfd.Mode + ")\n"
-	// TODO: 4 Annotations interpreter.Object
+	// TODO: 4 Annotations itypes.Object
 	_s += dw.p() + fmt.Sprintf("Annotations: %T(%v)\n", sfd.Annotations, sfd.Annotations)
-	// TODO: 5 EventAnnotations interpreter.Object
+	// TODO: 5 EventAnnotations itypes.Object
 	_s += dw.p() + fmt.Sprintf("EventAnnotations: %T(%v)\n", sfd.EventAnnotations, sfd.EventAnnotations)
 	// TODO: 6 AutoResolveAfter *time.Duration
 	_s += dw.p() + fmt.Sprintf("AutoResolveAfter: %T(%v)\n", sfd.AutoResolveAfter, sfd.AutoResolveAfter)
@@ -174,7 +174,7 @@ func (dw DebugWriter) VisitStreamFuncDetect(sfd *StreamFuncDetect) (any, error) 
 func (dw DebugWriter) VisitStreamFuncEvents(sfe *StreamFuncEvents) (any, error) {
 	_s := "StreamFuncEvents(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sfe.Object, sfe.Object)
 	dw.o()
 	_s += dw.p() + ")\n"
@@ -184,7 +184,7 @@ func (dw DebugWriter) VisitStreamFuncEvents(sfe *StreamFuncEvents) (any, error) 
 func (dw DebugWriter) VisitStreamFuncMax(sfm *StreamFuncMax) (any, error) {
 	_s := "StreamFuncMax(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sfm.Object, sfm.Object)
 	if sfm.Sources == nil {
 		_s += dw.p() + "Sources: nil\n"
@@ -199,7 +199,7 @@ func (dw DebugWriter) VisitStreamFuncMax(sfm *StreamFuncMax) (any, error) {
 		dw.o()
 		_s += dw.p() + "]\n"
 	}
-	// TODO: 2 Value interpreter.Object
+	// TODO: 2 Value itypes.Object
 	_s += dw.p() + fmt.Sprintf("Value: %T(%v)\n", sfm.Value, sfm.Value)
 	dw.o()
 	_s += dw.p() + ")\n"
@@ -209,7 +209,7 @@ func (dw DebugWriter) VisitStreamFuncMax(sfm *StreamFuncMax) (any, error) {
 func (dw DebugWriter) VisitStreamFuncMean(sfm *StreamFuncMean) (any, error) {
 	_s := "StreamFuncMean(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sfm.Object, sfm.Object)
 	if sfm.Sources == nil {
 		_s += dw.p() + "Sources: nil\n"
@@ -224,7 +224,7 @@ func (dw DebugWriter) VisitStreamFuncMean(sfm *StreamFuncMean) (any, error) {
 		dw.o()
 		_s += dw.p() + "]\n"
 	}
-	// TODO: 2 Constants []interpreter.Object
+	// TODO: 2 Constants []itypes.Object
 	_s += dw.p() + fmt.Sprintf("Constants: %T(%v)\n", sfm.Constants, sfm.Constants)
 	dw.o()
 	_s += dw.p() + ")\n"
@@ -234,7 +234,7 @@ func (dw DebugWriter) VisitStreamFuncMean(sfm *StreamFuncMean) (any, error) {
 func (dw DebugWriter) VisitStreamFuncMedian(sfm *StreamFuncMedian) (any, error) {
 	_s := "StreamFuncMedian(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sfm.Object, sfm.Object)
 	if sfm.Sources == nil {
 		_s += dw.p() + "Sources: nil\n"
@@ -249,7 +249,7 @@ func (dw DebugWriter) VisitStreamFuncMedian(sfm *StreamFuncMedian) (any, error) 
 		dw.o()
 		_s += dw.p() + "]\n"
 	}
-	// TODO: 2 Constants []interpreter.Object
+	// TODO: 2 Constants []itypes.Object
 	_s += dw.p() + fmt.Sprintf("Constants: %T(%v)\n", sfm.Constants, sfm.Constants)
 	dw.o()
 	_s += dw.p() + ")\n"
@@ -259,7 +259,7 @@ func (dw DebugWriter) VisitStreamFuncMedian(sfm *StreamFuncMedian) (any, error) 
 func (dw DebugWriter) VisitStreamFuncMin(sfm *StreamFuncMin) (any, error) {
 	_s := "StreamFuncMin(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sfm.Object, sfm.Object)
 	if sfm.Sources == nil {
 		_s += dw.p() + "Sources: nil\n"
@@ -274,7 +274,7 @@ func (dw DebugWriter) VisitStreamFuncMin(sfm *StreamFuncMin) (any, error) {
 		dw.o()
 		_s += dw.p() + "]\n"
 	}
-	// TODO: 2 Value interpreter.Object
+	// TODO: 2 Value itypes.Object
 	_s += dw.p() + fmt.Sprintf("Value: %T(%v)\n", sfm.Value, sfm.Value)
 	dw.o()
 	_s += dw.p() + ")\n"
@@ -284,7 +284,7 @@ func (dw DebugWriter) VisitStreamFuncMin(sfm *StreamFuncMin) (any, error) {
 func (dw DebugWriter) VisitStreamFuncSum(sfs *StreamFuncSum) (any, error) {
 	_s := "StreamFuncSum(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sfs.Object, sfs.Object)
 	if sfs.Sources == nil {
 		_s += dw.p() + "Sources: nil\n"
@@ -309,7 +309,7 @@ func (dw DebugWriter) VisitStreamFuncSum(sfs *StreamFuncSum) (any, error) {
 func (dw DebugWriter) VisitStreamFuncThreshold(sft *StreamFuncThreshold) (any, error) {
 	_s := "StreamFuncThreshold(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sft.Object, sft.Object)
 	// TODO: 1 Value float64
 	_s += dw.p() + fmt.Sprintf("Value: %T(%v)\n", sft.Value, sft.Value)
@@ -321,7 +321,7 @@ func (dw DebugWriter) VisitStreamFuncThreshold(sft *StreamFuncThreshold) (any, e
 func (dw DebugWriter) VisitStreamFuncUnion(sfu *StreamFuncUnion) (any, error) {
 	_s := "StreamFuncUnion(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sfu.Object, sfu.Object)
 	if sfu.Sources == nil {
 		_s += dw.p() + "Sources: nil\n"
@@ -344,7 +344,7 @@ func (dw DebugWriter) VisitStreamFuncUnion(sfu *StreamFuncUnion) (any, error) {
 func (dw DebugWriter) VisitStreamFuncWhen(sfw *StreamFuncWhen) (any, error) {
 	_s := "StreamFuncWhen(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sfw.Object, sfw.Object)
 	if sfw.Predicate != nil {
 		_s += dw.p() + "Predicate: " + s(sfw.Predicate.Accept(dw)) // IsInterface
@@ -363,7 +363,7 @@ func (dw DebugWriter) VisitStreamFuncWhen(sfw *StreamFuncWhen) (any, error) {
 func (dw DebugWriter) VisitStreamMethodAbove(sma *StreamMethodAbove) (any, error) {
 	_s := "StreamMethodAbove(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sma.Object, sma.Object)
 	if sma.Source != nil {
 		_s += dw.p() + "Source: " + s(sma.Source.Accept(dw)) // IsInterface
@@ -378,7 +378,7 @@ func (dw DebugWriter) VisitStreamMethodAbove(sma *StreamMethodAbove) (any, error
 func (dw DebugWriter) VisitStreamMethodAbs(sma *StreamMethodAbs) (any, error) {
 	_s := "StreamMethodAbs(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sma.Object, sma.Object)
 	if sma.Source != nil {
 		_s += dw.p() + "Source: " + s(sma.Source.Accept(dw)) // IsInterface
@@ -393,7 +393,7 @@ func (dw DebugWriter) VisitStreamMethodAbs(sma *StreamMethodAbs) (any, error) {
 func (dw DebugWriter) VisitStreamMethodAggregate(sma *StreamMethodAggregate) (any, error) {
 	_s := "StreamMethodAggregate(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sma.Object, sma.Object)
 	if sma.Source != nil {
 		_s += dw.p() + "Source: " + s(sma.Source.Accept(dw)) // IsInterface
@@ -436,7 +436,7 @@ func (dw DebugWriter) VisitStreamMethodAggregate(sma *StreamMethodAggregate) (an
 func (dw DebugWriter) VisitStreamMethodBelow(smb *StreamMethodBelow) (any, error) {
 	_s := "StreamMethodBelow(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", smb.Object, smb.Object)
 	if smb.Source != nil {
 		_s += dw.p() + "Source: " + s(smb.Source.Accept(dw)) // IsInterface
@@ -451,14 +451,14 @@ func (dw DebugWriter) VisitStreamMethodBelow(smb *StreamMethodBelow) (any, error
 func (dw DebugWriter) VisitStreamMethodFill(smf *StreamMethodFill) (any, error) {
 	_s := "StreamMethodFill(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", smf.Object, smf.Object)
 	if smf.Source != nil {
 		_s += dw.p() + "Source: " + s(smf.Source.Accept(dw)) // IsInterface
 	} else {
 		_s += dw.p() + "Source: nil\n"
 	}
-	// TODO: 2 Value interpreter.Object
+	// TODO: 2 Value itypes.Object
 	_s += dw.p() + fmt.Sprintf("Value: %T(%v)\n", smf.Value, smf.Value)
 	// TODO: 3 Duration int
 	_s += dw.p() + fmt.Sprintf("Duration: %T(%v)\n", smf.Duration, smf.Duration)
@@ -472,7 +472,7 @@ func (dw DebugWriter) VisitStreamMethodFill(smf *StreamMethodFill) (any, error) 
 func (dw DebugWriter) VisitStreamMethodGeneric(smg *StreamMethodGeneric) (any, error) {
 	_s := "StreamMethodGeneric(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", smg.Object, smg.Object)
 	if smg.Source != nil {
 		_s += dw.p() + "Source: " + s(smg.Source.Accept(dw)) // IsInterface
@@ -488,7 +488,7 @@ func (dw DebugWriter) VisitStreamMethodGeneric(smg *StreamMethodGeneric) (any, e
 func (dw DebugWriter) VisitStreamMethodPercentile(smp *StreamMethodPercentile) (any, error) {
 	_s := "StreamMethodPercentile(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", smp.Object, smp.Object)
 	if smp.Source != nil {
 		_s += dw.p() + "Source: " + s(smp.Source.Accept(dw)) // IsInterface
@@ -503,7 +503,7 @@ func (dw DebugWriter) VisitStreamMethodPercentile(smp *StreamMethodPercentile) (
 func (dw DebugWriter) VisitStreamMethodPublish(smp *StreamMethodPublish) (any, error) {
 	_s := "StreamMethodPublish(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", smp.Object, smp.Object)
 	if smp.Source != nil {
 		_s += dw.p() + "Source: " + s(smp.Source.Accept(dw)) // IsInterface
@@ -520,7 +520,7 @@ func (dw DebugWriter) VisitStreamMethodPublish(smp *StreamMethodPublish) (any, e
 func (dw DebugWriter) VisitStreamMethodScale(sms *StreamMethodScale) (any, error) {
 	_s := "StreamMethodScale(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sms.Object, sms.Object)
 	if sms.Source != nil {
 		_s += dw.p() + "Source: " + s(sms.Source.Accept(dw)) // IsInterface
@@ -537,7 +537,7 @@ func (dw DebugWriter) VisitStreamMethodScale(sms *StreamMethodScale) (any, error
 func (dw DebugWriter) VisitStreamMethodTimeShift(smts *StreamMethodTimeShift) (any, error) {
 	_s := "StreamMethodTimeShift(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", smts.Object, smts.Object)
 	if smts.Source != nil {
 		_s += dw.p() + "Source: " + s(smts.Source.Accept(dw)) // IsInterface
@@ -554,7 +554,7 @@ func (dw DebugWriter) VisitStreamMethodTimeShift(smts *StreamMethodTimeShift) (a
 func (dw DebugWriter) VisitStreamMethodTop(smt *StreamMethodTop) (any, error) {
 	_s := "StreamMethodTop(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", smt.Object, smt.Object)
 	if smt.Source != nil {
 		_s += dw.p() + "Source: " + s(smt.Source.Accept(dw)) // IsInterface
@@ -569,7 +569,7 @@ func (dw DebugWriter) VisitStreamMethodTop(smt *StreamMethodTop) (any, error) {
 func (dw DebugWriter) VisitStreamMethodTransform(smt *StreamMethodTransform) (any, error) {
 	_s := "StreamMethodTransform(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", smt.Object, smt.Object)
 	if smt.Source != nil {
 		_s += dw.p() + "Source: " + s(smt.Source.Accept(dw)) // IsInterface
@@ -587,7 +587,7 @@ func (dw DebugWriter) VisitStreamMethodTransform(smt *StreamMethodTransform) (an
 func (dw DebugWriter) VisitStreamMethodTransformCycle(smtc *StreamMethodTransformCycle) (any, error) {
 	_s := "StreamMethodTransformCycle(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", smtc.Object, smtc.Object)
 	if smtc.Source != nil {
 		_s += dw.p() + "Source: " + s(smtc.Source.Accept(dw)) // IsInterface
@@ -611,7 +611,7 @@ func (dw DebugWriter) VisitStreamMethodTransformCycle(smtc *StreamMethodTransfor
 func (dw DebugWriter) VisitStreamBinaryOpDouble(sbod *StreamBinaryOpDouble) (any, error) {
 	_s := "StreamBinaryOpDouble(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sbod.Object, sbod.Object)
 	// TODO: 1 ObjectStreamTernary *ObjectStreamTernary
 	_s += dw.p() + fmt.Sprintf("ObjectStreamTernary: %T(%v)\n", sbod.ObjectStreamTernary, sbod.ObjectStreamTernary)
@@ -632,7 +632,7 @@ func (dw DebugWriter) VisitStreamBinaryOpDouble(sbod *StreamBinaryOpDouble) (any
 func (dw DebugWriter) VisitStreamBinaryOpInt(sboi *StreamBinaryOpInt) (any, error) {
 	_s := "StreamBinaryOpInt(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sboi.Object, sboi.Object)
 	// TODO: 1 ObjectStreamTernary *ObjectStreamTernary
 	_s += dw.p() + fmt.Sprintf("ObjectStreamTernary: %T(%v)\n", sboi.ObjectStreamTernary, sboi.ObjectStreamTernary)
@@ -653,7 +653,7 @@ func (dw DebugWriter) VisitStreamBinaryOpInt(sboi *StreamBinaryOpInt) (any, erro
 func (dw DebugWriter) VisitStreamBinaryOpStream(sbos *StreamBinaryOpStream) (any, error) {
 	_s := "StreamBinaryOpStream(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sbos.Object, sbos.Object)
 	// TODO: 1 ObjectStreamTernary *ObjectStreamTernary
 	_s += dw.p() + fmt.Sprintf("ObjectStreamTernary: %T(%v)\n", sbos.ObjectStreamTernary, sbos.ObjectStreamTernary)
@@ -676,7 +676,7 @@ func (dw DebugWriter) VisitStreamBinaryOpStream(sbos *StreamBinaryOpStream) (any
 func (dw DebugWriter) VisitStreamIsNone(sin *StreamIsNone) (any, error) {
 	_s := "StreamIsNone(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sin.Object, sin.Object)
 	// TODO: 1 ObjectStreamTernary *ObjectStreamTernary
 	_s += dw.p() + fmt.Sprintf("ObjectStreamTernary: %T(%v)\n", sin.ObjectStreamTernary, sin.ObjectStreamTernary)
@@ -694,7 +694,7 @@ func (dw DebugWriter) VisitStreamIsNone(sin *StreamIsNone) (any, error) {
 func (dw DebugWriter) VisitStreamTernary(st *StreamTernary) (any, error) {
 	_s := "StreamTernary(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", st.Object, st.Object)
 	if st.Left != nil {
 		_s += dw.p() + "Left: " + s(st.Left.Accept(dw)) // IsInterface
@@ -719,7 +719,7 @@ func (dw DebugWriter) VisitStreamTernary(st *StreamTernary) (any, error) {
 func (dw DebugWriter) VisitStreamUnaryOpMinus(suom *StreamUnaryOpMinus) (any, error) {
 	_s := "StreamUnaryOpMinus(\n"
 	dw.i()
-	// TODO: 0 Object interpreter.Object
+	// TODO: 0 Object itypes.Object
 	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", suom.Object, suom.Object)
 	if suom.Stream != nil {
 		_s += dw.p() + "Stream: " + s(suom.Stream.Accept(dw)) // IsInterface

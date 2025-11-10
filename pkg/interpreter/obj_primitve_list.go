@@ -3,18 +3,20 @@ package interpreter
 import (
 	"fmt"
 	"strings"
+
+	"guppy/pkg/interpreter/itypes"
 )
 
 // TODO: Proper interface
 type ObjectList struct {
-	Object
+	itypes.Object
 
-	Items []Object
+	Items []itypes.Object
 }
 
-func NewObjectList(items ...Object) *ObjectList {
+func NewObjectList(items ...itypes.Object) *ObjectList {
 	return &ObjectList{
-		Object: NewObject(map[string]Object{
+		Object: NewObject(map[string]itypes.Object{
 			"__add__":       methodListAdd{Object: NewObject(nil)},
 			"__subscript__": methodListSubscript{Object: NewObject(nil)},
 		}),
@@ -36,22 +38,22 @@ func (ol *ObjectList) Repr() string {
 }
 
 type methodListAdd struct {
-	Object
+	itypes.Object
 }
 
-func (mla methodListAdd) Params(i *Interpreter) (*Params, error) {
+func (mla methodListAdd) Params(i itypes.Interpreter) (*itypes.Params, error) {
 	return BinaryParams, nil
 }
 
-func (mla methodListAdd) Call(i *Interpreter) (Object, error) {
+func (mla methodListAdd) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if self, err := ArgAs[*ObjectList](i, "self"); err != nil {
 		return nil, err
-	} else if right, err := i.Scope.GetArg("right"); err != nil {
+	} else if right, err := i.GetArg("right"); err != nil {
 		return nil, err
 	} else {
 		switch right := right.(type) {
 		case *ObjectList:
-			items := make([]Object, 0, len(self.Items)+len(right.Items))
+			items := make([]itypes.Object, 0, len(self.Items)+len(right.Items))
 			items = append(items, self.Items...)
 			items = append(items, right.Items...)
 			return NewObjectList(items...), nil
@@ -62,19 +64,19 @@ func (mla methodListAdd) Call(i *Interpreter) (Object, error) {
 }
 
 type methodListSubscript struct {
-	Object
+	itypes.Object
 }
 
-func (mls methodListSubscript) Params(i *Interpreter) (*Params, error) {
-	return &Params{
-		Params: []ParamDef{
+func (mls methodListSubscript) Params(i itypes.Interpreter) (*itypes.Params, error) {
+	return &itypes.Params{
+		Params: []itypes.ParamDef{
 			{Name: "self"},
 			{Name: "start"},
 		},
 	}, nil
 }
 
-func (mls methodListSubscript) Call(i *Interpreter) (Object, error) {
+func (mls methodListSubscript) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if self, err := ArgAs[*ObjectList](i, "self"); err != nil {
 		return nil, err
 	} else if start, err := ArgAs[*ObjectInt](i, "start"); err != nil {

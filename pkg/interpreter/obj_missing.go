@@ -1,12 +1,16 @@
 package interpreter
 
+import (
+	"guppy/pkg/interpreter/itypes"
+)
+
 type ObjectMissing struct {
-	Object
+	itypes.Object
 }
 
-func NewObjectMissing() Object {
+func NewObjectMissing() itypes.Object {
 	return &ObjectMissing{
-		NewObject(map[string]Object{}),
+		NewObject(map[string]itypes.Object{}),
 	}
 }
 

@@ -4,20 +4,21 @@ import (
 	"fmt"
 
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 )
 
 type FFIMean struct {
-	interpreter.Object
+	itypes.Object
 }
 
-func (f FFIMean) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
-	return &interpreter.Params{
+func (f FFIMean) Params(i itypes.Interpreter) (*itypes.Params, error) {
+	return &itypes.Params{
 		StarParam: "values",
 	}, nil
 }
 
-func (f FFIMean) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
-	var meanConstants []interpreter.Object
+func (f FFIMean) Call(i itypes.Interpreter) (itypes.Object, error) {
+	var meanConstants []itypes.Object
 	var streamValues []Stream
 	if values, err := interpreter.ArgAs[*interpreter.ObjectTuple](i, "values"); err != nil {
 		return nil, err

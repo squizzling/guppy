@@ -3,28 +3,30 @@ package interpreter
 import (
 	"fmt"
 	"strconv"
+
+	"guppy/pkg/interpreter/itypes"
 )
 
 type ObjectDouble struct {
-	Object
+	itypes.Object
 
 	Value float64
 }
 
 type methodDoubleOp struct {
-	Object
+	itypes.Object
 
 	op      string
 	reverse string
 }
 
 type methodDoubleNeg struct {
-	Object
+	itypes.Object
 }
 
-func NewObjectDouble(f float64) Object {
+func NewObjectDouble(f float64) itypes.Object {
 	return &ObjectDouble{
-		Object: NewObject(map[string]Object{
+		Object: NewObject(map[string]itypes.Object{
 			"__add__":         methodDoubleOp{Object: NewObject(nil), op: "+", reverse: "__radd__"},
 			"__mul__":         methodDoubleOp{Object: NewObject(nil), op: "*", reverse: "__rmul__"},
 			"__sub__":         methodDoubleOp{Object: NewObject(nil), op: "-", reverse: "__rsub__"},
@@ -48,12 +50,12 @@ func (od *ObjectDouble) String(i *Interpreter) (string, error) {
 	return strconv.FormatFloat(od.Value, 'f', 6, 64), nil
 }
 
-func (mdo methodDoubleOp) Params(i *Interpreter) (*Params, error) {
+func (mdo methodDoubleOp) Params(i itypes.Interpreter) (*itypes.Params, error) {
 	return BinaryParams, nil
 }
 
-func (mdo methodDoubleOp) Call(i *Interpreter) (Object, error) {
-	if right, err := i.Scope.GetArg("right"); err != nil {
+func (mdo methodDoubleOp) Call(i itypes.Interpreter) (itypes.Object, error) {
+	if right, err := i.GetArg("right"); err != nil {
 		return nil, err
 	} else if reverseOp, err := right.Member(i, right, mdo.reverse); err == nil {
 		// If it exists, we always use the reverse method, because it's more likely to be the intended behavior.
@@ -65,7 +67,7 @@ func (mdo methodDoubleOp) Call(i *Interpreter) (Object, error) {
 
 	if self, err := ArgAs[*ObjectDouble](i, "self"); err != nil {
 		return nil, err
-	} else if right, err := i.Scope.GetArg("right"); err != nil {
+	} else if right, err := i.GetArg("right"); err != nil {
 		return nil, err
 	} else {
 		var rightVal float64
@@ -103,11 +105,11 @@ func (mdo methodDoubleOp) Call(i *Interpreter) (Object, error) {
 
 var _ = FlowCall(methodDoubleOp{})
 
-func (mdn methodDoubleNeg) Params(i *Interpreter) (*Params, error) {
+func (mdn methodDoubleNeg) Params(i itypes.Interpreter) (*itypes.Params, error) {
 	return UnaryParams, nil
 }
 
-func (mdn methodDoubleNeg) Call(i *Interpreter) (Object, error) {
+func (mdn methodDoubleNeg) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if self, err := ArgAs[*ObjectDouble](i, "self"); err != nil {
 		return nil, err
 	} else {

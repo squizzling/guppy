@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"guppy/pkg/flow/filter"
-	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 )
 
 type VisitorStream interface {
@@ -47,18 +47,18 @@ type VisitorStream interface {
 }
 
 type Stream interface {
-	interpreter.Object
+	itypes.Object
 	Accept(vs VisitorStream) (any, error)
 	CloneTimeShift(amount time.Duration) Stream
 }
 
 type StreamFuncAbs struct {
-	interpreter.Object
+	itypes.Object
 	Sources []Stream
 }
 
 func NewStreamFuncAbs(
-	Object interpreter.Object,
+	Object itypes.Object,
 	Sources []Stream,
 ) *StreamFuncAbs {
 	return &StreamFuncAbs{
@@ -79,11 +79,11 @@ func (sfa *StreamFuncAbs) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamFuncAlerts struct {
-	interpreter.Object
+	itypes.Object
 }
 
 func NewStreamFuncAlerts(
-	Object interpreter.Object,
+	Object itypes.Object,
 ) *StreamFuncAlerts {
 	return &StreamFuncAlerts{
 		Object: Object,
@@ -101,13 +101,13 @@ func (sfa *StreamFuncAlerts) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamFuncCombine struct {
-	interpreter.Object
+	itypes.Object
 	Source Stream
 	Mode   string
 }
 
 func NewStreamFuncCombine(
-	Object interpreter.Object,
+	Object itypes.Object,
 	Source Stream,
 	Mode string,
 ) *StreamFuncCombine {
@@ -131,13 +131,13 @@ func (sfc *StreamFuncCombine) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamFuncConstDouble struct {
-	interpreter.Object
+	itypes.Object
 	Value float64
 	Key   map[string]string
 }
 
 func NewStreamFuncConstDouble(
-	Object interpreter.Object,
+	Object itypes.Object,
 	Value float64,
 	Key map[string]string,
 ) *StreamFuncConstDouble {
@@ -161,13 +161,13 @@ func (sfcd *StreamFuncConstDouble) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamFuncConstInt struct {
-	interpreter.Object
+	itypes.Object
 	Value int
 	Key   map[string]string
 }
 
 func NewStreamFuncConstInt(
-	Object interpreter.Object,
+	Object itypes.Object,
 	Value int,
 	Key map[string]string,
 ) *StreamFuncConstInt {
@@ -191,12 +191,12 @@ func (sfci *StreamFuncConstInt) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamFuncCount struct {
-	interpreter.Object
+	itypes.Object
 	Sources []Stream
 }
 
 func NewStreamFuncCount(
-	Object interpreter.Object,
+	Object itypes.Object,
 	Sources []Stream,
 ) *StreamFuncCount {
 	return &StreamFuncCount{
@@ -217,7 +217,7 @@ func (sfc *StreamFuncCount) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamFuncData struct {
-	interpreter.Object
+	itypes.Object
 	MetricName        string
 	Filter            filter.Filter
 	Rollup            string
@@ -227,7 +227,7 @@ type StreamFuncData struct {
 }
 
 func NewStreamFuncData(
-	Object interpreter.Object,
+	Object itypes.Object,
 	MetricName string,
 	Filter filter.Filter,
 	Rollup string,
@@ -263,22 +263,22 @@ func (sfd *StreamFuncData) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamFuncDetect struct {
-	interpreter.Object
+	itypes.Object
 	On               Stream
 	Off              Stream
 	Mode             string
-	Annotations      interpreter.Object
-	EventAnnotations interpreter.Object
+	Annotations      itypes.Object
+	EventAnnotations itypes.Object
 	AutoResolveAfter *time.Duration
 }
 
 func NewStreamFuncDetect(
-	Object interpreter.Object,
+	Object itypes.Object,
 	On Stream,
 	Off Stream,
 	Mode string,
-	Annotations interpreter.Object,
-	EventAnnotations interpreter.Object,
+	Annotations itypes.Object,
+	EventAnnotations itypes.Object,
 	AutoResolveAfter *time.Duration,
 ) *StreamFuncDetect {
 	return &StreamFuncDetect{
@@ -309,11 +309,11 @@ func (sfd *StreamFuncDetect) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamFuncEvents struct {
-	interpreter.Object
+	itypes.Object
 }
 
 func NewStreamFuncEvents(
-	Object interpreter.Object,
+	Object itypes.Object,
 ) *StreamFuncEvents {
 	return &StreamFuncEvents{
 		Object: Object,
@@ -331,15 +331,15 @@ func (sfe *StreamFuncEvents) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamFuncMax struct {
-	interpreter.Object
+	itypes.Object
 	Sources []Stream
-	Value   interpreter.Object
+	Value   itypes.Object
 }
 
 func NewStreamFuncMax(
-	Object interpreter.Object,
+	Object itypes.Object,
 	Sources []Stream,
-	Value interpreter.Object,
+	Value itypes.Object,
 ) *StreamFuncMax {
 	return &StreamFuncMax{
 		Object:  Object,
@@ -361,15 +361,15 @@ func (sfm *StreamFuncMax) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamFuncMean struct {
-	interpreter.Object
+	itypes.Object
 	Sources   []Stream
-	Constants []interpreter.Object
+	Constants []itypes.Object
 }
 
 func NewStreamFuncMean(
-	Object interpreter.Object,
+	Object itypes.Object,
 	Sources []Stream,
-	Constants []interpreter.Object,
+	Constants []itypes.Object,
 ) *StreamFuncMean {
 	return &StreamFuncMean{
 		Object:    Object,
@@ -391,15 +391,15 @@ func (sfm *StreamFuncMean) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamFuncMedian struct {
-	interpreter.Object
+	itypes.Object
 	Sources   []Stream
-	Constants []interpreter.Object
+	Constants []itypes.Object
 }
 
 func NewStreamFuncMedian(
-	Object interpreter.Object,
+	Object itypes.Object,
 	Sources []Stream,
-	Constants []interpreter.Object,
+	Constants []itypes.Object,
 ) *StreamFuncMedian {
 	return &StreamFuncMedian{
 		Object:    Object,
@@ -421,15 +421,15 @@ func (sfm *StreamFuncMedian) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamFuncMin struct {
-	interpreter.Object
+	itypes.Object
 	Sources []Stream
-	Value   interpreter.Object
+	Value   itypes.Object
 }
 
 func NewStreamFuncMin(
-	Object interpreter.Object,
+	Object itypes.Object,
 	Sources []Stream,
-	Value interpreter.Object,
+	Value itypes.Object,
 ) *StreamFuncMin {
 	return &StreamFuncMin{
 		Object:  Object,
@@ -451,13 +451,13 @@ func (sfm *StreamFuncMin) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamFuncSum struct {
-	interpreter.Object
+	itypes.Object
 	Sources  []Stream
 	Constant float64
 }
 
 func NewStreamFuncSum(
-	Object interpreter.Object,
+	Object itypes.Object,
 	Sources []Stream,
 	Constant float64,
 ) *StreamFuncSum {
@@ -481,12 +481,12 @@ func (sfs *StreamFuncSum) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamFuncThreshold struct {
-	interpreter.Object
+	itypes.Object
 	Value float64
 }
 
 func NewStreamFuncThreshold(
-	Object interpreter.Object,
+	Object itypes.Object,
 	Value float64,
 ) *StreamFuncThreshold {
 	return &StreamFuncThreshold{
@@ -507,12 +507,12 @@ func (sft *StreamFuncThreshold) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamFuncUnion struct {
-	interpreter.Object
+	itypes.Object
 	Sources []Stream
 }
 
 func NewStreamFuncUnion(
-	Object interpreter.Object,
+	Object itypes.Object,
 	Sources []Stream,
 ) *StreamFuncUnion {
 	return &StreamFuncUnion{
@@ -533,14 +533,14 @@ func (sfu *StreamFuncUnion) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamFuncWhen struct {
-	interpreter.Object
+	itypes.Object
 	Predicate Stream
 	Lasting   *time.Duration
 	AtLeast   float64
 }
 
 func NewStreamFuncWhen(
-	Object interpreter.Object,
+	Object itypes.Object,
 	Predicate Stream,
 	Lasting *time.Duration,
 	AtLeast float64,
@@ -567,12 +567,12 @@ func (sfw *StreamFuncWhen) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamMethodAbove struct {
-	interpreter.Object
+	itypes.Object
 	Source Stream
 }
 
 func NewStreamMethodAbove(
-	Object interpreter.Object,
+	Object itypes.Object,
 	Source Stream,
 ) *StreamMethodAbove {
 	return &StreamMethodAbove{
@@ -593,12 +593,12 @@ func (sma *StreamMethodAbove) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamMethodAbs struct {
-	interpreter.Object
+	itypes.Object
 	Source Stream
 }
 
 func NewStreamMethodAbs(
-	Object interpreter.Object,
+	Object itypes.Object,
 	Source Stream,
 ) *StreamMethodAbs {
 	return &StreamMethodAbs{
@@ -619,7 +619,7 @@ func (sma *StreamMethodAbs) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamMethodAggregate struct {
-	interpreter.Object
+	itypes.Object
 	Source          Stream
 	Fn              string
 	By              []string
@@ -628,7 +628,7 @@ type StreamMethodAggregate struct {
 }
 
 func NewStreamMethodAggregate(
-	Object interpreter.Object,
+	Object itypes.Object,
 	Source Stream,
 	Fn string,
 	By []string,
@@ -661,12 +661,12 @@ func (sma *StreamMethodAggregate) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamMethodBelow struct {
-	interpreter.Object
+	itypes.Object
 	Source Stream
 }
 
 func NewStreamMethodBelow(
-	Object interpreter.Object,
+	Object itypes.Object,
 	Source Stream,
 ) *StreamMethodBelow {
 	return &StreamMethodBelow{
@@ -687,17 +687,17 @@ func (smb *StreamMethodBelow) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamMethodFill struct {
-	interpreter.Object
+	itypes.Object
 	Source   Stream
-	Value    interpreter.Object
+	Value    itypes.Object
 	Duration int
 	MaxCount int
 }
 
 func NewStreamMethodFill(
-	Object interpreter.Object,
+	Object itypes.Object,
 	Source Stream,
-	Value interpreter.Object,
+	Value itypes.Object,
 	Duration int,
 	MaxCount int,
 ) *StreamMethodFill {
@@ -725,13 +725,13 @@ func (smf *StreamMethodFill) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamMethodGeneric struct {
-	interpreter.Object
+	itypes.Object
 	Source Stream
 	Call   string
 }
 
 func NewStreamMethodGeneric(
-	Object interpreter.Object,
+	Object itypes.Object,
 	Source Stream,
 	Call string,
 ) *StreamMethodGeneric {
@@ -755,12 +755,12 @@ func (smg *StreamMethodGeneric) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamMethodPercentile struct {
-	interpreter.Object
+	itypes.Object
 	Source Stream
 }
 
 func NewStreamMethodPercentile(
-	Object interpreter.Object,
+	Object itypes.Object,
 	Source Stream,
 ) *StreamMethodPercentile {
 	return &StreamMethodPercentile{
@@ -781,14 +781,14 @@ func (smp *StreamMethodPercentile) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamMethodPublish struct {
-	interpreter.Object
+	itypes.Object
 	Source Stream
 	Label  string
 	Enable bool
 }
 
 func NewStreamMethodPublish(
-	Object interpreter.Object,
+	Object itypes.Object,
 	Source Stream,
 	Label string,
 	Enable bool,
@@ -815,13 +815,13 @@ func (smp *StreamMethodPublish) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamMethodScale struct {
-	interpreter.Object
+	itypes.Object
 	Source   Stream
 	Multiple float64
 }
 
 func NewStreamMethodScale(
-	Object interpreter.Object,
+	Object itypes.Object,
 	Source Stream,
 	Multiple float64,
 ) *StreamMethodScale {
@@ -845,13 +845,13 @@ func (sms *StreamMethodScale) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamMethodTimeShift struct {
-	interpreter.Object
+	itypes.Object
 	Source Stream
 	Offset time.Duration
 }
 
 func NewStreamMethodTimeShift(
-	Object interpreter.Object,
+	Object itypes.Object,
 	Source Stream,
 	Offset time.Duration,
 ) *StreamMethodTimeShift {
@@ -875,12 +875,12 @@ func (smts *StreamMethodTimeShift) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamMethodTop struct {
-	interpreter.Object
+	itypes.Object
 	Source Stream
 }
 
 func NewStreamMethodTop(
-	Object interpreter.Object,
+	Object itypes.Object,
 	Source Stream,
 ) *StreamMethodTop {
 	return &StreamMethodTop{
@@ -901,14 +901,14 @@ func (smt *StreamMethodTop) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamMethodTransform struct {
-	interpreter.Object
+	itypes.Object
 	Source Stream
 	Fn     string
 	Over   time.Duration
 }
 
 func NewStreamMethodTransform(
-	Object interpreter.Object,
+	Object itypes.Object,
 	Source Stream,
 	Fn string,
 	Over time.Duration,
@@ -935,7 +935,7 @@ func (smt *StreamMethodTransform) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamMethodTransformCycle struct {
-	interpreter.Object
+	itypes.Object
 	Source        Stream
 	Fn            string
 	Cycle         string
@@ -946,7 +946,7 @@ type StreamMethodTransformCycle struct {
 }
 
 func NewStreamMethodTransformCycle(
-	Object interpreter.Object,
+	Object itypes.Object,
 	Source Stream,
 	Fn string,
 	Cycle string,
@@ -985,7 +985,7 @@ func (smtc *StreamMethodTransformCycle) CloneTimeShift(amount time.Duration) Str
 }
 
 type StreamBinaryOpDouble struct {
-	interpreter.Object
+	itypes.Object
 	*ObjectStreamTernary
 	Stream  Stream
 	Op      string
@@ -994,7 +994,7 @@ type StreamBinaryOpDouble struct {
 }
 
 func NewStreamBinaryOpDouble(
-	Object interpreter.Object,
+	Object itypes.Object,
 	ObjectStreamTernary *ObjectStreamTernary,
 	Stream Stream,
 	Op string,
@@ -1027,7 +1027,7 @@ func (sbod *StreamBinaryOpDouble) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamBinaryOpInt struct {
-	interpreter.Object
+	itypes.Object
 	*ObjectStreamTernary
 	Stream  Stream
 	Op      string
@@ -1036,7 +1036,7 @@ type StreamBinaryOpInt struct {
 }
 
 func NewStreamBinaryOpInt(
-	Object interpreter.Object,
+	Object itypes.Object,
 	ObjectStreamTernary *ObjectStreamTernary,
 	Stream Stream,
 	Op string,
@@ -1069,7 +1069,7 @@ func (sboi *StreamBinaryOpInt) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamBinaryOpStream struct {
-	interpreter.Object
+	itypes.Object
 	*ObjectStreamTernary
 	Left  Stream
 	Op    string
@@ -1077,7 +1077,7 @@ type StreamBinaryOpStream struct {
 }
 
 func NewStreamBinaryOpStream(
-	Object interpreter.Object,
+	Object itypes.Object,
 	ObjectStreamTernary *ObjectStreamTernary,
 	Left Stream,
 	Op string,
@@ -1107,14 +1107,14 @@ func (sbos *StreamBinaryOpStream) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamIsNone struct {
-	interpreter.Object
+	itypes.Object
 	*ObjectStreamTernary
 	Source Stream
 	Invert bool
 }
 
 func NewStreamIsNone(
-	Object interpreter.Object,
+	Object itypes.Object,
 	ObjectStreamTernary *ObjectStreamTernary,
 	Source Stream,
 	Invert bool,
@@ -1141,14 +1141,14 @@ func (sin *StreamIsNone) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamTernary struct {
-	interpreter.Object
+	itypes.Object
 	Left      Stream
 	Condition Stream
 	Right     Stream
 }
 
 func NewStreamTernary(
-	Object interpreter.Object,
+	Object itypes.Object,
 	Left Stream,
 	Condition Stream,
 	Right Stream,
@@ -1175,12 +1175,12 @@ func (st *StreamTernary) CloneTimeShift(amount time.Duration) Stream {
 }
 
 type StreamUnaryOpMinus struct {
-	interpreter.Object
+	itypes.Object
 	Stream Stream
 }
 
 func NewStreamUnaryOpMinus(
-	Object interpreter.Object,
+	Object itypes.Object,
 	Stream Stream,
 ) *StreamUnaryOpMinus {
 	return &StreamUnaryOpMinus{

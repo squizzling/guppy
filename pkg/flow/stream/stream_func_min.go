@@ -4,20 +4,21 @@ import (
 	"fmt"
 
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 )
 
 type FFIMin struct {
-	interpreter.Object
+	itypes.Object
 }
 
-func (f FFIMin) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
-	return &interpreter.Params{
+func (f FFIMin) Params(i itypes.Interpreter) (*itypes.Params, error) {
+	return &itypes.Params{
 		StarParam: "values",
 	}, nil
 }
 
-func (f FFIMin) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
-	var minConstant interpreter.Object
+func (f FFIMin) Call(i itypes.Interpreter) (itypes.Object, error) {
+	var minConstant itypes.Object
 	var streamValues []Stream
 	if values, err := interpreter.ArgAs[*interpreter.ObjectTuple](i, "values"); err != nil {
 		return nil, err

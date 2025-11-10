@@ -1,12 +1,16 @@
 package interpreter
 
+import (
+	"guppy/pkg/interpreter/itypes"
+)
+
 type ObjectNone struct {
-	Object
+	itypes.Object
 }
 
 func NewObjectNone() *ObjectNone {
 	return &ObjectNone{
-		NewObject(map[string]Object{
+		NewObject(map[string]itypes.Object{
 			"__eq__":    methodNoneEqual{Object: NewObject(nil)},
 			"__ne__":    methodNoneNotEqual{Object: NewObject(nil)},
 			"__is__":    methodNoneIs{Object: NewObject(nil), invert: false, reverseInvert: "__ris__"},
@@ -19,20 +23,20 @@ func (on *ObjectNone) Repr() string {
 	return "None"
 }
 
-func (on *ObjectNone) String(i *Interpreter) (string, error) {
+func (on *ObjectNone) String(i itypes.Interpreter) (string, error) {
 	return "None", nil
 }
 
 type methodNoneEqual struct {
-	Object
+	itypes.Object
 }
 
-func (mne methodNoneEqual) Params(i *Interpreter) (*Params, error) {
+func (mne methodNoneEqual) Params(i itypes.Interpreter) (*itypes.Params, error) {
 	return BinaryParams, nil
 }
 
-func (mne methodNoneEqual) Call(i *Interpreter) (Object, error) {
-	if right, err := i.Scope.GetArg("right"); err != nil {
+func (mne methodNoneEqual) Call(i itypes.Interpreter) (itypes.Object, error) {
+	if right, err := i.GetArg("right"); err != nil {
 		return nil, err
 	} else {
 		switch right.(type) {
@@ -45,15 +49,15 @@ func (mne methodNoneEqual) Call(i *Interpreter) (Object, error) {
 }
 
 type methodNoneNotEqual struct {
-	Object
+	itypes.Object
 }
 
-func (mnne methodNoneNotEqual) Params(i *Interpreter) (*Params, error) {
+func (mnne methodNoneNotEqual) Params(i itypes.Interpreter) (*itypes.Params, error) {
 	return BinaryParams, nil
 }
 
-func (mne methodNoneNotEqual) Call(i *Interpreter) (Object, error) {
-	if right, err := i.Scope.GetArg("right"); err != nil {
+func (mne methodNoneNotEqual) Call(i itypes.Interpreter) (itypes.Object, error) {
+	if right, err := i.GetArg("right"); err != nil {
 		return nil, err
 	} else {
 		switch right.(type) {
@@ -66,18 +70,18 @@ func (mne methodNoneNotEqual) Call(i *Interpreter) (Object, error) {
 }
 
 type methodNoneIs struct {
-	Object
+	itypes.Object
 
 	invert        bool
 	reverseInvert string
 }
 
-func (mni methodNoneIs) Params(i *Interpreter) (*Params, error) {
+func (mni methodNoneIs) Params(i itypes.Interpreter) (*itypes.Params, error) {
 	return BinaryParams, nil
 }
 
-func (mni methodNoneIs) Call(i *Interpreter) (Object, error) {
-	right, err := i.Scope.GetArg("right")
+func (mni methodNoneIs) Call(i itypes.Interpreter) (itypes.Object, error) {
+	right, err := i.GetArg("right")
 	if err != nil {
 		return nil, err
 	} else if reverseIs, err := right.Member(i, right, mni.reverseInvert); err == nil {

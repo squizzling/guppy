@@ -7,15 +7,16 @@ import (
 	"time"
 
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 )
 
 type FFIDuration struct {
-	interpreter.Object
+	itypes.Object
 }
 
-func (f FFIDuration) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
-	return &interpreter.Params{
-		Params: []interpreter.ParamDef{
+func (f FFIDuration) Params(i itypes.Interpreter) (*itypes.Params, error) {
+	return &itypes.Params{
+		Params: []itypes.ParamDef{
 			{Name: "duration"},
 		},
 	}, nil
@@ -121,8 +122,8 @@ func ParseDuration(s string) (time.Duration, error) {
 	return accumDur, nil
 }
 
-func (f FFIDuration) resolveDuration(i *interpreter.Interpreter) (time.Duration, error) {
-	if arg, err := i.Scope.GetArg("duration"); err != nil {
+func (f FFIDuration) resolveDuration(i itypes.Interpreter) (time.Duration, error) {
+	if arg, err := i.GetArg("duration"); err != nil {
 		return 0, err
 	} else {
 		switch arg := arg.(type) {
@@ -138,7 +139,7 @@ func (f FFIDuration) resolveDuration(i *interpreter.Interpreter) (time.Duration,
 	}
 }
 
-func (f FFIDuration) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
+func (f FFIDuration) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if duration, err := f.resolveDuration(i); err != nil {
 		return nil, err
 	} else {
@@ -149,14 +150,14 @@ func (f FFIDuration) Call(i *interpreter.Interpreter) (interpreter.Object, error
 var _ = interpreter.FlowCall(FFIDuration{})
 
 type Duration struct {
-	interpreter.Object
+	itypes.Object
 
 	Duration time.Duration
 }
 
 func NewDuration(d time.Duration) *Duration {
 	return &Duration{
-		Object: interpreter.NewObject(map[string]interpreter.Object{
+		Object: interpreter.NewObject(map[string]itypes.Object{
 			"__rmul__": methodDurationOp{Object: interpreter.NewObject(nil), op: "*", reverse: true},
 
 			"__lt__": methodDurationOp{Object: interpreter.NewObject(nil), op: "<"},
@@ -174,16 +175,16 @@ func (d *Duration) String(i *interpreter.Interpreter) (string, error) {
 }
 
 type methodDurationOp struct {
-	interpreter.Object
+	itypes.Object
 
 	op      string
 	reverse bool
 }
 
-func (mdu methodDurationOp) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
+func (mdu methodDurationOp) Params(i itypes.Interpreter) (*itypes.Params, error) {
 	return interpreter.BinaryParams, nil
 }
-func (mdu methodDurationOp) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
+func (mdu methodDurationOp) Call(i itypes.Interpreter) (itypes.Object, error) {
 	// TODO: I don't love this, but I'm being lazy right now.
 	// Proper fix is to not use ArgAs[*Duration]
 	selfArg := "self"
@@ -194,7 +195,7 @@ func (mdu methodDurationOp) Call(i *interpreter.Interpreter) (interpreter.Object
 
 	if self, err := interpreter.ArgAs[*Duration](i, selfArg); err != nil {
 		return nil, err
-	} else if right, err := i.Scope.GetArg(rightArg); err != nil {
+	} else if right, err := i.GetArg(rightArg); err != nil {
 		return nil, err
 	} else {
 		var rightVal time.Duration

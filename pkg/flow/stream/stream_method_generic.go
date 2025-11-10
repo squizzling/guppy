@@ -2,17 +2,18 @@ package stream
 
 import (
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 )
 
 type methodGeneric struct {
-	interpreter.Object
+	itypes.Object
 
 	Function string
 }
 
-func (mg methodGeneric) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
-	return &interpreter.Params{
-		Params: []interpreter.ParamDef{
+func (mg methodGeneric) Params(i itypes.Interpreter) (*itypes.Params, error) {
+	return &itypes.Params{
+		Params: []itypes.ParamDef{
 			{Name: "self"},
 		},
 		StarParam: "s",
@@ -20,7 +21,7 @@ func (mg methodGeneric) Params(i *interpreter.Interpreter) (*interpreter.Params,
 	}, nil
 }
 
-func (mg methodGeneric) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
+func (mg methodGeneric) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if self, err := interpreter.ArgAs[Stream](i, "self"); err != nil {
 		return nil, err
 	} else {

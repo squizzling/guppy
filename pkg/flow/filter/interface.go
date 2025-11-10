@@ -2,16 +2,17 @@ package filter
 
 import (
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 )
 
 type Filter interface {
-	interpreter.Object
+	itypes.Object
 
 	RenderFilter() string
 }
 
-func newFilterObject() interpreter.Object {
-	return interpreter.NewObject(map[string]interpreter.Object{
+func newFilterObject() itypes.Object {
+	return interpreter.NewObject(map[string]itypes.Object{
 		"__binary_and__":       methodBinaryAnd{},
 		"__binary_or__":        methodBinaryOr{},
 		"__unary_binary_not__": methodBinaryNot{},

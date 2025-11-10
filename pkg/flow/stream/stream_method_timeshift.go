@@ -5,22 +5,23 @@ import (
 
 	"guppy/pkg/flow/duration"
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 )
 
 type methodTimeShift struct {
-	interpreter.Object
+	itypes.Object
 }
 
-func (mts methodTimeShift) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
-	return &interpreter.Params{
-		Params: []interpreter.ParamDef{
+func (mts methodTimeShift) Params(i itypes.Interpreter) (*itypes.Params, error) {
+	return &itypes.Params{
+		Params: []itypes.ParamDef{
 			{Name: "self"},
 			{Name: "offset"},
 		},
 	}, nil
 }
 
-func resolveOffset(i *interpreter.Interpreter) (string, error) {
+func resolveOffset(i itypes.Interpreter) (string, error) {
 	if offset, err := interpreter.ArgAsString(i, "offset"); err != nil {
 		return "", err
 	} else {
@@ -28,7 +29,7 @@ func resolveOffset(i *interpreter.Interpreter) (string, error) {
 	}
 }
 
-func (mts methodTimeShift) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
+func (mts methodTimeShift) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if self, err := interpreter.ArgAs[Stream](i, "self"); err != nil {
 		return nil, err
 	} else if offset, err := resolveOffset(i); err != nil {

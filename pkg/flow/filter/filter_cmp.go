@@ -2,19 +2,20 @@ package filter
 
 import (
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 )
 
 type methodBinaryEqual struct {
-	interpreter.Object
+	itypes.Object
 
 	invert bool
 }
 
-func (mbe methodBinaryEqual) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
+func (mbe methodBinaryEqual) Params(i itypes.Interpreter) (*itypes.Params, error) {
 	return interpreter.BinaryParams, nil
 }
 
-func (mbe methodBinaryEqual) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
+func (mbe methodBinaryEqual) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if _, err := interpreter.ArgAs[Filter](i, "self"); err != nil {
 		return nil, err
 	} else if err := interpreter.ArgAsNone(i, "right"); err != nil {
@@ -25,16 +26,16 @@ func (mbe methodBinaryEqual) Call(i *interpreter.Interpreter) (interpreter.Objec
 }
 
 type methodBinaryIs struct {
-	interpreter.Object
+	itypes.Object
 
 	invert bool
 }
 
-func (mbi methodBinaryIs) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
+func (mbi methodBinaryIs) Params(i itypes.Interpreter) (*itypes.Params, error) {
 	return interpreter.BinaryParams, nil
 }
 
-func (mbi methodBinaryIs) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
+func (mbi methodBinaryIs) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if _, err := interpreter.ArgAs[Filter](i, "self"); err != nil {
 		return nil, err
 	} else if err := interpreter.ArgAsNone(i, "right"); err != nil {

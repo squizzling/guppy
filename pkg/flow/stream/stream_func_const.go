@@ -4,31 +4,32 @@ import (
 	"fmt"
 
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 )
 
 type FFIConst struct {
-	interpreter.Object
+	itypes.Object
 }
 
-func (f FFIConst) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
-	return &interpreter.Params{
-		Params: []interpreter.ParamDef{
+func (f FFIConst) Params(i itypes.Interpreter) (*itypes.Params, error) {
+	return &itypes.Params{
+		Params: []itypes.ParamDef{
 			{Name: "value"},
 			{Name: "key", Default: interpreter.NewObjectMissing()},
 		},
 	}, nil
 }
 
-func (f FFIConst) resolveValue(i *interpreter.Interpreter) (interpreter.Object, error) {
-	if value, err := i.Scope.Get("value"); err != nil {
+func (f FFIConst) resolveValue(i itypes.Interpreter) (itypes.Object, error) {
+	if value, err := i.GetArg("value"); err != nil {
 		return nil, err
 	} else {
 		return value, nil
 	}
 }
 
-func (f FFIConst) resolveKey(i *interpreter.Interpreter) (map[string]string, error) {
-	if key, err := i.Scope.Get("key"); err != nil {
+func (f FFIConst) resolveKey(i itypes.Interpreter) (map[string]string, error) {
+	if key, err := i.GetArg("key"); err != nil {
 		return nil, err
 	} else {
 		switch key := key.(type) {
@@ -48,7 +49,7 @@ func (f FFIConst) resolveKey(i *interpreter.Interpreter) (map[string]string, err
 	}
 }
 
-func (f FFIConst) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
+func (f FFIConst) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if value, err := f.resolveValue(i); err != nil {
 		return nil, err
 	} else if key, err := f.resolveKey(i); err != nil {

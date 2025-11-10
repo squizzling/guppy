@@ -2,17 +2,18 @@ package stream
 
 import (
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 )
 
 // TODO: All of this.
 
 type methodPercentile struct {
-	interpreter.Object
+	itypes.Object
 }
 
-func (mp methodPercentile) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
-	return &interpreter.Params{
-		Params: []interpreter.ParamDef{
+func (mp methodPercentile) Params(i itypes.Interpreter) (*itypes.Params, error) {
+	return &itypes.Params{
+		Params: []itypes.ParamDef{
 			{Name: "self"},
 			{Name: "pct", Default: interpreter.NewObjectNone()},
 			{Name: "allow_missing", Default: interpreter.NewObjectNone()},
@@ -22,7 +23,7 @@ func (mp methodPercentile) Params(i *interpreter.Interpreter) (*interpreter.Para
 	}, nil
 }
 
-func (mp methodPercentile) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
+func (mp methodPercentile) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if self, err := interpreter.ArgAs[Stream](i, "self"); err != nil {
 		return nil, err
 	} else {

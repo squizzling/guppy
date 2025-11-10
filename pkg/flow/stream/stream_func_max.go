@@ -4,20 +4,21 @@ import (
 	"fmt"
 
 	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/itypes"
 )
 
 type FFIMax struct {
-	interpreter.Object
+	itypes.Object
 }
 
-func (f FFIMax) Params(i *interpreter.Interpreter) (*interpreter.Params, error) {
-	return &interpreter.Params{
+func (f FFIMax) Params(i itypes.Interpreter) (*itypes.Params, error) {
+	return &itypes.Params{
 		StarParam: "values",
 	}, nil
 }
 
-func (f FFIMax) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
-	var maxConstant interpreter.Object
+func (f FFIMax) Call(i itypes.Interpreter) (itypes.Object, error) {
+	var maxConstant itypes.Object
 	var streamValues []Stream
 	if values, err := interpreter.ArgAs[*interpreter.ObjectTuple](i, "values"); err != nil {
 		return nil, err

@@ -1,13 +1,17 @@
 package interpreter
 
+import (
+	"guppy/pkg/interpreter/itypes"
+)
+
 // TODO: Proper interface
 type ObjectTuple struct {
-	Object
+	itypes.Object
 
-	Items []Object
+	Items []itypes.Object
 }
 
-func NewObjectTuple(items ...Object) *ObjectTuple {
+func NewObjectTuple(items ...itypes.Object) *ObjectTuple {
 	return &ObjectTuple{
 		Object: NewObject(nil),
 		Items:  items,
