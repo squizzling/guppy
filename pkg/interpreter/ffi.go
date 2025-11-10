@@ -12,7 +12,7 @@ type funcFieldSetter func(i *Interpreter, tgt reflect.Value) error
 var typeObject = reflect.TypeOf((*Object)(nil)).Elem()
 
 type FFICall interface {
-	Call() (Object, error)
+	Call(i *Interpreter) (Object, error)
 }
 
 type ffi[T FFICall] struct {
@@ -37,7 +37,7 @@ func (f *ffi[T]) Call(i *Interpreter) (Object, error) {
 		}
 	}
 
-	return data.Call()
+	return data.Call(i)
 }
 
 func NewFFI[T FFICall](defaults T) FlowCall {

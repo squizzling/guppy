@@ -22,7 +22,7 @@ func NewFFIRange() interpreter.FlowCall {
 	})
 }
 
-func (f FFIRange) Call() (interpreter.Object, error) {
+func (f FFIRange) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
 	var start int
 	var stop int
 	if f.Stop.Thing != nil {

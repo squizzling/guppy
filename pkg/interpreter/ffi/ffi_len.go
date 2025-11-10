@@ -18,7 +18,7 @@ func NewFFILen() interpreter.FlowCall {
 	return interpreter.NewFFI(FFILen{})
 }
 
-func (f FFILen) Call() (interpreter.Object, error) {
+func (f FFILen) Call(i *interpreter.Interpreter) (interpreter.Object, error) {
 	switch {
 	case f.Value.List != nil:
 		return interpreter.NewObjectInt(len(f.Value.List.Items)), nil

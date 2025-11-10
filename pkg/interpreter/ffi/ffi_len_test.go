@@ -18,25 +18,27 @@ func TestFFINewLen(t *testing.T) {
 func TestFFILen(t *testing.T) {
 	t.Parallel()
 
+	i := interpreter.NewInterpreter(false)
+
 	l := FFILen{}
 	l.Value.List = interpreter.NewObjectList(interpreter.NewObjectInt(0))
-	o, err := l.Call()
+	o, err := l.Call(i)
 	require.NoError(t, err)
 	assert.Equal(t, 1, o.(*interpreter.ObjectInt).Value)
 
 	l = FFILen{}
 	l.Value.Tuple = interpreter.NewObjectTuple(interpreter.NewObjectInt(0))
-	o, err = l.Call()
+	o, err = l.Call(i)
 	require.NoError(t, err)
 	assert.Equal(t, 1, o.(*interpreter.ObjectInt).Value)
 
 	l = FFILen{}
 	l.Value.String = interpreter.NewObjectString("test")
-	o, err = l.Call()
+	o, err = l.Call(i)
 	require.NoError(t, err)
 	assert.Equal(t, 4, o.(*interpreter.ObjectInt).Value)
 
 	l = FFILen{}
-	o, err = l.Call()
+	o, err = l.Call(i)
 	assert.ErrorContains(t, err, "FFILen.Value is not set")
 }

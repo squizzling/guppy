@@ -22,7 +22,7 @@ type TestFFI struct {
 	OneOf  ThingOrNone[*ObjectInt] `ffi:"oneof"`
 }
 
-func (t TestFFI) Call() (Object, error) {
+func (t TestFFI) Call(i *Interpreter) (Object, error) {
 	if t.OneOf.Thing != nil {
 		return NewObjectInt(t.Single.Value + t.OneOf.Thing.Value), nil
 	} else if t.OneOf.None != nil {
@@ -37,7 +37,7 @@ type TestFFISingleKW struct {
 	OneOf  ThingOrNone[*ObjectInt] `ffi:"oneof"`
 }
 
-func (t TestFFISingleKW) Call() (Object, error) {
+func (t TestFFISingleKW) Call(i *Interpreter) (Object, error) {
 	if t.OneOf.Thing != nil {
 		return NewObjectInt(t.Single.Value + t.OneOf.Thing.Value), nil
 	} else if t.OneOf.None != nil {
@@ -52,7 +52,7 @@ type TestFFIOneOfKW struct {
 	OneOf  ThingOrNone[*ObjectInt] `ffi:"oneof,kw"`
 }
 
-func (t TestFFIOneOfKW) Call() (Object, error) {
+func (t TestFFIOneOfKW) Call(i *Interpreter) (Object, error) {
 	if t.OneOf.Thing != nil {
 		return NewObjectInt(t.Single.Value + t.OneOf.Thing.Value), nil
 	} else if t.OneOf.None != nil {
@@ -67,7 +67,7 @@ type TestFFISingleKWOneOfKW struct {
 	OneOf  ThingOrNone[*ObjectInt] `ffi:"oneof,kw"`
 }
 
-func (t TestFFISingleKWOneOfKW) Call() (Object, error) {
+func (t TestFFISingleKWOneOfKW) Call(i *Interpreter) (Object, error) {
 	if t.OneOf.Thing != nil {
 		return NewObjectInt(t.Single.Value + t.OneOf.Thing.Value), nil
 	} else if t.OneOf.None != nil {

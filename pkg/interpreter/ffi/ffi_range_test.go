@@ -23,12 +23,14 @@ func TestFFIRangeError(t *testing.T) {
 func TestFFIRangeErrorInvalidDate(t *testing.T) {
 	t.Parallel()
 
+	i := interpreter.NewInterpreter(false)
+
 	f := FFIRange{
 		Start: interpreter.NewObjectInt(0),
 		Stop:  interpreter.ThingOrNone[*interpreter.ObjectInt]{},
 		Step:  interpreter.NewObjectInt(0),
 	}
-	_, err := f.Call()
+	_, err := f.Call(i)
 	assert.ErrorContains(t, err, "FFIRange.Stop is not set")
 }
 
@@ -92,7 +94,9 @@ func TestFFIRange(t *testing.T) {
 		t.Run("", func(t *testing.T) {
 			t.Parallel()
 
-			rng, err := ts.input.Call()
+			i := interpreter.NewInterpreter(false)
+
+			rng, err := ts.input.Call(i)
 			require.NoError(t, err)
 			is := []int{}
 			for _, o := range rng.(*interpreter.ObjectList).Items {
