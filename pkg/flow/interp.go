@@ -16,6 +16,7 @@ func NewInterpreter(enableTrace bool) *interpreter.Interpreter {
 	// New style
 	_ = i.Globals.Set("len", ffi.NewFFILen())
 	_ = i.Globals.Set("range", ffi.NewFFIRange())
+	_ = i.Globals.Set("str", ffi.NewFFIStr())
 
 	// Old style
 	_ = i.Globals.Set("abs", &stream.FFIAbs{Object: interpreter.NewObject(nil)})
@@ -33,7 +34,6 @@ func NewInterpreter(enableTrace bool) *interpreter.Interpreter {
 	_ = i.Globals.Set("median", &stream.FFIMedian{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("min", &stream.FFIMin{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("partition_filter", &filter.FFIPartitionFilter{Object: interpreter.NewObject(nil)})
-	_ = i.Globals.Set("str", &interpreter.FFIStr{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("sum", &stream.FFISum{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("_print", &debug.FFIPrint{Object: interpreter.NewObject(nil)})
 	_ = i.Globals.Set("_published", NewPublished())

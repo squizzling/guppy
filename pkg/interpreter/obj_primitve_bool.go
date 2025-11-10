@@ -12,7 +12,7 @@ type ObjectBool struct {
 	Value bool
 }
 
-func NewObjectBool(v bool) Object {
+func NewObjectBool(v bool) *ObjectBool {
 	return &ObjectBool{
 		Object: NewObject(map[string]Object{
 			"__unary_binary_not__": methodBoolUnaryBinaryNot{Object: NewObject(nil)},

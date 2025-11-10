@@ -141,6 +141,7 @@ func (i *Interpreter) doCall(fo Object) (Object, error) {
 }
 
 type FlowStringable interface {
+	Object
 	String(i *Interpreter) (string, error)
 }
 
