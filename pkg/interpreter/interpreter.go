@@ -7,10 +7,11 @@ import (
 	"runtime/debug"
 	"strings"
 
+	"guppy/pkg/interpreter/itypes"
 	"guppy/pkg/parser/ast"
 )
 
-type Interpreter struct {
+type interpreter struct {
 	Globals *scope
 	Scope   *scope
 
@@ -18,8 +19,8 @@ type Interpreter struct {
 	enableTrace bool
 }
 
-func NewInterpreter(enableTrace bool) *Interpreter {
-	i := &Interpreter{
+func NewInterpreter(enableTrace bool) itypes.Interpreter {
+	i := &interpreter{
 		enableTrace: enableTrace,
 	}
 	i.pushScope()
@@ -43,14 +44,14 @@ func Repr(o any) string {
 	}
 }
 
-func (i *Interpreter) Debug(f string, args ...any) {
+func (i *interpreter) Debug(f string, args ...any) {
 	if !i.enableTrace {
 		return
 	}
 	fmt.Printf("%sdebug %s\n", strings.Repeat(" ", i.debugDepth), fmt.Sprintf(f, args...))
 }
 
-func (i *Interpreter) trace(a ...any) func(returnValue *any, err *error) {
+func (i *interpreter) trace(a ...any) func(returnValue *any, err *error) {
 	if !i.enableTrace {
 		return func(returnValue *any, err *error) {}
 	}
@@ -88,7 +89,7 @@ func (i *Interpreter) trace(a ...any) func(returnValue *any, err *error) {
 	}
 }
 
-func (i *Interpreter) Execute(sp *ast.StatementProgram) error {
+func (i *interpreter) Execute(sp *ast.StatementProgram) error {
 	_, err := sp.Accept(i)
 	return err
 }

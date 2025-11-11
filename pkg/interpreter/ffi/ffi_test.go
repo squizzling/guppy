@@ -173,7 +173,7 @@ func testFromFile(
 			}
 			i := interpreter.NewInterpreter(false)
 			for k, v := range calls {
-				require.NoError(t, i.Scope.Set(k, v))
+				require.NoError(t, i.Set(k, v))
 			}
 			// p.Accept() will push/pop a scope.  p.Statements.Accept() will use the current scope,
 			// which we need to retrieve `o`
@@ -183,7 +183,7 @@ func testFromFile(
 				assert.EqualValues(t, output[1:], err.Error())
 			} else {
 				require.NoError(t, err)
-				oVal, err := i.Scope.Get("o")
+				oVal, err := i.Get("o")
 				require.NoError(t, err)
 				assert.Equal(t, output, strconv.Itoa(oVal.(*interpreter.ObjectInt).Value))
 			}
@@ -208,10 +208,10 @@ func TestFFIError(t *testing.T) {
 			f := NewFFI(TestFFI{})
 
 			if ts.single != nil {
-				require.NoError(t, i.Scope.Set("single", ts.single))
+				require.NoError(t, i.Set("single", ts.single))
 			}
 			if ts.oneOf != nil {
-				require.NoError(t, i.Scope.Set("oneof", ts.oneOf))
+				require.NoError(t, i.Set("oneof", ts.oneOf))
 			}
 			_, err := f.Call(i)
 			require.Error(t, err)

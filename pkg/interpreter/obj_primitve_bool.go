@@ -26,7 +26,7 @@ func (ob *ObjectBool) String(i itypes.Interpreter) (string, error) {
 	return fmt.Sprintf("%t", ob.Value), nil
 }
 
-func (ob *ObjectBool) VisitExpressionTernary(i *Interpreter, left ast.Expression, cond itypes.Object, right ast.Expression) (any, error) {
+func (ob *ObjectBool) VisitExpressionTernary(i itypes.Interpreter, left ast.Expression, cond itypes.Object, right ast.Expression) (any, error) {
 	if ob.Value {
 		return left.Accept(i)
 	} else {

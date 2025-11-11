@@ -46,7 +46,7 @@ func (od *ObjectDouble) Repr() string {
 	return fmt.Sprintf("double(%f)", od.Value)
 }
 
-func (od *ObjectDouble) String(i *Interpreter) (string, error) {
+func (od *ObjectDouble) String(i itypes.Interpreter) (string, error) {
 	return strconv.FormatFloat(od.Value, 'f', 6, 64), nil
 }
 

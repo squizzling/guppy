@@ -10,7 +10,7 @@ import (
 
 type ObjectStreamTernary struct{}
 
-func (ost *ObjectStreamTernary) resolveStream(i *interpreter.Interpreter, e ast.Expression) (Stream, error) {
+func (ost *ObjectStreamTernary) resolveStream(i itypes.Interpreter, e ast.Expression) (Stream, error) {
 	o, err := e.Accept(i)
 	if err != nil {
 		return nil, err
@@ -25,7 +25,7 @@ func (ost *ObjectStreamTernary) resolveStream(i *interpreter.Interpreter, e ast.
 	}
 }
 
-func (ost *ObjectStreamTernary) VisitExpressionTernary(i *interpreter.Interpreter, left ast.Expression, cond itypes.Object, right ast.Expression) (any, error) {
+func (ost *ObjectStreamTernary) VisitExpressionTernary(i itypes.Interpreter, left ast.Expression, cond itypes.Object, right ast.Expression) (any, error) {
 	if leftStream, err := ost.resolveStream(i, left); err != nil {
 		return nil, err
 	} else if condStream, ok := cond.(Stream); !ok {

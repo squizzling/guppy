@@ -169,7 +169,7 @@ func NewDuration(d time.Duration) *Duration {
 	}
 }
 
-func (d *Duration) String(i *interpreter.Interpreter) (string, error) {
+func (d *Duration) String(i itypes.Interpreter) (string, error) {
 	// TODO: Render in SFX units
 	return d.Duration.String(), nil
 }

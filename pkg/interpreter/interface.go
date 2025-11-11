@@ -28,15 +28,27 @@ var UnaryParams = &itypes.Params{
 	},
 }
 
-func (i *Interpreter) GetArg(argName string) (itypes.Object, error) {
+func (i *interpreter) GetArg(argName string) (itypes.Object, error) {
 	return i.Scope.GetArg(argName)
 }
 
-func (i *Interpreter) GetGlobal(argName string) (itypes.Object, error) {
+func (i *interpreter) Get(argName string) (itypes.Object, error) {
+	return i.Scope.Get(argName)
+}
+
+func (i *interpreter) Set(name string, value itypes.Object) error {
+	return i.Scope.Set(name, value)
+}
+
+func (i *interpreter) GetGlobal(argName string) (itypes.Object, error) {
 	return i.Globals.GetArg(argName)
 }
 
-func (i *Interpreter) doAnd(left itypes.Object, right itypes.Object) (itypes.Object, error) {
+func (i *interpreter) SetGlobal(name string, value itypes.Object) error {
+	return i.Globals.Set(name, value)
+}
+
+func (i *interpreter) doAnd(left itypes.Object, right itypes.Object) (itypes.Object, error) {
 	if and, err := left.Member(i, left, "__binary_and__"); err != nil {
 		return nil, err
 	} else {
@@ -59,7 +71,7 @@ type FlowCall interface {
 	Call(i itypes.Interpreter) (itypes.Object, error)
 }
 
-func (i *Interpreter) DoParams(fo itypes.Object) (*itypes.Params, error) {
+func (i *interpreter) DoParams(fo itypes.Object) (*itypes.Params, error) {
 	if fc, ok := fo.(FlowCall); ok {
 		return fc.Params(i)
 	} else {
@@ -68,7 +80,7 @@ func (i *Interpreter) DoParams(fo itypes.Object) (*itypes.Params, error) {
 	}
 }
 
-func (i *Interpreter) DoCall(fo itypes.Object) (itypes.Object, error) {
+func (i *interpreter) DoCall(fo itypes.Object) (itypes.Object, error) {
 	if fc, ok := fo.(FlowCall); ok {
 		return fc.Call(i)
 	} else {
@@ -82,7 +94,7 @@ type FlowStringable interface {
 	String(i itypes.Interpreter) (string, error)
 }
 
-func (i *Interpreter) DoString(o itypes.Object) (string, error) {
+func (i *interpreter) DoString(o itypes.Object) (string, error) {
 	if s, ok := o.(FlowStringable); !ok {
 		return "", fmt.Errorf("%T is not stringable", o)
 	} else {
@@ -184,5 +196,5 @@ func isTruthy(o itypes.Object) (bool, error) {
 }
 
 type FlowTernary interface {
-	VisitExpressionTernary(i *Interpreter, left ast.Expression, cond itypes.Object, right ast.Expression) (any, error)
+	VisitExpressionTernary(i itypes.Interpreter, left ast.Expression, cond itypes.Object, right ast.Expression) (any, error)
 }

@@ -7,9 +7,13 @@ import (
 type Interpreter interface {
 	ast.VisitorStatement
 	ast.VisitorExpression
+	Execute(sp *ast.StatementProgram) error
 
-	GetArg(argName string) (Object, error)
+	SetGlobal(name string, value Object) error
 	GetGlobal(argName string) (Object, error)
+	Set(name string, value Object) error
+	Get(name string) (Object, error)
+	GetArg(name string) (Object, error)
 	Debug(f string, args ...any)
 	DoString(o Object) (string, error)
 	DoParams(o Object) (*Params, error)

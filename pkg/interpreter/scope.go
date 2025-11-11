@@ -24,7 +24,7 @@ type scope struct {
 	lookupChain    *scope // Used for lookup
 }
 
-func (i *Interpreter) pushScope() {
+func (i *interpreter) pushScope() {
 	i.Scope = &scope{
 		isDefined:      make(map[string]bool),
 		vars:           make(map[string]itypes.Object),
@@ -34,13 +34,13 @@ func (i *Interpreter) pushScope() {
 	}
 }
 
-func (i *Interpreter) withScope(fn func() error) error {
+func (i *interpreter) withScope(fn func() error) error {
 	i.pushScope()
 	defer i.popScope()
 	return fn()
 }
 
-func (i *Interpreter) pushClosure(s *scope) {
+func (i *interpreter) pushClosure(s *scope) {
 	i.Scope = &scope{
 		isDefined:      make(map[string]bool),
 		vars:           make(map[string]itypes.Object),
@@ -50,11 +50,11 @@ func (i *Interpreter) pushClosure(s *scope) {
 	}
 }
 
-func (i *Interpreter) popScope() {
+func (i *interpreter) popScope() {
 	i.Scope = i.Scope.popChain
 }
 
-func (s *scope) resolveDeferred(i *Interpreter) error {
+func (s *scope) resolveDeferred(i itypes.Interpreter) error {
 	var pending []string
 	for len(s.deferredAssign) > 0 {
 		progress := false

@@ -31,7 +31,7 @@ func main() {
 		fmt.Printf("%v\n", errProgram)
 	}
 
-	rawPublished, err2 := i.Globals.Get("_published")
+	rawPublished, err2 := i.GetGlobal("_published")
 	if err2 != nil {
 		fmt.Printf("Failed to get _published: %s", err)
 	}

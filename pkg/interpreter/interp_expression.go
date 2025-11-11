@@ -8,7 +8,7 @@ import (
 	"guppy/pkg/parser/tokenizer"
 )
 
-func (i *Interpreter) VisitExpressionBinary(eb ast.ExpressionBinary) (returnValue any, errOut error) {
+func (i *interpreter) VisitExpressionBinary(eb ast.ExpressionBinary) (returnValue any, errOut error) {
 	defer i.trace()(&returnValue, &errOut)
 
 	left, err := r(eb.Left.Accept(i))
@@ -43,7 +43,7 @@ func findParamSlot(params *itypes.Params, name string) int {
 	return -1
 }
 
-func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (returnValue any, errOut error) {
+func (i *interpreter) VisitExpressionCall(ec ast.ExpressionCall) (returnValue any, errOut error) {
 	defer i.trace()(&returnValue, &errOut)
 
 	//i.debug("Entering %#v", ec.Expr)
@@ -180,7 +180,7 @@ func (i *Interpreter) VisitExpressionCall(ec ast.ExpressionCall) (returnValue an
 	return i.DoCall(objFunc)
 }
 
-func (i *Interpreter) resolveUnnamedArgs(exprFunction ast.Expression, unnamedArgExpressions []ast.Expression, starArg ast.Expression) (itypes.Object, []itypes.Object, error) {
+func (i *interpreter) resolveUnnamedArgs(exprFunction ast.Expression, unnamedArgExpressions []ast.Expression, starArg ast.Expression) (itypes.Object, []itypes.Object, error) {
 	var unnamedArgs []itypes.Object
 
 	// This effectively resolves "self", or the x in `x.y(...)` (which is y(x, ...))
@@ -218,7 +218,7 @@ func (i *Interpreter) resolveUnnamedArgs(exprFunction ast.Expression, unnamedArg
 	return objFunction, unnamedArgs, nil
 }
 
-func (i *Interpreter) resolveNamedArgs(namedExpression []*ast.DataArgument, kwArgs ast.Expression) (map[string]itypes.Object, error) {
+func (i *interpreter) resolveNamedArgs(namedExpression []*ast.DataArgument, kwArgs ast.Expression) (map[string]itypes.Object, error) {
 	out := make(map[string]itypes.Object)
 	for _, ne := range namedExpression {
 		if obj, err := r(ne.Expr.Accept(i)); err != nil {
@@ -251,7 +251,7 @@ func (i *Interpreter) resolveNamedArgs(namedExpression []*ast.DataArgument, kwAr
 	return out, nil
 }
 
-func (i *Interpreter) assignArgs(
+func (i *interpreter) assignArgs(
 	formalNames []string,
 	formalParams []itypes.Object,
 
@@ -280,7 +280,7 @@ func (i *Interpreter) assignArgs(
 	return nil
 }
 
-func (i *Interpreter) VisitExpressionDict(ed ast.ExpressionDict) (returnValue any, errOut error) {
+func (i *interpreter) VisitExpressionDict(ed ast.ExpressionDict) (returnValue any, errOut error) {
 	defer i.trace()(&returnValue, &errOut)
 
 	var items []DictItem
@@ -299,19 +299,19 @@ func (i *Interpreter) VisitExpressionDict(ed ast.ExpressionDict) (returnValue an
 	return NewObjectDict(items), nil
 }
 
-func (i *Interpreter) VisitExpressionGrouping(eg ast.ExpressionGrouping) (returnValue any, errOut error) {
+func (i *interpreter) VisitExpressionGrouping(eg ast.ExpressionGrouping) (returnValue any, errOut error) {
 	defer i.trace()(&returnValue, &errOut)
 
 	panic("ExpressionGrouping")
 }
 
-func (i *Interpreter) VisitExpressionLambda(el ast.ExpressionLambda) (returnValue any, errOut error) {
+func (i *interpreter) VisitExpressionLambda(el ast.ExpressionLambda) (returnValue any, errOut error) {
 	defer i.trace()(&returnValue, &errOut)
 
 	panic("ExpressionLambda")
 }
 
-func (i *Interpreter) VisitExpressionList(el ast.ExpressionList) (returnValue any, errOut error) {
+func (i *interpreter) VisitExpressionList(el ast.ExpressionList) (returnValue any, errOut error) {
 	defer i.trace()(&returnValue, &errOut)
 
 	var o []itypes.Object
@@ -333,7 +333,7 @@ func (i *Interpreter) VisitExpressionList(el ast.ExpressionList) (returnValue an
 	return NewObjectList(o...), nil
 }
 
-func (i *Interpreter) VisitExpressionListMaker(elm ast.ExpressionListMaker) (returnValue any, errOut error) {
+func (i *interpreter) VisitExpressionListMaker(elm ast.ExpressionListMaker) (returnValue any, errOut error) {
 	defer i.trace()(&returnValue, &errOut)
 	/*
 		[elm.Expr for elm.For.Idents[] in elm.For.Expr]
@@ -344,7 +344,7 @@ func (i *Interpreter) VisitExpressionListMaker(elm ast.ExpressionListMaker) (ret
 	return i.evalDataListFor(elm.For, elm.Expr)
 }
 
-func (i *Interpreter) evalDataListFor(dlf *ast.DataListFor, expr ast.Expression) (returnValue any, errOut error) {
+func (i *interpreter) evalDataListFor(dlf *ast.DataListFor, expr ast.Expression) (returnValue any, errOut error) {
 	defer i.trace()(&returnValue, &errOut)
 
 	o, err := dlf.Expr.Accept(i)
@@ -393,7 +393,7 @@ func (i *Interpreter) evalDataListFor(dlf *ast.DataListFor, expr ast.Expression)
 
 }
 
-func (i *Interpreter) VisitExpressionLiteral(el ast.ExpressionLiteral) (returnValue any, errOut error) {
+func (i *interpreter) VisitExpressionLiteral(el ast.ExpressionLiteral) (returnValue any, errOut error) {
 	defer i.trace()(&returnValue, &errOut)
 
 	switch v := el.Value.(type) {
@@ -414,13 +414,13 @@ func (i *Interpreter) VisitExpressionLiteral(el ast.ExpressionLiteral) (returnVa
 	}
 }
 
-func (i *Interpreter) VisitExpressionLogical(el ast.ExpressionLogical) (returnValue any, errOut error) {
+func (i *interpreter) VisitExpressionLogical(el ast.ExpressionLogical) (returnValue any, errOut error) {
 	defer i.trace()(&returnValue, &errOut)
 
 	panic("ExpressionLogical")
 }
 
-func (i *Interpreter) VisitExpressionMember(em ast.ExpressionMember) (returnValue any, errOut error) {
+func (i *interpreter) VisitExpressionMember(em ast.ExpressionMember) (returnValue any, errOut error) {
 	defer i.trace("Member: %s", em.Identifier)(&returnValue, &errOut)
 
 	if obj, err := r(em.Expr.Accept(i)); err != nil {
@@ -430,13 +430,13 @@ func (i *Interpreter) VisitExpressionMember(em ast.ExpressionMember) (returnValu
 	}
 }
 
-func (i *Interpreter) VisitExpressionSubscript(es ast.ExpressionSubscript) (returnValue any, errOut error) {
+func (i *interpreter) VisitExpressionSubscript(es ast.ExpressionSubscript) (returnValue any, errOut error) {
 	defer i.trace()(&returnValue, &errOut)
 
 	panic("ExpressionSubscript")
 }
 
-func (i *Interpreter) VisitExpressionTernary(et ast.ExpressionTernary) (returnValue any, errOut error) {
+func (i *interpreter) VisitExpressionTernary(et ast.ExpressionTernary) (returnValue any, errOut error) {
 	defer i.trace()(&returnValue, &errOut)
 
 	if cond, err := r(et.Cond.Accept(i)); err != nil {
@@ -451,7 +451,7 @@ func (i *Interpreter) VisitExpressionTernary(et ast.ExpressionTernary) (returnVa
 	}
 }
 
-func (i *Interpreter) VisitExpressionTuple(et ast.ExpressionTuple) (returnValue any, errOut error) {
+func (i *interpreter) VisitExpressionTuple(et ast.ExpressionTuple) (returnValue any, errOut error) {
 	defer i.trace()(&returnValue, &errOut)
 
 	var o []itypes.Object
@@ -473,13 +473,13 @@ func (i *Interpreter) VisitExpressionTuple(et ast.ExpressionTuple) (returnValue 
 	return NewObjectTuple(o...), nil
 }
 
-func (i *Interpreter) VisitExpressionUnary(eu ast.ExpressionUnary) (returnValue any, errOut error) {
+func (i *interpreter) VisitExpressionUnary(eu ast.ExpressionUnary) (returnValue any, errOut error) {
 	defer i.trace()(&returnValue, &errOut)
 
 	panic("ExpressionUnary")
 }
 
-func (i *Interpreter) VisitExpressionVariable(ev ast.ExpressionVariable) (returnValue any, errOut error) {
+func (i *interpreter) VisitExpressionVariable(ev ast.ExpressionVariable) (returnValue any, errOut error) {
 	defer i.trace("Identifier: %s", ev.Identifier)(&returnValue, &errOut)
 
 	return i.Scope.Get(ev.Identifier)

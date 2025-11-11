@@ -14,9 +14,9 @@ func TestFFIRangeError(t *testing.T) {
 	t.Parallel()
 
 	i := interpreter.NewInterpreter(false)
-	require.NoError(t, i.Scope.Set("start", interpreter.NewObjectInt(0)))
-	require.NoError(t, i.Scope.Set("stop", interpreter.NewObjectInt(0)))
-	require.NoError(t, i.Scope.Set("step", interpreter.NewObjectInt(0)))
+	require.NoError(t, i.Set("start", interpreter.NewObjectInt(0)))
+	require.NoError(t, i.Set("stop", interpreter.NewObjectInt(0)))
+	require.NoError(t, i.Set("step", interpreter.NewObjectInt(0)))
 	_, err := NewFFIRange().Call(i)
 	assert.ErrorContains(t, err, "invalid step in range")
 }
