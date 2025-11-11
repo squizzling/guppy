@@ -3,6 +3,7 @@ package interpreter
 import (
 	"fmt"
 
+	"guppy/pkg/interpreter/deferred"
 	"guppy/pkg/interpreter/itypes"
 	"guppy/pkg/parser/ast"
 	"guppy/pkg/parser/tokenizer"
@@ -143,22 +144,22 @@ func (i *interpreter) VisitExpressionCall(ec ast.ExpressionCall) (returnValue an
 	// If any of our arguments are deferred, then we're deferred
 	desired := []string{}
 	for _, p := range paramValue {
-		if od, ok := p.(*ObjectDeferred); ok {
-			desired = append(desired, od.desired...)
+		if od, ok := p.(*deferred.ObjectDeferred); ok {
+			desired = append(desired, od.Desired...)
 		}
 	}
 	for _, p := range starArgs {
-		if od, ok := p.(*ObjectDeferred); ok {
-			desired = append(desired, od.desired...)
+		if od, ok := p.(*deferred.ObjectDeferred); ok {
+			desired = append(desired, od.Desired...)
 		}
 	}
 	for _, p := range namedArgs {
-		if od, ok := p.(*ObjectDeferred); ok {
-			desired = append(desired, od.desired...)
+		if od, ok := p.(*deferred.ObjectDeferred); ok {
+			desired = append(desired, od.Desired...)
 		}
 	}
 	if len(desired) > 0 {
-		return NewObjectDeferred(ec, desired...), nil
+		return deferred.NewObjectDeferred(ec, desired...), nil
 	}
 
 	// Perform all argument resolution above here, so we don't pollute the scope as we evaluate things.
@@ -208,7 +209,7 @@ func (i *interpreter) resolveUnnamedArgs(exprFunction ast.Expression, unnamedArg
 				unnamedArgs = append(unnamedArgs, starArgs.Items...)
 			case *ObjectTuple:
 				unnamedArgs = append(unnamedArgs, starArgs.Items...)
-			case *ObjectDeferred:
+			case *deferred.ObjectDeferred:
 				unnamedArgs = append(unnamedArgs, starArgs)
 			default:
 				return nil, nil, fmt.Errorf("[resolveUnnamedArgs] expecting *interpreter.ObjectList or *interpreter.ObjectTuple got %T", starArgs)
@@ -320,14 +321,14 @@ func (i *interpreter) VisitExpressionList(el ast.ExpressionList) (returnValue an
 		exprResult, err := r(expr.Accept(i))
 		if err != nil {
 			return nil, err
-		} else if od, ok := exprResult.(*ObjectDeferred); ok {
-			desired = append(desired, od.desired...)
+		} else if od, ok := exprResult.(*deferred.ObjectDeferred); ok {
+			desired = append(desired, od.Desired...)
 		}
 		o = append(o, exprResult)
 	}
 
 	if len(desired) > 0 {
-		return NewObjectDeferred(el, desired...), nil
+		return deferred.NewObjectDeferred(el, desired...), nil
 	}
 
 	return NewObjectList(o...), nil
@@ -358,7 +359,7 @@ func (i *interpreter) evalDataListFor(dlf *ast.DataListFor, expr ast.Expression)
 		values = o.Items
 	case *ObjectTuple:
 		values = o.Items
-	case *ObjectDeferred:
+	case *deferred.ObjectDeferred:
 		return o, nil
 	default:
 		return nil, fmt.Errorf("for over a %T, expecting *ObjectList, or *ObjectTuple", o)
@@ -460,14 +461,14 @@ func (i *interpreter) VisitExpressionTuple(et ast.ExpressionTuple) (returnValue 
 		exprResult, err := r(expr.Accept(i))
 		if err != nil {
 			return nil, err
-		} else if od, ok := exprResult.(*ObjectDeferred); ok {
-			desired = append(desired, od.desired...)
+		} else if od, ok := exprResult.(*deferred.ObjectDeferred); ok {
+			desired = append(desired, od.Desired...)
 		}
 		o = append(o, exprResult)
 	}
 
 	if len(desired) > 0 {
-		return NewObjectDeferred(et, desired...), nil
+		return deferred.NewObjectDeferred(et, desired...), nil
 	}
 
 	return NewObjectTuple(o...), nil

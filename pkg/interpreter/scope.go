@@ -6,20 +6,21 @@ import (
 	"slices"
 	"strings"
 
+	"guppy/pkg/interpreter/deferred"
 	"guppy/pkg/interpreter/itypes"
 	"guppy/pkg/parser/ast"
 )
 
 type deferAssign struct {
 	vars   []string
-	object *ObjectDeferred
+	object *deferred.ObjectDeferred
 }
 
 type scope struct {
 	isDefined      map[string]bool
 	vars           map[string]itypes.Object
 	deferredAssign map[string]deferAssign
-	deferred       []*ObjectDeferred
+	deferred       []*deferred.ObjectDeferred
 	popChain       *scope // Used when popping
 	lookupChain    *scope // Used for lookup
 }
@@ -59,11 +60,11 @@ func (s *scope) resolveDeferred(i itypes.Interpreter) error {
 	for len(s.deferredAssign) > 0 {
 		progress := false
 		for key, da := range s.deferredAssign {
-			maybeResolved, err := r(da.object.expr.Accept(i))
+			maybeResolved, err := r(da.object.Expr.Accept(i))
 			if err != nil {
 				return fmt.Errorf("deferred resolution failed for keys %s: %w", da.vars, err)
 			}
-			if od, ok := maybeResolved.(*ObjectDeferred); !ok {
+			if od, ok := maybeResolved.(*deferred.ObjectDeferred); !ok {
 				// TODO: I don't love this, what if we have an actual list?
 				if objList, ok := maybeResolved.(*ObjectList); ok {
 					for idx, value := range objList.Items {
@@ -77,7 +78,7 @@ func (s *scope) resolveDeferred(i itypes.Interpreter) error {
 				progress = true
 				delete(s.deferredAssign, key)
 			} else {
-				pending = append(pending, od.desired...)
+				pending = append(pending, od.Desired...)
 			}
 		}
 		if !progress {
@@ -91,10 +92,10 @@ func (s *scope) resolveDeferred(i itypes.Interpreter) error {
 	}
 
 	for _, anon := range s.deferred {
-		if o, err := anon.expr.Accept(i); err != nil {
+		if o, err := anon.Expr.Accept(i); err != nil {
 			return fmt.Errorf("deferred anonymous resolution failed: %w", err)
-		} else if od, ok := o.(*ObjectDeferred); ok {
-			return fmt.Errorf("deferred anonymous resolution missing variables: %s", od.desired)
+		} else if od, ok := o.(*deferred.ObjectDeferred); ok {
+			return fmt.Errorf("deferred anonymous resolution missing variables: %s", od.Desired)
 		}
 	}
 	s.deferredAssign = nil
@@ -112,7 +113,7 @@ func (s *scope) Set(key string, value itypes.Object) error {
 	return nil
 }
 
-func (s *scope) SetDefers(keys []string, d *ObjectDeferred) error {
+func (s *scope) SetDefers(keys []string, d *deferred.ObjectDeferred) error {
 	for _, key := range keys {
 		if s.isDefined[key] {
 			return errors.New("scope contains multiple bindings of " + key)
@@ -158,11 +159,11 @@ func (s *scope) Get(key string) (itypes.Object, error) {
 	}
 
 	if s.lookupChain == nil {
-		return NewObjectDeferred(ast.NewExpressionVariable(key), key), nil
+		return deferred.NewObjectDeferred(ast.NewExpressionVariable(key), key), nil
 	}
 	return s.lookupChain.Get(key)
 }
 
-func (s *scope) DeferAnonymous(d *ObjectDeferred) {
+func (s *scope) DeferAnonymous(d *deferred.ObjectDeferred) {
 	s.deferred = append(s.deferred, d)
 }

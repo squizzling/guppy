@@ -3,6 +3,7 @@ package interpreter
 import (
 	"fmt"
 
+	"guppy/pkg/interpreter/deferred"
 	"guppy/pkg/interpreter/itypes"
 	"guppy/pkg/parser/ast"
 )
@@ -12,8 +13,8 @@ func (i *interpreter) VisitStatementAssert(sa ast.StatementAssert) (returnValue 
 
 	if test, err := r(sa.Test.Accept(i)); err != nil {
 		return nil, err
-	} else if od, isDeferred := test.(*ObjectDeferred); isDeferred {
-		i.Scope.DeferAnonymous(NewObjectDeferred(sa.Test, od.desired...).(*ObjectDeferred))
+	} else if od, isDeferred := test.(*deferred.ObjectDeferred); isDeferred {
+		i.Scope.DeferAnonymous(deferred.NewObjectDeferred(sa.Test, od.Desired...).(*deferred.ObjectDeferred))
 		return nil, nil
 	} else if t, err := isTruthy(test); err != nil {
 		return nil, err
@@ -48,14 +49,14 @@ func (i *interpreter) VisitStatementExpression(se ast.StatementExpression) (retu
 	}
 
 	// If the result is deferred, save it for later
-	if od, ok := valuesAny.(*ObjectDeferred); ok {
+	if od, ok := valuesAny.(*deferred.ObjectDeferred); ok {
 		if len(se.Assign) == 0 {
 			// TODO: Figure out the type we want here.
-			i.Scope.DeferAnonymous(NewObjectDeferred(se.Expr, od.desired...).(*ObjectDeferred))
+			i.Scope.DeferAnonymous(deferred.NewObjectDeferred(se.Expr, od.Desired...).(*deferred.ObjectDeferred))
 			return nil, nil
 		}
 
-		err := i.Scope.SetDefers(se.Assign, NewObjectDeferred(se.Expr, od.desired...).(*ObjectDeferred))
+		err := i.Scope.SetDefers(se.Assign, deferred.NewObjectDeferred(se.Expr, od.Desired...).(*deferred.ObjectDeferred))
 		return nil, err
 	}
 

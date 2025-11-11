@@ -1,6 +1,7 @@
-package interpreter
+package deferred
 
 import (
+	"fmt"
 	"strings"
 
 	"guppy/pkg/interpreter/itypes"
@@ -8,28 +9,19 @@ import (
 )
 
 type ObjectDeferred struct {
-	expr    ast.Expression
-	desired []string
+	Expr    ast.Expression
+	Desired []string
 }
 
 func NewObjectDeferred(expr ast.Expression, desired ...string) itypes.Object {
 	return &ObjectDeferred{
-		expr:    expr,
-		desired: desired,
+		Expr:    expr,
+		Desired: desired,
 	}
 }
 
 func (o *ObjectDeferred) Repr() string {
-	var sb strings.Builder
-	sb.WriteString("deferred(")
-	for idx, desired := range o.desired {
-		if idx > 0 {
-			sb.WriteString(", ")
-		}
-		sb.WriteString(desired)
-	}
-	sb.WriteString(")")
-	return sb.String()
+	return fmt.Sprintf("deferred(%s)", strings.Join(o.Desired, ", "))
 }
 
 func (o *ObjectDeferred) Params(i itypes.Interpreter) (*itypes.Params, error) {
