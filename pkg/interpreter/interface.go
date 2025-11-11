@@ -90,26 +90,6 @@ func ArgAsString(i itypes.Interpreter, argName string) (string, error) {
 	}
 }
 
-func ArgAsBool(i itypes.Interpreter, argName string) (bool, error) {
-	if objArg, err := i.GetArg(argName); err != nil {
-		return false, err
-	} else if boolArg, ok := objArg.(*ObjectBool); !ok {
-		return false, fmt.Errorf("%T is not *interpreter.ObjectBool", objArg)
-	} else {
-		return boolArg.Value, nil
-	}
-}
-
-func ArgAsNone(i itypes.Interpreter, argName string) error {
-	if objArg, err := i.GetArg(argName); err != nil {
-		return err
-	} else if _, ok := objArg.(*ObjectNone); !ok {
-		return fmt.Errorf("%T is not *interpreter.ObjectNone", objArg)
-	} else {
-		return nil
-	}
-}
-
 func ArgAsDouble(i itypes.Interpreter, argName string) (float64, error) {
 	if objArg, err := i.GetArg(argName); err != nil {
 		return 0, err
@@ -121,28 +101,6 @@ func ArgAsDouble(i itypes.Interpreter, argName string) (float64, error) {
 		}
 	} else {
 		return doubleArg.Value, nil
-	}
-}
-
-func ArgAsLong(i itypes.Interpreter, argName string) (int, error) {
-	if objArg, err := i.GetArg(argName); err != nil {
-		return 0, err
-	} else if intArg, ok := objArg.(*ObjectInt); !ok {
-		return 0, fmt.Errorf("%T is not *interpreter.ObjectInt", objArg)
-	} else {
-		return intArg.Value, nil
-	}
-}
-
-func ArgAsOptLong(i itypes.Interpreter, argName string) (*int, error) {
-	if objArg, err := i.GetArg(argName); err != nil {
-		return nil, err
-	} else if intArg, ok := objArg.(*ObjectInt); ok {
-		return &intArg.Value, nil
-	} else if _, ok := objArg.(*ObjectNone); ok {
-		return nil, nil
-	} else {
-		return nil, fmt.Errorf("arg %s is %T not *interpreter.ObjectInt or *interpreter.ObjectNone", argName, objArg)
 	}
 }
 

@@ -45,9 +45,9 @@ func (mbubn methodBoolUnaryBinaryNot) Params(i itypes.Interpreter) (*itypes.Para
 }
 
 func (mbubn methodBoolUnaryBinaryNot) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if selfValue, err := ArgAsBool(i, "self"); err != nil {
+	if self, err := ArgAs[*ObjectBool](i, "self"); err != nil {
 		return nil, err
 	} else {
-		return NewObjectBool(!selfValue), nil
+		return NewObjectBool(!self.Value), nil
 	}
 }

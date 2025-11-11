@@ -27,11 +27,11 @@ func (mp methodPublish) Call(i itypes.Interpreter) (itypes.Object, error) {
 		return nil, err
 	} else if label, err := interpreter.ArgAsString(i, "label"); err != nil {
 		return nil, err
-	} else if enable, err := interpreter.ArgAsBool(i, "enable"); err != nil {
+	} else if enable, err := interpreter.ArgAs[*interpreter.ObjectBool](i, "enable"); err != nil {
 		return nil, err
 	} else {
 		// TODO: This whole thing is a hack to expose published data
-		pub := NewStreamMethodPublish(newStreamObject(), unpublish(self), label, enable)
+		pub := NewStreamMethodPublish(newStreamObject(), unpublish(self), label, enable.Value)
 		if rawPublished, err := i.GetGlobal("_published"); err != nil {
 			return nil, err
 		} else if published, ok := rawPublished.(interface{ Append(s *StreamMethodPublish) }); !ok {
