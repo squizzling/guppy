@@ -15,7 +15,7 @@ type methodStreamIs struct {
 }
 
 func (msi methodStreamIs) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return interpreter.BinaryParams, nil
+	return itypes.BinaryParams, nil
 }
 
 func (msi methodStreamIs) Call(i itypes.Interpreter) (itypes.Object, error) {

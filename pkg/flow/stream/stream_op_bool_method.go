@@ -15,7 +15,7 @@ type methodStreamOpBool struct {
 }
 
 func (msob methodStreamOpBool) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return interpreter.BinaryParams, nil
+	return itypes.BinaryParams, nil
 }
 
 func (msob methodStreamOpBool) Call(i itypes.Interpreter) (itypes.Object, error) {

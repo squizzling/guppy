@@ -96,3 +96,16 @@ func (pd *Params) Dump(i Interpreter) {
 	i.Debug("KWParam: %s", pd.KWParam)
 
 }
+
+var BinaryParams = &Params{
+	Params: []ParamDef{
+		{Name: "self"},
+		{Name: "right"},
+	},
+}
+
+var UnaryParams = &Params{
+	Params: []ParamDef{
+		{Name: "self"},
+	},
+}

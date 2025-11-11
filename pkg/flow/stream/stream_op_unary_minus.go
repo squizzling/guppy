@@ -10,7 +10,7 @@ type methodStreamUnaryMinus struct {
 }
 
 func (msum methodStreamUnaryMinus) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return interpreter.UnaryParams, nil
+	return itypes.UnaryParams, nil
 }
 
 func (msum methodStreamUnaryMinus) Call(i itypes.Interpreter) (itypes.Object, error) {

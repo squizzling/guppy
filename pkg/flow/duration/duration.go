@@ -182,7 +182,7 @@ type methodDurationOp struct {
 }
 
 func (mdu methodDurationOp) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return interpreter.BinaryParams, nil
+	return itypes.BinaryParams, nil
 }
 func (mdu methodDurationOp) Call(i itypes.Interpreter) (itypes.Object, error) {
 	// TODO: I don't love this, but I'm being lazy right now.

@@ -15,7 +15,7 @@ type methodStreamOp struct {
 }
 
 func (mso methodStreamOp) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return interpreter.BinaryParams, nil
+	return itypes.BinaryParams, nil
 }
 
 func (mso methodStreamOp) Call(i itypes.Interpreter) (itypes.Object, error) {

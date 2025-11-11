@@ -34,7 +34,7 @@ type methodStringAdd struct {
 }
 
 func (msa methodStringAdd) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return BinaryParams, nil
+	return itypes.BinaryParams, nil
 }
 
 func (msa methodStringAdd) Call(i itypes.Interpreter) (itypes.Object, error) {
@@ -57,7 +57,7 @@ type methodStringEqual struct {
 }
 
 func (mse methodStringEqual) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return BinaryParams, nil
+	return itypes.BinaryParams, nil
 }
 
 func (mse methodStringEqual) Call(i itypes.Interpreter) (itypes.Object, error) {
@@ -80,7 +80,7 @@ type methodStringNotEqual struct {
 }
 
 func (msne methodStringNotEqual) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return BinaryParams, nil
+	return itypes.BinaryParams, nil
 }
 
 func (msne methodStringNotEqual) Call(i itypes.Interpreter) (itypes.Object, error) {

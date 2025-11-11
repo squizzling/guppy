@@ -12,7 +12,7 @@ type methodBinaryEqual struct {
 }
 
 func (mbe methodBinaryEqual) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return interpreter.BinaryParams, nil
+	return itypes.BinaryParams, nil
 }
 
 func (mbe methodBinaryEqual) Call(i itypes.Interpreter) (itypes.Object, error) {
@@ -32,7 +32,7 @@ type methodBinaryIs struct {
 }
 
 func (mbi methodBinaryIs) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return interpreter.BinaryParams, nil
+	return itypes.BinaryParams, nil
 }
 
 func (mbi methodBinaryIs) Call(i itypes.Interpreter) (itypes.Object, error) {

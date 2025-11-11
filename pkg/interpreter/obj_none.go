@@ -32,7 +32,7 @@ type methodNoneEqual struct {
 }
 
 func (mne methodNoneEqual) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return BinaryParams, nil
+	return itypes.BinaryParams, nil
 }
 
 func (mne methodNoneEqual) Call(i itypes.Interpreter) (itypes.Object, error) {
@@ -53,7 +53,7 @@ type methodNoneNotEqual struct {
 }
 
 func (mnne methodNoneNotEqual) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return BinaryParams, nil
+	return itypes.BinaryParams, nil
 }
 
 func (mne methodNoneNotEqual) Call(i itypes.Interpreter) (itypes.Object, error) {
@@ -77,7 +77,7 @@ type methodNoneIs struct {
 }
 
 func (mni methodNoneIs) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return BinaryParams, nil
+	return itypes.BinaryParams, nil
 }
 
 func (mni methodNoneIs) Call(i itypes.Interpreter) (itypes.Object, error) {

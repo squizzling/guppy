@@ -41,7 +41,7 @@ type methodBoolUnaryBinaryNot struct {
 }
 
 func (mbubn methodBoolUnaryBinaryNot) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return UnaryParams, nil
+	return itypes.UnaryParams, nil
 }
 
 func (mbubn methodBoolUnaryBinaryNot) Call(i itypes.Interpreter) (itypes.Object, error) {

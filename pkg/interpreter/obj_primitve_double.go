@@ -51,7 +51,7 @@ func (od *ObjectDouble) String(i itypes.Interpreter) (string, error) {
 }
 
 func (mdo methodDoubleOp) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return BinaryParams, nil
+	return itypes.BinaryParams, nil
 }
 
 func (mdo methodDoubleOp) Call(i itypes.Interpreter) (itypes.Object, error) {
@@ -106,7 +106,7 @@ func (mdo methodDoubleOp) Call(i itypes.Interpreter) (itypes.Object, error) {
 var _ = FlowCall(methodDoubleOp{})
 
 func (mdn methodDoubleNeg) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return UnaryParams, nil
+	return itypes.UnaryParams, nil
 }
 
 func (mdn methodDoubleNeg) Call(i itypes.Interpreter) (itypes.Object, error) {

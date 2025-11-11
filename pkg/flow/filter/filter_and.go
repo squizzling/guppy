@@ -12,7 +12,7 @@ type methodBinaryAnd struct {
 }
 
 func (mba methodBinaryAnd) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return interpreter.BinaryParams, nil
+	return itypes.BinaryParams, nil
 }
 
 func (mba methodBinaryAnd) Call(i itypes.Interpreter) (itypes.Object, error) {

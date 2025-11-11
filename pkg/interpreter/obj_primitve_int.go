@@ -53,7 +53,7 @@ func (oi *ObjectInt) String(i itypes.Interpreter) (string, error) {
 }
 
 func (mio methodIntOp) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return BinaryParams, nil
+	return itypes.BinaryParams, nil
 }
 
 func (mio methodIntOp) Call(i itypes.Interpreter) (itypes.Object, error) {
@@ -112,7 +112,7 @@ func (mio methodIntOp) Call(i itypes.Interpreter) (itypes.Object, error) {
 var _ = FlowCall(methodIntOp{})
 
 func (min methodIntNeg) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return UnaryParams, nil
+	return itypes.UnaryParams, nil
 }
 
 func (min methodIntNeg) Call(i itypes.Interpreter) (itypes.Object, error) {

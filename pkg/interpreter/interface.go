@@ -7,27 +7,6 @@ import (
 	"guppy/pkg/parser/ast"
 )
 
-var TernaryParams = &itypes.Params{
-	Params: []itypes.ParamDef{
-		{Name: "self"},
-		{Name: "left"},
-		{Name: "right"},
-	},
-}
-
-var BinaryParams = &itypes.Params{
-	Params: []itypes.ParamDef{
-		{Name: "self"},
-		{Name: "right"},
-	},
-}
-
-var UnaryParams = &itypes.Params{
-	Params: []itypes.ParamDef{
-		{Name: "self"},
-	},
-}
-
 func (i *interpreter) GetArg(argName string) (itypes.Object, error) {
 	return i.Scope.GetArg(argName)
 }

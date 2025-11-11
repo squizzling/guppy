@@ -42,7 +42,7 @@ type methodListAdd struct {
 }
 
 func (mla methodListAdd) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return BinaryParams, nil
+	return itypes.BinaryParams, nil
 }
 
 func (mla methodListAdd) Call(i itypes.Interpreter) (itypes.Object, error) {
