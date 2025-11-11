@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"guppy/pkg/interpreter/itypes"
-	"guppy/pkg/parser/ast"
 )
 
 func (i *interpreter) GetArg(argName string) (itypes.Object, error) {
@@ -172,8 +171,4 @@ func isTruthy(o itypes.Object) (bool, error) {
 	default:
 		return false, fmt.Errorf("isTruthy condition is %T not *interpreter.ObjectBool", o)
 	}
-}
-
-type FlowTernary interface {
-	VisitExpressionTernary(i itypes.Interpreter, left ast.Expression, cond itypes.Object, right ast.Expression) (any, error)
 }

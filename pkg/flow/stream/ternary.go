@@ -37,4 +37,4 @@ func (ost *ObjectStreamTernary) VisitExpressionTernary(i itypes.Interpreter, lef
 	}
 }
 
-var _ interpreter.FlowTernary = (*ObjectStreamTernary)(nil)
+var _ itypes.FlowTernary = (*ObjectStreamTernary)(nil)

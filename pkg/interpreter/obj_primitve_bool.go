@@ -34,7 +34,7 @@ func (ob *ObjectBool) VisitExpressionTernary(i itypes.Interpreter, left ast.Expr
 	}
 }
 
-var _ FlowTernary = (*ObjectBool)(nil)
+var _ itypes.FlowTernary = (*ObjectBool)(nil)
 
 type methodBoolUnaryBinaryNot struct {
 	itypes.Object

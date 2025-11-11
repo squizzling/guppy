@@ -109,3 +109,7 @@ var UnaryParams = &Params{
 		{Name: "self"},
 	},
 }
+
+type FlowTernary interface {
+	VisitExpressionTernary(i Interpreter, left ast.Expression, cond Object, right ast.Expression) (any, error)
+}
