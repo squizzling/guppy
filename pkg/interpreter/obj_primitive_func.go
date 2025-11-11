@@ -17,7 +17,7 @@ type ObjectFunction struct {
 func NewObjectFunction(name string, params *itypes.Params, scope *scope, body ast.Statement) itypes.Object {
 	// TODO: Don't use scope, as it's not exported.  The visibility needs revisiting generally.
 	return &ObjectFunction{
-		Object: NewObject(nil),
+		Object: itypes.NewObject(nil),
 		name:   name,
 		params: params,
 		scope:  scope,

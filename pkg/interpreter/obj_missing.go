@@ -10,7 +10,7 @@ type ObjectMissing struct {
 
 func NewObjectMissing() itypes.Object {
 	return &ObjectMissing{
-		NewObject(map[string]itypes.Object{}),
+		itypes.NewObject(map[string]itypes.Object{}),
 	}
 }
 

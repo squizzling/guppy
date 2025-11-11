@@ -12,7 +12,7 @@ type Filter interface {
 }
 
 func newFilterObject() itypes.Object {
-	return interpreter.NewObject(map[string]itypes.Object{
+	return itypes.NewObject(map[string]itypes.Object{
 		"__binary_and__":       methodBinaryAnd{},
 		"__binary_or__":        methodBinaryOr{},
 		"__unary_binary_not__": methodBinaryNot{},

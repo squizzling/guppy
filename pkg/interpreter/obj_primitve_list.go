@@ -16,9 +16,9 @@ type ObjectList struct {
 
 func NewObjectList(items ...itypes.Object) *ObjectList {
 	return &ObjectList{
-		Object: NewObject(map[string]itypes.Object{
-			"__add__":       methodListAdd{Object: NewObject(nil)},
-			"__subscript__": methodListSubscript{Object: NewObject(nil)},
+		Object: itypes.NewObject(map[string]itypes.Object{
+			"__add__":       methodListAdd{Object: itypes.NewObject(nil)},
+			"__subscript__": methodListSubscript{Object: itypes.NewObject(nil)},
 		}),
 		Items: items,
 	}

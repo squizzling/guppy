@@ -13,7 +13,7 @@ type ObjectTuple struct {
 
 func NewObjectTuple(items ...itypes.Object) *ObjectTuple {
 	return &ObjectTuple{
-		Object: NewObject(nil),
+		Object: itypes.NewObject(nil),
 		Items:  items,
 	}
 }

@@ -21,9 +21,9 @@ type ObjectDict struct {
 
 func NewObjectDict(items []DictItem) itypes.Object {
 	return &ObjectDict{
-		Object: NewObject(map[string]itypes.Object{
-			"get":           methodDictGet{NewObject(nil)},
-			"__subscript__": methodDictSubscript{NewObject(nil)},
+		Object: itypes.NewObject(map[string]itypes.Object{
+			"get":           methodDictGet{itypes.NewObject(nil)},
+			"__subscript__": methodDictSubscript{itypes.NewObject(nil)},
 		}),
 
 		items: items,

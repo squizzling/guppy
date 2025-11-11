@@ -132,7 +132,7 @@ func NewFFI[T FFICall](defaults T) interpreter.FlowCall {
 	}
 
 	return &ffi[T]{
-		Object:    interpreter.NewObject(nil),
+		Object:    itypes.NewObject(nil),
 		params:    params,
 		defaults:  defaults,
 		setFields: setFields,

@@ -15,8 +15,8 @@ type ObjectBool struct {
 
 func NewObjectBool(v bool) *ObjectBool {
 	return &ObjectBool{
-		Object: NewObject(map[string]itypes.Object{
-			"__unary_binary_not__": methodBoolUnaryBinaryNot{Object: NewObject(nil)},
+		Object: itypes.NewObject(map[string]itypes.Object{
+			"__unary_binary_not__": methodBoolUnaryBinaryNot{Object: itypes.NewObject(nil)},
 		}),
 		Value: v,
 	}

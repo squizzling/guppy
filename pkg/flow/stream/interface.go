@@ -7,121 +7,121 @@ import (
 
 // Stream[Alert]
 func newStreamAlertObject() itypes.Object {
-	return interpreter.NewObject(map[string]itypes.Object{
-		"publish": methodPublish{interpreter.NewObject(nil)},
+	return itypes.NewObject(map[string]itypes.Object{
+		"publish": methodPublish{itypes.NewObject(nil)},
 	})
 }
 
 // Stream[bool]
 func newStreamBoolObject() itypes.Object {
-	return interpreter.NewObject(map[string]itypes.Object{
-		"publish":   methodPublish{interpreter.NewObject(nil)},
-		"timeshift": methodTimeShift{interpreter.NewObject(nil)},
+	return itypes.NewObject(map[string]itypes.Object{
+		"publish":   methodPublish{itypes.NewObject(nil)},
+		"timeshift": methodTimeShift{itypes.NewObject(nil)},
 
 		// generic
-		"dimensions": methodGeneric{interpreter.NewObject(nil), "dimensions"},
-		"equals":     methodGeneric{interpreter.NewObject(nil), "equals"},
-		"map":        methodGeneric{interpreter.NewObject(nil), "map"},
-		"not_equals": methodGeneric{interpreter.NewObject(nil), "not_equals"},
-		"promote":    methodGeneric{interpreter.NewObject(nil), "promote"},
+		"dimensions": methodGeneric{itypes.NewObject(nil), "dimensions"},
+		"equals":     methodGeneric{itypes.NewObject(nil), "equals"},
+		"map":        methodGeneric{itypes.NewObject(nil), "map"},
+		"not_equals": methodGeneric{itypes.NewObject(nil), "not_equals"},
+		"promote":    methodGeneric{itypes.NewObject(nil), "promote"},
 
 		// Aggregations + transforms
-		"count": methodStreamAggregateTransform{interpreter.NewObject(nil), "count"},
+		"count": methodStreamAggregateTransform{itypes.NewObject(nil), "count"},
 
-		"__binary_and__": methodStreamOpBool{interpreter.NewObject(nil), "and", false},
-		"__binary_or__":  methodStreamOpBool{interpreter.NewObject(nil), "or", false},
+		"__binary_and__": methodStreamOpBool{itypes.NewObject(nil), "and", false},
+		"__binary_or__":  methodStreamOpBool{itypes.NewObject(nil), "or", false},
 
 		// Comparison operations
-		"__eq__":  methodStreamOpBool{interpreter.NewObject(nil), "==", false},
-		"__req__": methodStreamOpBool{interpreter.NewObject(nil), "==", true},
-		"__ne__":  methodStreamOpBool{interpreter.NewObject(nil), "!=", false},
-		"__rne__": methodStreamOpBool{interpreter.NewObject(nil), "!=", true},
+		"__eq__":  methodStreamOpBool{itypes.NewObject(nil), "==", false},
+		"__req__": methodStreamOpBool{itypes.NewObject(nil), "==", true},
+		"__ne__":  methodStreamOpBool{itypes.NewObject(nil), "!=", false},
+		"__rne__": methodStreamOpBool{itypes.NewObject(nil), "!=", true},
 
 		// is/is not
-		"__is__":     methodStreamIs{interpreter.NewObject(nil), false, false},
-		"__isnot__":  methodStreamIs{interpreter.NewObject(nil), true, false},
-		"__ris__":    methodStreamIs{interpreter.NewObject(nil), false, true},
-		"__risnot__": methodStreamIs{interpreter.NewObject(nil), true, true},
+		"__is__":     methodStreamIs{itypes.NewObject(nil), false, false},
+		"__isnot__":  methodStreamIs{itypes.NewObject(nil), true, false},
+		"__ris__":    methodStreamIs{itypes.NewObject(nil), false, true},
+		"__risnot__": methodStreamIs{itypes.NewObject(nil), true, true},
 	})
 }
 
 // Stream[Unspecified]
 func newStreamObject() itypes.Object {
-	return interpreter.NewObject(map[string]itypes.Object{
+	return itypes.NewObject(map[string]itypes.Object{
 		// misc
-		"above":      methodAbove{interpreter.NewObject(nil)},
-		"abs":        methodAbs{interpreter.NewObject(nil)},
-		"below":      methodBelow{interpreter.NewObject(nil)},
-		"percentile": methodPercentile{interpreter.NewObject(nil)},
-		"publish":    methodPublish{interpreter.NewObject(nil)},
-		"timeshift":  methodTimeShift{interpreter.NewObject(nil)},
-		"top":        methodTop{interpreter.NewObject(nil)},
+		"above":      methodAbove{itypes.NewObject(nil)},
+		"abs":        methodAbs{itypes.NewObject(nil)},
+		"below":      methodBelow{itypes.NewObject(nil)},
+		"percentile": methodPercentile{itypes.NewObject(nil)},
+		"publish":    methodPublish{itypes.NewObject(nil)},
+		"timeshift":  methodTimeShift{itypes.NewObject(nil)},
+		"top":        methodTop{itypes.NewObject(nil)},
 
 		// generic
-		"between":              methodGeneric{interpreter.NewObject(nil), "between"},
-		"bottom":               methodGeneric{interpreter.NewObject(nil), "bottom"},
-		"ceil":                 methodGeneric{interpreter.NewObject(nil), "ceil"},
-		"delta":                methodGeneric{interpreter.NewObject(nil), "delta"},
-		"dimensions":           methodGeneric{interpreter.NewObject(nil), "dimensions"},
-		"double_ewma":          methodGeneric{interpreter.NewObject(nil), "double_ewma"},
-		"equals":               methodGeneric{interpreter.NewObject(nil), "equals"},
-		"ewma":                 methodGeneric{interpreter.NewObject(nil), "ewma"},
-		"fill":                 methodGeneric{interpreter.NewObject(nil), "fill"},
-		"floor":                methodGeneric{interpreter.NewObject(nil), "floor"},
-		"histogram_percentile": methodGeneric{interpreter.NewObject(nil), "histogram_percentile"},
-		"integrate":            methodGeneric{interpreter.NewObject(nil), "integrate"},
-		"log10":                methodGeneric{interpreter.NewObject(nil), "log10"},
-		"log":                  methodGeneric{interpreter.NewObject(nil), "log"},
-		"map":                  methodGeneric{interpreter.NewObject(nil), "map"},
-		"mean_plus_stddev":     methodGeneric{interpreter.NewObject(nil), "mean_plus_stddev"},
-		"not_equals":           methodGeneric{interpreter.NewObject(nil), "not_equals"},
-		"pow":                  methodGeneric{interpreter.NewObject(nil), "pow"},
-		"promote":              methodGeneric{interpreter.NewObject(nil), "promote"},
-		"rateofchange":         methodGeneric{interpreter.NewObject(nil), "rateofchange"},
-		"scale":                methodGeneric{interpreter.NewObject(nil), "scale"},
-		"sqrt":                 methodGeneric{interpreter.NewObject(nil), "sqrt"},
-		"stddev":               methodGeneric{interpreter.NewObject(nil), "stddev"},
-		"variance":             methodGeneric{interpreter.NewObject(nil), "variance"},
+		"between":              methodGeneric{itypes.NewObject(nil), "between"},
+		"bottom":               methodGeneric{itypes.NewObject(nil), "bottom"},
+		"ceil":                 methodGeneric{itypes.NewObject(nil), "ceil"},
+		"delta":                methodGeneric{itypes.NewObject(nil), "delta"},
+		"dimensions":           methodGeneric{itypes.NewObject(nil), "dimensions"},
+		"double_ewma":          methodGeneric{itypes.NewObject(nil), "double_ewma"},
+		"equals":               methodGeneric{itypes.NewObject(nil), "equals"},
+		"ewma":                 methodGeneric{itypes.NewObject(nil), "ewma"},
+		"fill":                 methodGeneric{itypes.NewObject(nil), "fill"},
+		"floor":                methodGeneric{itypes.NewObject(nil), "floor"},
+		"histogram_percentile": methodGeneric{itypes.NewObject(nil), "histogram_percentile"},
+		"integrate":            methodGeneric{itypes.NewObject(nil), "integrate"},
+		"log10":                methodGeneric{itypes.NewObject(nil), "log10"},
+		"log":                  methodGeneric{itypes.NewObject(nil), "log"},
+		"map":                  methodGeneric{itypes.NewObject(nil), "map"},
+		"mean_plus_stddev":     methodGeneric{itypes.NewObject(nil), "mean_plus_stddev"},
+		"not_equals":           methodGeneric{itypes.NewObject(nil), "not_equals"},
+		"pow":                  methodGeneric{itypes.NewObject(nil), "pow"},
+		"promote":              methodGeneric{itypes.NewObject(nil), "promote"},
+		"rateofchange":         methodGeneric{itypes.NewObject(nil), "rateofchange"},
+		"scale":                methodGeneric{itypes.NewObject(nil), "scale"},
+		"sqrt":                 methodGeneric{itypes.NewObject(nil), "sqrt"},
+		"stddev":               methodGeneric{itypes.NewObject(nil), "stddev"},
+		"variance":             methodGeneric{itypes.NewObject(nil), "variance"},
 
 		// Aggregations + transforms
-		"count":  methodStreamAggregateTransform{interpreter.NewObject(nil), "count"},
-		"max":    methodStreamAggregateTransform{interpreter.NewObject(nil), "max"},
-		"median": methodStreamAggregateTransform{interpreter.NewObject(nil), "median"},
-		"min":    methodStreamAggregateTransform{interpreter.NewObject(nil), "min"},
-		"mean":   methodStreamAggregateTransform{interpreter.NewObject(nil), "mean"},
-		"sum":    methodStreamAggregateTransform{interpreter.NewObject(nil), "sum"},
+		"count":  methodStreamAggregateTransform{itypes.NewObject(nil), "count"},
+		"max":    methodStreamAggregateTransform{itypes.NewObject(nil), "max"},
+		"median": methodStreamAggregateTransform{itypes.NewObject(nil), "median"},
+		"min":    methodStreamAggregateTransform{itypes.NewObject(nil), "min"},
+		"mean":   methodStreamAggregateTransform{itypes.NewObject(nil), "mean"},
+		"sum":    methodStreamAggregateTransform{itypes.NewObject(nil), "sum"},
 
 		// Math operations
-		"__add__":      methodStreamOp{interpreter.NewObject(nil), "+", false},
-		"__radd__":     methodStreamOp{interpreter.NewObject(nil), "+", true},
-		"__mul__":      methodStreamOp{interpreter.NewObject(nil), "*", false},
-		"__rmul__":     methodStreamOp{interpreter.NewObject(nil), "*", true},
-		"__sub__":      methodStreamOp{interpreter.NewObject(nil), "-", false},
-		"__rsub__":     methodStreamOp{interpreter.NewObject(nil), "-", true},
-		"__truediv__":  methodStreamOp{interpreter.NewObject(nil), "/", false},
-		"__rtruediv__": methodStreamOp{interpreter.NewObject(nil), "/", true},
+		"__add__":      methodStreamOp{itypes.NewObject(nil), "+", false},
+		"__radd__":     methodStreamOp{itypes.NewObject(nil), "+", true},
+		"__mul__":      methodStreamOp{itypes.NewObject(nil), "*", false},
+		"__rmul__":     methodStreamOp{itypes.NewObject(nil), "*", true},
+		"__sub__":      methodStreamOp{itypes.NewObject(nil), "-", false},
+		"__rsub__":     methodStreamOp{itypes.NewObject(nil), "-", true},
+		"__truediv__":  methodStreamOp{itypes.NewObject(nil), "/", false},
+		"__rtruediv__": methodStreamOp{itypes.NewObject(nil), "/", true},
 
-		"__unary_minus__": methodStreamUnaryMinus{interpreter.NewObject(nil)},
+		"__unary_minus__": methodStreamUnaryMinus{itypes.NewObject(nil)},
 
 		// Comparison operations
-		"__ge__":  methodStreamOpBool{interpreter.NewObject(nil), ">=", false},
-		"__rge__": methodStreamOpBool{interpreter.NewObject(nil), ">=", true},
-		"__gt__":  methodStreamOpBool{interpreter.NewObject(nil), ">", false},
-		"__rgt__": methodStreamOpBool{interpreter.NewObject(nil), ">", true},
-		"__le__":  methodStreamOpBool{interpreter.NewObject(nil), "<=", false},
-		"__rle__": methodStreamOpBool{interpreter.NewObject(nil), "<=", true},
-		"__lt__":  methodStreamOpBool{interpreter.NewObject(nil), "<", false},
-		"__rlt__": methodStreamOpBool{interpreter.NewObject(nil), "<", true},
-		"__eq__":  methodStreamOpBool{interpreter.NewObject(nil), "==", false},
-		"__req__": methodStreamOpBool{interpreter.NewObject(nil), "==", true},
-		"__ne__":  methodStreamOpBool{interpreter.NewObject(nil), "!=", false},
-		"__rne__": methodStreamOpBool{interpreter.NewObject(nil), "!=", true},
+		"__ge__":  methodStreamOpBool{itypes.NewObject(nil), ">=", false},
+		"__rge__": methodStreamOpBool{itypes.NewObject(nil), ">=", true},
+		"__gt__":  methodStreamOpBool{itypes.NewObject(nil), ">", false},
+		"__rgt__": methodStreamOpBool{itypes.NewObject(nil), ">", true},
+		"__le__":  methodStreamOpBool{itypes.NewObject(nil), "<=", false},
+		"__rle__": methodStreamOpBool{itypes.NewObject(nil), "<=", true},
+		"__lt__":  methodStreamOpBool{itypes.NewObject(nil), "<", false},
+		"__rlt__": methodStreamOpBool{itypes.NewObject(nil), "<", true},
+		"__eq__":  methodStreamOpBool{itypes.NewObject(nil), "==", false},
+		"__req__": methodStreamOpBool{itypes.NewObject(nil), "==", true},
+		"__ne__":  methodStreamOpBool{itypes.NewObject(nil), "!=", false},
+		"__rne__": methodStreamOpBool{itypes.NewObject(nil), "!=", true},
 
 		// is/is not
-		"__is__":     methodStreamIs{interpreter.NewObject(nil), false, false},
-		"__isnot__":  methodStreamIs{interpreter.NewObject(nil), true, false},
-		"__ris__":    methodStreamIs{interpreter.NewObject(nil), false, true},
-		"__risnot__": methodStreamIs{interpreter.NewObject(nil), true, true},
+		"__is__":     methodStreamIs{itypes.NewObject(nil), false, false},
+		"__isnot__":  methodStreamIs{itypes.NewObject(nil), true, false},
+		"__ris__":    methodStreamIs{itypes.NewObject(nil), false, true},
+		"__risnot__": methodStreamIs{itypes.NewObject(nil), true, true},
 	})
 }
 

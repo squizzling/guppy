@@ -10,11 +10,11 @@ type ObjectNone struct {
 
 func NewObjectNone() *ObjectNone {
 	return &ObjectNone{
-		NewObject(map[string]itypes.Object{
-			"__eq__":    methodNoneEqual{Object: NewObject(nil)},
-			"__ne__":    methodNoneNotEqual{Object: NewObject(nil)},
-			"__is__":    methodNoneIs{Object: NewObject(nil), invert: false, reverseInvert: "__ris__"},
-			"__isnot__": methodNoneIs{Object: NewObject(nil), invert: true, reverseInvert: "__risnot__"},
+		itypes.NewObject(map[string]itypes.Object{
+			"__eq__":    methodNoneEqual{Object: itypes.NewObject(nil)},
+			"__ne__":    methodNoneNotEqual{Object: itypes.NewObject(nil)},
+			"__is__":    methodNoneIs{Object: itypes.NewObject(nil), invert: false, reverseInvert: "__ris__"},
+			"__isnot__": methodNoneIs{Object: itypes.NewObject(nil), invert: true, reverseInvert: "__risnot__"},
 		}),
 	}
 }

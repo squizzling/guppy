@@ -88,7 +88,7 @@ type Annotated struct {
 
 func NewAnnotated(value itypes.Object, label itypes.Object, extraProps *interpreter.ObjectDict, publish itypes.Object) *Annotated {
 	return &Annotated{
-		Object:     interpreter.NewObject(nil),
+		Object:     itypes.NewObject(nil),
 		Value:      value,
 		Label:      label,
 		ExtraProps: extraProps,

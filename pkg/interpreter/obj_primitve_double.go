@@ -26,17 +26,17 @@ type methodDoubleNeg struct {
 
 func NewObjectDouble(f float64) itypes.Object {
 	return &ObjectDouble{
-		Object: NewObject(map[string]itypes.Object{
-			"__add__":         methodDoubleOp{Object: NewObject(nil), op: "+", reverse: "__radd__"},
-			"__mul__":         methodDoubleOp{Object: NewObject(nil), op: "*", reverse: "__rmul__"},
-			"__sub__":         methodDoubleOp{Object: NewObject(nil), op: "-", reverse: "__rsub__"},
-			"__truediv__":     methodDoubleOp{Object: NewObject(nil), op: "/", reverse: "__rtruediv__"},
-			"__unary_minus__": methodDoubleNeg{Object: NewObject(nil)},
+		Object: itypes.NewObject(map[string]itypes.Object{
+			"__add__":         methodDoubleOp{Object: itypes.NewObject(nil), op: "+", reverse: "__radd__"},
+			"__mul__":         methodDoubleOp{Object: itypes.NewObject(nil), op: "*", reverse: "__rmul__"},
+			"__sub__":         methodDoubleOp{Object: itypes.NewObject(nil), op: "-", reverse: "__rsub__"},
+			"__truediv__":     methodDoubleOp{Object: itypes.NewObject(nil), op: "/", reverse: "__rtruediv__"},
+			"__unary_minus__": methodDoubleNeg{Object: itypes.NewObject(nil)},
 
-			"__lt__": methodDoubleOp{Object: NewObject(nil), op: "<"},
-			"__gt__": methodDoubleOp{Object: NewObject(nil), op: ">"},
-			"__le__": methodDoubleOp{Object: NewObject(nil), op: "<="},
-			"__ge__": methodDoubleOp{Object: NewObject(nil), op: ">="},
+			"__lt__": methodDoubleOp{Object: itypes.NewObject(nil), op: "<"},
+			"__gt__": methodDoubleOp{Object: itypes.NewObject(nil), op: ">"},
+			"__le__": methodDoubleOp{Object: itypes.NewObject(nil), op: "<="},
+			"__ge__": methodDoubleOp{Object: itypes.NewObject(nil), op: ">="},
 		}),
 		Value: f,
 	}

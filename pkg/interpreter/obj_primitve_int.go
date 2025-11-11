@@ -26,19 +26,19 @@ type methodIntNeg struct {
 
 func NewObjectInt(i int) *ObjectInt {
 	return &ObjectInt{
-		Object: NewObject(map[string]itypes.Object{
-			"__add__":         methodIntOp{Object: NewObject(nil), op: "+", reverse: "__radd__"},
-			"__mul__":         methodIntOp{Object: NewObject(nil), op: "*", reverse: "__rmul__"},
-			"__sub__":         methodIntOp{Object: NewObject(nil), op: "-", reverse: "__rsub__"},
-			"__truediv__":     methodIntOp{Object: NewObject(nil), op: "/", reverse: "__rtruediv__"},
-			"__unary_minus__": methodIntNeg{Object: NewObject(nil)},
+		Object: itypes.NewObject(map[string]itypes.Object{
+			"__add__":         methodIntOp{Object: itypes.NewObject(nil), op: "+", reverse: "__radd__"},
+			"__mul__":         methodIntOp{Object: itypes.NewObject(nil), op: "*", reverse: "__rmul__"},
+			"__sub__":         methodIntOp{Object: itypes.NewObject(nil), op: "-", reverse: "__rsub__"},
+			"__truediv__":     methodIntOp{Object: itypes.NewObject(nil), op: "/", reverse: "__rtruediv__"},
+			"__unary_minus__": methodIntNeg{Object: itypes.NewObject(nil)},
 
-			"__lt__": methodIntOp{Object: NewObject(nil), op: "<"},
-			"__gt__": methodIntOp{Object: NewObject(nil), op: ">"},
-			"__le__": methodIntOp{Object: NewObject(nil), op: "<="},
-			"__ge__": methodIntOp{Object: NewObject(nil), op: ">="},
-			"__eq__": methodIntOp{Object: NewObject(nil), op: "=="},
-			"__ne__": methodIntOp{Object: NewObject(nil), op: "!="},
+			"__lt__": methodIntOp{Object: itypes.NewObject(nil), op: "<"},
+			"__gt__": methodIntOp{Object: itypes.NewObject(nil), op: ">"},
+			"__le__": methodIntOp{Object: itypes.NewObject(nil), op: "<="},
+			"__ge__": methodIntOp{Object: itypes.NewObject(nil), op: ">="},
+			"__eq__": methodIntOp{Object: itypes.NewObject(nil), op: "=="},
+			"__ne__": methodIntOp{Object: itypes.NewObject(nil), op: "!="},
 		}),
 		Value: i,
 	}

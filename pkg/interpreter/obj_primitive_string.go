@@ -14,10 +14,10 @@ type ObjectString struct {
 
 func NewObjectString(s string) *ObjectString {
 	return &ObjectString{
-		Object: NewObject(map[string]itypes.Object{
-			"__add__": methodStringAdd{Object: NewObject(nil)},
-			"__eq__":  methodStringEqual{Object: NewObject(nil)},
-			"__ne__":  methodStringNotEqual{Object: NewObject(nil)},
+		Object: itypes.NewObject(map[string]itypes.Object{
+			"__add__": methodStringAdd{Object: itypes.NewObject(nil)},
+			"__eq__":  methodStringEqual{Object: itypes.NewObject(nil)},
+			"__ne__":  methodStringNotEqual{Object: itypes.NewObject(nil)},
 		}),
 		Value: s,
 	}

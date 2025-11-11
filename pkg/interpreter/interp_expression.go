@@ -188,8 +188,8 @@ func (i *interpreter) resolveUnnamedArgs(exprFunction ast.Expression, unnamedArg
 	objFunction, err := r(exprFunction.Accept(i))
 	if err != nil {
 		return nil, nil, err
-	} else if lv, ok := objFunction.(*ObjectLValue); ok {
-		unnamedArgs = append(unnamedArgs, lv.left)
+	} else if lv, ok := objFunction.(*itypes.ObjectLValue); ok {
+		unnamedArgs = append(unnamedArgs, lv.Left)
 	}
 
 	for _, expr := range unnamedArgExpressions {

@@ -157,13 +157,13 @@ type Duration struct {
 
 func NewDuration(d time.Duration) *Duration {
 	return &Duration{
-		Object: interpreter.NewObject(map[string]itypes.Object{
-			"__rmul__": methodDurationOp{Object: interpreter.NewObject(nil), op: "*", reverse: true},
+		Object: itypes.NewObject(map[string]itypes.Object{
+			"__rmul__": methodDurationOp{Object: itypes.NewObject(nil), op: "*", reverse: true},
 
-			"__lt__": methodDurationOp{Object: interpreter.NewObject(nil), op: "<"},
-			"__gt__": methodDurationOp{Object: interpreter.NewObject(nil), op: ">"},
-			"__le__": methodDurationOp{Object: interpreter.NewObject(nil), op: "<="},
-			"__ge__": methodDurationOp{Object: interpreter.NewObject(nil), op: ">="},
+			"__lt__": methodDurationOp{Object: itypes.NewObject(nil), op: "<"},
+			"__gt__": methodDurationOp{Object: itypes.NewObject(nil), op: ">"},
+			"__le__": methodDurationOp{Object: itypes.NewObject(nil), op: "<="},
+			"__ge__": methodDurationOp{Object: itypes.NewObject(nil), op: ">="},
 		}),
 		Duration: d,
 	}

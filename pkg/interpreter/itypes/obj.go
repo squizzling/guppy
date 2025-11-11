@@ -1,22 +1,20 @@
-package interpreter
+package itypes
 
 import (
 	"fmt"
-
-	"guppy/pkg/interpreter/itypes"
 )
 
 type flowObject struct {
-	members map[string]itypes.Object
+	members map[string]Object
 }
 
-func NewObject(attributes map[string]itypes.Object) itypes.Object {
+func NewObject(attributes map[string]Object) Object {
 	return &flowObject{
 		members: attributes,
 	}
 }
 
-func (f *flowObject) Member(i itypes.Interpreter, obj itypes.Object, memberName string) (itypes.Object, error) {
+func (f *flowObject) Member(i Interpreter, obj Object, memberName string) (Object, error) {
 	if f.members == nil {
 		return nil, fmt.Errorf("object of type %T does not support member lookup for %s", obj, memberName)
 	} else if member, ok := f.members[memberName]; !ok {

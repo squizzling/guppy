@@ -2,7 +2,6 @@ package flow
 
 import (
 	"guppy/pkg/flow/stream"
-	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
 )
 
@@ -14,7 +13,7 @@ type Published struct {
 
 func NewPublished() *Published {
 	return &Published{
-		Object: interpreter.NewObject(nil),
+		Object: itypes.NewObject(nil),
 	}
 }
 
