@@ -23,4 +23,4 @@ func (f FFIEvents) Call(i itypes.Interpreter) (itypes.Object, error) {
 	return NewStreamFuncEvents(newStreamObject()), nil
 }
 
-var _ = interpreter.FlowCall(FFIEvents{})
+var _ = itypes.FlowCall(FFIEvents{})

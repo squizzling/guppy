@@ -10,7 +10,7 @@ type FFIStr struct {
 	Value interpreter.FlowStringable `ffi:"value"`
 }
 
-func NewFFIStr() interpreter.FlowCall {
+func NewFFIStr() itypes.FlowCall {
 	return ffi.NewFFI(FFIStr{})
 }
 

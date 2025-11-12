@@ -1,7 +1,6 @@
 package stream
 
 import (
-	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
 )
 
@@ -125,11 +124,11 @@ func newStreamObject() itypes.Object {
 	})
 }
 
-var _ = interpreter.FlowCall(methodFill{})
-var _ = interpreter.FlowCall(methodPublish{})
-var _ = interpreter.FlowCall(methodScale{})
-var _ = interpreter.FlowCall(methodStreamAggregateTransform{})
-var _ = interpreter.FlowCall(methodStreamOp{})
+var _ = itypes.FlowCall(methodFill{})
+var _ = itypes.FlowCall(methodPublish{})
+var _ = itypes.FlowCall(methodScale{})
+var _ = itypes.FlowCall(methodStreamAggregateTransform{})
+var _ = itypes.FlowCall(methodStreamOp{})
 
 // unpublish will remove any publish called on a Stream. This is because a publish
 // is not actually useful from a dataflow perspective.

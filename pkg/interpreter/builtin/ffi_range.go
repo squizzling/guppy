@@ -14,7 +14,7 @@ type FFIRange struct {
 	Step  *interpreter.ObjectInt                  `ffi:"step"`
 }
 
-func NewFFIRange() interpreter.FlowCall {
+func NewFFIRange() itypes.FlowCall {
 	return ffi.NewFFI(FFIRange{
 		Start: nil,
 		Stop: ffi.ThingOrNone[*interpreter.ObjectInt]{

@@ -123,7 +123,7 @@ func TestNewtFFIDefaults(t *testing.T) {
 					testFromFile(
 						t,
 						fmt.Sprintf("testdata/%s/%s.txt", fn, ts.name),
-						map[string]interpreter.FlowCall{
+						map[string]itypes.FlowCall{
 							"ffi":                ffi,
 							"ffioneofkw":         ffiOneOfKW,
 							"ffisinglekw":        ffiSingleKW,
@@ -146,7 +146,7 @@ func must1[T any](t T, err error) T {
 func testFromFile(
 	t *testing.T,
 	fullFilename string,
-	calls map[string]interpreter.FlowCall,
+	calls map[string]itypes.FlowCall,
 ) {
 	filename := path.Base(fullFilename)
 	fileContents := string(must1(os.ReadFile(fullFilename)))

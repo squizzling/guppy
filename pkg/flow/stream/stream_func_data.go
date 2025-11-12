@@ -87,4 +87,4 @@ func (f FFIData) Call(i itypes.Interpreter) (itypes.Object, error) {
 	}
 }
 
-var _ = interpreter.FlowCall(FFIData{})
+var _ = itypes.FlowCall(FFIData{})

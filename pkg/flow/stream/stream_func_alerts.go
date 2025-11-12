@@ -28,4 +28,4 @@ func (f FFIAlerts) Call(i itypes.Interpreter) (itypes.Object, error) {
 	return NewStreamFuncAlerts(newStreamObject()), nil
 }
 
-var _ = interpreter.FlowCall(FFIAlerts{})
+var _ = itypes.FlowCall(FFIAlerts{})

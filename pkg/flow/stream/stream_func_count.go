@@ -33,4 +33,4 @@ func (f FFICount) Call(i itypes.Interpreter) (itypes.Object, error) {
 	}
 }
 
-var _ = interpreter.FlowCall(FFICount{})
+var _ = itypes.FlowCall(FFICount{})

@@ -148,7 +148,7 @@ func (f FFIDuration) Call(i itypes.Interpreter) (itypes.Object, error) {
 	}
 }
 
-var _ = interpreter.FlowCall(FFIDuration{})
+var _ = itypes.FlowCall(FFIDuration{})
 
 type Duration struct {
 	itypes.Object

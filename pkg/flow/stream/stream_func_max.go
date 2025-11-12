@@ -71,4 +71,4 @@ func (f FFIMax) Call(i itypes.Interpreter) (itypes.Object, error) {
 	return NewStreamFuncMax(newStreamObject(), streamValues, maxConstant), nil
 }
 
-var _ = interpreter.FlowCall(FFIMax{})
+var _ = itypes.FlowCall(FFIMax{})

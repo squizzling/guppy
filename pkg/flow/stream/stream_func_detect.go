@@ -111,4 +111,4 @@ func (f FFIDetect) Call(i itypes.Interpreter) (itypes.Object, error) {
 	}
 }
 
-var _ = interpreter.FlowCall(FFIDetect{})
+var _ = itypes.FlowCall(FFIDetect{})

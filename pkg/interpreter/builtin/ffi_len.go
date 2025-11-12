@@ -16,7 +16,7 @@ type FFILen struct {
 	} `ffi:"value"`
 }
 
-func NewFFILen() interpreter.FlowCall {
+func NewFFILen() itypes.FlowCall {
 	return ffi.NewFFI(FFILen{})
 }
 

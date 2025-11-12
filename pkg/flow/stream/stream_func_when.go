@@ -68,4 +68,4 @@ func (f FFIWhen) Call(i itypes.Interpreter) (itypes.Object, error) {
 	}
 }
 
-var _ = interpreter.FlowCall(FFIWhen{})
+var _ = itypes.FlowCall(FFIWhen{})

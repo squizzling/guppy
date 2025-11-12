@@ -33,4 +33,4 @@ func (f FFIAbs) Call(i itypes.Interpreter) (itypes.Object, error) {
 	}
 }
 
-var _ = interpreter.FlowCall(FFIAbs{})
+var _ = itypes.FlowCall(FFIAbs{})

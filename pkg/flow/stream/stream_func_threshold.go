@@ -27,4 +27,4 @@ func (f FFIThreshold) Call(i itypes.Interpreter) (itypes.Object, error) {
 	}
 }
 
-var _ = interpreter.FlowCall(FFIThreshold{})
+var _ = itypes.FlowCall(FFIThreshold{})

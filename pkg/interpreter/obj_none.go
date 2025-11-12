@@ -87,7 +87,7 @@ func (mni methodNoneIs) Call(i itypes.Interpreter) (itypes.Object, error) {
 		return nil, err
 	} else if reverseIs, err := right.Member(i, right, mni.reverseInvert); err == nil {
 		// If it exists, we always use the reverse method, because it's more likely to be the intended behavior.
-		if reverseIsCall, ok := reverseIs.(FlowCall); ok {
+		if reverseIsCall, ok := reverseIs.(itypes.FlowCall); ok {
 			return reverseIsCall.Call(i)
 		}
 	}

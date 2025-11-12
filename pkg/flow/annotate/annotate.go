@@ -75,7 +75,7 @@ func (f FFIAnnotate) Call(i itypes.Interpreter) (itypes.Object, error) {
 	}
 }
 
-var _ = interpreter.FlowCall(FFIAnnotate{})
+var _ = itypes.FlowCall(FFIAnnotate{})
 
 type Annotated struct {
 	itypes.Object

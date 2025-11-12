@@ -66,4 +66,4 @@ func (f FFIConst) Call(i itypes.Interpreter) (itypes.Object, error) {
 	}
 }
 
-var _ = interpreter.FlowCall(FFIConst{})
+var _ = itypes.FlowCall(FFIConst{})

@@ -44,14 +44,8 @@ func (i *interpreter) doAnd(left itypes.Object, right itypes.Object) (itypes.Obj
 	}
 }
 
-type FlowCall interface {
-	itypes.Object
-	Params(i itypes.Interpreter) (*itypes.Params, error)
-	Call(i itypes.Interpreter) (itypes.Object, error)
-}
-
 func (i *interpreter) DoParams(fo itypes.Object) (*itypes.Params, error) {
-	if fc, ok := fo.(FlowCall); ok {
+	if fc, ok := fo.(itypes.FlowCall); ok {
 		return fc.Params(i)
 	} else {
 		// TODO: Test this
@@ -60,7 +54,7 @@ func (i *interpreter) DoParams(fo itypes.Object) (*itypes.Params, error) {
 }
 
 func (i *interpreter) DoCall(fo itypes.Object) (itypes.Object, error) {
-	if fc, ok := fo.(FlowCall); ok {
+	if fc, ok := fo.(itypes.FlowCall); ok {
 		return fc.Call(i)
 	} else {
 		// TODO: Test this

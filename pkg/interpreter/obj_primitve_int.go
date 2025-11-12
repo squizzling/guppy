@@ -63,7 +63,7 @@ func (mio methodIntOp) Call(i itypes.Interpreter) (itypes.Object, error) {
 	} else if reverseOp, err := right.Member(i, right, mio.reverse); err == nil {
 		// If it exists, we always use the reverse method, because it's more likely to be the intended behavior.
 		// We explicitly don't expose reverse methods for primitives though.
-		if reverseOpCall, ok := reverseOp.(FlowCall); ok {
+		if reverseOpCall, ok := reverseOp.(itypes.FlowCall); ok {
 			return reverseOpCall.Call(i)
 		}
 	}
@@ -110,7 +110,7 @@ func (mio methodIntOp) Call(i itypes.Interpreter) (itypes.Object, error) {
 	}
 }
 
-var _ = FlowCall(methodIntOp{})
+var _ = itypes.FlowCall(methodIntOp{})
 
 func (min methodIntNeg) Params(i itypes.Interpreter) (*itypes.Params, error) {
 	return itypes.UnaryParams, nil
@@ -124,4 +124,4 @@ func (min methodIntNeg) Call(i itypes.Interpreter) (itypes.Object, error) {
 	}
 }
 
-var _ = FlowCall(methodIntNeg{})
+var _ = itypes.FlowCall(methodIntNeg{})

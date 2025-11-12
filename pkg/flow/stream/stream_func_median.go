@@ -49,4 +49,4 @@ func (f FFIMedian) Call(i itypes.Interpreter) (itypes.Object, error) {
 	return NewStreamFuncMedian(newStreamObject(), streamValues, medianConstants), nil
 }
 
-var _ = interpreter.FlowCall(FFIMedian{})
+var _ = itypes.FlowCall(FFIMedian{})

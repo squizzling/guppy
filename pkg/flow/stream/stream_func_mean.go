@@ -49,4 +49,4 @@ func (f FFIMean) Call(i itypes.Interpreter) (itypes.Object, error) {
 	return NewStreamFuncMean(newStreamObject(), streamValues, meanConstants), nil
 }
 
-var _ = interpreter.FlowCall(FFIMean{})
+var _ = itypes.FlowCall(FFIMean{})

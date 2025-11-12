@@ -33,4 +33,4 @@ func (f FFIUnion) Call(i itypes.Interpreter) (itypes.Object, error) {
 	}
 }
 
-var _ = interpreter.FlowCall(FFIUnion{})
+var _ = itypes.FlowCall(FFIUnion{})

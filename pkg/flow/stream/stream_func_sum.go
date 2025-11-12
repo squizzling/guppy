@@ -49,4 +49,4 @@ func (f FFISum) Call(i itypes.Interpreter) (itypes.Object, error) {
 	}
 }
 
-var _ = interpreter.FlowCall(FFISum{})
+var _ = itypes.FlowCall(FFISum{})

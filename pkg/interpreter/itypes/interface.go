@@ -126,3 +126,9 @@ func ArgAs[T any](i Interpreter, name string) (T, error) {
 		return o, nil
 	}
 }
+
+type FlowCall interface {
+	Object
+	Params(i Interpreter) (*Params, error)
+	Call(i Interpreter) (Object, error)
+}

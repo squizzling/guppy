@@ -112,8 +112,8 @@ func (od *ObjectDict) Repr() string {
 	return sb.String()
 }
 
-var _ = FlowCall(methodDictGet{})
-var _ = FlowCall(methodDictSubscript{})
+var _ = itypes.FlowCall(methodDictGet{})
+var _ = itypes.FlowCall(methodDictSubscript{})
 
 type methodDictGet struct {
 	itypes.Object

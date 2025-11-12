@@ -1,7 +1,6 @@
 package filter
 
 import (
-	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
 )
 
@@ -23,7 +22,7 @@ func newFilterObject() itypes.Object {
 	})
 }
 
-var _ = interpreter.FlowCall(methodBinaryAnd{})
-var _ = interpreter.FlowCall(methodBinaryOr{})
-var _ = interpreter.FlowCall(methodBinaryNot{})
-var _ = interpreter.FlowCall(methodBinaryEqual{})
+var _ = itypes.FlowCall(methodBinaryAnd{})
+var _ = itypes.FlowCall(methodBinaryOr{})
+var _ = itypes.FlowCall(methodBinaryNot{})
+var _ = itypes.FlowCall(methodBinaryEqual{})

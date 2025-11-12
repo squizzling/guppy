@@ -71,4 +71,4 @@ func (f FFIMin) Call(i itypes.Interpreter) (itypes.Object, error) {
 	return NewStreamFuncMin(newStreamObject(), streamValues, minConstant), nil
 }
 
-var _ = interpreter.FlowCall(FFIMin{})
+var _ = itypes.FlowCall(FFIMin{})

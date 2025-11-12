@@ -5,7 +5,6 @@ import (
 	"reflect"
 	"strings"
 
-	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
 )
 
@@ -43,7 +42,7 @@ func (f *ffi[T]) Call(i itypes.Interpreter) (itypes.Object, error) {
 	return data.Call(i)
 }
 
-func NewFFI[T FFICall](defaults T) interpreter.FlowCall {
+func NewFFI[T FFICall](defaults T) itypes.FlowCall {
 	ffiDefaults := reflect.ValueOf(defaults)
 	if ffiDefaults.Kind() == reflect.Pointer {
 		ffiDefaults = ffiDefaults.Elem()

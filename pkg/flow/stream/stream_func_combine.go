@@ -48,4 +48,4 @@ func (f FFICombine) Call(i itypes.Interpreter) (itypes.Object, error) {
 	}
 }
 
-var _ = interpreter.FlowCall(FFICombine{})
+var _ = itypes.FlowCall(FFICombine{})
