@@ -20,14 +20,14 @@ func (msat methodStreamAggregateTransform) Params(i itypes.Interpreter) (*itypes
 	return &itypes.Params{
 		Params: []itypes.ParamDef{
 			{Name: "self"},
-			{Name: "by", Default: interpreter.NewObjectNone()},             // by
-			{Name: "allow_missing", Default: interpreter.NewObjectNone()},  // by
-			{Name: "over", Default: interpreter.NewObjectNone()},           // over
-			{Name: "cycle", Default: interpreter.NewObjectNone()},          // cycle
-			{Name: "cycle_start", Default: interpreter.NewObjectNone()},    // cycle
-			{Name: "timezone", Default: interpreter.NewObjectNone()},       // cycle
-			{Name: "partial_values", Default: interpreter.NewObjectNone()}, // cycle
-			{Name: "shift_cycles", Default: interpreter.NewObjectNone()},   // cycle
+			{Name: "by", Default: primitive.NewObjectNone()},             // by
+			{Name: "allow_missing", Default: primitive.NewObjectNone()},  // by
+			{Name: "over", Default: primitive.NewObjectNone()},           // over
+			{Name: "cycle", Default: primitive.NewObjectNone()},          // cycle
+			{Name: "cycle_start", Default: primitive.NewObjectNone()},    // cycle
+			{Name: "timezone", Default: primitive.NewObjectNone()},       // cycle
+			{Name: "partial_values", Default: primitive.NewObjectNone()}, // cycle
+			{Name: "shift_cycles", Default: primitive.NewObjectNone()},   // cycle
 		},
 	}, nil
 }
@@ -37,7 +37,7 @@ func (msat methodStreamAggregateTransform) resolveBy(i itypes.Interpreter) ([]st
 		return nil, err
 	} else {
 		switch by := by.(type) {
-		case *interpreter.ObjectNone:
+		case *primitive.ObjectNone:
 			return nil, nil // explicitly nil
 		case *interpreter.ObjectString:
 			return []string{by.Value}, nil
@@ -62,7 +62,7 @@ func (msat methodStreamAggregateTransform) resolveAllowMissing(i itypes.Interpre
 		return false, nil, err
 	} else {
 		switch allowMissing := allowMissing.(type) {
-		case *interpreter.ObjectNone:
+		case *primitive.ObjectNone:
 			return false, nil, nil
 		case *primitive.ObjectBool:
 			if allowMissing.Value {
@@ -94,7 +94,7 @@ func (msat methodStreamAggregateTransform) resolveOver(i itypes.Interpreter) (*t
 		return nil, err
 	} else {
 		switch over := over.(type) {
-		case *interpreter.ObjectNone:
+		case *primitive.ObjectNone:
 			return nil, nil
 		case *interpreter.ObjectString:
 			if d, err := duration.ParseDuration(over.Value); err != nil {
@@ -115,7 +115,7 @@ func (msat methodStreamAggregateTransform) resolveCycle(i itypes.Interpreter) (*
 		return nil, err
 	} else {
 		switch over := cycle.(type) {
-		case *interpreter.ObjectNone:
+		case *primitive.ObjectNone:
 			return nil, nil
 		case *interpreter.ObjectString:
 			if over.Value == "hour" || over.Value == "week" || over.Value == "month" || over.Value == "day" || over.Value == "quarter" {
@@ -134,7 +134,7 @@ func (msat methodStreamAggregateTransform) resolveCycleStart(i itypes.Interprete
 		return nil, err
 	} else {
 		switch cycleStart := cycleStart.(type) {
-		case *interpreter.ObjectNone:
+		case *primitive.ObjectNone:
 			return nil, nil
 		case *interpreter.ObjectString:
 			return &cycleStart.Value, nil
@@ -149,7 +149,7 @@ func (msat methodStreamAggregateTransform) resolveTimezone(i itypes.Interpreter)
 		return nil, err
 	} else {
 		switch timezone := timezone.(type) {
-		case *interpreter.ObjectNone:
+		case *primitive.ObjectNone:
 			return nil, nil
 		case *interpreter.ObjectString:
 			return &timezone.Value, nil
@@ -164,7 +164,7 @@ func (msat methodStreamAggregateTransform) resolvePartialValues(i itypes.Interpr
 		return false, err
 	} else {
 		switch partialValues := partialValues.(type) {
-		case *interpreter.ObjectNone:
+		case *primitive.ObjectNone:
 			return false, nil
 		case *primitive.ObjectBool:
 			return partialValues.Value, nil
@@ -179,7 +179,7 @@ func (msat methodStreamAggregateTransform) resolveShiftCycles(i itypes.Interpret
 		return 0, err
 	} else {
 		switch shiftCycles := shiftCycles.(type) {
-		case *interpreter.ObjectNone:
+		case *primitive.ObjectNone:
 			return 0, nil
 		case *interpreter.ObjectInt:
 			return shiftCycles.Value, nil

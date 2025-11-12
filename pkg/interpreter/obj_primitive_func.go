@@ -2,6 +2,7 @@ package interpreter
 
 import (
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 	"guppy/pkg/parser/ast"
 )
 
@@ -37,7 +38,7 @@ func (of *ObjectFunction) Call(i itypes.Interpreter) (itypes.Object, error) {
 		return nil, err
 	}
 	if o == nil {
-		return NewObjectNone(), nil
+		return primitive.NewObjectNone(), nil
 	} else {
 		return o.(itypes.Object), nil
 	}

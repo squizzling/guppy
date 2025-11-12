@@ -1,8 +1,8 @@
 package stream
 
 import (
-	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 )
 
 type FFIEvents struct {
@@ -12,8 +12,8 @@ type FFIEvents struct {
 func (f FFIEvents) Params(i itypes.Interpreter) (*itypes.Params, error) {
 	return &itypes.Params{
 		Params: []itypes.ParamDef{
-			{Name: "eventType", Default: interpreter.NewObjectNone()},
-			{Name: "filter", Default: interpreter.NewObjectNone()},
+			{Name: "eventType", Default: primitive.NewObjectNone()},
+			{Name: "filter", Default: primitive.NewObjectNone()},
 		},
 	}, nil
 }

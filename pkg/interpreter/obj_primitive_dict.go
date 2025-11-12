@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 )
 
 type DictItem struct {
@@ -124,7 +125,7 @@ func (mdg methodDictGet) Params(i itypes.Interpreter) (*itypes.Params, error) {
 		Params: []itypes.ParamDef{
 			{Name: "self"},
 			{Name: "key"},
-			{Name: "default", Default: NewObjectNone()},
+			{Name: "default", Default: primitive.NewObjectNone()},
 		},
 	}, nil
 }

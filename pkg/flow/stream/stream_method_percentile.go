@@ -1,8 +1,8 @@
 package stream
 
 import (
-	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 )
 
 // TODO: All of this.
@@ -15,10 +15,10 @@ func (mp methodPercentile) Params(i itypes.Interpreter) (*itypes.Params, error) 
 	return &itypes.Params{
 		Params: []itypes.ParamDef{
 			{Name: "self"},
-			{Name: "pct", Default: interpreter.NewObjectNone()},
-			{Name: "allow_missing", Default: interpreter.NewObjectNone()},
-			{Name: "by", Default: interpreter.NewObjectNone()},
-			{Name: "over", Default: interpreter.NewObjectNone()},
+			{Name: "pct", Default: primitive.NewObjectNone()},
+			{Name: "allow_missing", Default: primitive.NewObjectNone()},
+			{Name: "by", Default: primitive.NewObjectNone()},
+			{Name: "over", Default: primitive.NewObjectNone()},
 		},
 	}, nil
 }

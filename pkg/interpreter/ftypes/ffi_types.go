@@ -1,20 +1,20 @@
 package ftypes
 
 import (
-	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 )
 
 // Helper types to reduce boilerplate
 
 type ThingOrNone[T itypes.Object] struct {
-	None  *interpreter.ObjectNone
+	None  *primitive.ObjectNone
 	Thing T
 }
 
 func NewThingOrNoneNone[T itypes.Object]() ThingOrNone[T] {
 	return ThingOrNone[T]{
-		None: interpreter.NewObjectNone(),
+		None: primitive.NewObjectNone(),
 	}
 }
 

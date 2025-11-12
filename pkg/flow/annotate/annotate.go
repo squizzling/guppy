@@ -5,6 +5,7 @@ import (
 
 	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 )
 
 type FFIAnnotate struct {
@@ -16,7 +17,7 @@ func (f FFIAnnotate) Params(i itypes.Interpreter) (*itypes.Params, error) {
 		Params: []itypes.ParamDef{
 			{Name: "value"},
 			{Name: "label"},
-			{Name: "extra_props", Default: interpreter.NewObjectNone()},
+			{Name: "extra_props", Default: primitive.NewObjectNone()},
 			{Name: "publish", Default: interpreter.NewObjectMissing()},
 		},
 	}, nil

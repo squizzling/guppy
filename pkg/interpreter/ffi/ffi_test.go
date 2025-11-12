@@ -13,6 +13,7 @@ import (
 	"guppy/pkg/interpreter/ffi"
 	"guppy/pkg/interpreter/ftypes"
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 	"guppy/pkg/parser/flow"
 	"guppy/pkg/parser/parser"
 	"guppy/pkg/parser/tokenizer"
@@ -102,7 +103,7 @@ func TestNewtFFIDefaults(t *testing.T) {
 				}, {
 					"single-default-oneof-none",
 					interpreter.NewObjectInt(1),
-					ftypes.ThingOrNone[*interpreter.ObjectInt]{interpreter.NewObjectNone(), nil},
+					ftypes.ThingOrNone[*interpreter.ObjectInt]{primitive.NewObjectNone(), nil},
 				}, {
 					"single-missing-oneof-default",
 					nil,
@@ -114,7 +115,7 @@ func TestNewtFFIDefaults(t *testing.T) {
 				}, {
 					"single-missing-oneof-none",
 					nil,
-					ftypes.ThingOrNone[*interpreter.ObjectInt]{interpreter.NewObjectNone(), nil},
+					ftypes.ThingOrNone[*interpreter.ObjectInt]{primitive.NewObjectNone(), nil},
 				},
 			} {
 				t.Run(ts.name, func(t *testing.T) {
@@ -200,10 +201,10 @@ func TestFFIError(t *testing.T) {
 		oneOf         itypes.Object
 		expectedError string
 	}{
-		{"single-wrong-type", interpreter.NewObjectNone(), interpreter.NewObjectNone(), "param `single` for TestFFI.Single is *interpreter.ObjectNone not *interpreter.ObjectInt"},
-		{"single-missing", nil, interpreter.NewObjectNone(), "param `single` for TestFFI.Single is missing, expecting *interpreter.ObjectInt"},
-		{"oneOf-wrong-type", interpreter.NewObjectInt(1), interpreter.NewObjectString(""), "param `oneof` for TestFFI.OneOf is *interpreter.ObjectString not *interpreter.ObjectNone, or *interpreter.ObjectInt"},
-		{"oneOf-missing", interpreter.NewObjectInt(1), nil, "param `oneof` for TestFFI.OneOf is missing, expecting *interpreter.ObjectNone, or *interpreter.ObjectInt"},
+		{"single-wrong-type", primitive.NewObjectNone(), primitive.NewObjectNone(), "param `single` for TestFFI.Single is *primitive.ObjectNone not *interpreter.ObjectInt"},
+		{"single-missing", nil, primitive.NewObjectNone(), "param `single` for TestFFI.Single is missing, expecting *interpreter.ObjectInt"},
+		{"oneOf-wrong-type", interpreter.NewObjectInt(1), interpreter.NewObjectString(""), "param `oneof` for TestFFI.OneOf is *interpreter.ObjectString not *primitive.ObjectNone, or *interpreter.ObjectInt"},
+		{"oneOf-missing", interpreter.NewObjectInt(1), nil, "param `oneof` for TestFFI.OneOf is missing, expecting *primitive.ObjectNone, or *interpreter.ObjectInt"},
 	} {
 		t.Run(ts.name, func(t *testing.T) {
 			i := interpreter.NewInterpreter(false)

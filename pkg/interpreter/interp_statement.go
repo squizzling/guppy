@@ -5,6 +5,7 @@ import (
 
 	"guppy/pkg/interpreter/deferred"
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 	"guppy/pkg/parser/ast"
 )
 
@@ -222,7 +223,7 @@ func (i *interpreter) VisitStatementReturn(sr ast.StatementReturn) (returnValue 
 	defer i.trace()(&returnValue, &errOut)
 
 	if sr.Expr == nil {
-		return NewObjectNone(), nil
+		return primitive.NewObjectNone(), nil
 	}
 
 	return sr.Expr.Accept(i)

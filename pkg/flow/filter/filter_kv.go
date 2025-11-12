@@ -16,7 +16,7 @@ func (f FFIFilter) Params(i itypes.Interpreter) (*itypes.Params, error) {
 	return &itypes.Params{
 		Params: []itypes.ParamDef{
 			{Name: "field"},
-			{Name: "term", Default: interpreter.NewObjectNone()},
+			{Name: "term", Default: primitive.NewObjectNone()},
 		},
 		StarParam: "terms",
 		KWParams: []itypes.ParamDef{
@@ -32,7 +32,7 @@ func (f FFIFilter) resolveTerms(i itypes.Interpreter) ([]string, error) {
 		return nil, err
 	} else if strTerm, ok := objTerm.(*interpreter.ObjectString); ok {
 		terms = append(terms, strTerm.Value)
-	} else if _, ok = objTerm.(*interpreter.ObjectNone); !ok {
+	} else if _, ok = objTerm.(*primitive.ObjectNone); !ok {
 		return nil, fmt.Errorf("term is not *interpreter.ObjectString or *interpreter.ObjectNone")
 	} else {
 		// nothing

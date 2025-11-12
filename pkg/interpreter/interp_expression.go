@@ -406,7 +406,7 @@ func (i *interpreter) VisitExpressionLiteral(el ast.ExpressionLiteral) (returnVa
 	case string:
 		return NewObjectString(v), nil
 	case nil:
-		return NewObjectNone(), nil
+		return primitive.NewObjectNone(), nil
 	case itypes.Object:
 		return v, nil
 	case bool:

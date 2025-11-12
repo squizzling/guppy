@@ -3,8 +3,8 @@ package stream
 import (
 	"fmt"
 
-	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 )
 
 type methodFill struct {
@@ -15,9 +15,9 @@ func (mf methodFill) Params(i itypes.Interpreter) (*itypes.Params, error) {
 	return &itypes.Params{
 		Params: []itypes.ParamDef{
 			{Name: "self"},
-			{Name: "value", Default: interpreter.NewObjectNone()},
-			{Name: "duration", Default: interpreter.NewObjectNone()},
-			{Name: "maxCount", Default: interpreter.NewObjectNone()},
+			{Name: "value", Default: primitive.NewObjectNone()},
+			{Name: "duration", Default: primitive.NewObjectNone()},
+			{Name: "maxCount", Default: primitive.NewObjectNone()},
 		},
 	}, nil
 }
@@ -27,7 +27,7 @@ func (mf methodFill) resolveDuration(i itypes.Interpreter) (int, error) {
 		return 0, err
 	} else {
 		switch by := by.(type) {
-		case *interpreter.ObjectNone:
+		case *primitive.ObjectNone:
 			return 0, nil // explicitly nil
 		default:
 			return 0, fmt.Errorf("duration is %T not *interpreter.ObjectNone", by)
@@ -40,7 +40,7 @@ func (mf methodFill) resolveMaxCount(i itypes.Interpreter) (int, error) {
 		return 0, err
 	} else {
 		switch by := by.(type) {
-		case *interpreter.ObjectNone:
+		case *primitive.ObjectNone:
 			return 0, nil // explicitly nil
 		default:
 			return 0, fmt.Errorf("maxCount is %T not *interpreter.ObjectNone", by)

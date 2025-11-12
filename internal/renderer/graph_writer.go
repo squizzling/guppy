@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"guppy/pkg/flow/stream"
-	"guppy/pkg/interpreter"
+	"guppy/pkg/interpreter/primitive"
 )
 
 type GraphWriter struct {
@@ -228,12 +228,12 @@ func (g *GraphWriter) VisitStreamFuncDetect(sfd *stream.StreamFuncDetect) (any, 
 		sb.WriteString("Mode: " + sfd.Mode + "\n")
 	}
 	if sfd.Annotations != nil {
-		if _, isNone := sfd.Annotations.(*interpreter.ObjectNone); !isNone {
+		if _, isNone := sfd.Annotations.(*primitive.ObjectNone); !isNone {
 			sb.WriteString(fmt.Sprintf("Annotations: %T\n", sfd.Annotations))
 		}
 	}
 	if sfd.EventAnnotations != nil {
-		if _, isNone := sfd.EventAnnotations.(*interpreter.ObjectNone); !isNone {
+		if _, isNone := sfd.EventAnnotations.(*primitive.ObjectNone); !isNone {
 			sb.WriteString(fmt.Sprintf("EventAnnotations: %T\n", sfd.EventAnnotations))
 		}
 	}

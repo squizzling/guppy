@@ -6,6 +6,7 @@ import (
 	"guppy/pkg/flow/filter"
 	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 )
 
 type FFIData struct {
@@ -16,11 +17,11 @@ func (f FFIData) Params(i itypes.Interpreter) (*itypes.Params, error) {
 	return &itypes.Params{
 		Params: []itypes.ParamDef{
 			{Name: "metric"},
-			{Name: "filter", Default: interpreter.NewObjectNone()},
-			{Name: "rollup", Default: interpreter.NewObjectNone()},
+			{Name: "filter", Default: primitive.NewObjectNone()},
+			{Name: "rollup", Default: primitive.NewObjectNone()},
 			{Name: "extrapolation", Default: interpreter.NewObjectString("null")},
 			{Name: "maxExtrapolations", Default: interpreter.NewObjectInt(-1)},
-			{Name: "resolution", Default: interpreter.NewObjectNone()}, // TODO: Handle
+			{Name: "resolution", Default: primitive.NewObjectNone()}, // TODO: Handle
 		},
 	}, nil
 }
@@ -30,7 +31,7 @@ func resolveFilter(i itypes.Interpreter) (filter.Filter, error) {
 		return nil, err
 	} else {
 		switch fltr := fltr.(type) {
-		case *interpreter.ObjectNone:
+		case *primitive.ObjectNone:
 			return nil, nil
 		case filter.Filter:
 			return fltr, nil
@@ -45,7 +46,7 @@ func resolveRollup(i itypes.Interpreter) (string, error) {
 		return "", err
 	} else {
 		switch rollup := rollup.(type) {
-		case *interpreter.ObjectNone:
+		case *primitive.ObjectNone:
 			return "", nil
 		case interpreter.FlowStringable:
 			return rollup.String(i)

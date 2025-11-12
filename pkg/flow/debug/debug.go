@@ -6,6 +6,7 @@ import (
 
 	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 )
 
 type FFIPrint struct {
@@ -33,5 +34,5 @@ func (f FFIPrint) Call(i itypes.Interpreter) (itypes.Object, error) {
 		}
 		fmt.Printf("%s\n", sb.String())
 	}
-	return interpreter.NewObjectNone(), nil
+	return primitive.NewObjectNone(), nil
 }

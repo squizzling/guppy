@@ -7,6 +7,7 @@ import (
 	"guppy/pkg/flow/duration"
 	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 )
 
 type FFIDetect struct {
@@ -17,11 +18,11 @@ func (f FFIDetect) Params(i itypes.Interpreter) (*itypes.Params, error) {
 	return &itypes.Params{
 		Params: []itypes.ParamDef{
 			{Name: "on"},
-			{Name: "off", Default: interpreter.NewObjectNone()},
+			{Name: "off", Default: primitive.NewObjectNone()},
 			{Name: "mode", Default: interpreter.NewObjectString("paired")},
-			{Name: "annotations", Default: interpreter.NewObjectNone()},
-			{Name: "event_annotations", Default: interpreter.NewObjectNone()},
-			{Name: "auto_resolve_after", Default: interpreter.NewObjectNone()},
+			{Name: "annotations", Default: primitive.NewObjectNone()},
+			{Name: "event_annotations", Default: primitive.NewObjectNone()},
+			{Name: "auto_resolve_after", Default: primitive.NewObjectNone()},
 		},
 	}, nil
 }
@@ -39,7 +40,7 @@ func (f FFIDetect) resolveOff(i itypes.Interpreter) (Stream, error) {
 	// TODO: Make sure it's a stream of bool somehow
 	if off, err := i.GetArg("off"); err != nil {
 		return nil, err
-	} else if _, isNone := off.(*interpreter.ObjectNone); isNone {
+	} else if _, isNone := off.(*primitive.ObjectNone); isNone {
 		return nil, nil
 	} else if off == nil {
 		return nil, nil
@@ -81,7 +82,7 @@ func (f FFIDetect) resolveEventAnnotations(i itypes.Interpreter) (itypes.Object,
 func (f FFIDetect) resolveAutoResolveAfter(i itypes.Interpreter) (*time.Duration, error) {
 	if autoResolveAfter, err := i.GetArg("auto_resolve_after"); err != nil {
 		return nil, err
-	} else if _, isNone := autoResolveAfter.(*interpreter.ObjectNone); isNone {
+	} else if _, isNone := autoResolveAfter.(*primitive.ObjectNone); isNone {
 		return nil, nil
 	} else if dur, isDuration := autoResolveAfter.(*duration.Duration); isDuration {
 		return &dur.Duration, nil

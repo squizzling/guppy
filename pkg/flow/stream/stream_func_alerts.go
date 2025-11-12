@@ -1,8 +1,8 @@
 package stream
 
 import (
-	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 )
 
 type FFIAlerts struct {
@@ -12,12 +12,12 @@ type FFIAlerts struct {
 func (f FFIAlerts) Params(i itypes.Interpreter) (*itypes.Params, error) {
 	return &itypes.Params{
 		Params: []itypes.ParamDef{
-			{Name: "detector_id", Default: interpreter.NewObjectNone()},
-			{Name: "detector_name", Default: interpreter.NewObjectNone()},
-			{Name: "autodetect_id", Default: interpreter.NewObjectNone()},
+			{Name: "detector_id", Default: primitive.NewObjectNone()},
+			{Name: "detector_name", Default: primitive.NewObjectNone()},
+			{Name: "autodetect_id", Default: primitive.NewObjectNone()},
 		},
 		KWParams: []itypes.ParamDef{
-			{Name: "filter", Default: interpreter.NewObjectNone()},
+			{Name: "filter", Default: primitive.NewObjectNone()},
 		},
 	}, nil
 }

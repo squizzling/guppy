@@ -7,6 +7,7 @@ import (
 	"guppy/pkg/flow/duration"
 	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 )
 
 type FFIWhen struct {
@@ -17,7 +18,7 @@ func (f FFIWhen) Params(i itypes.Interpreter) (*itypes.Params, error) {
 	return &itypes.Params{
 		Params: []itypes.ParamDef{
 			{Name: "predicate"},
-			{Name: "lasting", Default: interpreter.NewObjectNone()},
+			{Name: "lasting", Default: primitive.NewObjectNone()},
 			{Name: "at_least", Default: interpreter.NewObjectDouble(1.0)},
 		},
 	}, nil
@@ -34,7 +35,7 @@ func (f FFIWhen) resolvePredicate(i itypes.Interpreter) (Stream, error) {
 func (f FFIWhen) resolveLasting(i itypes.Interpreter) (*time.Duration, error) {
 	if lasting, err := i.GetArg("lasting"); err != nil {
 		return nil, err
-	} else if _, isNone := lasting.(*interpreter.ObjectNone); isNone {
+	} else if _, isNone := lasting.(*primitive.ObjectNone); isNone {
 		return nil, nil
 	} else if dur, isDuration := lasting.(*duration.Duration); isDuration {
 		return &dur.Duration, nil

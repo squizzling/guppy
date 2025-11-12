@@ -1,7 +1,6 @@
 package filter
 
 import (
-	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
 	"guppy/pkg/interpreter/primitive"
 )
@@ -19,7 +18,7 @@ func (mbe methodBinaryEqual) Params(i itypes.Interpreter) (*itypes.Params, error
 func (mbe methodBinaryEqual) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if _, err := itypes.ArgAs[Filter](i, "self"); err != nil {
 		return nil, err
-	} else if _, err := itypes.ArgAs[*interpreter.ObjectNone](i, "right"); err != nil {
+	} else if _, err := itypes.ArgAs[*primitive.ObjectNone](i, "right"); err != nil {
 		return nil, err
 	} else {
 		return primitive.NewObjectBool(mbe.invert), nil
@@ -39,7 +38,7 @@ func (mbi methodBinaryIs) Params(i itypes.Interpreter) (*itypes.Params, error) {
 func (mbi methodBinaryIs) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if _, err := itypes.ArgAs[Filter](i, "self"); err != nil {
 		return nil, err
-	} else if _, err := itypes.ArgAs[*interpreter.ObjectNone](i, "right"); err != nil {
+	} else if _, err := itypes.ArgAs[*primitive.ObjectNone](i, "right"); err != nil {
 		return nil, err
 	} else {
 		return primitive.NewObjectBool(mbi.invert), nil
