@@ -146,7 +146,7 @@ func resolveDictDefault(i itypes.Interpreter) (itypes.Object, error) {
 }
 
 func (mdg methodDictGet) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if self, err := ArgAs[*ObjectDict](i, "self"); err != nil {
+	if self, err := itypes.ArgAs[*ObjectDict](i, "self"); err != nil {
 		return nil, err
 	} else if key, err := resolveDictKey(i); err != nil {
 		return nil, err
@@ -179,7 +179,7 @@ func (mds methodDictSubscript) resolveDictKey(i itypes.Interpreter) (itypes.Obje
 }
 
 func (mds methodDictSubscript) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if self, err := ArgAs[*ObjectDict](i, "self"); err != nil {
+	if self, err := itypes.ArgAs[*ObjectDict](i, "self"); err != nil {
 		return nil, err
 	} else if start, err := mds.resolveDictKey(i); err != nil {
 		return nil, err

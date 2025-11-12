@@ -67,7 +67,7 @@ func (mio methodIntOp) Call(i itypes.Interpreter) (itypes.Object, error) {
 		}
 	}
 
-	if self, err := ArgAs[*ObjectInt](i, "self"); err != nil {
+	if self, err := itypes.ArgAs[*ObjectInt](i, "self"); err != nil {
 		return nil, err
 	} else if right, err := i.GetArg("right"); err != nil {
 		return nil, err
@@ -116,7 +116,7 @@ func (min methodIntNeg) Params(i itypes.Interpreter) (*itypes.Params, error) {
 }
 
 func (min methodIntNeg) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if self, err := ArgAs[*ObjectInt](i, "self"); err != nil {
+	if self, err := itypes.ArgAs[*ObjectInt](i, "self"); err != nil {
 		return nil, err
 	} else {
 		return NewObjectInt(-self.Value), nil

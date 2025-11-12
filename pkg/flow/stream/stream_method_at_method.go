@@ -189,7 +189,7 @@ func (msat methodStreamAggregateTransform) resolveShiftCycles(i itypes.Interpret
 }
 
 func (msat methodStreamAggregateTransform) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if self, err := interpreter.ArgAs[Stream](i, "self"); err != nil {
+	if self, err := itypes.ArgAs[Stream](i, "self"); err != nil {
 		return nil, err
 	} else if by, err := msat.resolveBy(i); err != nil {
 		return nil, err

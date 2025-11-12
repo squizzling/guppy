@@ -1,6 +1,8 @@
 package itypes
 
 import (
+	"fmt"
+
 	"guppy/pkg/parser/ast"
 )
 
@@ -112,4 +114,15 @@ var UnaryParams = &Params{
 
 type FlowTernary interface {
 	VisitExpressionTernary(i Interpreter, left ast.Expression, cond Object, right ast.Expression) (any, error)
+}
+
+func ArgAs[T any](i Interpreter, name string) (T, error) {
+	var zero T
+	if v, err := i.GetArg(name); err != nil {
+		return zero, err
+	} else if o, ok := v.(T); !ok {
+		return zero, fmt.Errorf("arg %s is %T not %T", name, v, zero)
+	} else {
+		return o, nil
+	}
 }

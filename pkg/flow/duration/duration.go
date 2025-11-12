@@ -193,7 +193,7 @@ func (mdu methodDurationOp) Call(i itypes.Interpreter) (itypes.Object, error) {
 		selfArg, rightArg = rightArg, selfArg
 	}
 
-	if self, err := interpreter.ArgAs[*Duration](i, selfArg); err != nil {
+	if self, err := itypes.ArgAs[*Duration](i, selfArg); err != nil {
 		return nil, err
 	} else if right, err := i.GetArg(rightArg); err != nil {
 		return nil, err

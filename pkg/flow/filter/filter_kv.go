@@ -61,7 +61,7 @@ func (f FFIFilter) Call(i itypes.Interpreter) (itypes.Object, error) {
 		return nil, err
 	} else if terms, err := f.resolveTerms(i); err != nil {
 		return nil, err
-	} else if matchMissing, err := interpreter.ArgAs[*interpreter.ObjectBool](i, "match_missing"); err != nil {
+	} else if matchMissing, err := itypes.ArgAs[*interpreter.ObjectBool](i, "match_missing"); err != nil {
 		return nil, err
 	} else {
 		return NewKV(term, terms, matchMissing.Value), nil

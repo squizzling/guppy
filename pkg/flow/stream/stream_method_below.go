@@ -23,7 +23,7 @@ func (mb methodBelow) Params(i itypes.Interpreter) (*itypes.Params, error) {
 }
 
 func (mb methodBelow) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if self, err := interpreter.ArgAs[Stream](i, "self"); err != nil {
+	if self, err := itypes.ArgAs[Stream](i, "self"); err != nil {
 		return nil, err
 	} else {
 		return NewStreamMethodBelow(newStreamObject(), unpublish(self)), nil

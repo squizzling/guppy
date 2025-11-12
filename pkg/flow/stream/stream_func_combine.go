@@ -21,7 +21,7 @@ func (f FFICombine) Params(i itypes.Interpreter) (*itypes.Params, error) {
 }
 
 func (f FFICombine) resolveExpression(i itypes.Interpreter) (Stream, error) {
-	if expression, err := interpreter.ArgAs[Stream](i, "expression"); err != nil {
+	if expression, err := itypes.ArgAs[Stream](i, "expression"); err != nil {
 		return nil, err
 	} else {
 		return expression, nil

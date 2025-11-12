@@ -104,17 +104,6 @@ func ArgAsDouble(i itypes.Interpreter, argName string) (float64, error) {
 	}
 }
 
-func ArgAs[T any](i itypes.Interpreter, name string) (T, error) {
-	var zero T
-	if v, err := i.GetArg(name); err != nil {
-		return zero, err
-	} else if o, ok := v.(T); !ok {
-		return zero, fmt.Errorf("arg %s is %T not %T", name, v, zero)
-	} else {
-		return o, nil
-	}
-}
-
 func r(a any, err error) (itypes.Object, error) {
 	if err != nil {
 		return nil, err

@@ -18,7 +18,7 @@ func (f FFICount) Params(i itypes.Interpreter) (*itypes.Params, error) {
 }
 
 func (f FFICount) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if streamsRaw, err := interpreter.ArgAs[*interpreter.ObjectTuple](i, "streams"); err != nil {
+	if streamsRaw, err := itypes.ArgAs[*interpreter.ObjectTuple](i, "streams"); err != nil {
 		return nil, err
 	} else {
 		var streams []Stream

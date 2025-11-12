@@ -28,7 +28,7 @@ func (f FFIDetect) Params(i itypes.Interpreter) (*itypes.Params, error) {
 
 func (f FFIDetect) resolveOn(i itypes.Interpreter) (Stream, error) {
 	// TODO: Make sure it's a stream of bool somehow
-	if on, err := interpreter.ArgAs[Stream](i, "on"); err != nil {
+	if on, err := itypes.ArgAs[Stream](i, "on"); err != nil {
 		return nil, err
 	} else {
 		return on, err

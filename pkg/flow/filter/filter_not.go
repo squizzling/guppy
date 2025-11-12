@@ -3,7 +3,6 @@ package filter
 import (
 	"fmt"
 
-	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
 )
 
@@ -20,7 +19,7 @@ func (mba methodBinaryNot) Params(i itypes.Interpreter) (*itypes.Params, error) 
 }
 
 func (mba methodBinaryNot) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if self, err := interpreter.ArgAs[Filter](i, "self"); err != nil {
+	if self, err := itypes.ArgAs[Filter](i, "self"); err != nil {
 		return nil, err
 	} else {
 		return NewNot(self), nil

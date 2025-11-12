@@ -24,7 +24,7 @@ func (f FFIWhen) Params(i itypes.Interpreter) (*itypes.Params, error) {
 }
 
 func (f FFIWhen) resolvePredicate(i itypes.Interpreter) (Stream, error) {
-	if predicate, err := interpreter.ArgAs[Stream](i, "predicate"); err != nil {
+	if predicate, err := itypes.ArgAs[Stream](i, "predicate"); err != nil {
 		return nil, err
 	} else {
 		return predicate, err

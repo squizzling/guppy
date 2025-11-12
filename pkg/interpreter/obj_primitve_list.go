@@ -46,7 +46,7 @@ func (mla methodListAdd) Params(i itypes.Interpreter) (*itypes.Params, error) {
 }
 
 func (mla methodListAdd) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if self, err := ArgAs[*ObjectList](i, "self"); err != nil {
+	if self, err := itypes.ArgAs[*ObjectList](i, "self"); err != nil {
 		return nil, err
 	} else if right, err := i.GetArg("right"); err != nil {
 		return nil, err
@@ -77,9 +77,9 @@ func (mls methodListSubscript) Params(i itypes.Interpreter) (*itypes.Params, err
 }
 
 func (mls methodListSubscript) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if self, err := ArgAs[*ObjectList](i, "self"); err != nil {
+	if self, err := itypes.ArgAs[*ObjectList](i, "self"); err != nil {
 		return nil, err
-	} else if start, err := ArgAs[*ObjectInt](i, "start"); err != nil {
+	} else if start, err := itypes.ArgAs[*ObjectInt](i, "start"); err != nil {
 		return nil, err
 	} else if len(self.Items) < start.Value+1 || start.Value < 0 {
 		// TODO: Does flow support x[-1] for last item?

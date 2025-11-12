@@ -24,7 +24,7 @@ func (mt methodTop) Params(i itypes.Interpreter) (*itypes.Params, error) {
 }
 
 func (mt methodTop) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if self, err := interpreter.ArgAs[Stream](i, "self"); err != nil {
+	if self, err := itypes.ArgAs[Stream](i, "self"); err != nil {
 		return nil, err
 	} else {
 		return NewStreamMethodTop(newStreamObject(), unpublish(self)), nil

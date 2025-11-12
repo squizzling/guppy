@@ -65,7 +65,7 @@ func (mdo methodDoubleOp) Call(i itypes.Interpreter) (itypes.Object, error) {
 		}
 	}
 
-	if self, err := ArgAs[*ObjectDouble](i, "self"); err != nil {
+	if self, err := itypes.ArgAs[*ObjectDouble](i, "self"); err != nil {
 		return nil, err
 	} else if right, err := i.GetArg("right"); err != nil {
 		return nil, err
@@ -110,7 +110,7 @@ func (mdn methodDoubleNeg) Params(i itypes.Interpreter) (*itypes.Params, error) 
 }
 
 func (mdn methodDoubleNeg) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if self, err := ArgAs[*ObjectDouble](i, "self"); err != nil {
+	if self, err := itypes.ArgAs[*ObjectDouble](i, "self"); err != nil {
 		return nil, err
 	} else {
 		return NewObjectDouble(-self.Value), nil

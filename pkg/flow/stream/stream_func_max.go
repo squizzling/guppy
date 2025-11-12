@@ -20,7 +20,7 @@ func (f FFIMax) Params(i itypes.Interpreter) (*itypes.Params, error) {
 func (f FFIMax) Call(i itypes.Interpreter) (itypes.Object, error) {
 	var maxConstant itypes.Object
 	var streamValues []Stream
-	if values, err := interpreter.ArgAs[*interpreter.ObjectTuple](i, "values"); err != nil {
+	if values, err := itypes.ArgAs[*interpreter.ObjectTuple](i, "values"); err != nil {
 		return nil, err
 	} else {
 		for _, value := range values.Items {

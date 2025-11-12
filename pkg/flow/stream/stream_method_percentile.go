@@ -24,7 +24,7 @@ func (mp methodPercentile) Params(i itypes.Interpreter) (*itypes.Params, error) 
 }
 
 func (mp methodPercentile) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if self, err := interpreter.ArgAs[Stream](i, "self"); err != nil {
+	if self, err := itypes.ArgAs[Stream](i, "self"); err != nil {
 		return nil, err
 	} else {
 		return NewStreamMethodPercentile(newStreamObject(), unpublish(self)), nil

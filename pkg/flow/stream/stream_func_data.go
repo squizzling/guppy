@@ -64,7 +64,7 @@ func resolveExtrapolation(i itypes.Interpreter) (string, error) {
 }
 
 func resolveMaxExtrapolations(i itypes.Interpreter) (int, error) {
-	if maxExtrapolations, err := interpreter.ArgAs[*interpreter.ObjectInt](i, "maxExtrapolations"); err != nil {
+	if maxExtrapolations, err := itypes.ArgAs[*interpreter.ObjectInt](i, "maxExtrapolations"); err != nil {
 		return 0, err
 	} else {
 		return maxExtrapolations.Value, nil

@@ -38,7 +38,7 @@ func (msa methodStringAdd) Params(i itypes.Interpreter) (*itypes.Params, error) 
 }
 
 func (msa methodStringAdd) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if self, err := ArgAs[*ObjectString](i, "self"); err != nil {
+	if self, err := itypes.ArgAs[*ObjectString](i, "self"); err != nil {
 		return nil, err
 	} else if right, err := i.GetArg("right"); err != nil {
 		return nil, err
@@ -61,7 +61,7 @@ func (mse methodStringEqual) Params(i itypes.Interpreter) (*itypes.Params, error
 }
 
 func (mse methodStringEqual) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if self, err := ArgAs[*ObjectString](i, "self"); err != nil {
+	if self, err := itypes.ArgAs[*ObjectString](i, "self"); err != nil {
 		return nil, err
 	} else if right, err := i.GetArg("right"); err != nil {
 		return nil, err
@@ -84,7 +84,7 @@ func (msne methodStringNotEqual) Params(i itypes.Interpreter) (*itypes.Params, e
 }
 
 func (msne methodStringNotEqual) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if self, err := ArgAs[*ObjectString](i, "self"); err != nil {
+	if self, err := itypes.ArgAs[*ObjectString](i, "self"); err != nil {
 		return nil, err
 	} else if right, err := i.GetArg("right"); err != nil {
 		return nil, err

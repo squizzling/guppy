@@ -24,7 +24,7 @@ func (f FFIPrint) Params(i itypes.Interpreter) (*itypes.Params, error) {
 }
 
 func (f FFIPrint) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if args, err := interpreter.ArgAs[*interpreter.ObjectTuple](i, "star"); err != nil {
+	if args, err := itypes.ArgAs[*interpreter.ObjectTuple](i, "star"); err != nil {
 		return nil, err
 	} else {
 		var sb strings.Builder

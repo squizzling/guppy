@@ -49,7 +49,7 @@ func (mf methodFill) resolveMaxCount(i itypes.Interpreter) (int, error) {
 }
 
 func (mf methodFill) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if self, err := interpreter.ArgAs[Stream](i, "self"); err != nil {
+	if self, err := itypes.ArgAs[Stream](i, "self"); err != nil {
 		return nil, err
 	} else if value, err := i.GetArg("value"); err != nil {
 		return nil, err

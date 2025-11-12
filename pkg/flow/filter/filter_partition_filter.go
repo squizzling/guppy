@@ -21,7 +21,7 @@ func (f FFIPartitionFilter) Params(i itypes.Interpreter) (*itypes.Params, error)
 }
 
 func (f FFIPartitionFilter) resolveIndex(i itypes.Interpreter) (int, error) {
-	if index, err := interpreter.ArgAs[*interpreter.ObjectInt](i, "index"); err != nil {
+	if index, err := itypes.ArgAs[*interpreter.ObjectInt](i, "index"); err != nil {
 		return 0, err
 	} else {
 		return index.Value, nil
@@ -29,7 +29,7 @@ func (f FFIPartitionFilter) resolveIndex(i itypes.Interpreter) (int, error) {
 }
 
 func (f FFIPartitionFilter) resolveTotal(i itypes.Interpreter) (int, error) {
-	if index, err := interpreter.ArgAs[*interpreter.ObjectInt](i, "total"); err != nil {
+	if index, err := itypes.ArgAs[*interpreter.ObjectInt](i, "total"); err != nil {
 		return 0, err
 	} else {
 		return index.Value, nil

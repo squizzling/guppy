@@ -23,11 +23,11 @@ func (mp methodPublish) Params(i itypes.Interpreter) (*itypes.Params, error) {
 }
 
 func (mp methodPublish) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if self, err := interpreter.ArgAs[Stream](i, "self"); err != nil {
+	if self, err := itypes.ArgAs[Stream](i, "self"); err != nil {
 		return nil, err
 	} else if label, err := interpreter.ArgAsString(i, "label"); err != nil {
 		return nil, err
-	} else if enable, err := interpreter.ArgAs[*interpreter.ObjectBool](i, "enable"); err != nil {
+	} else if enable, err := itypes.ArgAs[*interpreter.ObjectBool](i, "enable"); err != nil {
 		return nil, err
 	} else {
 		// TODO: This whole thing is a hack to expose published data
