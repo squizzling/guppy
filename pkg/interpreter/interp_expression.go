@@ -5,6 +5,7 @@ import (
 
 	"guppy/pkg/interpreter/deferred"
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 	"guppy/pkg/parser/ast"
 	"guppy/pkg/parser/tokenizer"
 )
@@ -409,7 +410,7 @@ func (i *interpreter) VisitExpressionLiteral(el ast.ExpressionLiteral) (returnVa
 	case itypes.Object:
 		return v, nil
 	case bool:
-		return NewObjectBool(v), nil
+		return primitive.NewObjectBool(v), nil
 	default:
 		return nil, fmt.Errorf("unknown literal type: %T", v)
 	}

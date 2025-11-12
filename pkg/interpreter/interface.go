@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 )
 
 func (i *interpreter) GetArg(argName string) (itypes.Object, error) {
@@ -113,7 +114,7 @@ func r(a any, err error) (itypes.Object, error) {
 
 func isTruthy(o itypes.Object) (bool, error) {
 	switch o := o.(type) {
-	case *ObjectBool:
+	case *primitive.ObjectBool:
 		return o.Value, nil
 	default:
 		return false, fmt.Errorf("isTruthy condition is %T not *interpreter.ObjectBool", o)

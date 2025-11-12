@@ -6,6 +6,7 @@ import (
 
 	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -32,7 +33,7 @@ func TestFFIStr(t *testing.T) {
 
 	i := interpreter.NewInterpreter(false)
 
-	s := FFIStr{interpreter.NewObjectBool(true)}
+	s := FFIStr{primitive.NewObjectBool(true)}
 	o, err := s.Call(i)
 	require.NoError(t, err)
 	assert.Equal(t, "true", o.(*interpreter.ObjectString).Value)

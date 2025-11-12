@@ -1,4 +1,4 @@
-package interpreter
+package primitive
 
 import (
 	"fmt"

@@ -3,6 +3,7 @@ package filter
 import (
 	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 )
 
 type methodBinaryEqual struct {
@@ -21,7 +22,7 @@ func (mbe methodBinaryEqual) Call(i itypes.Interpreter) (itypes.Object, error) {
 	} else if _, err := itypes.ArgAs[*interpreter.ObjectNone](i, "right"); err != nil {
 		return nil, err
 	} else {
-		return interpreter.NewObjectBool(mbe.invert), nil
+		return primitive.NewObjectBool(mbe.invert), nil
 	}
 }
 
@@ -41,6 +42,6 @@ func (mbi methodBinaryIs) Call(i itypes.Interpreter) (itypes.Object, error) {
 	} else if _, err := itypes.ArgAs[*interpreter.ObjectNone](i, "right"); err != nil {
 		return nil, err
 	} else {
-		return interpreter.NewObjectBool(mbi.invert), nil
+		return primitive.NewObjectBool(mbi.invert), nil
 	}
 }

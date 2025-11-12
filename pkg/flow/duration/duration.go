@@ -8,6 +8,7 @@ import (
 
 	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 )
 
 type FFIDuration struct {
@@ -229,22 +230,22 @@ func (mdu methodDurationOp) Call(i itypes.Interpreter) (itypes.Object, error) {
 			if mdu.reverse {
 				panic("handle this")
 			}
-			return interpreter.NewObjectBool(self.Duration < rightVal), nil
+			return primitive.NewObjectBool(self.Duration < rightVal), nil
 		case ">":
 			if mdu.reverse {
 				panic("handle this")
 			}
-			return interpreter.NewObjectBool(self.Duration > rightVal), nil
+			return primitive.NewObjectBool(self.Duration > rightVal), nil
 		case "<=":
 			if mdu.reverse {
 				panic("handle this")
 			}
-			return interpreter.NewObjectBool(self.Duration <= rightVal), nil
+			return primitive.NewObjectBool(self.Duration <= rightVal), nil
 		case ">=":
 			if mdu.reverse {
 				panic("handle this")
 			}
-			return interpreter.NewObjectBool(self.Duration >= rightVal), nil
+			return primitive.NewObjectBool(self.Duration >= rightVal), nil
 		default:
 			return nil, fmt.Errorf("methodDurationOp: unknown op %s", mdu.op)
 		}

@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 )
 
 type ObjectInt struct {
@@ -92,17 +93,17 @@ func (mio methodIntOp) Call(i itypes.Interpreter) (itypes.Object, error) {
 		case "*":
 			return NewObjectInt(self.Value * rightVal), nil
 		case "<":
-			return NewObjectBool(self.Value < rightVal), nil
+			return primitive.NewObjectBool(self.Value < rightVal), nil
 		case ">":
-			return NewObjectBool(self.Value > rightVal), nil
+			return primitive.NewObjectBool(self.Value > rightVal), nil
 		case "<=":
-			return NewObjectBool(self.Value <= rightVal), nil
+			return primitive.NewObjectBool(self.Value <= rightVal), nil
 		case ">=":
-			return NewObjectBool(self.Value >= rightVal), nil
+			return primitive.NewObjectBool(self.Value >= rightVal), nil
 		case "==":
-			return NewObjectBool(self.Value == rightVal), nil
+			return primitive.NewObjectBool(self.Value == rightVal), nil
 		case "!=":
-			return NewObjectBool(self.Value != rightVal), nil
+			return primitive.NewObjectBool(self.Value != rightVal), nil
 		default:
 			return nil, fmt.Errorf("methodIntOp: unknown op %s", mio.op)
 		}

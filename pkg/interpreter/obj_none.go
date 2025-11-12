@@ -2,6 +2,7 @@ package interpreter
 
 import (
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 )
 
 type ObjectNone struct {
@@ -41,9 +42,9 @@ func (mne methodNoneEqual) Call(i itypes.Interpreter) (itypes.Object, error) {
 	} else {
 		switch right.(type) {
 		case *ObjectNone:
-			return NewObjectBool(true), nil
+			return primitive.NewObjectBool(true), nil
 		default:
-			return NewObjectBool(false), nil
+			return primitive.NewObjectBool(false), nil
 		}
 	}
 }
@@ -62,9 +63,9 @@ func (mne methodNoneNotEqual) Call(i itypes.Interpreter) (itypes.Object, error) 
 	} else {
 		switch right.(type) {
 		case *ObjectNone:
-			return NewObjectBool(false), nil
+			return primitive.NewObjectBool(false), nil
 		default:
-			return NewObjectBool(true), nil
+			return primitive.NewObjectBool(true), nil
 		}
 	}
 }
@@ -93,8 +94,8 @@ func (mni methodNoneIs) Call(i itypes.Interpreter) (itypes.Object, error) {
 
 	switch right.(type) {
 	case *ObjectNone:
-		return NewObjectBool(!mni.invert), nil
+		return primitive.NewObjectBool(!mni.invert), nil
 	default:
-		return NewObjectBool(mni.invert), nil
+		return primitive.NewObjectBool(mni.invert), nil
 	}
 }

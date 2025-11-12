@@ -7,6 +7,7 @@ import (
 	"guppy/pkg/flow/duration"
 	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 )
 
 type methodStreamAggregateTransform struct {
@@ -63,7 +64,7 @@ func (msat methodStreamAggregateTransform) resolveAllowMissing(i itypes.Interpre
 		switch allowMissing := allowMissing.(type) {
 		case *interpreter.ObjectNone:
 			return false, nil, nil
-		case *interpreter.ObjectBool:
+		case *primitive.ObjectBool:
 			if allowMissing.Value {
 				return true, nil, nil
 			} else {
@@ -165,7 +166,7 @@ func (msat methodStreamAggregateTransform) resolvePartialValues(i itypes.Interpr
 		switch partialValues := partialValues.(type) {
 		case *interpreter.ObjectNone:
 			return false, nil
-		case *interpreter.ObjectBool:
+		case *primitive.ObjectBool:
 			return partialValues.Value, nil
 		default:
 			return false, fmt.Errorf("methodStreamAggregateTransform(partialValues) is %T not *interpreter.ObjectNone, or *interpreter.ObjectBool", partialValues)

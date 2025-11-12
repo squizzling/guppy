@@ -5,6 +5,7 @@ import (
 
 	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 )
 
 type FFIFilter struct {
@@ -19,7 +20,7 @@ func (f FFIFilter) Params(i itypes.Interpreter) (*itypes.Params, error) {
 		},
 		StarParam: "terms",
 		KWParams: []itypes.ParamDef{
-			{Name: "match_missing", Default: interpreter.NewObjectBool(false)},
+			{Name: "match_missing", Default: primitive.NewObjectBool(false)},
 		},
 	}, nil
 }
@@ -61,7 +62,7 @@ func (f FFIFilter) Call(i itypes.Interpreter) (itypes.Object, error) {
 		return nil, err
 	} else if terms, err := f.resolveTerms(i); err != nil {
 		return nil, err
-	} else if matchMissing, err := itypes.ArgAs[*interpreter.ObjectBool](i, "match_missing"); err != nil {
+	} else if matchMissing, err := itypes.ArgAs[*primitive.ObjectBool](i, "match_missing"); err != nil {
 		return nil, err
 	} else {
 		return NewKV(term, terms, matchMissing.Value), nil

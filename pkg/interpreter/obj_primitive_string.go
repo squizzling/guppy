@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 )
 
 type ObjectString struct {
@@ -68,7 +69,7 @@ func (mse methodStringEqual) Call(i itypes.Interpreter) (itypes.Object, error) {
 	} else {
 		switch right := right.(type) {
 		case *ObjectString:
-			return NewObjectBool(self.Value == right.Value), nil
+			return primitive.NewObjectBool(self.Value == right.Value), nil
 		default:
 			return nil, fmt.Errorf("methodStringAdd: unknown type %T", right)
 		}
@@ -91,7 +92,7 @@ func (msne methodStringNotEqual) Call(i itypes.Interpreter) (itypes.Object, erro
 	} else {
 		switch right := right.(type) {
 		case *ObjectString:
-			return NewObjectBool(self.Value != right.Value), nil
+			return primitive.NewObjectBool(self.Value != right.Value), nil
 		default:
 			return nil, fmt.Errorf("methodStringAdd: unknown type %T", right)
 		}

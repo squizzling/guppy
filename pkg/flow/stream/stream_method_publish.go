@@ -5,6 +5,7 @@ import (
 
 	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 )
 
 type methodPublish struct {
@@ -16,7 +17,7 @@ func (mp methodPublish) Params(i itypes.Interpreter) (*itypes.Params, error) {
 		Params: []itypes.ParamDef{
 			{Name: "self"},
 			{Name: "label", Default: interpreter.NewObjectString("")}, // TODO: Validate "" vs None
-			{Name: "enable", Default: interpreter.NewObjectBool(true)},
+			{Name: "enable", Default: primitive.NewObjectBool(true)},
 		},
 		//KWParam: "additional_dimensions", // Maybe, I don't fully know this one.
 	}, nil
@@ -27,7 +28,7 @@ func (mp methodPublish) Call(i itypes.Interpreter) (itypes.Object, error) {
 		return nil, err
 	} else if label, err := interpreter.ArgAsString(i, "label"); err != nil {
 		return nil, err
-	} else if enable, err := itypes.ArgAs[*interpreter.ObjectBool](i, "enable"); err != nil {
+	} else if enable, err := itypes.ArgAs[*primitive.ObjectBool](i, "enable"); err != nil {
 		return nil, err
 	} else {
 		// TODO: This whole thing is a hack to expose published data
