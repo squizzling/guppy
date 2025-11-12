@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"guppy/pkg/interpreter"
-	"guppy/pkg/interpreter/ffi"
+	"guppy/pkg/interpreter/ftypes"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -28,7 +28,7 @@ func TestFFIRangeErrorInvalidDate(t *testing.T) {
 
 	f := FFIRange{
 		Start: interpreter.NewObjectInt(0),
-		Stop:  ffi.ThingOrNone[*interpreter.ObjectInt]{},
+		Stop:  ftypes.ThingOrNone[*interpreter.ObjectInt]{},
 		Step:  interpreter.NewObjectInt(0),
 	}
 	_, err := f.Call(i)
@@ -52,45 +52,45 @@ func TestFFIRange(t *testing.T) {
 		   elif step == 1:
 			print(f'{{input: FFIRange{{Start: NewObjectInt({start}), Stop: NewThingOrNoneNone[*ObjectInt](), Step: NewObjectInt(1)}}, expected: []int{str(list(range(start))).replace("[", "{").replace("]", "}")}}},')
 		*/
-		{input: FFIRange{Start: interpreter.NewObjectInt(-10), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(-10)), Step: interpreter.NewObjectInt(-3)}, expected: []int{}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(-10), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(-10)), Step: interpreter.NewObjectInt(-1)}, expected: []int{}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(-10), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(-10)), Step: interpreter.NewObjectInt(1)}, expected: []int{}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(-10), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(-10)), Step: interpreter.NewObjectInt(3)}, expected: []int{}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(0), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(-10)), Step: interpreter.NewObjectInt(-3)}, expected: []int{0, -3, -6, -9}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(0), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(-10)), Step: interpreter.NewObjectInt(-1)}, expected: []int{0, -1, -2, -3, -4, -5, -6, -7, -8, -9}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(0), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(-10)), Step: interpreter.NewObjectInt(1)}, expected: []int{}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(0), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(-10)), Step: interpreter.NewObjectInt(3)}, expected: []int{}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(10), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(-10)), Step: interpreter.NewObjectInt(-3)}, expected: []int{10, 7, 4, 1, -2, -5, -8}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(10), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(-10)), Step: interpreter.NewObjectInt(-1)}, expected: []int{10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -5, -6, -7, -8, -9}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(10), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(-10)), Step: interpreter.NewObjectInt(1)}, expected: []int{}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(10), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(-10)), Step: interpreter.NewObjectInt(3)}, expected: []int{}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(-10), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(0)), Step: interpreter.NewObjectInt(-3)}, expected: []int{}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(-10), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(0)), Step: interpreter.NewObjectInt(-1)}, expected: []int{}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(-10), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(0)), Step: interpreter.NewObjectInt(1)}, expected: []int{-10, -9, -8, -7, -6, -5, -4, -3, -2, -1}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(-10), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(0)), Step: interpreter.NewObjectInt(3)}, expected: []int{-10, -7, -4, -1}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(0), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(0)), Step: interpreter.NewObjectInt(-3)}, expected: []int{}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(0), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(0)), Step: interpreter.NewObjectInt(-1)}, expected: []int{}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(0), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(0)), Step: interpreter.NewObjectInt(1)}, expected: []int{}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(0), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(0)), Step: interpreter.NewObjectInt(3)}, expected: []int{}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(10), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(0)), Step: interpreter.NewObjectInt(-3)}, expected: []int{10, 7, 4, 1}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(10), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(0)), Step: interpreter.NewObjectInt(-1)}, expected: []int{10, 9, 8, 7, 6, 5, 4, 3, 2, 1}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(10), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(0)), Step: interpreter.NewObjectInt(1)}, expected: []int{}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(10), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(0)), Step: interpreter.NewObjectInt(3)}, expected: []int{}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(-10), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(10)), Step: interpreter.NewObjectInt(-3)}, expected: []int{}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(-10), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(10)), Step: interpreter.NewObjectInt(-1)}, expected: []int{}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(-10), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(10)), Step: interpreter.NewObjectInt(1)}, expected: []int{-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(-10), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(10)), Step: interpreter.NewObjectInt(3)}, expected: []int{-10, -7, -4, -1, 2, 5, 8}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(0), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(10)), Step: interpreter.NewObjectInt(-3)}, expected: []int{}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(0), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(10)), Step: interpreter.NewObjectInt(-1)}, expected: []int{}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(0), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(10)), Step: interpreter.NewObjectInt(1)}, expected: []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(0), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(10)), Step: interpreter.NewObjectInt(3)}, expected: []int{0, 3, 6, 9}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(10), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(10)), Step: interpreter.NewObjectInt(-3)}, expected: []int{}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(10), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(10)), Step: interpreter.NewObjectInt(-1)}, expected: []int{}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(10), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(10)), Step: interpreter.NewObjectInt(1)}, expected: []int{}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(10), Stop: ffi.NewThingOrNoneThing(interpreter.NewObjectInt(10)), Step: interpreter.NewObjectInt(3)}, expected: []int{}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(-10), Stop: ffi.NewThingOrNoneNone[*interpreter.ObjectInt](), Step: interpreter.NewObjectInt(1)}, expected: []int{}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(0), Stop: ffi.NewThingOrNoneNone[*interpreter.ObjectInt](), Step: interpreter.NewObjectInt(1)}, expected: []int{}},
-		{input: FFIRange{Start: interpreter.NewObjectInt(10), Stop: ffi.NewThingOrNoneNone[*interpreter.ObjectInt](), Step: interpreter.NewObjectInt(1)}, expected: []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(-10), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(-10)), Step: interpreter.NewObjectInt(-3)}, expected: []int{}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(-10), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(-10)), Step: interpreter.NewObjectInt(-1)}, expected: []int{}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(-10), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(-10)), Step: interpreter.NewObjectInt(1)}, expected: []int{}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(-10), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(-10)), Step: interpreter.NewObjectInt(3)}, expected: []int{}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(0), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(-10)), Step: interpreter.NewObjectInt(-3)}, expected: []int{0, -3, -6, -9}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(0), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(-10)), Step: interpreter.NewObjectInt(-1)}, expected: []int{0, -1, -2, -3, -4, -5, -6, -7, -8, -9}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(0), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(-10)), Step: interpreter.NewObjectInt(1)}, expected: []int{}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(0), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(-10)), Step: interpreter.NewObjectInt(3)}, expected: []int{}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(10), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(-10)), Step: interpreter.NewObjectInt(-3)}, expected: []int{10, 7, 4, 1, -2, -5, -8}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(10), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(-10)), Step: interpreter.NewObjectInt(-1)}, expected: []int{10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, -1, -2, -3, -4, -5, -6, -7, -8, -9}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(10), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(-10)), Step: interpreter.NewObjectInt(1)}, expected: []int{}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(10), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(-10)), Step: interpreter.NewObjectInt(3)}, expected: []int{}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(-10), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(0)), Step: interpreter.NewObjectInt(-3)}, expected: []int{}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(-10), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(0)), Step: interpreter.NewObjectInt(-1)}, expected: []int{}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(-10), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(0)), Step: interpreter.NewObjectInt(1)}, expected: []int{-10, -9, -8, -7, -6, -5, -4, -3, -2, -1}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(-10), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(0)), Step: interpreter.NewObjectInt(3)}, expected: []int{-10, -7, -4, -1}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(0), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(0)), Step: interpreter.NewObjectInt(-3)}, expected: []int{}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(0), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(0)), Step: interpreter.NewObjectInt(-1)}, expected: []int{}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(0), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(0)), Step: interpreter.NewObjectInt(1)}, expected: []int{}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(0), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(0)), Step: interpreter.NewObjectInt(3)}, expected: []int{}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(10), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(0)), Step: interpreter.NewObjectInt(-3)}, expected: []int{10, 7, 4, 1}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(10), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(0)), Step: interpreter.NewObjectInt(-1)}, expected: []int{10, 9, 8, 7, 6, 5, 4, 3, 2, 1}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(10), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(0)), Step: interpreter.NewObjectInt(1)}, expected: []int{}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(10), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(0)), Step: interpreter.NewObjectInt(3)}, expected: []int{}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(-10), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(10)), Step: interpreter.NewObjectInt(-3)}, expected: []int{}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(-10), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(10)), Step: interpreter.NewObjectInt(-1)}, expected: []int{}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(-10), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(10)), Step: interpreter.NewObjectInt(1)}, expected: []int{-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(-10), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(10)), Step: interpreter.NewObjectInt(3)}, expected: []int{-10, -7, -4, -1, 2, 5, 8}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(0), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(10)), Step: interpreter.NewObjectInt(-3)}, expected: []int{}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(0), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(10)), Step: interpreter.NewObjectInt(-1)}, expected: []int{}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(0), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(10)), Step: interpreter.NewObjectInt(1)}, expected: []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(0), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(10)), Step: interpreter.NewObjectInt(3)}, expected: []int{0, 3, 6, 9}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(10), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(10)), Step: interpreter.NewObjectInt(-3)}, expected: []int{}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(10), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(10)), Step: interpreter.NewObjectInt(-1)}, expected: []int{}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(10), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(10)), Step: interpreter.NewObjectInt(1)}, expected: []int{}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(10), Stop: ftypes.NewThingOrNoneThing(interpreter.NewObjectInt(10)), Step: interpreter.NewObjectInt(3)}, expected: []int{}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(-10), Stop: ftypes.NewThingOrNoneNone[*interpreter.ObjectInt](), Step: interpreter.NewObjectInt(1)}, expected: []int{}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(0), Stop: ftypes.NewThingOrNoneNone[*interpreter.ObjectInt](), Step: interpreter.NewObjectInt(1)}, expected: []int{}},
+		{input: FFIRange{Start: interpreter.NewObjectInt(10), Stop: ftypes.NewThingOrNoneNone[*interpreter.ObjectInt](), Step: interpreter.NewObjectInt(1)}, expected: []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}},
 	} {
 		t.Run("", func(t *testing.T) {
 			t.Parallel()

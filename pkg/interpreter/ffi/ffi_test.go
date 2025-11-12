@@ -11,6 +11,7 @@ import (
 
 	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/ffi"
+	"guppy/pkg/interpreter/ftypes"
 	"guppy/pkg/interpreter/itypes"
 	"guppy/pkg/parser/flow"
 	"guppy/pkg/parser/parser"
@@ -21,8 +22,8 @@ import (
 )
 
 type TestFFI struct {
-	Single *interpreter.ObjectInt                  `ffi:"single"`
-	OneOf  ffi.ThingOrNone[*interpreter.ObjectInt] `ffi:"oneof"`
+	Single *interpreter.ObjectInt                     `ffi:"single"`
+	OneOf  ftypes.ThingOrNone[*interpreter.ObjectInt] `ffi:"oneof"`
 }
 
 func (t TestFFI) Call(i itypes.Interpreter) (itypes.Object, error) {
@@ -36,8 +37,8 @@ func (t TestFFI) Call(i itypes.Interpreter) (itypes.Object, error) {
 }
 
 type TestFFISingleKW struct {
-	Single *interpreter.ObjectInt                  `ffi:"single,kw"`
-	OneOf  ffi.ThingOrNone[*interpreter.ObjectInt] `ffi:"oneof"`
+	Single *interpreter.ObjectInt                     `ffi:"single,kw"`
+	OneOf  ftypes.ThingOrNone[*interpreter.ObjectInt] `ffi:"oneof"`
 }
 
 func (t TestFFISingleKW) Call(i itypes.Interpreter) (itypes.Object, error) {
@@ -51,8 +52,8 @@ func (t TestFFISingleKW) Call(i itypes.Interpreter) (itypes.Object, error) {
 }
 
 type TestFFIOneOfKW struct {
-	Single *interpreter.ObjectInt                  `ffi:"single"`
-	OneOf  ffi.ThingOrNone[*interpreter.ObjectInt] `ffi:"oneof,kw"`
+	Single *interpreter.ObjectInt                     `ffi:"single"`
+	OneOf  ftypes.ThingOrNone[*interpreter.ObjectInt] `ffi:"oneof,kw"`
 }
 
 func (t TestFFIOneOfKW) Call(i itypes.Interpreter) (itypes.Object, error) {
@@ -66,8 +67,8 @@ func (t TestFFIOneOfKW) Call(i itypes.Interpreter) (itypes.Object, error) {
 }
 
 type TestFFISingleKWOneOfKW struct {
-	Single *interpreter.ObjectInt                  `ffi:"single,kw"`
-	OneOf  ffi.ThingOrNone[*interpreter.ObjectInt] `ffi:"oneof,kw"`
+	Single *interpreter.ObjectInt                     `ffi:"single,kw"`
+	OneOf  ftypes.ThingOrNone[*interpreter.ObjectInt] `ffi:"oneof,kw"`
 }
 
 func (t TestFFISingleKWOneOfKW) Call(i itypes.Interpreter) (itypes.Object, error) {
@@ -88,32 +89,32 @@ func TestNewtFFIDefaults(t *testing.T) {
 			for _, ts := range []struct {
 				name          string
 				defaultSingle *interpreter.ObjectInt
-				defaultOneOf  ffi.ThingOrNone[*interpreter.ObjectInt]
+				defaultOneOf  ftypes.ThingOrNone[*interpreter.ObjectInt]
 			}{
 				{
 					"single-default-oneof-default",
 					interpreter.NewObjectInt(1),
-					ffi.ThingOrNone[*interpreter.ObjectInt]{nil, interpreter.NewObjectInt(2)},
+					ftypes.ThingOrNone[*interpreter.ObjectInt]{nil, interpreter.NewObjectInt(2)},
 				}, {
 					"single-default-oneof-missing",
 					interpreter.NewObjectInt(1),
-					ffi.ThingOrNone[*interpreter.ObjectInt]{nil, nil},
+					ftypes.ThingOrNone[*interpreter.ObjectInt]{nil, nil},
 				}, {
 					"single-default-oneof-none",
 					interpreter.NewObjectInt(1),
-					ffi.ThingOrNone[*interpreter.ObjectInt]{interpreter.NewObjectNone(), nil},
+					ftypes.ThingOrNone[*interpreter.ObjectInt]{interpreter.NewObjectNone(), nil},
 				}, {
 					"single-missing-oneof-default",
 					nil,
-					ffi.ThingOrNone[*interpreter.ObjectInt]{nil, interpreter.NewObjectInt(2)},
+					ftypes.ThingOrNone[*interpreter.ObjectInt]{nil, interpreter.NewObjectInt(2)},
 				}, {
 					"single-missing-oneof-missing",
 					nil,
-					ffi.ThingOrNone[*interpreter.ObjectInt]{nil, nil},
+					ftypes.ThingOrNone[*interpreter.ObjectInt]{nil, nil},
 				}, {
 					"single-missing-oneof-none",
 					nil,
-					ffi.ThingOrNone[*interpreter.ObjectInt]{interpreter.NewObjectNone(), nil},
+					ftypes.ThingOrNone[*interpreter.ObjectInt]{interpreter.NewObjectNone(), nil},
 				},
 			} {
 				t.Run(ts.name, func(t *testing.T) {
