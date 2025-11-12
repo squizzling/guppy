@@ -36,7 +36,7 @@ func TestFFIStr(t *testing.T) {
 	s := FFIStr{primitive.NewObjectBool(true)}
 	o, err := s.Call(i)
 	require.NoError(t, err)
-	assert.Equal(t, "true", o.(*interpreter.ObjectString).Value)
+	assert.Equal(t, "True", o.(*interpreter.ObjectString).Value)
 
 	s = FFIStr{failingStr{}}
 	_, err = s.Call(i)

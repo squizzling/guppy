@@ -1,0 +1,39 @@
+o = True
+-----
+True
+=====
+o = False
+-----
+False
+=====
+o = not True
+-----
+False
+=====
+o = not False
+-----
+True
+=====
+o = not not True
+-----
+True
+=====
+o = not not False
+-----
+False
+=====
+o = "a" if True else "b"
+-----
+a
+=====
+o = "a" if False else "b"
+-----
+b
+=====
+o = str(True)
+-----
+True
+=====
+o = str(False)
+-----
+False

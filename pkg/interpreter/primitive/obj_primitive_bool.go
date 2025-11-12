@@ -1,8 +1,7 @@
 package primitive
 
 import (
-	"fmt"
-
+	"guppy/pkg/interpreter/ffi"
 	"guppy/pkg/interpreter/itypes"
 	"guppy/pkg/parser/ast"
 )
@@ -13,17 +12,23 @@ type ObjectBool struct {
 	Value bool
 }
 
+var prototypeObjectBool = itypes.NewObject(map[string]itypes.Object{
+	"__unary_binary_not__": ffi.NewFFI(ffiObjectBoolUnaryBinaryNot{}),
+})
+
 func NewObjectBool(v bool) *ObjectBool {
 	return &ObjectBool{
-		Object: itypes.NewObject(map[string]itypes.Object{
-			"__unary_binary_not__": methodBoolUnaryBinaryNot{Object: itypes.NewObject(nil)},
-		}),
-		Value: v,
+		Object: prototypeObjectBool,
+		Value:  v,
 	}
 }
 
 func (ob *ObjectBool) String(i itypes.Interpreter) (string, error) {
-	return fmt.Sprintf("%t", ob.Value), nil
+	if ob.Value {
+		return "True", nil
+	} else {
+		return "False", nil
+	}
 }
 
 func (ob *ObjectBool) VisitExpressionTernary(i itypes.Interpreter, left ast.Expression, cond itypes.Object, right ast.Expression) (any, error) {
@@ -34,20 +39,12 @@ func (ob *ObjectBool) VisitExpressionTernary(i itypes.Interpreter, left ast.Expr
 	}
 }
 
+type ffiObjectBoolUnaryBinaryNot struct {
+	Self *ObjectBool `ffi:"self"`
+}
+
+func (f ffiObjectBoolUnaryBinaryNot) Call(i itypes.Interpreter) (itypes.Object, error) {
+	return NewObjectBool(!f.Self.Value), nil
+}
+
 var _ itypes.FlowTernary = (*ObjectBool)(nil)
-
-type methodBoolUnaryBinaryNot struct {
-	itypes.Object
-}
-
-func (mbubn methodBoolUnaryBinaryNot) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return itypes.UnaryParams, nil
-}
-
-func (mbubn methodBoolUnaryBinaryNot) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if self, err := itypes.ArgAs[*ObjectBool](i, "self"); err != nil {
-		return nil, err
-	} else {
-		return NewObjectBool(!self.Value), nil
-	}
-}
