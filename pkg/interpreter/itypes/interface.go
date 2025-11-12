@@ -75,7 +75,7 @@ func (pd *Params) Dump(i Interpreter) {
 		if param.Default != nil {
 			s, err := i.DoString(param.Default)
 			if err != nil {
-				panic(err)
+				s = err.Error()
 			}
 			i.Debug("- %s (%s)", param.Name, s)
 		} else {
@@ -88,7 +88,7 @@ func (pd *Params) Dump(i Interpreter) {
 		if param.Default != nil {
 			s, err := i.DoString(param.Default)
 			if err != nil {
-				panic(err)
+				s = err.Error()
 			}
 			i.Debug("- %s (%s)", param.Name, s)
 		} else {

@@ -1,0 +1,39 @@
+o = None
+-----
+None
+=====
+o = None is None
+-----
+True
+=====
+o = None is not None
+-----
+False
+=====
+o = None == None
+-----
+True
+=====
+o = None != None
+-----
+False
+=====
+o = None is 5
+-----
+False
+=====
+o = None is not 5
+-----
+True
+=====
+o = None == 5
+-----
+False
+=====
+o = None != 5
+-----
+True
+=====
+o = None is const(1)
+-----
+?*stream.StreamIsNone is not stringable
