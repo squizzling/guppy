@@ -132,3 +132,9 @@ type FlowCall interface {
 	Params(i Interpreter) (*Params, error)
 	Call(i Interpreter) (Object, error)
 }
+
+// TODO: Move Repr() in to Object.
+type Reprable interface {
+	Object
+	Repr() string
+}

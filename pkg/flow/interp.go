@@ -17,6 +17,7 @@ func NewInterpreter(enableTrace bool) itypes.Interpreter {
 	// New style
 	_ = i.SetGlobal("len", builtin.NewFFILen())
 	_ = i.SetGlobal("range", builtin.NewFFIRange())
+	_ = i.SetGlobal("repr", builtin.NewFFIRepr())
 	_ = i.SetGlobal("str", builtin.NewFFIStr())
 
 	// Old style
