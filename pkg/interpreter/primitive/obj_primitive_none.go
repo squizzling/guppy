@@ -1,6 +1,7 @@
 package primitive
 
 import (
+	"guppy/pkg/interpreter/ffi"
 	"guppy/pkg/interpreter/itypes"
 )
 
@@ -8,14 +9,16 @@ type ObjectNone struct {
 	itypes.Object
 }
 
+var prototypeObjectNone = itypes.NewObject(map[string]itypes.Object{
+	"__eq__":    ffi.NewFFI(ffiObjectNoneEqual{invert: false}),
+	"__ne__":    ffi.NewFFI(ffiObjectNoneEqual{invert: true}),
+	"__is__":    ffi.NewFFI(ffiObjectNoneIs{invert: false, reverseMethod: "__ris__"}),
+	"__isnot__": ffi.NewFFI(ffiObjectNoneIs{invert: true, reverseMethod: "__risnot__"}),
+})
+
 func NewObjectNone() *ObjectNone {
 	return &ObjectNone{
-		itypes.NewObject(map[string]itypes.Object{
-			"__eq__":    methodNoneEqual{Object: itypes.NewObject(nil)},
-			"__ne__":    methodNoneNotEqual{Object: itypes.NewObject(nil)},
-			"__is__":    methodNoneIs{Object: itypes.NewObject(nil), invert: false, reverseInvert: "__ris__"},
-			"__isnot__": methodNoneIs{Object: itypes.NewObject(nil), invert: true, reverseInvert: "__risnot__"},
-		}),
+		Object: prototypeObjectNone,
 	}
 }
 
@@ -27,74 +30,32 @@ func (on *ObjectNone) String(i itypes.Interpreter) (string, error) {
 	return "None", nil
 }
 
-type methodNoneEqual struct {
-	itypes.Object
+type ffiObjectNoneEqual struct {
+	Self   *ObjectNone   `ffi:"self"`
+	Right  itypes.Object `ffi:"right"`
+	invert bool
 }
 
-func (mne methodNoneEqual) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return itypes.BinaryParams, nil
+func (f ffiObjectNoneEqual) Call(i itypes.Interpreter) (itypes.Object, error) {
+	_, ok := f.Right.(*ObjectNone)
+	return NewObjectBool(ok != f.invert), nil
 }
 
-func (mne methodNoneEqual) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if right, err := i.GetArg("right"); err != nil {
-		return nil, err
-	} else {
-		switch right.(type) {
-		case *ObjectNone:
-			return NewObjectBool(true), nil
-		default:
-			return NewObjectBool(false), nil
-		}
-	}
-}
-
-type methodNoneNotEqual struct {
-	itypes.Object
-}
-
-func (mnne methodNoneNotEqual) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return itypes.BinaryParams, nil
-}
-
-func (mne methodNoneNotEqual) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if right, err := i.GetArg("right"); err != nil {
-		return nil, err
-	} else {
-		switch right.(type) {
-		case *ObjectNone:
-			return NewObjectBool(false), nil
-		default:
-			return NewObjectBool(true), nil
-		}
-	}
-}
-
-type methodNoneIs struct {
-	itypes.Object
-
+type ffiObjectNoneIs struct {
+	Self          *ObjectNone   `ffi:"self"`
+	Right         itypes.Object `ffi:"right"`
 	invert        bool
-	reverseInvert string
+	reverseMethod string
 }
 
-func (mni methodNoneIs) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return itypes.BinaryParams, nil
-}
-
-func (mni methodNoneIs) Call(i itypes.Interpreter) (itypes.Object, error) {
-	right, err := i.GetArg("right")
-	if err != nil {
-		return nil, err
-	} else if reverseIs, err := right.Member(i, right, mni.reverseInvert); err == nil {
+func (f ffiObjectNoneIs) Call(i itypes.Interpreter) (itypes.Object, error) {
+	if reverseIs, err := f.Right.Member(i, f.Right, f.reverseMethod); err == nil {
 		// If it exists, we always use the reverse method, because it's more likely to be the intended behavior.
 		if reverseIsCall, ok := reverseIs.(itypes.FlowCall); ok {
 			return reverseIsCall.Call(i)
 		}
 	}
 
-	switch right.(type) {
-	case *ObjectNone:
-		return NewObjectBool(!mni.invert), nil
-	default:
-		return NewObjectBool(mni.invert), nil
-	}
+	_, ok := f.Right.(*ObjectNone)
+	return NewObjectBool(ok != f.invert), nil
 }
