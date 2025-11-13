@@ -37,6 +37,8 @@ func NewObjectDouble(f float64) itypes.Object {
 			"__gt__": methodDoubleOp{Object: itypes.NewObject(nil), op: ">"},
 			"__le__": methodDoubleOp{Object: itypes.NewObject(nil), op: "<="},
 			"__ge__": methodDoubleOp{Object: itypes.NewObject(nil), op: ">="},
+			"__eq__": methodDoubleOp{Object: itypes.NewObject(nil), op: "=="},
+			"__ne__": methodDoubleOp{Object: itypes.NewObject(nil), op: "!="},
 		}),
 		Value: f,
 	}
@@ -77,7 +79,7 @@ func (mdo methodDoubleOp) Call(i itypes.Interpreter) (itypes.Object, error) {
 		case *ObjectDouble:
 			rightVal = right.Value
 		default:
-			return nil, fmt.Errorf("methodDoubleOp: unknown type %T", right)
+			return nil, fmt.Errorf("methodDoubleOp: unknown type %T op %s", right, mdo.op)
 		}
 
 		switch mdo.op {
@@ -97,6 +99,10 @@ func (mdo methodDoubleOp) Call(i itypes.Interpreter) (itypes.Object, error) {
 			return NewObjectBool(self.Value <= rightVal), nil
 		case ">=":
 			return NewObjectBool(self.Value >= rightVal), nil
+		case "==":
+			return NewObjectBool(self.Value == rightVal), nil
+		case "!=":
+			return NewObjectBool(self.Value != rightVal), nil
 		default:
 			return nil, fmt.Errorf("methodDoubleOp: unknown op %s", mdo.op)
 		}
