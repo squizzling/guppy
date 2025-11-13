@@ -11,18 +11,18 @@ import (
 )
 
 type FFIRange struct {
-	Start *interpreter.ObjectInt                     `ffi:"start"`
-	Stop  ftypes.ThingOrNone[*interpreter.ObjectInt] `ffi:"stop"`
-	Step  *interpreter.ObjectInt                     `ffi:"step"`
+	Start *primitive.ObjectInt                     `ffi:"start"`
+	Stop  ftypes.ThingOrNone[*primitive.ObjectInt] `ffi:"stop"`
+	Step  *primitive.ObjectInt                     `ffi:"step"`
 }
 
 func NewFFIRange() itypes.FlowCall {
 	return ffi.NewFFI(FFIRange{
 		Start: nil,
-		Stop: ftypes.ThingOrNone[*interpreter.ObjectInt]{
+		Stop: ftypes.ThingOrNone[*primitive.ObjectInt]{
 			None: primitive.NewObjectNone(),
 		},
-		Step: interpreter.NewObjectInt(1),
+		Step: primitive.NewObjectInt(1),
 	})
 }
 
@@ -50,11 +50,11 @@ func (f FFIRange) newRange(start int, stop int, step int) (itypes.Object, error)
 	var items []itypes.Object
 	if stop < start && step < 0 {
 		for i := start; i > stop; i += step {
-			items = append(items, interpreter.NewObjectInt(i))
+			items = append(items, primitive.NewObjectInt(i))
 		}
 	} else if step > 0 {
 		for i := start; i < stop; i += step {
-			items = append(items, interpreter.NewObjectInt(i))
+			items = append(items, primitive.NewObjectInt(i))
 		}
 	}
 	return interpreter.NewObjectList(items...), nil

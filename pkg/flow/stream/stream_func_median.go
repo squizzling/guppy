@@ -5,6 +5,7 @@ import (
 
 	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 )
 
 type FFIMedian struct {
@@ -25,9 +26,9 @@ func (f FFIMedian) Call(i itypes.Interpreter) (itypes.Object, error) {
 	} else {
 		for _, value := range values.Items {
 			switch value := value.(type) {
-			case *interpreter.ObjectInt:
+			case *primitive.ObjectInt:
 				medianConstants = append(medianConstants, value)
-			case *interpreter.ObjectDouble:
+			case *primitive.ObjectDouble:
 				medianConstants = append(medianConstants, value)
 			case Stream:
 				streamValues = append(streamValues, unpublish(value))

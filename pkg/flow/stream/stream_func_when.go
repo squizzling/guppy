@@ -19,7 +19,7 @@ func (f FFIWhen) Params(i itypes.Interpreter) (*itypes.Params, error) {
 		Params: []itypes.ParamDef{
 			{Name: "predicate"},
 			{Name: "lasting", Default: primitive.NewObjectNone()},
-			{Name: "at_least", Default: interpreter.NewObjectDouble(1.0)},
+			{Name: "at_least", Default: primitive.NewObjectDouble(1.0)},
 		},
 	}, nil
 }

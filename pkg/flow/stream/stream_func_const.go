@@ -5,6 +5,7 @@ import (
 
 	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 )
 
 type FFIConst struct {
@@ -56,9 +57,9 @@ func (f FFIConst) Call(i itypes.Interpreter) (itypes.Object, error) {
 		return nil, err
 	} else {
 		switch value := value.(type) {
-		case *interpreter.ObjectInt:
+		case *primitive.ObjectInt:
 			return NewStreamFuncConstInt(newStreamObject(), value.Value, key), nil
-		case *interpreter.ObjectDouble:
+		case *primitive.ObjectDouble:
 			return NewStreamFuncConstDouble(newStreamObject(), value.Value, key), nil
 		default:
 			return nil, fmt.Errorf("value is %T not *interpreter.ObjectInt, or *interpreter.ObjectDouble", value)

@@ -86,7 +86,7 @@ func (f FFIDetect) resolveAutoResolveAfter(i itypes.Interpreter) (*time.Duration
 		return nil, nil
 	} else if dur, isDuration := autoResolveAfter.(*duration.Duration); isDuration {
 		return &dur.Duration, nil
-	} else if rawMilliseconds, isDuration := autoResolveAfter.(*interpreter.ObjectInt); isDuration {
+	} else if rawMilliseconds, isDuration := autoResolveAfter.(*primitive.ObjectInt); isDuration {
 		d := time.Millisecond * time.Duration(rawMilliseconds.Value)
 		return &d, nil
 	} else {

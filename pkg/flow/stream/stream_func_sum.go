@@ -5,6 +5,7 @@ import (
 
 	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 )
 
 type FFISum struct {
@@ -26,10 +27,10 @@ func (f FFISum) Call(i itypes.Interpreter) (itypes.Object, error) {
 	} else {
 		for _, value := range values.Items {
 			switch value := value.(type) {
-			case *interpreter.ObjectInt:
+			case *primitive.ObjectInt:
 				sumConstant += float64(value.Value)
 				haveConstant = true
-			case *interpreter.ObjectDouble:
+			case *primitive.ObjectDouble:
 				sumConstant += value.Value
 				haveConstant = true
 			case Stream:
@@ -43,7 +44,7 @@ func (f FFISum) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if len(streamValues) == 0 && !haveConstant {
 		return nil, fmt.Errorf("invalid number of arguments to function min, expected at least 1")
 	} else if len(streamValues) == 0 {
-		return interpreter.NewObjectDouble(sumConstant), nil
+		return primitive.NewObjectDouble(sumConstant), nil
 	} else {
 		return NewStreamFuncSum(newStreamObject(), streamValues, sumConstant), nil
 	}

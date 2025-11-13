@@ -3,8 +3,8 @@ package stream
 import (
 	"fmt"
 
-	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 )
 
 type methodStreamOp struct {
@@ -34,9 +34,9 @@ func (mso methodStreamOp) Call(i itypes.Interpreter) (itypes.Object, error) {
 			switch right := right.(type) {
 			case Stream:
 				return NewStreamBinaryOpStream(newStreamObject(), &ObjectStreamTernary{}, unpublish(selfStream), mso.op, unpublish(right)), nil
-			case *interpreter.ObjectInt:
+			case *primitive.ObjectInt:
 				return NewStreamBinaryOpInt(newStreamObject(), &ObjectStreamTernary{}, unpublish(selfStream), mso.op, right.Value, mso.reverse), nil
-			case *interpreter.ObjectDouble:
+			case *primitive.ObjectDouble:
 				return NewStreamBinaryOpDouble(newStreamObject(), &ObjectStreamTernary{}, unpublish(selfStream), mso.op, right.Value, mso.reverse), nil
 			default:
 				return nil, fmt.Errorf("opCall[%s]: unknown type %T", mso.op, right)

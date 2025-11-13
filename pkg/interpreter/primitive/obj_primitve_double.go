@@ -1,11 +1,10 @@
-package interpreter
+package primitive
 
 import (
 	"fmt"
 	"strconv"
 
 	"guppy/pkg/interpreter/itypes"
-	"guppy/pkg/interpreter/primitive"
 )
 
 type ObjectDouble struct {
@@ -91,13 +90,13 @@ func (mdo methodDoubleOp) Call(i itypes.Interpreter) (itypes.Object, error) {
 		case "*":
 			return NewObjectDouble(self.Value * rightVal), nil
 		case "<":
-			return primitive.NewObjectBool(self.Value < rightVal), nil
+			return NewObjectBool(self.Value < rightVal), nil
 		case ">":
-			return primitive.NewObjectBool(self.Value > rightVal), nil
+			return NewObjectBool(self.Value > rightVal), nil
 		case "<=":
-			return primitive.NewObjectBool(self.Value <= rightVal), nil
+			return NewObjectBool(self.Value <= rightVal), nil
 		case ">=":
-			return primitive.NewObjectBool(self.Value >= rightVal), nil
+			return NewObjectBool(self.Value >= rightVal), nil
 		default:
 			return nil, fmt.Errorf("methodDoubleOp: unknown op %s", mdo.op)
 		}

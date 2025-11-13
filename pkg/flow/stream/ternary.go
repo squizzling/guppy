@@ -3,8 +3,8 @@ package stream
 import (
 	"fmt"
 
-	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 	"guppy/pkg/parser/ast"
 )
 
@@ -18,7 +18,7 @@ func (ost *ObjectStreamTernary) resolveStream(i itypes.Interpreter, e ast.Expres
 	switch o := o.(type) {
 	case Stream:
 		return o, nil
-	case *interpreter.ObjectInt:
+	case *primitive.ObjectInt:
 		return NewStreamFuncConstInt(newStreamObject(), o.Value, nil), nil
 	default:
 		return nil, fmt.Errorf("StreamIsNone.resolveStream got %T expecting Stream", o)

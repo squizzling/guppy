@@ -5,6 +5,7 @@ import (
 
 	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 )
 
 type FFIMean struct {
@@ -25,9 +26,9 @@ func (f FFIMean) Call(i itypes.Interpreter) (itypes.Object, error) {
 	} else {
 		for _, value := range values.Items {
 			switch value := value.(type) {
-			case *interpreter.ObjectInt:
+			case *primitive.ObjectInt:
 				meanConstants = append(meanConstants, value)
-			case *interpreter.ObjectDouble:
+			case *primitive.ObjectDouble:
 				meanConstants = append(meanConstants, value)
 			case Stream:
 				streamValues = append(streamValues, unpublish(value))

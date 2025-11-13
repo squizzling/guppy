@@ -20,7 +20,7 @@ func (f FFIData) Params(i itypes.Interpreter) (*itypes.Params, error) {
 			{Name: "filter", Default: primitive.NewObjectNone()},
 			{Name: "rollup", Default: primitive.NewObjectNone()},
 			{Name: "extrapolation", Default: interpreter.NewObjectString("null")},
-			{Name: "maxExtrapolations", Default: interpreter.NewObjectInt(-1)},
+			{Name: "maxExtrapolations", Default: primitive.NewObjectInt(-1)},
 			{Name: "resolution", Default: primitive.NewObjectNone()}, // TODO: Handle
 		},
 	}, nil
@@ -65,7 +65,7 @@ func resolveExtrapolation(i itypes.Interpreter) (string, error) {
 }
 
 func resolveMaxExtrapolations(i itypes.Interpreter) (int, error) {
-	if maxExtrapolations, err := itypes.ArgAs[*interpreter.ObjectInt](i, "maxExtrapolations"); err != nil {
+	if maxExtrapolations, err := itypes.ArgAs[*primitive.ObjectInt](i, "maxExtrapolations"); err != nil {
 		return 0, err
 	} else {
 		return maxExtrapolations.Value, nil

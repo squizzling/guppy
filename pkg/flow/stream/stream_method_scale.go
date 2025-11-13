@@ -3,8 +3,8 @@ package stream
 import (
 	"fmt"
 
-	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 )
 
 type methodScale struct {
@@ -25,9 +25,9 @@ func (ms methodScale) resolveMultiple(i itypes.Interpreter) (float64, error) {
 		return 0, err
 	} else {
 		switch multiple := multiple.(type) {
-		case *interpreter.ObjectInt:
+		case *primitive.ObjectInt:
 			return float64(multiple.Value), nil
-		case *interpreter.ObjectDouble:
+		case *primitive.ObjectDouble:
 			return multiple.Value, nil
 		default:
 			return 0, fmt.Errorf("duration is %T not *interpreter.ObjectInt", multiple)

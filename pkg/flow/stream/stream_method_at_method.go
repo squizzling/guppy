@@ -181,7 +181,7 @@ func (msat methodStreamAggregateTransform) resolveShiftCycles(i itypes.Interpret
 		switch shiftCycles := shiftCycles.(type) {
 		case *primitive.ObjectNone:
 			return 0, nil
-		case *interpreter.ObjectInt:
+		case *primitive.ObjectInt:
 			return shiftCycles.Value, nil
 		default:
 			return 0, fmt.Errorf("methodStreamAggregateTransform(shiftCycles) is %T not *interpreter.ObjectNone, or *interpreter.ObjectBool", shiftCycles)

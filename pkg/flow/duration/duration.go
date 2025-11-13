@@ -128,7 +128,7 @@ func (f FFIDuration) resolveDuration(i itypes.Interpreter) (time.Duration, error
 		return 0, err
 	} else {
 		switch arg := arg.(type) {
-		case *interpreter.ObjectInt: // milliseconds
+		case *primitive.ObjectInt: // milliseconds
 			return time.Duration(arg.Value) * time.Millisecond, nil
 		case *interpreter.ObjectString:
 			return ParseDuration(arg.Value)
@@ -203,7 +203,7 @@ func (mdu methodDurationOp) Call(i itypes.Interpreter) (itypes.Object, error) {
 		switch right := right.(type) {
 		case *Duration: // TODO: Look in to what it means for duration('2d') * duration('3d') in SFX
 			rightVal = right.Duration
-		case *interpreter.ObjectInt:
+		case *primitive.ObjectInt:
 			rightVal = time.Duration(right.Value)
 		default:
 			return nil, fmt.Errorf("methodDurationOp: unknown type %T", right)

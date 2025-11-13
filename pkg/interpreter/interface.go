@@ -88,8 +88,8 @@ func ArgAsString(i itypes.Interpreter, argName string) (string, error) {
 func ArgAsDouble(i itypes.Interpreter, argName string) (float64, error) {
 	if objArg, err := i.GetArg(argName); err != nil {
 		return 0, err
-	} else if doubleArg, ok := objArg.(*ObjectDouble); !ok {
-		if intArg, ok := objArg.(*ObjectInt); !ok {
+	} else if doubleArg, ok := objArg.(*primitive.ObjectDouble); !ok {
+		if intArg, ok := objArg.(*primitive.ObjectInt); !ok {
 			return 0, fmt.Errorf("%T is not *interpreter.ObjectDouble or *interpreter.ObjectInt", objArg)
 		} else {
 			return float64(intArg.Value), nil

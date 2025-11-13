@@ -5,6 +5,7 @@ import (
 
 	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 )
 
 type FFIMin struct {
@@ -25,26 +26,26 @@ func (f FFIMin) Call(i itypes.Interpreter) (itypes.Object, error) {
 	} else {
 		for _, value := range values.Items {
 			switch value := value.(type) {
-			case *interpreter.ObjectInt:
+			case *primitive.ObjectInt:
 				switch c := minConstant.(type) {
-				case *interpreter.ObjectInt:
+				case *primitive.ObjectInt:
 					if value.Value < c.Value {
 						minConstant = value
 					}
-				case *interpreter.ObjectDouble:
+				case *primitive.ObjectDouble:
 					if float64(value.Value) < c.Value {
 						minConstant = value
 					}
 				case nil:
 					minConstant = value
 				}
-			case *interpreter.ObjectDouble:
+			case *primitive.ObjectDouble:
 				switch c := minConstant.(type) {
-				case *interpreter.ObjectInt:
+				case *primitive.ObjectInt:
 					if value.Value < float64(c.Value) {
 						minConstant = value
 					}
-				case *interpreter.ObjectDouble:
+				case *primitive.ObjectDouble:
 					if value.Value < c.Value {
 						minConstant = value
 					}
