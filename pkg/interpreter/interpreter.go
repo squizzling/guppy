@@ -28,16 +28,8 @@ func NewInterpreter(enableTrace bool) itypes.Interpreter {
 	return i
 }
 
-type MethodStr interface {
-	MethodStr() (string, error)
-}
-
-type Reprer interface {
-	Repr() string
-}
-
 func Repr(o any) string {
-	if repr, ok := o.(Reprer); ok {
+	if repr, ok := o.(itypes.Reprable); ok {
 		return repr.Repr()
 	} else {
 		return fmt.Sprintf("%#v", o)
