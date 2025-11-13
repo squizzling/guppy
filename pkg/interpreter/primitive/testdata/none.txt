@@ -37,3 +37,7 @@ True
 o = None is const(1)
 -----
 ?*stream.StreamIsNone is not stringable
+=====
+o = repr(None)
+-----
+None

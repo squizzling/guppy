@@ -37,3 +37,11 @@ True
 o = str(False)
 -----
 False
+=====
+o = repr(True)
+-----
+True
+=====
+o = repr(False)
+-----
+False

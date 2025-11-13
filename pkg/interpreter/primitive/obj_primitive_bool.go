@@ -23,12 +23,16 @@ func NewObjectBool(v bool) *ObjectBool {
 	}
 }
 
-func (ob *ObjectBool) String(i itypes.Interpreter) (string, error) {
+func (ob *ObjectBool) Repr() string {
 	if ob.Value {
-		return "True", nil
+		return "True"
 	} else {
-		return "False", nil
+		return "False"
 	}
+}
+
+func (ob *ObjectBool) String(i itypes.Interpreter) (string, error) {
+	return ob.Repr(), nil
 }
 
 func (ob *ObjectBool) VisitExpressionTernary(i itypes.Interpreter, left ast.Expression, cond itypes.Object, right ast.Expression) (any, error) {

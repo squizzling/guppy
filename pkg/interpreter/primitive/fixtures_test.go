@@ -54,6 +54,7 @@ func testFromFile(
 				panic("parse failed: " + parseErr.Error())
 			}
 			i := interpreter.NewInterpreter(false)
+			_ = i.SetGlobal("repr", builtin.NewFFIRepr())
 			_ = i.SetGlobal("str", builtin.NewFFIStr())
 			_ = i.SetGlobal("const", &stream.FFIConst{Object: itypes.NewObject(nil)}) // So we can use __ris__
 
