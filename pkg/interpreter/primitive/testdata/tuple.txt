@@ -1,0 +1,3 @@
+o = (1,)
+-----
+?*primitive.ObjectTuple is not stringable
