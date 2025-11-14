@@ -39,12 +39,12 @@ func (msat methodStreamAggregateTransform) resolveBy(i itypes.Interpreter) ([]st
 		switch by := by.(type) {
 		case *primitive.ObjectNone:
 			return nil, nil // explicitly nil
-		case *interpreter.ObjectString:
+		case *primitive.ObjectString:
 			return []string{by.Value}, nil
 		case *interpreter.ObjectList:
 			actualBy := make([]string, 0, len(by.Items)) // explicitly not nil
 			for idx, item := range by.Items {
-				if s, ok := item.(*interpreter.ObjectString); ok {
+				if s, ok := item.(*primitive.ObjectString); ok {
 					actualBy = append(actualBy, s.Value)
 				} else {
 					return nil, fmt.Errorf("methodStreamAggregateTransform(by) element %d is %T not *interpreter.ObjectString", idx, item)
@@ -70,12 +70,12 @@ func (msat methodStreamAggregateTransform) resolveAllowMissing(i itypes.Interpre
 			} else {
 				return false, nil, nil
 			}
-		case *interpreter.ObjectString:
+		case *primitive.ObjectString:
 			return false, []string{allowMissing.Value}, nil
 		case *interpreter.ObjectList:
 			actualAllowMissing := make([]string, 0, len(allowMissing.Items))
 			for idx, item := range allowMissing.Items {
-				if s, ok := item.(*interpreter.ObjectString); ok {
+				if s, ok := item.(*primitive.ObjectString); ok {
 					actualAllowMissing = append(actualAllowMissing, s.Value)
 				} else {
 					return false, nil, fmt.Errorf("methodStreamAggregateTransform(allowMissing) element %d is %T not *interpreter.ObjectString", idx, item)
@@ -96,7 +96,7 @@ func (msat methodStreamAggregateTransform) resolveOver(i itypes.Interpreter) (*t
 		switch over := over.(type) {
 		case *primitive.ObjectNone:
 			return nil, nil
-		case *interpreter.ObjectString:
+		case *primitive.ObjectString:
 			if d, err := duration.ParseDuration(over.Value); err != nil {
 				return nil, err
 			} else {
@@ -117,7 +117,7 @@ func (msat methodStreamAggregateTransform) resolveCycle(i itypes.Interpreter) (*
 		switch over := cycle.(type) {
 		case *primitive.ObjectNone:
 			return nil, nil
-		case *interpreter.ObjectString:
+		case *primitive.ObjectString:
 			if over.Value == "hour" || over.Value == "week" || over.Value == "month" || over.Value == "day" || over.Value == "quarter" {
 				return &over.Value, nil
 			} else {
@@ -136,7 +136,7 @@ func (msat methodStreamAggregateTransform) resolveCycleStart(i itypes.Interprete
 		switch cycleStart := cycleStart.(type) {
 		case *primitive.ObjectNone:
 			return nil, nil
-		case *interpreter.ObjectString:
+		case *primitive.ObjectString:
 			return &cycleStart.Value, nil
 		default:
 			return nil, fmt.Errorf("methodStreamAggregateTransform(cycleStart) is %T not *interpreter.ObjectNone, or *interpreter.ObjectString", cycleStart)
@@ -151,7 +151,7 @@ func (msat methodStreamAggregateTransform) resolveTimezone(i itypes.Interpreter)
 		switch timezone := timezone.(type) {
 		case *primitive.ObjectNone:
 			return nil, nil
-		case *interpreter.ObjectString:
+		case *primitive.ObjectString:
 			return &timezone.Value, nil
 		default:
 			return nil, fmt.Errorf("methodStreamAggregateTransform(timezone) is %T not *interpreter.ObjectNone, or *interpreter.ObjectString", timezone)

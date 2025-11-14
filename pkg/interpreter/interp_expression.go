@@ -239,7 +239,7 @@ func (i *interpreter) resolveNamedArgs(namedExpression []*ast.DataArgument, kwAr
 			return nil, fmt.Errorf("not a dict")
 		} else {
 			for _, keyValue := range objDict.items {
-				if keyStr, ok := keyValue.Key.(*ObjectString); !ok {
+				if keyStr, ok := keyValue.Key.(*primitive.ObjectString); !ok {
 					return nil, fmt.Errorf("kwargs not a string")
 				} else if _, ok := out[keyStr.Value]; ok {
 					return nil, fmt.Errorf("duplicate key") // TODO: Check if we enforce this in the grammar
@@ -404,7 +404,7 @@ func (i *interpreter) VisitExpressionLiteral(el ast.ExpressionLiteral) (returnVa
 	case float64:
 		return primitive.NewObjectDouble(v), nil
 	case string:
-		return NewObjectString(v), nil
+		return primitive.NewObjectString(v), nil
 	case nil:
 		return primitive.NewObjectNone(), nil
 	case itypes.Object:

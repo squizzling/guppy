@@ -34,7 +34,7 @@ func TestFFILen(t *testing.T) {
 	assert.Equal(t, 1, o.(*primitive.ObjectInt).Value)
 
 	l = FFILen{}
-	l.Value.String = interpreter.NewObjectString("test")
+	l.Value.String = primitive.NewObjectString("test")
 	o, err = l.Call(i)
 	require.NoError(t, err)
 	assert.Equal(t, 4, o.(*primitive.ObjectInt).Value)

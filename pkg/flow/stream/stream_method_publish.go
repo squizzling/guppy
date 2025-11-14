@@ -16,7 +16,7 @@ func (mp methodPublish) Params(i itypes.Interpreter) (*itypes.Params, error) {
 	return &itypes.Params{
 		Params: []itypes.ParamDef{
 			{Name: "self"},
-			{Name: "label", Default: interpreter.NewObjectString("")}, // TODO: Validate "" vs None
+			{Name: "label", Default: primitive.NewObjectString("")}, // TODO: Validate "" vs None
 			{Name: "enable", Default: primitive.NewObjectBool(true)},
 		},
 		//KWParam: "additional_dimensions", // Maybe, I don't fully know this one.

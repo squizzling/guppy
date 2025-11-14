@@ -5,6 +5,7 @@ import (
 
 	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -32,5 +33,5 @@ func TestFFIRepr(t *testing.T) {
 	s := FFIRepr{reprThing{}}
 	o, err := s.Call(i)
 	require.NoError(t, err)
-	assert.Equal(t, "repr", o.(*interpreter.ObjectString).Value)
+	assert.Equal(t, "repr", o.(*primitive.ObjectString).Value)
 }

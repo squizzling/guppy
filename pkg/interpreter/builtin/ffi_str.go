@@ -4,6 +4,7 @@ import (
 	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/ffi"
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 )
 
 type FFIStr struct {
@@ -18,6 +19,6 @@ func (f FFIStr) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if s, err := f.Value.String(i); err != nil {
 		return nil, err
 	} else {
-		return interpreter.NewObjectString(s), nil
+		return primitive.NewObjectString(s), nil
 	}
 }

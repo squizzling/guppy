@@ -1,9 +1,9 @@
 package builtin
 
 import (
-	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/ffi"
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 )
 
 type FFIRepr struct {
@@ -15,5 +15,5 @@ func NewFFIRepr() itypes.FlowCall {
 }
 
 func (f FFIRepr) Call(i itypes.Interpreter) (itypes.Object, error) {
-	return interpreter.NewObjectString(f.Value.Repr()), nil
+	return primitive.NewObjectString(f.Value.Repr()), nil
 }

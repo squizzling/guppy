@@ -13,7 +13,7 @@ type FFILen struct {
 	Value struct {
 		List   *interpreter.ObjectList
 		Tuple  *interpreter.ObjectTuple
-		String *interpreter.ObjectString
+		String *primitive.ObjectString
 	} `ffi:"value"`
 }
 

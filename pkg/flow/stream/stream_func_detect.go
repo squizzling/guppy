@@ -19,7 +19,7 @@ func (f FFIDetect) Params(i itypes.Interpreter) (*itypes.Params, error) {
 		Params: []itypes.ParamDef{
 			{Name: "on"},
 			{Name: "off", Default: primitive.NewObjectNone()},
-			{Name: "mode", Default: interpreter.NewObjectString("paired")},
+			{Name: "mode", Default: primitive.NewObjectString("paired")},
 			{Name: "annotations", Default: primitive.NewObjectNone()},
 			{Name: "event_annotations", Default: primitive.NewObjectNone()},
 			{Name: "auto_resolve_after", Default: primitive.NewObjectNone()},

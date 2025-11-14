@@ -6,7 +6,6 @@ import (
 	"strings"
 	"time"
 
-	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
 	"guppy/pkg/interpreter/primitive"
 )
@@ -130,7 +129,7 @@ func (f FFIDuration) resolveDuration(i itypes.Interpreter) (time.Duration, error
 		switch arg := arg.(type) {
 		case *primitive.ObjectInt: // milliseconds
 			return time.Duration(arg.Value) * time.Millisecond, nil
-		case *interpreter.ObjectString:
+		case *primitive.ObjectString:
 			return ParseDuration(arg.Value)
 		case *Duration:
 			return arg.Duration, nil

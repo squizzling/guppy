@@ -19,7 +19,7 @@ func (f FFIData) Params(i itypes.Interpreter) (*itypes.Params, error) {
 			{Name: "metric"},
 			{Name: "filter", Default: primitive.NewObjectNone()},
 			{Name: "rollup", Default: primitive.NewObjectNone()},
-			{Name: "extrapolation", Default: interpreter.NewObjectString("null")},
+			{Name: "extrapolation", Default: primitive.NewObjectString("null")},
 			{Name: "maxExtrapolations", Default: primitive.NewObjectInt(-1)},
 			{Name: "resolution", Default: primitive.NewObjectNone()}, // TODO: Handle
 		},

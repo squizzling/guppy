@@ -203,7 +203,7 @@ func TestFFIError(t *testing.T) {
 	}{
 		{"single-wrong-type", primitive.NewObjectNone(), primitive.NewObjectNone(), "param `single` for TestFFI.Single is *primitive.ObjectNone not *primitive.ObjectInt"},
 		{"single-missing", nil, primitive.NewObjectNone(), "param `single` for TestFFI.Single is missing, expecting *primitive.ObjectInt"},
-		{"oneOf-wrong-type", primitive.NewObjectInt(1), interpreter.NewObjectString(""), "param `oneof` for TestFFI.OneOf is *interpreter.ObjectString not *primitive.ObjectNone, or *primitive.ObjectInt"},
+		{"oneOf-wrong-type", primitive.NewObjectInt(1), primitive.NewObjectString(""), "param `oneof` for TestFFI.OneOf is *primitive.ObjectString not *primitive.ObjectNone, or *primitive.ObjectInt"},
 		{"oneOf-missing", primitive.NewObjectInt(1), nil, "param `oneof` for TestFFI.OneOf is missing, expecting *primitive.ObjectNone, or *primitive.ObjectInt"},
 	} {
 		t.Run(ts.name, func(t *testing.T) {

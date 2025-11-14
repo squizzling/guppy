@@ -152,7 +152,7 @@ False
 =====
 o = 1 * "a"
 -----
-*param `right` for ffiObjectIntMathOp.Right is *interpreter.ObjectString not *primitive.ObjectInt, *primitive.ObjectDouble, or an itypes.Object with __rmul__
+*param `right` for ffiObjectIntMathOp.Right is *primitive.ObjectString not *primitive.ObjectInt, *primitive.ObjectDouble, or an itypes.Object with __rmul__
 =====
 o = 1 * const(1)
 -----

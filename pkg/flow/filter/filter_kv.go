@@ -30,7 +30,7 @@ func (f FFIFilter) resolveTerms(i itypes.Interpreter) ([]string, error) {
 
 	if objTerm, err := i.GetArg("term"); err != nil {
 		return nil, err
-	} else if strTerm, ok := objTerm.(*interpreter.ObjectString); ok {
+	} else if strTerm, ok := objTerm.(*primitive.ObjectString); ok {
 		terms = append(terms, strTerm.Value)
 	} else if _, ok = objTerm.(*primitive.ObjectNone); !ok {
 		return nil, fmt.Errorf("term is not *interpreter.ObjectString or *interpreter.ObjectNone")

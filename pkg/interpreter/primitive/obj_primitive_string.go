@@ -1,10 +1,9 @@
-package interpreter
+package primitive
 
 import (
 	"fmt"
 
 	"guppy/pkg/interpreter/itypes"
-	"guppy/pkg/interpreter/primitive"
 )
 
 type ObjectString struct {
@@ -27,8 +26,6 @@ func NewObjectString(s string) *ObjectString {
 func (os *ObjectString) String(i itypes.Interpreter) (string, error) {
 	return os.Value, nil
 }
-
-var _ = FlowStringable(&ObjectString{})
 
 type methodStringAdd struct {
 	itypes.Object
@@ -69,7 +66,7 @@ func (mse methodStringEqual) Call(i itypes.Interpreter) (itypes.Object, error) {
 	} else {
 		switch right := right.(type) {
 		case *ObjectString:
-			return primitive.NewObjectBool(self.Value == right.Value), nil
+			return NewObjectBool(self.Value == right.Value), nil
 		default:
 			return nil, fmt.Errorf("methodStringAdd: unknown type %T", right)
 		}
@@ -92,7 +89,7 @@ func (msne methodStringNotEqual) Call(i itypes.Interpreter) (itypes.Object, erro
 	} else {
 		switch right := right.(type) {
 		case *ObjectString:
-			return primitive.NewObjectBool(self.Value != right.Value), nil
+			return NewObjectBool(self.Value != right.Value), nil
 		default:
 			return nil, fmt.Errorf("methodStringAdd: unknown type %T", right)
 		}

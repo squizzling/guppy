@@ -35,7 +35,7 @@ func NewObjectDictFromMap(items map[string]itypes.Object) itypes.Object {
 	var itemList []DictItem
 	for key, value := range items {
 		itemList = append(itemList, DictItem{
-			Key:   NewObjectString(key),
+			Key:   primitive.NewObjectString(key),
 			Value: value,
 		})
 	}
@@ -48,13 +48,13 @@ func (od *ObjectDict) AsMapStringString() (map[string]string, error) {
 		sKey := ""
 		sValue := ""
 		switch key := item.Key.(type) {
-		case *ObjectString:
+		case *primitive.ObjectString:
 			sKey = key.Value
 		default:
 			return nil, fmt.Errorf("dict idx %d (%s) is %T not *interpreter.ObjectString", idx, Repr(key), key)
 		}
 		switch value := item.Value.(type) {
-		case *ObjectString:
+		case *primitive.ObjectString:
 			sValue = value.Value
 		default:
 			return nil, fmt.Errorf("dict idx %d (%s) is %T not *interpreter.ObjectString", idx, sKey, value)
@@ -80,7 +80,7 @@ func (od *ObjectDict) mustGet(key itypes.Object) (itypes.Object, error) {
 	}
 
 	switch key := key.(type) {
-	case *ObjectString:
+	case *primitive.ObjectString:
 		return od.mustGetString(key.Value)
 	default:
 		return nil, fmt.Errorf("requested key is %T", key)
@@ -89,7 +89,7 @@ func (od *ObjectDict) mustGet(key itypes.Object) (itypes.Object, error) {
 
 func (od *ObjectDict) mustGetString(key string) (itypes.Object, error) {
 	for _, item := range od.items {
-		if itemKey, ok := item.Key.(*ObjectString); ok {
+		if itemKey, ok := item.Key.(*primitive.ObjectString); ok {
 			if itemKey.Value == key {
 				return item.Value, nil
 			}
