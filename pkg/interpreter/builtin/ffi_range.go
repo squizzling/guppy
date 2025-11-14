@@ -3,7 +3,6 @@ package builtin
 import (
 	"fmt"
 
-	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/ffi"
 	"guppy/pkg/interpreter/ftypes"
 	"guppy/pkg/interpreter/itypes"
@@ -57,5 +56,5 @@ func (f FFIRange) newRange(start int, stop int, step int) (itypes.Object, error)
 			items = append(items, primitive.NewObjectInt(i))
 		}
 	}
-	return interpreter.NewObjectList(items...), nil
+	return primitive.NewObjectList(items...), nil
 }

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strings"
 
-	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
 	"guppy/pkg/interpreter/primitive"
 )
@@ -25,7 +24,7 @@ func (f FFIPrint) Params(i itypes.Interpreter) (*itypes.Params, error) {
 }
 
 func (f FFIPrint) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if args, err := itypes.ArgAs[*interpreter.ObjectTuple](i, "star"); err != nil {
+	if args, err := itypes.ArgAs[*primitive.ObjectTuple](i, "star"); err != nil {
 		return nil, err
 	} else {
 		var sb strings.Builder

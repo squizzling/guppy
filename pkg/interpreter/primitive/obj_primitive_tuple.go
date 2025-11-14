@@ -1,4 +1,4 @@
-package interpreter
+package primitive
 
 import (
 	"guppy/pkg/interpreter/itypes"

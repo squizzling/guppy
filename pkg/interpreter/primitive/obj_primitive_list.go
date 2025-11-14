@@ -1,11 +1,10 @@
-package interpreter
+package primitive
 
 import (
 	"fmt"
 	"strings"
 
 	"guppy/pkg/interpreter/itypes"
-	"guppy/pkg/interpreter/primitive"
 )
 
 // TODO: Proper interface
@@ -80,7 +79,7 @@ func (mls methodListSubscript) Params(i itypes.Interpreter) (*itypes.Params, err
 func (mls methodListSubscript) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if self, err := itypes.ArgAs[*ObjectList](i, "self"); err != nil {
 		return nil, err
-	} else if start, err := itypes.ArgAs[*primitive.ObjectInt](i, "start"); err != nil {
+	} else if start, err := itypes.ArgAs[*ObjectInt](i, "start"); err != nil {
 		return nil, err
 	} else if len(self.Items) < start.Value+1 || start.Value < 0 {
 		// TODO: Does flow support x[-1] for last item?

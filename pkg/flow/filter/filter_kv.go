@@ -42,7 +42,7 @@ func (f FFIFilter) resolveTerms(i itypes.Interpreter) ([]string, error) {
 		return nil, err
 	} else {
 		switch v := v.(type) {
-		case *interpreter.ObjectTuple:
+		case *primitive.ObjectTuple:
 			for _, o := range v.Items {
 				if term, err := i.DoString(o); err != nil {
 					return nil, err

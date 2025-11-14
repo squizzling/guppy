@@ -206,9 +206,9 @@ func (i *interpreter) resolveUnnamedArgs(exprFunction ast.Expression, unnamedArg
 			return nil, nil, err
 		} else {
 			switch starArgs := starArgs.(type) {
-			case *ObjectList:
+			case *primitive.ObjectList:
 				unnamedArgs = append(unnamedArgs, starArgs.Items...)
-			case *ObjectTuple:
+			case *primitive.ObjectTuple:
 				unnamedArgs = append(unnamedArgs, starArgs.Items...)
 			case *deferred.ObjectDeferred:
 				unnamedArgs = append(unnamedArgs, starArgs)
@@ -264,7 +264,7 @@ func (i *interpreter) assignArgs(
 	kwArgs map[string]itypes.Object,
 ) error {
 	if starParamName != "" {
-		if err := i.Scope.Set(starParamName, NewObjectTuple(starArgs...)); err != nil {
+		if err := i.Scope.Set(starParamName, primitive.NewObjectTuple(starArgs...)); err != nil {
 			return err
 		}
 	}
@@ -332,7 +332,7 @@ func (i *interpreter) VisitExpressionList(el ast.ExpressionList) (returnValue an
 		return deferred.NewObjectDeferred(el, desired...), nil
 	}
 
-	return NewObjectList(o...), nil
+	return primitive.NewObjectList(o...), nil
 }
 
 func (i *interpreter) VisitExpressionListMaker(elm ast.ExpressionListMaker) (returnValue any, errOut error) {
@@ -356,9 +356,9 @@ func (i *interpreter) evalDataListFor(dlf *ast.DataListFor, expr ast.Expression)
 
 	var values []itypes.Object
 	switch o := o.(type) {
-	case *ObjectList:
+	case *primitive.ObjectList:
 		values = o.Items
-	case *ObjectTuple:
+	case *primitive.ObjectTuple:
 		values = o.Items
 	case *deferred.ObjectDeferred:
 		return o, nil
@@ -391,7 +391,7 @@ func (i *interpreter) evalDataListFor(dlf *ast.DataListFor, expr ast.Expression)
 			return
 		}
 	}
-	return NewObjectList(newValues...), nil
+	return primitive.NewObjectList(newValues...), nil
 
 }
 
@@ -472,7 +472,7 @@ func (i *interpreter) VisitExpressionTuple(et ast.ExpressionTuple) (returnValue 
 		return deferred.NewObjectDeferred(et, desired...), nil
 	}
 
-	return NewObjectTuple(o...), nil
+	return primitive.NewObjectTuple(o...), nil
 }
 
 func (i *interpreter) VisitExpressionUnary(eu ast.ExpressionUnary) (returnValue any, errOut error) {

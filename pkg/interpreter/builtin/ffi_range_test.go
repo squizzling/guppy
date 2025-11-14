@@ -101,7 +101,7 @@ func TestFFIRange(t *testing.T) {
 			rng, err := ts.input.Call(i)
 			require.NoError(t, err)
 			is := []int{}
-			for _, o := range rng.(*interpreter.ObjectList).Items {
+			for _, o := range rng.(*primitive.ObjectList).Items {
 				is = append(is, o.(*primitive.ObjectInt).Value)
 			}
 			assert.Equal(t, ts.expected, is)

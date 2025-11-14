@@ -3,7 +3,6 @@ package builtin
 import (
 	"fmt"
 
-	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/ffi"
 	"guppy/pkg/interpreter/itypes"
 	"guppy/pkg/interpreter/primitive"
@@ -11,8 +10,8 @@ import (
 
 type FFILen struct {
 	Value struct {
-		List   *interpreter.ObjectList
-		Tuple  *interpreter.ObjectTuple
+		List   *primitive.ObjectList
+		Tuple  *primitive.ObjectTuple
 		String *primitive.ObjectString
 	} `ffi:"value"`
 }

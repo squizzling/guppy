@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"guppy/pkg/flow/duration"
-	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
 	"guppy/pkg/interpreter/primitive"
 )
@@ -41,7 +40,7 @@ func (msat methodStreamAggregateTransform) resolveBy(i itypes.Interpreter) ([]st
 			return nil, nil // explicitly nil
 		case *primitive.ObjectString:
 			return []string{by.Value}, nil
-		case *interpreter.ObjectList:
+		case *primitive.ObjectList:
 			actualBy := make([]string, 0, len(by.Items)) // explicitly not nil
 			for idx, item := range by.Items {
 				if s, ok := item.(*primitive.ObjectString); ok {
@@ -72,7 +71,7 @@ func (msat methodStreamAggregateTransform) resolveAllowMissing(i itypes.Interpre
 			}
 		case *primitive.ObjectString:
 			return false, []string{allowMissing.Value}, nil
-		case *interpreter.ObjectList:
+		case *primitive.ObjectList:
 			actualAllowMissing := make([]string, 0, len(allowMissing.Items))
 			for idx, item := range allowMissing.Items {
 				if s, ok := item.(*primitive.ObjectString); ok {

@@ -74,9 +74,9 @@ func (i *interpreter) VisitStatementExpression(se ast.StatementExpression) (retu
 
 	var values []itypes.Object
 	switch valuesAny := valuesAny.(type) {
-	case *ObjectList:
+	case *primitive.ObjectList:
 		values = valuesAny.Items
-	case *ObjectTuple:
+	case *primitive.ObjectTuple:
 		values = valuesAny.Items
 	case itypes.Object:
 		values = []itypes.Object{valuesAny}

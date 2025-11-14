@@ -3,8 +3,8 @@ package stream
 import (
 	"fmt"
 
-	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 )
 
 type FFIAbs struct {
@@ -18,7 +18,7 @@ func (f FFIAbs) Params(i itypes.Interpreter) (*itypes.Params, error) {
 }
 
 func (f FFIAbs) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if streamsRaw, err := itypes.ArgAs[*interpreter.ObjectTuple](i, "streams"); err != nil {
+	if streamsRaw, err := itypes.ArgAs[*primitive.ObjectTuple](i, "streams"); err != nil {
 		return nil, err
 	} else {
 		var streams []Stream

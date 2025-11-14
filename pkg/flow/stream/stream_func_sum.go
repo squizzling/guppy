@@ -3,7 +3,6 @@ package stream
 import (
 	"fmt"
 
-	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
 	"guppy/pkg/interpreter/primitive"
 )
@@ -22,7 +21,7 @@ func (f FFISum) Call(i itypes.Interpreter) (itypes.Object, error) {
 	haveConstant := false
 	var sumConstant float64
 	var streamValues []Stream
-	if values, err := itypes.ArgAs[*interpreter.ObjectTuple](i, "values"); err != nil {
+	if values, err := itypes.ArgAs[*primitive.ObjectTuple](i, "values"); err != nil {
 		return nil, err
 	} else {
 		for _, value := range values.Items {

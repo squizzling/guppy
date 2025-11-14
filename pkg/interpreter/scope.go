@@ -8,6 +8,7 @@ import (
 
 	"guppy/pkg/interpreter/deferred"
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 	"guppy/pkg/parser/ast"
 )
 
@@ -66,7 +67,7 @@ func (s *scope) resolveDeferred(i itypes.Interpreter) error {
 			}
 			if od, ok := maybeResolved.(*deferred.ObjectDeferred); !ok {
 				// TODO: I don't love this, what if we have an actual list?
-				if objList, ok := maybeResolved.(*ObjectList); ok {
+				if objList, ok := maybeResolved.(*primitive.ObjectList); ok {
 					for idx, value := range objList.Items {
 						s.vars[da.vars[idx]] = value
 					}

@@ -22,13 +22,13 @@ func TestFFILen(t *testing.T) {
 	i := interpreter.NewInterpreter(false)
 
 	l := FFILen{}
-	l.Value.List = interpreter.NewObjectList(primitive.NewObjectInt(0))
+	l.Value.List = primitive.NewObjectList(primitive.NewObjectInt(0))
 	o, err := l.Call(i)
 	require.NoError(t, err)
 	assert.Equal(t, 1, o.(*primitive.ObjectInt).Value)
 
 	l = FFILen{}
-	l.Value.Tuple = interpreter.NewObjectTuple(primitive.NewObjectInt(0))
+	l.Value.Tuple = primitive.NewObjectTuple(primitive.NewObjectInt(0))
 	o, err = l.Call(i)
 	require.NoError(t, err)
 	assert.Equal(t, 1, o.(*primitive.ObjectInt).Value)
