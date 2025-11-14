@@ -1,0 +1,39 @@
+o = "foo"
+-----
+foo
+=====
+o = "foo" == "foo"
+-----
+True
+=====
+o = "foo" != "foo"
+-----
+False
+=====
+o = "foo" == "bar"
+-----
+False
+=====
+o = "foo" != "bar"
+-----
+True
+=====
+o = "foo" + "bar"
+-----
+foobar
+=====
+o = str("foo")
+-----
+foo
+=====
+o = "foo" + 5
+-----
+*methodStringAdd: unknown type *primitive.ObjectInt
+=====
+o = "foo" == 5
+-----
+*methodStringAdd: unknown type *primitive.ObjectInt
+=====
+o = "foo" != 5
+-----
+*methodStringAdd: unknown type *primitive.ObjectInt
