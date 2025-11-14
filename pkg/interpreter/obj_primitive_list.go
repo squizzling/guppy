@@ -32,7 +32,7 @@ func (ol *ObjectList) Repr() string {
 		if idx > 0 {
 			sb.WriteString(", ")
 		}
-		sb.WriteString(Repr(item))
+		sb.WriteString(itypes.Repr(item))
 	}
 	sb.WriteString(")")
 	return sb.String()

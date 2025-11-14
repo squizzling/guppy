@@ -28,14 +28,6 @@ func NewInterpreter(enableTrace bool) itypes.Interpreter {
 	return i
 }
 
-func Repr(o any) string {
-	if repr, ok := o.(itypes.Reprable); ok {
-		return repr.Repr()
-	} else {
-		return fmt.Sprintf("%#v", o)
-	}
-}
-
 func (i *interpreter) Debug(f string, args ...any) {
 	if !i.enableTrace {
 		return
@@ -71,7 +63,7 @@ func (i *interpreter) trace(a ...any) func(returnValue *any, err *error) {
 		i.debugDepth--
 		if !bytes.Contains(debug.Stack(), []byte("panic")) {
 			if *returnValue != nil {
-				fmt.Printf("%sleave %s%s -> %s\n", strings.Repeat(" ", i.debugDepth), n, ss, Repr(*returnValue))
+				fmt.Printf("%sleave %s%s -> %s\n", strings.Repeat(" ", i.debugDepth), n, ss, itypes.Repr(*returnValue))
 			} else if *err != nil {
 				fmt.Printf("%sleave %s%s -> error(%s)\n", strings.Repeat(" ", i.debugDepth), n, ss, *err)
 			} else {

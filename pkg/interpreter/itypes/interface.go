@@ -138,3 +138,11 @@ type Reprable interface {
 	Object
 	Repr() string
 }
+
+func Repr(o any) string {
+	if repr, ok := o.(Reprable); ok {
+		return repr.Repr()
+	} else {
+		return fmt.Sprintf("%#v", o)
+	}
+}

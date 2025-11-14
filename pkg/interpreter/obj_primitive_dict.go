@@ -51,7 +51,7 @@ func (od *ObjectDict) AsMapStringString() (map[string]string, error) {
 		case *primitive.ObjectString:
 			sKey = key.Value
 		default:
-			return nil, fmt.Errorf("dict idx %d (%s) is %T not *interpreter.ObjectString", idx, Repr(key), key)
+			return nil, fmt.Errorf("dict idx %d (%s) is %T not *interpreter.ObjectString", idx, itypes.Repr(key), key)
 		}
 		switch value := item.Value.(type) {
 		case *primitive.ObjectString:
@@ -105,9 +105,9 @@ func (od *ObjectDict) Repr() string {
 		if idx > 0 {
 			sb.WriteString(", ")
 		}
-		sb.WriteString(Repr(item.Key))
+		sb.WriteString(itypes.Repr(item.Key))
 		sb.WriteString(": ")
-		sb.WriteString(Repr(item.Value))
+		sb.WriteString(itypes.Repr(item.Value))
 	}
 	sb.WriteString("}")
 	return sb.String()

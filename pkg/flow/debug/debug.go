@@ -30,7 +30,7 @@ func (f FFIPrint) Call(i itypes.Interpreter) (itypes.Object, error) {
 	} else {
 		var sb strings.Builder
 		for _, arg := range args.Items {
-			sb.WriteString(interpreter.Repr(arg))
+			sb.WriteString(itypes.Repr(arg))
 		}
 		fmt.Printf("%s\n", sb.String())
 	}
