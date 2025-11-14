@@ -28,12 +28,12 @@ foo
 =====
 o = "foo" + 5
 -----
-*methodStringAdd: unknown type *primitive.ObjectInt
+*param `right` for ffiObjectStringAdd.Right is *primitive.ObjectInt not *primitive.ObjectString
 =====
 o = "foo" == 5
 -----
-*methodStringAdd: unknown type *primitive.ObjectInt
+False
 =====
 o = "foo" != 5
 -----
-*methodStringAdd: unknown type *primitive.ObjectInt
+True

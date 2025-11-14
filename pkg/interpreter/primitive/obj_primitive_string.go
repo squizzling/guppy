@@ -1,8 +1,7 @@
 package primitive
 
 import (
-	"fmt"
-
+	"guppy/pkg/interpreter/ffi"
 	"guppy/pkg/interpreter/itypes"
 )
 
@@ -12,14 +11,16 @@ type ObjectString struct {
 	Value string
 }
 
+var prototypeObjectString = itypes.NewObject(map[string]itypes.Object{
+	"__add__": ffi.NewFFI(ffiObjectStringAdd{}),
+	"__eq__":  ffi.NewFFI(ffiObjectStringRelOp{op: 0, invert: false}),
+	"__ne__":  ffi.NewFFI(ffiObjectStringRelOp{op: 0, invert: true}),
+})
+
 func NewObjectString(s string) *ObjectString {
 	return &ObjectString{
-		Object: itypes.NewObject(map[string]itypes.Object{
-			"__add__": methodStringAdd{Object: itypes.NewObject(nil)},
-			"__eq__":  methodStringEqual{Object: itypes.NewObject(nil)},
-			"__ne__":  methodStringNotEqual{Object: itypes.NewObject(nil)},
-		}),
-		Value: s,
+		Object: prototypeObjectString,
+		Value:  s,
 	}
 }
 
@@ -27,71 +28,30 @@ func (os *ObjectString) String(i itypes.Interpreter) (string, error) {
 	return os.Value, nil
 }
 
-type methodStringAdd struct {
-	itypes.Object
+type ffiObjectStringAdd struct {
+	Self  *ObjectString `ffi:"self"`
+	Right *ObjectString `ffi:"right"`
 }
 
-func (msa methodStringAdd) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return itypes.BinaryParams, nil
+func (f ffiObjectStringAdd) Call(i itypes.Interpreter) (itypes.Object, error) {
+	return NewObjectString(f.Self.Value + f.Right.Value), nil
 }
 
-func (msa methodStringAdd) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if self, err := itypes.ArgAs[*ObjectString](i, "self"); err != nil {
-		return nil, err
-	} else if right, err := i.GetArg("right"); err != nil {
-		return nil, err
+type ffiObjectStringRelOp struct {
+	Self  *ObjectString `ffi:"self"`
+	Right struct {
+		String *ObjectString
+		Object itypes.Object
+	} `ffi:"right"`
+
+	op     int // unused for now
+	invert bool
+}
+
+func (f ffiObjectStringRelOp) Call(i itypes.Interpreter) (itypes.Object, error) {
+	if f.Right.String != nil {
+		return NewObjectBool(f.Self.Value == f.Right.String.Value != f.invert), nil
 	} else {
-		switch right := right.(type) {
-		case *ObjectString:
-			return NewObjectString(self.Value + right.Value), nil
-		default:
-			return nil, fmt.Errorf("methodStringAdd: unknown type %T", right)
-		}
-	}
-}
-
-type methodStringEqual struct {
-	itypes.Object
-}
-
-func (mse methodStringEqual) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return itypes.BinaryParams, nil
-}
-
-func (mse methodStringEqual) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if self, err := itypes.ArgAs[*ObjectString](i, "self"); err != nil {
-		return nil, err
-	} else if right, err := i.GetArg("right"); err != nil {
-		return nil, err
-	} else {
-		switch right := right.(type) {
-		case *ObjectString:
-			return NewObjectBool(self.Value == right.Value), nil
-		default:
-			return nil, fmt.Errorf("methodStringAdd: unknown type %T", right)
-		}
-	}
-}
-
-type methodStringNotEqual struct {
-	itypes.Object
-}
-
-func (msne methodStringNotEqual) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return itypes.BinaryParams, nil
-}
-
-func (msne methodStringNotEqual) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if self, err := itypes.ArgAs[*ObjectString](i, "self"); err != nil {
-		return nil, err
-	} else if right, err := i.GetArg("right"); err != nil {
-		return nil, err
-	} else {
-		switch right := right.(type) {
-		case *ObjectString:
-			return NewObjectBool(self.Value != right.Value), nil
-		default:
-			return nil, fmt.Errorf("methodStringAdd: unknown type %T", right)
-		}
+		return NewObjectBool(f.invert), nil
 	}
 }
