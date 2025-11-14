@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"guppy/pkg/interpreter/ffi"
 	"guppy/pkg/interpreter/itypes"
 )
 
@@ -13,34 +14,27 @@ type ObjectInt struct {
 	Value int
 }
 
-type methodIntOp struct {
-	itypes.Object
+var prototypeObjectInt = itypes.NewObject(map[string]itypes.Object{
+	"__add__":     ffi.NewFFI(ffiObjectIntMathOp{op: 0, reverseMethod: "__radd__"}),
+	"__sub__":     ffi.NewFFI(ffiObjectIntMathOp{op: 1, reverseMethod: "__rsub__"}),
+	"__mul__":     ffi.NewFFI(ffiObjectIntMathOp{op: 2, reverseMethod: "__rmul__"}),
+	"__truediv__": ffi.NewFFI(ffiObjectIntMathOp{op: 3, reverseMethod: "__rtruediv__"}),
 
-	op      string
-	reverse string
-}
+	"__unary_minus__": ffi.NewFFI(ffiObjectIntMathNeg{}),
 
-type methodIntNeg struct {
-	itypes.Object
-}
+	"__lt__": ffi.NewFFI(ffiObjectIntRelOp{op: 0, invert: false}),
+	"__gt__": ffi.NewFFI(ffiObjectIntRelOp{op: 1, invert: false}),
+	"__eq__": ffi.NewFFI(ffiObjectIntRelOp{op: 2, invert: false}),
+
+	"__ge__": ffi.NewFFI(ffiObjectIntRelOp{op: 0, invert: true}),
+	"__le__": ffi.NewFFI(ffiObjectIntRelOp{op: 1, invert: true}),
+	"__ne__": ffi.NewFFI(ffiObjectIntRelOp{op: 2, invert: true}),
+})
 
 func NewObjectInt(i int) *ObjectInt {
 	return &ObjectInt{
-		Object: itypes.NewObject(map[string]itypes.Object{
-			"__add__":         methodIntOp{Object: itypes.NewObject(nil), op: "+", reverse: "__radd__"},
-			"__mul__":         methodIntOp{Object: itypes.NewObject(nil), op: "*", reverse: "__rmul__"},
-			"__sub__":         methodIntOp{Object: itypes.NewObject(nil), op: "-", reverse: "__rsub__"},
-			"__truediv__":     methodIntOp{Object: itypes.NewObject(nil), op: "/", reverse: "__rtruediv__"},
-			"__unary_minus__": methodIntNeg{Object: itypes.NewObject(nil)},
-
-			"__lt__": methodIntOp{Object: itypes.NewObject(nil), op: "<"},
-			"__gt__": methodIntOp{Object: itypes.NewObject(nil), op: ">"},
-			"__le__": methodIntOp{Object: itypes.NewObject(nil), op: "<="},
-			"__ge__": methodIntOp{Object: itypes.NewObject(nil), op: ">="},
-			"__eq__": methodIntOp{Object: itypes.NewObject(nil), op: "=="},
-			"__ne__": methodIntOp{Object: itypes.NewObject(nil), op: "!="},
-		}),
-		Value: i,
+		Object: prototypeObjectInt,
+		Value:  i,
 	}
 }
 
@@ -52,75 +46,81 @@ func (oi *ObjectInt) String(i itypes.Interpreter) (string, error) {
 	return strconv.Itoa(oi.Value), nil
 }
 
-func (mio methodIntOp) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return itypes.BinaryParams, nil
+type ffiObjectIntRelOp struct {
+	Self  *ObjectInt `ffi:"self"`
+	Right struct {
+		Int    *ObjectInt
+		Double *ObjectDouble
+	} `ffi:"right"`
+
+	op     int
+	invert bool
 }
 
-func (mio methodIntOp) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if right, err := i.GetArg("right"); err != nil {
-		return nil, err
-	} else if reverseOp, err := right.Member(i, right, mio.reverse); err == nil {
-		// If it exists, we always use the reverse method, because it's more likely to be the intended behavior.
-		// We explicitly don't expose reverse methods for primitives though.
-		if reverseOpCall, ok := reverseOp.(itypes.FlowCall); ok {
-			return reverseOpCall.Call(i)
-		}
-	}
-
-	if self, err := itypes.ArgAs[*ObjectInt](i, "self"); err != nil {
-		return nil, err
-	} else if right, err := i.GetArg("right"); err != nil {
-		return nil, err
+func (f ffiObjectIntRelOp) Call(i itypes.Interpreter) (itypes.Object, error) {
+	var right int
+	if f.Right.Int != nil {
+		right = f.Right.Int.Value
 	} else {
-		var rightVal int
-		switch right := right.(type) {
-		case *ObjectInt:
-			rightVal = right.Value
-		case *ObjectDouble:
-			rightVal = int(right.Value)
-		default:
-			return nil, fmt.Errorf("methodIntOp: unknown type %T op %s", right, mio.op)
-		}
-
-		switch mio.op {
-		case "+":
-			return NewObjectInt(self.Value + rightVal), nil
-		case "-":
-			return NewObjectInt(self.Value - rightVal), nil
-		case "/":
-			return NewObjectInt(self.Value / rightVal), nil
-		case "*":
-			return NewObjectInt(self.Value * rightVal), nil
-		case "<":
-			return NewObjectBool(self.Value < rightVal), nil
-		case ">":
-			return NewObjectBool(self.Value > rightVal), nil
-		case "<=":
-			return NewObjectBool(self.Value <= rightVal), nil
-		case ">=":
-			return NewObjectBool(self.Value >= rightVal), nil
-		case "==":
-			return NewObjectBool(self.Value == rightVal), nil
-		case "!=":
-			return NewObjectBool(self.Value != rightVal), nil
-		default:
-			return nil, fmt.Errorf("methodIntOp: unknown op %s", mio.op)
-		}
+		right = int(f.Right.Double.Value)
+	}
+	switch f.op {
+	case 0:
+		return NewObjectBool(f.Self.Value < right != f.invert), nil
+	case 1:
+		return NewObjectBool(f.Self.Value > right != f.invert), nil
+	default:
+		return NewObjectBool(f.Self.Value == right != f.invert), nil
 	}
 }
 
-var _ = itypes.FlowCall(methodIntOp{})
+type ffiObjectIntMathOp struct {
+	Self  *ObjectInt `ffi:"self"`
+	Right struct {
+		Int    *ObjectInt
+		Double *ObjectDouble
+		Object itypes.Object
+	} `ffi:"right"`
 
-func (min methodIntNeg) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return itypes.UnaryParams, nil
+	op            int
+	reverseMethod string
 }
 
-func (min methodIntNeg) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if self, err := itypes.ArgAs[*ObjectInt](i, "self"); err != nil {
-		return nil, err
-	} else {
-		return NewObjectInt(-self.Value), nil
+func (f ffiObjectIntMathOp) Call(i itypes.Interpreter) (itypes.Object, error) {
+	var right int
+
+	switch {
+	case f.Right.Int != nil:
+		right = f.Right.Int.Value
+	case f.Right.Double != nil:
+		right = int(f.Right.Double.Value)
+	default:
+		if reverseOp, err := f.Right.Object.Member(i, f.Right.Object, f.reverseMethod); err == nil {
+			// If it exists, we always use the reverse method, because it's more likely to be the intended behavior.
+			// We explicitly don't expose reverse methods for primitives though.
+			if reverseOpCall, ok := reverseOp.(itypes.FlowCall); ok {
+				return reverseOpCall.Call(i)
+			}
+		}
+		return nil, fmt.Errorf("param `right` for ffiObjectIntMathOp.Right is %T not *primitive.ObjectInt, *primitive.ObjectDouble, or an itypes.Object with %s", f.Right.Object, f.reverseMethod)
+	}
+
+	switch f.op {
+	case 0:
+		return NewObjectInt(f.Self.Value + right), nil
+	case 1:
+		return NewObjectInt(f.Self.Value - right), nil
+	case 2:
+		return NewObjectInt(f.Self.Value * right), nil
+	default:
+		return NewObjectInt(f.Self.Value / right), nil
 	}
 }
 
-var _ = itypes.FlowCall(methodIntNeg{})
+type ffiObjectIntMathNeg struct {
+	Self *ObjectInt `ffi:"self"`
+}
+
+func (f ffiObjectIntMathNeg) Call(i itypes.Interpreter) (itypes.Object, error) {
+	return NewObjectInt(-f.Self.Value), nil
+}

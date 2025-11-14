@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"guppy/pkg/interpreter/ffi"
 	"guppy/pkg/interpreter/itypes"
 )
 
@@ -13,34 +14,27 @@ type ObjectDouble struct {
 	Value float64
 }
 
-type methodDoubleOp struct {
-	itypes.Object
+var prototypeObjectDouble = itypes.NewObject(map[string]itypes.Object{
+	"__add__":     ffi.NewFFI(ffiObjectDoubleMathOp{op: 0, reverseMethod: "__radd__"}),
+	"__sub__":     ffi.NewFFI(ffiObjectDoubleMathOp{op: 1, reverseMethod: "__rsub__"}),
+	"__mul__":     ffi.NewFFI(ffiObjectDoubleMathOp{op: 2, reverseMethod: "__rmul__"}),
+	"__truediv__": ffi.NewFFI(ffiObjectDoubleMathOp{op: 3, reverseMethod: "__rtruediv__"}),
 
-	op      string
-	reverse string
-}
+	"__unary_minus__": ffi.NewFFI(ffiObjectDoubleMathNeg{}),
 
-type methodDoubleNeg struct {
-	itypes.Object
-}
+	"__lt__": ffi.NewFFI(ffiObjectDoubleRelOp{op: 0, invert: false}),
+	"__gt__": ffi.NewFFI(ffiObjectDoubleRelOp{op: 1, invert: false}),
+	"__eq__": ffi.NewFFI(ffiObjectDoubleRelOp{op: 2, invert: false}),
 
-func NewObjectDouble(f float64) itypes.Object {
+	"__ge__": ffi.NewFFI(ffiObjectDoubleRelOp{op: 0, invert: true}),
+	"__le__": ffi.NewFFI(ffiObjectDoubleRelOp{op: 1, invert: true}),
+	"__ne__": ffi.NewFFI(ffiObjectDoubleRelOp{op: 2, invert: true}),
+})
+
+func NewObjectDouble(i float64) *ObjectDouble {
 	return &ObjectDouble{
-		Object: itypes.NewObject(map[string]itypes.Object{
-			"__add__":         methodDoubleOp{Object: itypes.NewObject(nil), op: "+", reverse: "__radd__"},
-			"__mul__":         methodDoubleOp{Object: itypes.NewObject(nil), op: "*", reverse: "__rmul__"},
-			"__sub__":         methodDoubleOp{Object: itypes.NewObject(nil), op: "-", reverse: "__rsub__"},
-			"__truediv__":     methodDoubleOp{Object: itypes.NewObject(nil), op: "/", reverse: "__rtruediv__"},
-			"__unary_minus__": methodDoubleNeg{Object: itypes.NewObject(nil)},
-
-			"__lt__": methodDoubleOp{Object: itypes.NewObject(nil), op: "<"},
-			"__gt__": methodDoubleOp{Object: itypes.NewObject(nil), op: ">"},
-			"__le__": methodDoubleOp{Object: itypes.NewObject(nil), op: "<="},
-			"__ge__": methodDoubleOp{Object: itypes.NewObject(nil), op: ">="},
-			"__eq__": methodDoubleOp{Object: itypes.NewObject(nil), op: "=="},
-			"__ne__": methodDoubleOp{Object: itypes.NewObject(nil), op: "!="},
-		}),
-		Value: f,
+		Object: prototypeObjectDouble,
+		Value:  i,
 	}
 }
 
@@ -52,75 +46,81 @@ func (od *ObjectDouble) String(i itypes.Interpreter) (string, error) {
 	return strconv.FormatFloat(od.Value, 'f', 6, 64), nil
 }
 
-func (mdo methodDoubleOp) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return itypes.BinaryParams, nil
+type ffiObjectDoubleRelOp struct {
+	Self  *ObjectDouble `ffi:"self"`
+	Right struct {
+		Double *ObjectDouble
+		Int    *ObjectInt
+	} `ffi:"right"`
+
+	op     int
+	invert bool
 }
 
-func (mdo methodDoubleOp) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if right, err := i.GetArg("right"); err != nil {
-		return nil, err
-	} else if reverseOp, err := right.Member(i, right, mdo.reverse); err == nil {
-		// If it exists, we always use the reverse method, because it's more likely to be the intended behavior.
-		// We explicitly don't expose reverse methods for primitives though.
-		if reverseOpCall, ok := reverseOp.(itypes.FlowCall); ok {
-			return reverseOpCall.Call(i)
-		}
-	}
-
-	if self, err := itypes.ArgAs[*ObjectDouble](i, "self"); err != nil {
-		return nil, err
-	} else if right, err := i.GetArg("right"); err != nil {
-		return nil, err
+func (f ffiObjectDoubleRelOp) Call(i itypes.Interpreter) (itypes.Object, error) {
+	var right float64
+	if f.Right.Double != nil {
+		right = f.Right.Double.Value
 	} else {
-		var rightVal float64
-		switch right := right.(type) {
-		case *ObjectInt:
-			rightVal = float64(right.Value)
-		case *ObjectDouble:
-			rightVal = right.Value
-		default:
-			return nil, fmt.Errorf("methodDoubleOp: unknown type %T op %s", right, mdo.op)
-		}
-
-		switch mdo.op {
-		case "+":
-			return NewObjectDouble(self.Value + rightVal), nil
-		case "-":
-			return NewObjectDouble(self.Value - rightVal), nil
-		case "/":
-			return NewObjectDouble(self.Value / rightVal), nil
-		case "*":
-			return NewObjectDouble(self.Value * rightVal), nil
-		case "<":
-			return NewObjectBool(self.Value < rightVal), nil
-		case ">":
-			return NewObjectBool(self.Value > rightVal), nil
-		case "<=":
-			return NewObjectBool(self.Value <= rightVal), nil
-		case ">=":
-			return NewObjectBool(self.Value >= rightVal), nil
-		case "==":
-			return NewObjectBool(self.Value == rightVal), nil
-		case "!=":
-			return NewObjectBool(self.Value != rightVal), nil
-		default:
-			return nil, fmt.Errorf("methodDoubleOp: unknown op %s", mdo.op)
-		}
+		right = float64(f.Right.Int.Value)
+	}
+	switch f.op {
+	case 0:
+		return NewObjectBool(f.Self.Value < right != f.invert), nil
+	case 1:
+		return NewObjectBool(f.Self.Value > right != f.invert), nil
+	default:
+		return NewObjectBool(f.Self.Value == right != f.invert), nil
 	}
 }
 
-var _ = itypes.FlowCall(methodDoubleOp{})
+type ffiObjectDoubleMathOp struct {
+	Self  *ObjectDouble `ffi:"self"`
+	Right struct {
+		Double *ObjectDouble
+		Int    *ObjectInt
+		Object itypes.Object
+	} `ffi:"right"`
 
-func (mdn methodDoubleNeg) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return itypes.UnaryParams, nil
+	op            int
+	reverseMethod string
 }
 
-func (mdn methodDoubleNeg) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if self, err := itypes.ArgAs[*ObjectDouble](i, "self"); err != nil {
-		return nil, err
-	} else {
-		return NewObjectDouble(-self.Value), nil
+func (f ffiObjectDoubleMathOp) Call(i itypes.Interpreter) (itypes.Object, error) {
+	var right float64
+
+	switch {
+	case f.Right.Double != nil:
+		right = f.Right.Double.Value
+	case f.Right.Int != nil:
+		right = float64(f.Right.Int.Value)
+	default:
+		if reverseOp, err := f.Right.Object.Member(i, f.Right.Object, f.reverseMethod); err == nil {
+			// If it exists, we always use the reverse method, because it's more likely to be the intended behavior.
+			// We explicitly don't expose reverse methods for primitives though.
+			if reverseOpCall, ok := reverseOp.(itypes.FlowCall); ok {
+				return reverseOpCall.Call(i)
+			}
+		}
+		return nil, fmt.Errorf("param `right` for ffiObjectDoubleMathOp.Right is %T not *primitive.ObjectDouble, *primitive.ObjectInt, or an itypes.Object with %s", f.Right.Object, f.reverseMethod)
+	}
+
+	switch f.op {
+	case 0:
+		return NewObjectDouble(f.Self.Value + right), nil
+	case 1:
+		return NewObjectDouble(f.Self.Value - right), nil
+	case 2:
+		return NewObjectDouble(f.Self.Value * right), nil
+	default:
+		return NewObjectDouble(f.Self.Value / right), nil
 	}
 }
 
-var _ = itypes.FlowCall(methodDoubleNeg{})
+type ffiObjectDoubleMathNeg struct {
+	Self *ObjectDouble `ffi:"self"`
+}
+
+func (f ffiObjectDoubleMathNeg) Call(i itypes.Interpreter) (itypes.Object, error) {
+	return NewObjectDouble(-f.Self.Value), nil
+}

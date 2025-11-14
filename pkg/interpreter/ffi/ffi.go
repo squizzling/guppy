@@ -185,7 +185,7 @@ func oneOfPresent(argName string, structFieldName string, typeString string, val
 
 	for idx := 0; idx < valueOneOf.NumField(); idx++ {
 		oneOfFldV := valueOneOf.Field(idx)
-		if oneOfFldV.Kind() != reflect.Pointer {
+		if oneOfFldV.Kind() != reflect.Pointer && oneOfFldV.Kind() != reflect.Interface {
 			continue
 		}
 		if isSet || !va.CanConvert(oneOfFldV.Type()) {
