@@ -9,6 +9,7 @@ import (
 	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/builtin"
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/primitive"
 )
 
 func NewInterpreter(enableTrace bool) itypes.Interpreter {
@@ -44,7 +45,7 @@ func NewInterpreter(enableTrace bool) itypes.Interpreter {
 	_ = i.SetGlobal("union", &stream.FFIUnion{Object: itypes.NewObject(nil)})
 	_ = i.SetGlobal("when", &stream.FFIWhen{Object: itypes.NewObject(nil)})
 
-	_ = i.Set("Args", interpreter.NewObjectDict(nil))
+	_ = i.Set("Args", primitive.NewObjectDict(nil))
 
 	return i
 }

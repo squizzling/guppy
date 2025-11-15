@@ -36,7 +36,7 @@ func (f FFIConst) resolveKey(i itypes.Interpreter) (map[string]string, error) {
 		switch key := key.(type) {
 		case *interpreter.ObjectMissing:
 			return nil, nil
-		case *interpreter.ObjectDict:
+		case *primitive.ObjectDict:
 			if m, err := key.AsMapStringString(); err != nil {
 				return nil, err
 			} else if len(m) == 0 {

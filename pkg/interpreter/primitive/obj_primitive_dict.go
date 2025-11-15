@@ -1,4 +1,4 @@
-package interpreter
+package primitive
 
 import (
 	"errors"
@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"guppy/pkg/interpreter/itypes"
-	"guppy/pkg/interpreter/primitive"
 )
 
 type DictItem struct {
@@ -17,7 +16,7 @@ type DictItem struct {
 type ObjectDict struct {
 	itypes.Object
 
-	items []DictItem
+	Items []DictItem
 }
 
 func NewObjectDict(items []DictItem) itypes.Object {
@@ -27,7 +26,7 @@ func NewObjectDict(items []DictItem) itypes.Object {
 			"__subscript__": methodDictSubscript{itypes.NewObject(nil)},
 		}),
 
-		items: items,
+		Items: items,
 	}
 }
 
@@ -35,7 +34,7 @@ func NewObjectDictFromMap(items map[string]itypes.Object) itypes.Object {
 	var itemList []DictItem
 	for key, value := range items {
 		itemList = append(itemList, DictItem{
-			Key:   primitive.NewObjectString(key),
+			Key:   NewObjectString(key),
 			Value: value,
 		})
 	}
@@ -44,17 +43,17 @@ func NewObjectDictFromMap(items map[string]itypes.Object) itypes.Object {
 
 func (od *ObjectDict) AsMapStringString() (map[string]string, error) {
 	m := make(map[string]string)
-	for idx, item := range od.items {
+	for idx, item := range od.Items {
 		sKey := ""
 		sValue := ""
 		switch key := item.Key.(type) {
-		case *primitive.ObjectString:
+		case *ObjectString:
 			sKey = key.Value
 		default:
 			return nil, fmt.Errorf("dict idx %d (%s) is %T not *interpreter.ObjectString", idx, itypes.Repr(key), key)
 		}
 		switch value := item.Value.(type) {
-		case *primitive.ObjectString:
+		case *ObjectString:
 			sValue = value.Value
 		default:
 			return nil, fmt.Errorf("dict idx %d (%s) is %T not *interpreter.ObjectString", idx, sKey, value)
@@ -75,12 +74,12 @@ func (od *ObjectDict) tryGet(key itypes.Object, def itypes.Object) (itypes.Objec
 }
 
 func (od *ObjectDict) mustGet(key itypes.Object) (itypes.Object, error) {
-	if len(od.items) == 0 {
+	if len(od.Items) == 0 {
 		return nil, nil
 	}
 
 	switch key := key.(type) {
-	case *primitive.ObjectString:
+	case *ObjectString:
 		return od.mustGetString(key.Value)
 	default:
 		return nil, fmt.Errorf("requested key is %T", key)
@@ -88,8 +87,8 @@ func (od *ObjectDict) mustGet(key itypes.Object) (itypes.Object, error) {
 }
 
 func (od *ObjectDict) mustGetString(key string) (itypes.Object, error) {
-	for _, item := range od.items {
-		if itemKey, ok := item.Key.(*primitive.ObjectString); ok {
+	for _, item := range od.Items {
+		if itemKey, ok := item.Key.(*ObjectString); ok {
 			if itemKey.Value == key {
 				return item.Value, nil
 			}
@@ -101,7 +100,7 @@ func (od *ObjectDict) mustGetString(key string) (itypes.Object, error) {
 func (od *ObjectDict) Repr() string {
 	var sb strings.Builder
 	sb.WriteString("{")
-	for idx, item := range od.items {
+	for idx, item := range od.Items {
 		if idx > 0 {
 			sb.WriteString(", ")
 		}
@@ -125,7 +124,7 @@ func (mdg methodDictGet) Params(i itypes.Interpreter) (*itypes.Params, error) {
 		Params: []itypes.ParamDef{
 			{Name: "self"},
 			{Name: "key"},
-			{Name: "default", Default: primitive.NewObjectNone()},
+			{Name: "default", Default: NewObjectNone()},
 		},
 	}, nil
 }

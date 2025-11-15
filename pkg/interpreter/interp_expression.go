@@ -235,10 +235,10 @@ func (i *interpreter) resolveNamedArgs(namedExpression []*ast.DataArgument, kwAr
 	if kwArgs != nil {
 		if obj, err := r(kwArgs.Accept(i)); err != nil {
 			return nil, err
-		} else if objDict, ok := obj.(*ObjectDict); !ok {
+		} else if objDict, ok := obj.(*primitive.ObjectDict); !ok {
 			return nil, fmt.Errorf("not a dict")
 		} else {
-			for _, keyValue := range objDict.items {
+			for _, keyValue := range objDict.Items {
 				if keyStr, ok := keyValue.Key.(*primitive.ObjectString); !ok {
 					return nil, fmt.Errorf("kwargs not a string")
 				} else if _, ok := out[keyStr.Value]; ok {
@@ -275,7 +275,7 @@ func (i *interpreter) assignArgs(
 		}
 	}
 	if kwParamName != "" {
-		if err := i.Scope.Set(kwParamName, NewObjectDictFromMap(kwArgs)); err != nil {
+		if err := i.Scope.Set(kwParamName, primitive.NewObjectDictFromMap(kwArgs)); err != nil {
 			return err
 		}
 	}
@@ -285,7 +285,7 @@ func (i *interpreter) assignArgs(
 func (i *interpreter) VisitExpressionDict(ed ast.ExpressionDict) (returnValue any, errOut error) {
 	defer i.trace()(&returnValue, &errOut)
 
-	var items []DictItem
+	var items []primitive.DictItem
 	for idx, keyExpr := range ed.Keys {
 		valExpr := ed.Values[idx]
 
@@ -294,11 +294,11 @@ func (i *interpreter) VisitExpressionDict(ed ast.ExpressionDict) (returnValue an
 		} else if val, err := r(valExpr.Accept(i)); err != nil {
 			return nil, err
 		} else {
-			items = append(items, DictItem{Key: key, Value: val})
+			items = append(items, primitive.DictItem{Key: key, Value: val})
 		}
 	}
 
-	return NewObjectDict(items), nil
+	return primitive.NewObjectDict(items), nil
 }
 
 func (i *interpreter) VisitExpressionGrouping(eg ast.ExpressionGrouping) (returnValue any, errOut error) {

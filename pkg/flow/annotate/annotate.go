@@ -41,12 +41,12 @@ func (f FFIAnnotate) resolveLabel(i itypes.Interpreter) (itypes.Object, error) {
 	}
 }
 
-func (f FFIAnnotate) resolveExtraProps(i itypes.Interpreter) (*interpreter.ObjectDict, error) {
+func (f FFIAnnotate) resolveExtraProps(i itypes.Interpreter) (*primitive.ObjectDict, error) {
 	if extraProps, err := i.GetArg("extra_props"); err != nil {
 		return nil, err
 	} else if _, ok := extraProps.(*interpreter.ObjectMissing); ok {
-		return interpreter.NewObjectDict(nil).(*interpreter.ObjectDict), nil
-	} else if extraProps, ok := extraProps.(*interpreter.ObjectDict); ok {
+		return primitive.NewObjectDict(nil).(*primitive.ObjectDict), nil
+	} else if extraProps, ok := extraProps.(*primitive.ObjectDict); ok {
 		return extraProps, nil
 	} else {
 		return nil, fmt.Errorf("annotate(extraProps) must be missing or dict")
@@ -83,11 +83,11 @@ type Annotated struct {
 
 	Value      itypes.Object
 	Label      itypes.Object
-	ExtraProps *interpreter.ObjectDict
+	ExtraProps *primitive.ObjectDict
 	Publish    itypes.Object
 }
 
-func NewAnnotated(value itypes.Object, label itypes.Object, extraProps *interpreter.ObjectDict, publish itypes.Object) *Annotated {
+func NewAnnotated(value itypes.Object, label itypes.Object, extraProps *primitive.ObjectDict, publish itypes.Object) *Annotated {
 	return &Annotated{
 		Object:     itypes.NewObject(nil),
 		Value:      value,
