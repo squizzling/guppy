@@ -1,6 +1,8 @@
 package primitive
 
 import (
+	"fmt"
+
 	"guppy/pkg/interpreter/ffi"
 	"guppy/pkg/interpreter/itypes"
 )
@@ -26,6 +28,10 @@ func NewObjectString(s string) *ObjectString {
 
 func (os *ObjectString) String(i itypes.Interpreter) (string, error) {
 	return os.Value, nil
+}
+
+func (os *ObjectString) Repr() string {
+	return fmt.Sprintf("string(%s)", os.Value)
 }
 
 type ffiObjectStringAdd struct {

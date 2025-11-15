@@ -37,3 +37,7 @@ False
 o = "foo" != 5
 -----
 True
+=====
+o = repr("foo")
+-----
+string(foo)
