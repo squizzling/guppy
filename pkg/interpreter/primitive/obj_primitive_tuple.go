@@ -11,9 +11,11 @@ type ObjectTuple struct {
 	Items []itypes.Object
 }
 
+var prototypeObjectTuple = itypes.NewObject(nil)
+
 func NewObjectTuple(items ...itypes.Object) *ObjectTuple {
 	return &ObjectTuple{
-		Object: itypes.NewObject(nil),
+		Object: prototypeObjectTuple,
 		Items:  items,
 	}
 }
