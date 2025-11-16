@@ -63,8 +63,8 @@ func (od *ObjectDict) AsMapStringString() (map[string]string, error) {
 	return m, nil
 }
 
-func (od *ObjectDict) tryGet(key itypes.Object, def itypes.Object) (itypes.Object, error) {
-	if obj, err := od.mustGet(key); err != nil {
+func (od *ObjectDict) getKeyOrDefault(key itypes.Object, def itypes.Object) (itypes.Object, error) {
+	if obj, err := od.getKeyOrNil(key); err != nil {
 		return nil, err
 	} else if obj == nil {
 		return def, nil
@@ -73,20 +73,20 @@ func (od *ObjectDict) tryGet(key itypes.Object, def itypes.Object) (itypes.Objec
 	}
 }
 
-func (od *ObjectDict) mustGet(key itypes.Object) (itypes.Object, error) {
+func (od *ObjectDict) getKeyOrNil(key itypes.Object) (itypes.Object, error) {
 	if len(od.Items) == 0 {
 		return nil, nil
 	}
 
 	switch key := key.(type) {
 	case *ObjectString:
-		return od.mustGetString(key.Value)
+		return od.getStringOrNil(key.Value)
 	default:
 		return nil, fmt.Errorf("requested key is %T", key)
 	}
 }
 
-func (od *ObjectDict) mustGetString(key string) (itypes.Object, error) {
+func (od *ObjectDict) getStringOrNil(key string) (itypes.Object, error) {
 	for _, item := range od.Items {
 		if itemKey, ok := item.Key.(*ObjectString); ok {
 			if itemKey.Value == key {
@@ -153,7 +153,7 @@ func (mdg methodDictGet) Call(i itypes.Interpreter) (itypes.Object, error) {
 	} else if def, err := resolveDictDefault(i); err != nil {
 		return nil, err
 	} else {
-		return self.tryGet(key, def)
+		return self.getKeyOrDefault(key, def)
 	}
 }
 
@@ -183,7 +183,7 @@ func (mds methodDictSubscript) Call(i itypes.Interpreter) (itypes.Object, error)
 		return nil, err
 	} else if start, err := mds.resolveDictKey(i); err != nil {
 		return nil, err
-	} else if value, err := self.mustGet(start); err != nil {
+	} else if value, err := self.getKeyOrNil(start); err != nil {
 		return nil, err
 	} else if value == nil {
 		return nil, errors.New("key not found in dict")

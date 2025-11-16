@@ -1,0 +1,37 @@
+o = repr({"a": "b", "c": "d"})
+-----
+{string(a): string(b), string(c): string(d)}
+=====
+def f(**d):
+  return d
+o = repr(f(a="b"))
+-----
+{string(a): string(b)}
+=====
+o = {'a': 'b'}.get('x')
+-----
+None
+=====
+o = {'a': 'b'}.get('x', 'foo')
+-----
+foo
+=====
+o = {'a': 'b'}.get('a')
+-----
+b
+=====
+o = {}.get('a')
+-----
+None
+=====
+o = {'a': 'b'}[1]
+-----
+*requested key is *primitive.ObjectInt
+=====
+o = {'a': 'b'}['a']
+-----
+b
+=====
+o = {'a': 'b'}['c']
+-----
+*key not found in dict
