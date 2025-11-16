@@ -45,7 +45,7 @@ func (f FFIAnnotate) resolveExtraProps(i itypes.Interpreter) (*primitive.ObjectD
 	if extraProps, err := i.GetArg("extra_props"); err != nil {
 		return nil, err
 	} else if _, ok := extraProps.(*interpreter.ObjectMissing); ok {
-		return primitive.NewObjectDict(nil).(*primitive.ObjectDict), nil
+		return primitive.NewObjectDict(nil), nil
 	} else if extraProps, ok := extraProps.(*primitive.ObjectDict); ok {
 		return extraProps, nil
 	} else {

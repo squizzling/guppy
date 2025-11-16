@@ -26,7 +26,7 @@ None
 =====
 o = {'a': 'b'}[1]
 -----
-*requested key is *primitive.ObjectInt
+*param `start` for ffiObjectDictSubscript.Start is *primitive.ObjectInt not *primitive.ObjectString
 =====
 o = {'a': 'b'}['a']
 -----
