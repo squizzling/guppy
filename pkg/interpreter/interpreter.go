@@ -8,12 +8,13 @@ import (
 	"strings"
 
 	"guppy/pkg/interpreter/itypes"
+	"guppy/pkg/interpreter/scope"
 	"guppy/pkg/parser/ast"
 )
 
 type interpreter struct {
-	Globals *scope
-	Scope   *scope
+	Globals *scope.Scope
+	Scope   *scope.Scope
 
 	debugDepth  int
 	enableTrace bool

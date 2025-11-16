@@ -213,7 +213,7 @@ func (i *interpreter) VisitStatementProgram(sp ast.StatementProgram) (returnValu
 	defer i.popScope()
 	if _, err := sp.Statements.Accept(i); err != nil {
 		return nil, err
-	} else if err := i.Scope.resolveDeferred(i); err != nil {
+	} else if err := i.Scope.ResolveDeferred(i); err != nil {
 		return nil, err
 	}
 	return nil, nil

@@ -1,4 +1,4 @@
-package interpreter
+package scope
 
 import (
 	"errors"
@@ -17,51 +17,46 @@ type deferAssign struct {
 	object *deferred.ObjectDeferred
 }
 
-type scope struct {
+type Scope struct {
 	isDefined      map[string]bool
 	vars           map[string]itypes.Object
 	deferredAssign map[string]deferAssign
 	deferred       []*deferred.ObjectDeferred
-	popChain       *scope // Used when popping
-	lookupChain    *scope // Used for lookup
+	popChain       *Scope // Used when popping
+	lookupChain    *Scope // Used for lookup
 }
 
-func (i *interpreter) pushScope() {
-	i.Scope = &scope{
+func (s *Scope) Child() *Scope {
+	// Implementation note: s may be nil if it's the root.  This is allowed.
+	return &Scope{
 		isDefined:      make(map[string]bool),
 		vars:           make(map[string]itypes.Object),
 		deferredAssign: make(map[string]deferAssign),
-		popChain:       i.Scope,
-		lookupChain:    i.Scope,
-	}
-}
-
-func (i *interpreter) withScope(fn func() error) error {
-	i.pushScope()
-	defer i.popScope()
-	return fn()
-}
-
-func (i *interpreter) pushClosure(s *scope) {
-	i.Scope = &scope{
-		isDefined:      make(map[string]bool),
-		vars:           make(map[string]itypes.Object),
-		deferredAssign: make(map[string]deferAssign),
-		popChain:       i.Scope,
+		popChain:       s,
 		lookupChain:    s,
 	}
 }
 
-func (i *interpreter) popScope() {
-	i.Scope = i.Scope.popChain
+func (s *Scope) Closure(lookup *Scope) *Scope {
+	return &Scope{
+		isDefined:      make(map[string]bool),
+		vars:           make(map[string]itypes.Object),
+		deferredAssign: make(map[string]deferAssign),
+		popChain:       s,
+		lookupChain:    lookup,
+	}
 }
 
-func (s *scope) resolveDeferred(i itypes.Interpreter) error {
+func (s *Scope) Parent() *Scope {
+	return s.popChain
+}
+
+func (s *Scope) ResolveDeferred(i itypes.Interpreter) error {
 	var pending []string
 	for len(s.deferredAssign) > 0 {
 		progress := false
 		for key, da := range s.deferredAssign {
-			maybeResolved, err := r(da.object.Expr.Accept(i))
+			maybeResolved, err := da.object.Expr.Accept(i)
 			if err != nil {
 				return fmt.Errorf("deferred resolution failed for keys %s: %w", da.vars, err)
 			}
@@ -103,7 +98,7 @@ func (s *scope) resolveDeferred(i itypes.Interpreter) error {
 	return nil
 }
 
-func (s *scope) Set(key string, value itypes.Object) error {
+func (s *Scope) Set(key string, value itypes.Object) error {
 	// Set is not allowed to look up the chain to find something, it can only set in the current context, and only if
 	// there's nothing there already.
 	if s.isDefined[key] {
@@ -114,7 +109,7 @@ func (s *scope) Set(key string, value itypes.Object) error {
 	return nil
 }
 
-func (s *scope) SetDefers(keys []string, d *deferred.ObjectDeferred) error {
+func (s *Scope) SetDefers(keys []string, d *deferred.ObjectDeferred) error {
 	for _, key := range keys {
 		if s.isDefined[key] {
 			return errors.New("scope contains multiple bindings of " + key)
@@ -132,7 +127,7 @@ func (s *scope) SetDefers(keys []string, d *deferred.ObjectDeferred) error {
 // GetArg is a hack to look up variables without deferred resolution.  It fails if it can't find
 // something.  It's meant for arguments, which we know much exist.  I don't love the interface
 // and it would be good to refactor at some point.
-func (s *scope) GetArg(key string) (itypes.Object, error) {
+func (s *Scope) GetArg(key string) (itypes.Object, error) {
 	// TODO: Refactor.
 	if val, ok := s.vars[key]; ok {
 		return val, nil
@@ -144,7 +139,7 @@ func (s *scope) GetArg(key string) (itypes.Object, error) {
 	return s.lookupChain.GetArg(key)
 }
 
-func (s *scope) Get(key string) (itypes.Object, error) {
+func (s *Scope) Get(key string) (itypes.Object, error) {
 	// Get is allowed to look up the chain to find something
 	if val, ok := s.vars[key]; ok {
 		return val, nil
@@ -165,6 +160,6 @@ func (s *scope) Get(key string) (itypes.Object, error) {
 	return s.lookupChain.Get(key)
 }
 
-func (s *scope) DeferAnonymous(d *deferred.ObjectDeferred) {
+func (s *Scope) DeferAnonymous(d *deferred.ObjectDeferred) {
 	s.deferred = append(s.deferred, d)
 }

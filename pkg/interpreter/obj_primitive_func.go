@@ -3,6 +3,7 @@ package interpreter
 import (
 	"guppy/pkg/interpreter/itypes"
 	"guppy/pkg/interpreter/primitive"
+	"guppy/pkg/interpreter/scope"
 	"guppy/pkg/parser/ast"
 )
 
@@ -11,12 +12,11 @@ type ObjectFunction struct {
 
 	name   string
 	params *itypes.Params
-	scope  *scope
+	scope  *scope.Scope
 	body   ast.Statement
 }
 
-func NewObjectFunction(name string, params *itypes.Params, scope *scope, body ast.Statement) itypes.Object {
-	// TODO: Don't use scope, as it's not exported.  The visibility needs revisiting generally.
+func NewObjectFunction(name string, params *itypes.Params, scope *scope.Scope, body ast.Statement) itypes.Object {
 	return &ObjectFunction{
 		Object: itypes.NewObject(nil),
 		name:   name,
