@@ -8,7 +8,6 @@ import (
 
 	"guppy/pkg/interpreter/deferred"
 	"guppy/pkg/interpreter/itypes"
-	"guppy/pkg/interpreter/primitive"
 	"guppy/pkg/parser/ast"
 )
 
@@ -60,21 +59,14 @@ func (s *Scope) ResolveDeferred(i itypes.Interpreter) error {
 			if err != nil {
 				return fmt.Errorf("deferred resolution failed for keys %s: %w", da.vars, err)
 			}
-			if od, ok := maybeResolved.(*deferred.ObjectDeferred); !ok {
-				// TODO: I don't love this, what if we have an actual list?
-				if objList, ok := maybeResolved.(*primitive.ObjectList); ok {
-					for idx, value := range objList.Items {
-						s.vars[da.vars[idx]] = value
-					}
-				} else if obj, ok := maybeResolved.(itypes.Object); ok {
-					s.vars[da.vars[0]] = obj
-				} else {
-					return fmt.Errorf("expecting ObjectList or Object, found %T", maybeResolved)
-				}
+			if od, ok := maybeResolved.(*deferred.ObjectDeferred); ok {
+				pending = append(pending, od.Desired...)
+			} else if obj, ok := maybeResolved.(itypes.Object); ok {
+				s.vars[da.vars[0]] = obj
 				progress = true
 				delete(s.deferredAssign, key)
 			} else {
-				pending = append(pending, od.Desired...)
+				return fmt.Errorf("expecting ObjectDeferred or Object, found %T", maybeResolved)
 			}
 		}
 		if !progress {
