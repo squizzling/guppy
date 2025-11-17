@@ -23,3 +23,9 @@ func (f *flowObject) Member(i Interpreter, obj Object, memberName string) (Objec
 		return NewLValue(obj, member), nil
 	}
 }
+
+func (f *flowObject) Repr() string {
+	// TODO: Can we make it so we don't provide this? Then we can force objects to properly
+	//       implement it universally instead of having a default.
+	panic("flowObject: Repr() not allowed on base object")
+}

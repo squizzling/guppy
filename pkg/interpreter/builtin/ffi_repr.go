@@ -7,7 +7,7 @@ import (
 )
 
 type FFIRepr struct {
-	Value itypes.Reprable `ffi:"value"`
+	Value itypes.Object `ffi:"value"`
 }
 
 func NewFFIRepr() itypes.FlowCall {

@@ -25,6 +25,7 @@ type Interpreter interface {
 type Object interface {
 	// We include the root Object so the default behavior knows its object type, instead of just *flowObject
 	Member(i Interpreter, obj Object, memberName string) (Object, error)
+	Repr() string
 }
 
 type ParamDef struct {
@@ -133,14 +134,8 @@ type FlowCall interface {
 	Call(i Interpreter) (Object, error)
 }
 
-// TODO: Move Repr() in to Object.
-type Reprable interface {
-	Object
-	Repr() string
-}
-
 func Repr(o any) string {
-	if repr, ok := o.(Reprable); ok {
+	if repr, ok := o.(Object); ok {
 		return repr.Repr()
 	} else {
 		return fmt.Sprintf("%#v", o)

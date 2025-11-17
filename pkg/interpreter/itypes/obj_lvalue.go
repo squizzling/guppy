@@ -1,5 +1,9 @@
 package itypes
 
+import (
+	"fmt"
+)
+
 type ObjectLValue struct {
 	Left  Object
 	Right Object
@@ -22,4 +26,8 @@ func (lv *ObjectLValue) Call(i Interpreter) (Object, error) {
 
 func (lv *ObjectLValue) Member(i Interpreter, obj Object, memberName string) (Object, error) {
 	return lv.Right.Member(i, lv.Right, memberName)
+}
+
+func (lv *ObjectLValue) Repr() string {
+	return fmt.Sprintf("lvalue(Left=%s, Right=%s)", lv.Left.Repr(), lv.Right.Repr())
 }

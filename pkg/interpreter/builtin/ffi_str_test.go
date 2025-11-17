@@ -22,6 +22,10 @@ func (f failingStr) String(i itypes.Interpreter) (string, error) {
 	return "", fmt.Errorf("failingStr error")
 }
 
+func (f failingStr) Repr() string {
+	return "failingStr()"
+}
+
 func TestFFINewStr(t *testing.T) {
 	t.Parallel()
 
