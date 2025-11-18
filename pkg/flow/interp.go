@@ -21,6 +21,9 @@ func NewInterpreter(enableTrace bool) itypes.Interpreter {
 	_ = i.SetGlobal("repr", builtin.NewFFIRepr())
 	_ = i.SetGlobal("str", builtin.NewFFIStr())
 
+	_ = i.SetGlobal("filter", filter.NewFFIFilter())
+	_ = i.SetGlobal("partition_filter", filter.NewFFIPartitionFilter())
+
 	// Old style
 	_ = i.SetGlobal("abs", &stream.FFIAbs{Object: itypes.NewObject(nil)})
 	_ = i.SetGlobal("alerts", &stream.FFIAlerts{Object: itypes.NewObject(nil)})
@@ -31,12 +34,10 @@ func NewInterpreter(enableTrace bool) itypes.Interpreter {
 	_ = i.SetGlobal("data", &stream.FFIData{Object: itypes.NewObject(nil)})
 	_ = i.SetGlobal("detect", &stream.FFIDetect{Object: itypes.NewObject(nil)})
 	_ = i.SetGlobal("events", &stream.FFIEvents{Object: itypes.NewObject(nil)})
-	_ = i.SetGlobal("filter", &filter.FFIFilter{Object: itypes.NewObject(nil)})
 	_ = i.SetGlobal("max", &stream.FFIMax{Object: itypes.NewObject(nil)})
 	_ = i.SetGlobal("mean", &stream.FFIMean{Object: itypes.NewObject(nil)})
 	_ = i.SetGlobal("median", &stream.FFIMedian{Object: itypes.NewObject(nil)})
 	_ = i.SetGlobal("min", &stream.FFIMin{Object: itypes.NewObject(nil)})
-	_ = i.SetGlobal("partition_filter", &filter.FFIPartitionFilter{Object: itypes.NewObject(nil)})
 	_ = i.SetGlobal("sum", &stream.FFISum{Object: itypes.NewObject(nil)})
 	_ = i.SetGlobal("_print", &debug.FFIPrint{Object: itypes.NewObject(nil)})
 	_ = i.SetGlobal("_published", NewPublished())

@@ -107,7 +107,7 @@ func NewFFI[T FFICall](defaults T) itypes.FlowCall {
 			params.Params = append(params.Params, itypes.ParamDef{Name: argParts[0], Default: defaultValue})
 		case argParts[1] == "star":
 			// TODO: We need to do type checking on the destination
-			panic("star not yet supported")
+			//panic("star not yet supported")
 			params.StarParam = argParts[0]
 		case argParts[1] == "kw":
 			params.KWParams = append(params.KWParams, itypes.ParamDef{Name: argParts[0], Default: defaultValue})

@@ -1,6 +1,7 @@
 package ftypes
 
 import (
+	"guppy/pkg/interpreter"
 	"guppy/pkg/interpreter/itypes"
 	"guppy/pkg/interpreter/primitive"
 )
@@ -20,6 +21,23 @@ func NewThingOrNoneNone[T itypes.Object]() ThingOrNone[T] {
 
 func NewThingOrNoneThing[T itypes.Object](thing T) ThingOrNone[T] {
 	return ThingOrNone[T]{
+		Thing: thing,
+	}
+}
+
+type ThingOrMissing[T itypes.Object] struct {
+	Missing *interpreter.ObjectMissing
+	Thing   T
+}
+
+func NewThingOrMissingNone[T itypes.Object]() ThingOrMissing[T] {
+	return ThingOrMissing[T]{
+		Missing: interpreter.NewObjectMissing(),
+	}
+}
+
+func NewThingOrMissingThing[T itypes.Object](thing T) ThingOrMissing[T] {
+	return ThingOrMissing[T]{
 		Thing: thing,
 	}
 }
