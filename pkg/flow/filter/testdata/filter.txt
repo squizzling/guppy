@@ -1,0 +1,11 @@
+o = repr(filter('foo', 'bar'))
+-----
+filter('foo', 'bar')
+=====
+o = repr(filter('foo', 'bar', 'baz'))
+-----
+filter('foo', 'bar', 'baz')
+=====
+o = repr(filter('foo', 'bar', 'baz', 'qox'))
+-----
+filter('foo', 'bar', 'baz', 'qox')

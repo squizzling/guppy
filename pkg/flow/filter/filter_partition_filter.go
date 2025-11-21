@@ -3,47 +3,22 @@ package filter
 import (
 	"fmt"
 
+	"guppy/pkg/interpreter/ffi"
 	"guppy/pkg/interpreter/itypes"
 	"guppy/pkg/interpreter/primitive"
 )
 
-type FFIPartitionFilter struct {
-	itypes.Object
+type ffiPartitionFilter struct {
+	Index *primitive.ObjectInt `ffi:"index"`
+	Total *primitive.ObjectInt `ffi:"total"`
 }
 
-func (f FFIPartitionFilter) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return &itypes.Params{
-		Params: []itypes.ParamDef{
-			{Name: "index"},
-			{Name: "total"},
-		},
-	}, nil
+func NewFFIPartitionFilter() itypes.FlowCall {
+	return ffi.NewFFI(ffiPartitionFilter{})
 }
 
-func (f FFIPartitionFilter) resolveIndex(i itypes.Interpreter) (int, error) {
-	if index, err := itypes.ArgAs[*primitive.ObjectInt](i, "index"); err != nil {
-		return 0, err
-	} else {
-		return index.Value, nil
-	}
-}
-
-func (f FFIPartitionFilter) resolveTotal(i itypes.Interpreter) (int, error) {
-	if index, err := itypes.ArgAs[*primitive.ObjectInt](i, "total"); err != nil {
-		return 0, err
-	} else {
-		return index.Value, nil
-	}
-}
-
-func (f FFIPartitionFilter) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if index, err := f.resolveIndex(i); err != nil {
-		return nil, err
-	} else if total, err := f.resolveTotal(i); err != nil {
-		return nil, err
-	} else {
-		return NewPartitionFilter(index, total), nil
-	}
+func (f ffiPartitionFilter) Call(i itypes.Interpreter) (itypes.Object, error) {
+	return NewPartitionFilter(f.Index.Value, f.Total.Value), nil
 }
 
 type partitionFilter struct {
@@ -55,12 +30,12 @@ type partitionFilter struct {
 
 func NewPartitionFilter(index int, total int) Filter {
 	return &partitionFilter{
-		Object: newFilterObject(),
+		Object: prototypeFilter,
 		index:  index,
 		total:  total,
 	}
 }
 
-func (fpf *partitionFilter) RenderFilter() string {
-	return fmt.Sprintf("partition_filter(%d, %d)", fpf.index, fpf.total)
+func (pf *partitionFilter) Repr() string {
+	return fmt.Sprintf("partition_filter(%d, %d)", pf.index, pf.total)
 }

@@ -8,7 +8,7 @@ type ObjectMissing struct {
 	itypes.Object
 }
 
-func NewObjectMissing() itypes.Object {
+func NewObjectMissing() *ObjectMissing {
 	return &ObjectMissing{
 		itypes.NewObject(map[string]itypes.Object{}),
 	}

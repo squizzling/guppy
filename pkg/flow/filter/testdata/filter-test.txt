@@ -1,0 +1,147 @@
+o = repr(filter())                                              #TypeError: <'filter function'> missing required argument 'field'
+-----
+*parameter `field` is not occupied
+=====
+o = repr(filter(None))                                          #TypeError: <'filter function'> unsupported type 'none' object for argument 'field'
+-----
+*param `field` for ffiFilter.Field is *primitive.ObjectNone not *primitive.ObjectString, or *primitive.ObjectDict
+=====
+o = repr(filter(5))                                             #TypeError: <'filter function'> unsupported type 'long' object for argument 'field'
+-----
+*param `field` for ffiFilter.Field is *primitive.ObjectInt not *primitive.ObjectString, or *primitive.ObjectDict
+=====
+o = repr(filter('a'))                                           #ValueError: missing required value for filter term
+-----
+*ffiFilter.callString: param `term` for ffiFilter.Term is missing, expecting *primitive.ObjectString
+=====
+o = repr(filter('a', None))                                     #TypeError: <'filter function'> unsupported type 'none' object for argument 'term'
+-----
+*param `term` for ffiFilter.Term is *primitive.ObjectNone not *interpreter.ObjectMissing, or *primitive.ObjectString
+=====
+o = repr(filter('a', 'b', None))                                #TypeError: <'filter function'> unsupported type 'none' object for argument 'terms'
+-----
+*ffiFilter.callString: expecting *primitive.ObjectString, got *primitive.ObjectNone
+=====
+o = repr(filter('a', 'b', 5))                                   #TypeError: <'filter function'> unsupported type 'long' object for argument 'terms'
+-----
+*ffiFilter.callString: expecting *primitive.ObjectString, got *primitive.ObjectInt
+=====
+o = repr(filter('a', 'b', terms='c'))                           #: class sf.analytics.program.parsing.values.ScalarValue cannot be cast to class sf.analytics.program.parsing.values.TupleValue (sf.analytics.program.parsing.values.ScalarValue and sf.analytics.program.parsing.values.TupleValue are in unnamed module of loader 'app')
+-----
+*got an unexpected keyword argument: 'terms'
+=====
+o = repr(filter('a', 'b', terms=5))                             #TypeError: <'filter function'> unsupported type 'long' object for argument 'terms'
+-----
+*got an unexpected keyword argument: 'terms'
+=====
+o = repr(filter('a', 'b', terms=['c']))                         #TypeError: <'filter function'> unsupported type 'list' object for argument 'terms'
+-----
+*got an unexpected keyword argument: 'terms'
+=====
+o = repr(filter('a', 'b', terms=('c',)))                        #TypeError: <'filter function'> unsupported type 'tuple' object for argument 'terms'
+-----
+*got an unexpected keyword argument: 'terms'
+=====
+o = repr(filter('a', 'b', ['c']))                               #TypeError: <'filter function'> unsupported type 'list' object for argument 'terms'
+-----
+*ffiFilter.callString: expecting *primitive.ObjectString, got *primitive.ObjectList
+=====
+o = repr(filter('a', 'b', *['c']))                              #Ok
+-----
+filter('a', 'b', 'c')
+=====
+o = repr(filter('a', 'b', 'c', match_missing=None))             #TypeError: <'filter function'> unsupported type 'none' object for argument 'match_missing'
+-----
+*param `match_missing` for ffiFilter.MatchMissing is *primitive.ObjectNone not *interpreter.ObjectMissing, or *primitive.ObjectBool
+=====
+o = repr(filter('a', 'b', 'c', match_missing=5))                #Ok
+-----
+*param `match_missing` for ffiFilter.MatchMissing is *primitive.ObjectInt not *interpreter.ObjectMissing, or *primitive.ObjectBool
+=====
+o = repr(filter('a', 'b', 'c', match_missing=5.5))              #TypeError: <'filter function'> unsupported type 'double' object for argument 'match_missing'
+-----
+*param `match_missing` for ffiFilter.MatchMissing is *primitive.ObjectDouble not *interpreter.ObjectMissing, or *primitive.ObjectBool
+=====
+o = repr(filter('a', 'b', 'c', match_missing='d'))              #Ok
+-----
+*param `match_missing` for ffiFilter.MatchMissing is *primitive.ObjectString not *interpreter.ObjectMissing, or *primitive.ObjectBool
+=====
+o = repr(filter('a', 'b', 'c', match_missing=True))             #Ok
+-----
+filter('a', 'b', 'c', match_missing=True)
+=====
+o = repr(filter('a', 'b', 'c', match_missing=[]))               #TypeError: <'filter function'> unsupported type 'list' object for argument 'match_missing'
+-----
+*param `match_missing` for ffiFilter.MatchMissing is *primitive.ObjectList not *interpreter.ObjectMissing, or *primitive.ObjectBool
+=====
+o = repr(filter('a', 'b', 'c', match_missing=()))               #TypeError: <'filter function'> unsupported type 'tuple' object for argument 'match_missing'
+-----
+*param `match_missing` for ffiFilter.MatchMissing is *primitive.ObjectTuple not *interpreter.ObjectMissing, or *primitive.ObjectBool
+=====
+o = repr(filter('a', 'b', 'c', match_missing=const(1)))         #TypeError: <'filter function'> unsupported type <stream of DOUBLE> for argument 'match_missing'
+-----
+*param `match_missing` for ffiFilter.MatchMissing is *stream.StreamFuncConstInt not *interpreter.ObjectMissing, or *primitive.ObjectBool
+=====
+o = repr(filter('a', 'b', 'c', match_missing=filter('d', 'e'))) #TypeError: <'filter function'> unsupported type 'filter' object for argument 'match_missing'
+-----
+*param `match_missing` for ffiFilter.MatchMissing is *filter.kv not *interpreter.ObjectMissing, or *primitive.ObjectBool
+=====
+o = repr(filter({}))                                            #: cannot create filter from an empty dictionary
+-----
+*cannot create filter from an empty dictionary
+=====
+o = repr(filter({'a': 'b'}))                                    #Ok
+-----
+filter('a', 'b')
+=====
+o = repr(filter(field={'a': 'b'}))                              #Ok
+-----
+filter('a', 'b')
+=====
+o = repr(filter({'a': 'b'}, 'c'))                               #TypeError: cannot specify additional parameters to dictionary filters
+-----
+*cannot specify additional parameters (`term`) to dictionary filters
+=====
+o = repr(filter({'a': 'b'}, match_missing=True))                #TypeError: cannot specify additional parameters to dictionary filters
+-----
+*cannot specify additional parameters (`match_missing`) to dictionary filters
+=====
+o = repr(filter({'a': ['b']}))                                  #Ok
+-----
+filter('a', 'b')
+=====
+o = repr(filter({'a': ['b', 'c']}))                             #Ok
+-----
+filter('a', 'b', 'c')
+=====
+o = repr(filter({'a': ['b', 'c'], 'd': 'e'}))                   #Ok
+-----
+(filter('a', 'b', 'c') and filter('d', 'e'))
+=====
+o = repr(filter({'a': ('b')}))                                  #Ok
+-----
+filter('a', 'b')
+=====
+o = repr(filter({'a': ('b')}, match_missing=True))              #TypeError: cannot specify additional parameters to dictionary filters
+-----
+*cannot specify additional parameters (`match_missing`) to dictionary filters
+=====
+o = repr(filter({'a': ('b')}, c=True))                          #TypeError: <'filter function'> got an unexpected keyword argument 'c'
+-----
+*got an unexpected keyword argument: 'c'
+=====
+o = repr(filter({'a': 'b'}, c=True))                            #TypeError: <'filter function'> got an unexpected keyword argument 'c'
+-----
+*got an unexpected keyword argument: 'c'
+=====
+o = repr(filter({'a': 'b'}, None))                              #TypeError: <'filter function'> unsupported type 'none' object for argument 'term'
+-----
+*param `term` for ffiFilter.Term is *primitive.ObjectNone not *interpreter.ObjectMissing, or *primitive.ObjectString
+=====
+o = repr(filter({'a': 'b'}, 'c', None))                         #TypeError: <'filter function'> unsupported type 'none' object for argument 'terms'
+-----
+*cannot specify additional parameters (`term`) to dictionary filters
+=====
+o = repr(filter({'a': 'b'}, 'c', 'd'))                          #TypeError: cannot specify additional parameters to dictionary filters
+-----
+*cannot specify additional parameters (`term`) to dictionary filters

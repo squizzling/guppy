@@ -202,7 +202,7 @@ func (g *GraphWriter) VisitStreamFuncData(sfd *stream.StreamFuncData) (any, erro
 	sb.WriteString("data block\n")
 	sb.WriteString("Metric: " + sfd.MetricName + "\n")
 	if sfd.Filter != nil {
-		sb.WriteString("Filter: " + sfd.Filter.RenderFilter() + "\n")
+		sb.WriteString("Filter: " + sfd.Filter.Repr() + "\n")
 	}
 	if sfd.Rollup != "" {
 		sb.WriteString("Rollup: " + sfd.Rollup + "\n")
