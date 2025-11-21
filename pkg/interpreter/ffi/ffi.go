@@ -106,9 +106,14 @@ func NewFFI[T FFICall](defaults T) itypes.FlowCall {
 		case len(argParts) == 1:
 			params.Params = append(params.Params, itypes.ParamDef{Name: argParts[0], Default: defaultValue})
 		case argParts[1] == "star":
-			// TODO: We need to do type checking on the destination
-			panic("star not yet supported")
+			// TODO: A StarParam will always come in as a *primitive.ObjectTuple, it would be nice if we could somehow
+			//       turn this in to a slice of a specific type, or slice of Object, and do more type enforcement.
+			//       It's complicated by the import cycle (among other things) though.  For now, this is sufficient.
 			params.StarParam = argParts[0]
+			if fieldType.Type.String() != "*primitive.ObjectTuple" {
+				// Can't use the actual type due to import cycles
+				panic(fmt.Sprintf("NewFFI: %s must be *primitive.ObjectTuple as it is a star-args", structFieldName))
+			}
 		case argParts[1] == "kw":
 			params.KWParams = append(params.KWParams, itypes.ParamDef{Name: argParts[0], Default: defaultValue})
 		case argParts[1] == "kwargs":
@@ -185,14 +190,23 @@ func oneOfPresent(argName string, structFieldName string, typeString string, val
 
 	for idx := 0; idx < valueOneOf.NumField(); idx++ {
 		oneOfFldV := valueOneOf.Field(idx)
-		if oneOfFldV.Kind() != reflect.Pointer && oneOfFldV.Kind() != reflect.Interface {
+		switch oneOfFldV.Kind() {
+		case reflect.Pointer:
+			if isSet || va.Type() != oneOfFldV.Type() {
+				oneOfFldV.Set(reflect.Zero(oneOfFldV.Type()))
+			} else {
+				oneOfFldV.Set(va)
+				isSet = true
+			}
+		case reflect.Interface:
+			if isSet || !va.CanConvert(oneOfFldV.Type()) {
+				oneOfFldV.Set(reflect.Zero(oneOfFldV.Type()))
+			} else {
+				oneOfFldV.Set(va)
+				isSet = true
+			}
+		default:
 			continue
-		}
-		if isSet || !va.CanConvert(oneOfFldV.Type()) {
-			oneOfFldV.Set(reflect.Zero(oneOfFldV.Type()))
-		} else {
-			oneOfFldV.Set(va)
-			isSet = true
 		}
 	}
 	if !isSet {
