@@ -29,6 +29,7 @@ type ffiStreamAggregateTransformCycleMethod struct {
 		None     *primitive.ObjectNone
 		String   *primitive.ObjectString
 		Duration *duration.Duration
+		Int      *primitive.ObjectInt
 	} `ffi:"over"`
 	Cycle struct {
 		None   *primitive.ObjectNone
@@ -70,6 +71,7 @@ func NewFFIStreamAggregateTransformCycleMethod(fn string) itypes.FlowCall {
 			None     *primitive.ObjectNone
 			String   *primitive.ObjectString
 			Duration *duration.Duration
+			Int      *primitive.ObjectInt
 		}{None: primitive.NewObjectNone()},
 		Cycle: struct {
 			None   *primitive.ObjectNone
@@ -247,6 +249,8 @@ func (f ffiStreamAggregateTransformCycleMethod) callCycle() (itypes.Object, erro
 func (f ffiStreamAggregateTransformCycleMethod) resolveOver() (time.Duration, error) {
 	if f.Over.Duration != nil {
 		return f.Over.Duration.Duration, nil
+	} else if f.Over.Int != nil {
+		return time.Duration(f.Over.Int.Value) * time.Millisecond, nil
 	} else if d, err := duration.ParseDuration(f.Over.String.Value); err != nil {
 		return 0, err
 	} else {
