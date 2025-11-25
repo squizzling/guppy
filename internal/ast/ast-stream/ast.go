@@ -88,9 +88,13 @@ var Interfaces = []ast.Interface{
 			{"Sources", "[]Stream", false},
 			{"Constant", "float64", false},
 		}},
-		{"FuncThreshold", true, []ast.Field{
+		{"FuncThresholdDouble", true, []ast.Field{
 			{"Object", "itypes.Object", true},
 			{"Value", "float64", false},
+		}},
+		{"FuncThresholdStream", true, []ast.Field{
+			{"Object", "itypes.Object", true},
+			{"Value", "Stream", false},
 		}},
 		{"FuncUnion", true, []ast.Field{
 			{"Object", "itypes.Object", true},

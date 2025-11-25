@@ -306,13 +306,28 @@ func (dw DebugWriter) VisitStreamFuncSum(sfs *StreamFuncSum) (any, error) {
 	return _s, nil
 }
 
-func (dw DebugWriter) VisitStreamFuncThreshold(sft *StreamFuncThreshold) (any, error) {
-	_s := "StreamFuncThreshold(\n"
+func (dw DebugWriter) VisitStreamFuncThresholdDouble(sftd *StreamFuncThresholdDouble) (any, error) {
+	_s := "StreamFuncThresholdDouble(\n"
 	dw.i()
 	// TODO: 0 Object itypes.Object
-	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sft.Object, sft.Object)
+	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sftd.Object, sftd.Object)
 	// TODO: 1 Value float64
-	_s += dw.p() + fmt.Sprintf("Value: %T(%v)\n", sft.Value, sft.Value)
+	_s += dw.p() + fmt.Sprintf("Value: %T(%v)\n", sftd.Value, sftd.Value)
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
+func (dw DebugWriter) VisitStreamFuncThresholdStream(sfts *StreamFuncThresholdStream) (any, error) {
+	_s := "StreamFuncThresholdStream(\n"
+	dw.i()
+	// TODO: 0 Object itypes.Object
+	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sfts.Object, sfts.Object)
+	if sfts.Value != nil {
+		_s += dw.p() + "Value: " + s(sfts.Value.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "Value: nil\n"
+	}
 	dw.o()
 	_s += dw.p() + ")\n"
 	return _s, nil

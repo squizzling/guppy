@@ -22,7 +22,8 @@ type VisitorStream interface {
 	VisitStreamFuncMedian(sfm *StreamFuncMedian) (any, error)
 	VisitStreamFuncMin(sfm *StreamFuncMin) (any, error)
 	VisitStreamFuncSum(sfs *StreamFuncSum) (any, error)
-	VisitStreamFuncThreshold(sft *StreamFuncThreshold) (any, error)
+	VisitStreamFuncThresholdDouble(sftd *StreamFuncThresholdDouble) (any, error)
+	VisitStreamFuncThresholdStream(sfts *StreamFuncThresholdStream) (any, error)
 	VisitStreamFuncUnion(sfu *StreamFuncUnion) (any, error)
 	VisitStreamFuncWhen(sfw *StreamFuncWhen) (any, error)
 	VisitStreamMethodAbove(sma *StreamMethodAbove) (any, error)
@@ -480,29 +481,55 @@ func (sfs *StreamFuncSum) CloneTimeShift(amount time.Duration) Stream {
 	}
 }
 
-type StreamFuncThreshold struct {
+type StreamFuncThresholdDouble struct {
 	itypes.Object
 	Value float64
 }
 
-func NewStreamFuncThreshold(
+func NewStreamFuncThresholdDouble(
 	Object itypes.Object,
 	Value float64,
-) *StreamFuncThreshold {
-	return &StreamFuncThreshold{
+) *StreamFuncThresholdDouble {
+	return &StreamFuncThresholdDouble{
 		Object: Object,
 		Value:  Value,
 	}
 }
 
-func (sft *StreamFuncThreshold) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamFuncThreshold(sft)
+func (sftd *StreamFuncThresholdDouble) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamFuncThresholdDouble(sftd)
 }
 
-func (sft *StreamFuncThreshold) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamFuncThreshold{
-		Object: sft.Object,
-		Value:  sft.Value,
+func (sftd *StreamFuncThresholdDouble) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamFuncThresholdDouble{
+		Object: sftd.Object,
+		Value:  sftd.Value,
+	}
+}
+
+type StreamFuncThresholdStream struct {
+	itypes.Object
+	Value Stream
+}
+
+func NewStreamFuncThresholdStream(
+	Object itypes.Object,
+	Value Stream,
+) *StreamFuncThresholdStream {
+	return &StreamFuncThresholdStream{
+		Object: Object,
+		Value:  Value,
+	}
+}
+
+func (sfts *StreamFuncThresholdStream) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamFuncThresholdStream(sfts)
+}
+
+func (sfts *StreamFuncThresholdStream) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamFuncThresholdStream{
+		Object: sfts.Object,
+		Value:  cloneTimeshift(sfts.Value, amount),
 	}
 }
 

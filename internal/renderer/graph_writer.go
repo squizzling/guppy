@@ -378,7 +378,12 @@ func (g *GraphWriter) VisitStreamFuncSum(sfs *stream.StreamFuncSum) (any, error)
 	return nodeId, nil
 }
 
-func (g *GraphWriter) VisitStreamFuncThreshold(sft *stream.StreamFuncThreshold) (any, error) {
+func (g *GraphWriter) VisitStreamFuncThresholdDouble(sftd *stream.StreamFuncThresholdDouble) (any, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (g *GraphWriter) VisitStreamFuncThresholdStream(sfts *stream.StreamFuncThresholdStream) (any, error) {
 	//TODO implement me
 	panic("implement me")
 }

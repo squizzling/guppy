@@ -23,6 +23,7 @@ func NewInterpreter(enableTrace bool) itypes.Interpreter {
 
 	_ = i.SetGlobal("filter", filter.NewFFIFilter())
 	_ = i.SetGlobal("partition_filter", filter.NewFFIPartitionFilter())
+	_ = i.SetGlobal("threshold", stream.NewFFIThreshold())
 
 	// Old style
 	_ = i.SetGlobal("abs", &stream.FFIAbs{Object: itypes.NewObject(nil)})
@@ -41,7 +42,6 @@ func NewInterpreter(enableTrace bool) itypes.Interpreter {
 	_ = i.SetGlobal("sum", &stream.FFISum{Object: itypes.NewObject(nil)})
 	_ = i.SetGlobal("_print", &debug.FFIPrint{Object: itypes.NewObject(nil)})
 	_ = i.SetGlobal("_published", NewPublished())
-	_ = i.SetGlobal("threshold", &stream.FFIThreshold{Object: itypes.NewObject(nil)})
 	_ = i.SetGlobal("duration", &duration.FFIDuration{Object: itypes.NewObject(nil)})
 	_ = i.SetGlobal("union", &stream.FFIUnion{Object: itypes.NewObject(nil)})
 	_ = i.SetGlobal("when", &stream.FFIWhen{Object: itypes.NewObject(nil)})
