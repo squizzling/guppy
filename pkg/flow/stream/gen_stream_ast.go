@@ -676,11 +676,12 @@ func (sma *StreamMethodAbs) CloneTimeShift(amount time.Duration) Stream {
 
 type StreamMethodAggregate struct {
 	itypes.Object
-	Source          Stream
-	Fn              string
-	By              []string
-	AllowAllMissing bool
-	AllowMissing    []string
+	Source               Stream
+	Fn                   string
+	By                   []string
+	AllowAllMissing      bool
+	AllowMissing         []string
+	AllowMissingDefaults map[string]string
 }
 
 func NewStreamMethodAggregate(
@@ -690,14 +691,16 @@ func NewStreamMethodAggregate(
 	By []string,
 	AllowAllMissing bool,
 	AllowMissing []string,
+	AllowMissingDefaults map[string]string,
 ) *StreamMethodAggregate {
 	return &StreamMethodAggregate{
-		Object:          Object,
-		Source:          Source,
-		Fn:              Fn,
-		By:              By,
-		AllowAllMissing: AllowAllMissing,
-		AllowMissing:    AllowMissing,
+		Object:               Object,
+		Source:               Source,
+		Fn:                   Fn,
+		By:                   By,
+		AllowAllMissing:      AllowAllMissing,
+		AllowMissing:         AllowMissing,
+		AllowMissingDefaults: AllowMissingDefaults,
 	}
 }
 
@@ -707,12 +710,13 @@ func (sma *StreamMethodAggregate) Accept(vs VisitorStream) (any, error) {
 
 func (sma *StreamMethodAggregate) CloneTimeShift(amount time.Duration) Stream {
 	return &StreamMethodAggregate{
-		Object:          sma.Object,
-		Source:          cloneTimeshift(sma.Source, amount),
-		Fn:              sma.Fn,
-		By:              sma.By,
-		AllowAllMissing: sma.AllowAllMissing,
-		AllowMissing:    sma.AllowMissing,
+		Object:               sma.Object,
+		Source:               cloneTimeshift(sma.Source, amount),
+		Fn:                   sma.Fn,
+		By:                   sma.By,
+		AllowAllMissing:      sma.AllowAllMissing,
+		AllowMissing:         sma.AllowMissing,
+		AllowMissingDefaults: sma.AllowMissingDefaults,
 	}
 }
 

@@ -458,6 +458,8 @@ func (dw DebugWriter) VisitStreamMethodAggregate(sma *StreamMethodAggregate) (an
 		dw.o()
 		_s += dw.p() + "]\n"
 	}
+	// TODO: 6 AllowMissingDefaults map[string]string
+	_s += dw.p() + fmt.Sprintf("AllowMissingDefaults: %T(%v)\n", sma.AllowMissingDefaults, sma.AllowMissingDefaults)
 	dw.o()
 	_s += dw.p() + ")\n"
 	return _s, nil

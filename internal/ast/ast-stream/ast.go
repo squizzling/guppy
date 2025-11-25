@@ -127,6 +127,7 @@ var Interfaces = []ast.Interface{
 			{"By", "[]string", false},
 			{"AllowAllMissing", "bool", false},
 			{"AllowMissing", "[]string", false},
+			{"AllowMissingDefaults", "map[string]string", false},
 		}},
 		{"MethodBelow", true, []ast.Field{
 			{"Object", "itypes.Object", true},

@@ -24,6 +24,8 @@ type ffiStreamAggregateTransformCycleMethod struct {
 		None   *primitive.ObjectNone
 		Bool   *primitive.ObjectBool
 		String *primitive.ObjectString
+		List   *primitive.ObjectList
+		Dict   *primitive.ObjectDict
 	} `ffi:"allow_missing"`
 	Over struct {
 		None     *primitive.ObjectNone
@@ -66,6 +68,8 @@ func NewFFIStreamAggregateTransformCycleMethod(fn string) itypes.FlowCall {
 			None   *primitive.ObjectNone
 			Bool   *primitive.ObjectBool
 			String *primitive.ObjectString
+			List   *primitive.ObjectList
+			Dict   *primitive.ObjectDict
 		}{None: primitive.NewObjectNone()},
 		Over: struct {
 			None     *primitive.ObjectNone
@@ -140,23 +144,49 @@ func (f ffiStreamAggregateTransformCycleMethod) resolveBy() ([]string, error) {
 	}
 }
 
-func (f ffiStreamAggregateTransformCycleMethod) resolveAllowMissing() (bool, []string, error) {
-	// TODO: It can take a list of strings, which returns false, []list, nil
-	// TODO: Can it take a tuple?
-	// TODO: If allowmissing is 'True', is that allow_missing=True, or allow_missing=['true']?
+func (f ffiStreamAggregateTransformCycleMethod) resolveAllowMissing() (bool, []string, map[string]string, error) {
+	// Per the documentation, it can be:
+	// none - default false
+	// bool - if True, anything missing is allowed
+	// string - a single named dimension is allowed to be missing.  This is not a coercion to bool.
+	// list/tuple - any number of named dimensions are allowed to be missing
+	// dist[string,string] - any number of named dimensions are allowed to be missing, and these are the defaults
+
 	if f.AllowMissing.None != nil {
-		return false, nil, nil
+		return false, nil, nil, nil
 	} else if f.AllowMissing.Bool != nil {
-		return f.AllowMissing.Bool.Value, nil, nil
+		return f.AllowMissing.Bool.Value, nil, nil, nil
+	} else if f.AllowMissing.String != nil {
+		return false, []string{f.AllowMissing.String.Value}, nil, nil
+	} else if f.AllowMissing.List != nil {
+		var items []string
+		for idx, objItem := range f.AllowMissing.List.Items {
+			if item, ok := objItem.(*primitive.ObjectString); !ok {
+				return false, nil, nil, fmt.Errorf("ffiStreamAggregateTransformCycleMethod.resolveAllowMissing: index %d of allow_missing contains a %T not a *primitive.ObjectString", idx, item)
+			} else {
+				items = append(items, item.Value)
+			}
+		}
+		return false, items, nil, nil
 	} else {
-		return false, []string{f.AllowMissing.String.Value}, nil
+		items := make(map[string]string)
+		for _, kv := range f.AllowMissing.Dict.Items {
+			if key, ok := kv.Key.(*primitive.ObjectString); !ok {
+				return false, nil, nil, fmt.Errorf("ffiStreamAggregateTransformCycleMethod.resolveAllowMissing: key in allow_missing contains a %T not a *primitive.ObjectString", kv.Key)
+			} else if value, ok := kv.Value.(*primitive.ObjectString); !ok {
+				return false, nil, nil, fmt.Errorf("ffiStreamAggregateTransformCycleMethod.resolveAllowMissing: key %s in allow_missing contains a %T not a *primitive.ObjectString", key.Value, kv.Value)
+			} else {
+				items[key.Value] = value.Value
+			}
+		}
+		return false, nil, items, nil
 	}
 }
 
 func (f ffiStreamAggregateTransformCycleMethod) callBy() (itypes.Object, error) {
 	if by, err := f.resolveBy(); err != nil {
 		return nil, err
-	} else if allowMissing, allowMissingValues, err := f.resolveAllowMissing(); err != nil {
+	} else if allowMissing, allowMissingValues, allowMissingDefaults, err := f.resolveAllowMissing(); err != nil {
 		return nil, err
 	} else {
 		return NewStreamMethodAggregate(
@@ -166,6 +196,7 @@ func (f ffiStreamAggregateTransformCycleMethod) callBy() (itypes.Object, error) 
 			by,
 			allowMissing,
 			allowMissingValues,
+			allowMissingDefaults,
 		), nil
 	}
 }
