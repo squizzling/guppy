@@ -128,6 +128,15 @@ var Interfaces = []ast.Interface{
 			{"Object", "itypes.Object", true},
 			{"Source", "Stream", false},
 		}},
+		{"MethodBetween", true, []ast.Field{
+			{"Object", "itypes.Object", true},
+			{"Source", "Stream", false},
+			{"LowLimit", "float64", false},
+			{"HighLimit", "float64", false},
+			{"LowInclusive", "bool", false},
+			{"HighInclusive", "bool", false},
+			{"Clamp", "bool", false},
+		}},
 		{"MethodFill", true, []ast.Field{
 			{"Object", "itypes.Object", true},
 			{"Source", "Stream", false},
@@ -139,6 +148,14 @@ var Interfaces = []ast.Interface{
 			{"Object", "itypes.Object", true},
 			{"Source", "Stream", false},
 			{"Call", "string", false},
+		}},
+		{"MethodNotBetween", true, []ast.Field{
+			{"Object", "itypes.Object", true},
+			{"Source", "Stream", false},
+			{"LowLimit", "float64", false},
+			{"HighLimit", "float64", false},
+			{"LowInclusive", "bool", false},
+			{"HighInclusive", "bool", false},
 		}},
 		{"MethodPercentile", true, []ast.Field{
 			{"Object", "itypes.Object", true},

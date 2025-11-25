@@ -30,8 +30,10 @@ type VisitorStream interface {
 	VisitStreamMethodAbs(sma *StreamMethodAbs) (any, error)
 	VisitStreamMethodAggregate(sma *StreamMethodAggregate) (any, error)
 	VisitStreamMethodBelow(smb *StreamMethodBelow) (any, error)
+	VisitStreamMethodBetween(smb *StreamMethodBetween) (any, error)
 	VisitStreamMethodFill(smf *StreamMethodFill) (any, error)
 	VisitStreamMethodGeneric(smg *StreamMethodGeneric) (any, error)
+	VisitStreamMethodNotBetween(smnb *StreamMethodNotBetween) (any, error)
 	VisitStreamMethodPercentile(smp *StreamMethodPercentile) (any, error)
 	VisitStreamMethodPublish(smp *StreamMethodPublish) (any, error)
 	VisitStreamMethodScale(sms *StreamMethodScale) (any, error)
@@ -713,6 +715,52 @@ func (smb *StreamMethodBelow) CloneTimeShift(amount time.Duration) Stream {
 	}
 }
 
+type StreamMethodBetween struct {
+	itypes.Object
+	Source        Stream
+	LowLimit      float64
+	HighLimit     float64
+	LowInclusive  bool
+	HighInclusive bool
+	Clamp         bool
+}
+
+func NewStreamMethodBetween(
+	Object itypes.Object,
+	Source Stream,
+	LowLimit float64,
+	HighLimit float64,
+	LowInclusive bool,
+	HighInclusive bool,
+	Clamp bool,
+) *StreamMethodBetween {
+	return &StreamMethodBetween{
+		Object:        Object,
+		Source:        Source,
+		LowLimit:      LowLimit,
+		HighLimit:     HighLimit,
+		LowInclusive:  LowInclusive,
+		HighInclusive: HighInclusive,
+		Clamp:         Clamp,
+	}
+}
+
+func (smb *StreamMethodBetween) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamMethodBetween(smb)
+}
+
+func (smb *StreamMethodBetween) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamMethodBetween{
+		Object:        smb.Object,
+		Source:        cloneTimeshift(smb.Source, amount),
+		LowLimit:      smb.LowLimit,
+		HighLimit:     smb.HighLimit,
+		LowInclusive:  smb.LowInclusive,
+		HighInclusive: smb.HighInclusive,
+		Clamp:         smb.Clamp,
+	}
+}
+
 type StreamMethodFill struct {
 	itypes.Object
 	Source   Stream
@@ -778,6 +826,48 @@ func (smg *StreamMethodGeneric) CloneTimeShift(amount time.Duration) Stream {
 		Object: smg.Object,
 		Source: cloneTimeshift(smg.Source, amount),
 		Call:   smg.Call,
+	}
+}
+
+type StreamMethodNotBetween struct {
+	itypes.Object
+	Source        Stream
+	LowLimit      float64
+	HighLimit     float64
+	LowInclusive  bool
+	HighInclusive bool
+}
+
+func NewStreamMethodNotBetween(
+	Object itypes.Object,
+	Source Stream,
+	LowLimit float64,
+	HighLimit float64,
+	LowInclusive bool,
+	HighInclusive bool,
+) *StreamMethodNotBetween {
+	return &StreamMethodNotBetween{
+		Object:        Object,
+		Source:        Source,
+		LowLimit:      LowLimit,
+		HighLimit:     HighLimit,
+		LowInclusive:  LowInclusive,
+		HighInclusive: HighInclusive,
+	}
+}
+
+func (smnb *StreamMethodNotBetween) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamMethodNotBetween(smnb)
+}
+
+func (smnb *StreamMethodNotBetween) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamMethodNotBetween{
+		Object:        smnb.Object,
+		Source:        cloneTimeshift(smnb.Source, amount),
+		LowLimit:      smnb.LowLimit,
+		HighLimit:     smnb.HighLimit,
+		LowInclusive:  smnb.LowInclusive,
+		HighInclusive: smnb.HighInclusive,
 	}
 }
 

@@ -459,6 +459,11 @@ func (g *GraphWriter) VisitStreamMethodBelow(smb *stream.StreamMethodBelow) (any
 	panic("implement me")
 }
 
+func (g *GraphWriter) VisitStreamMethodBetween(smb *stream.StreamMethodBetween) (any, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (g *GraphWriter) VisitStreamMethodFill(smf *stream.StreamMethodFill) (any, error) {
 	//TODO implement me
 	panic("implement me")
@@ -483,6 +488,11 @@ func (g *GraphWriter) VisitStreamMethodGeneric(smg *stream.StreamMethodGeneric) 
 		g.DefineEdge(nodeId, sourceNodeId.(string), "Source")
 	}
 	return nodeId, nil
+}
+
+func (g *GraphWriter) VisitStreamMethodNotBetween(smnb *stream.StreamMethodNotBetween) (any, error) {
+	//TODO implement me
+	panic("implement me")
 }
 
 func (g *GraphWriter) VisitStreamMethodPercentile(smp *stream.StreamMethodPercentile) (any, error) {

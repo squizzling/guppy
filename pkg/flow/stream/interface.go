@@ -6,16 +6,17 @@ import (
 
 var prototypeStreamDouble = itypes.NewObject(map[string]itypes.Object{
 	// misc
-	"above":      methodAbove{itypes.NewObject(nil)},
-	"abs":        methodAbs{itypes.NewObject(nil)},
-	"below":      methodBelow{itypes.NewObject(nil)},
-	"percentile": methodPercentile{itypes.NewObject(nil)},
-	"publish":    methodPublish{itypes.NewObject(nil)},
-	"timeshift":  methodTimeShift{itypes.NewObject(nil)},
-	"top":        methodTop{itypes.NewObject(nil)},
+	"above":       methodAbove{itypes.NewObject(nil)},
+	"abs":         methodAbs{itypes.NewObject(nil)},
+	"below":       methodBelow{itypes.NewObject(nil)},
+	"between":     NewFFIStreamBetweenMethod(),
+	"not_between": NewFFIStreamNotBetweenMethod(),
+	"percentile":  methodPercentile{itypes.NewObject(nil)},
+	"publish":     methodPublish{itypes.NewObject(nil)},
+	"timeshift":   methodTimeShift{itypes.NewObject(nil)},
+	"top":         methodTop{itypes.NewObject(nil)},
 
 	// generic
-	"between":              methodGeneric{itypes.NewObject(nil), "between"},
 	"bottom":               methodGeneric{itypes.NewObject(nil), "bottom"},
 	"ceil":                 methodGeneric{itypes.NewObject(nil), "ceil"},
 	"delta":                methodGeneric{itypes.NewObject(nil), "delta"},

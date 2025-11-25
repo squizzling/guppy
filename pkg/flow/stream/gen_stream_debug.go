@@ -463,6 +463,28 @@ func (dw DebugWriter) VisitStreamMethodBelow(smb *StreamMethodBelow) (any, error
 	return _s, nil
 }
 
+func (dw DebugWriter) VisitStreamMethodBetween(smb *StreamMethodBetween) (any, error) {
+	_s := "StreamMethodBetween(\n"
+	dw.i()
+	// TODO: 0 Object itypes.Object
+	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", smb.Object, smb.Object)
+	if smb.Source != nil {
+		_s += dw.p() + "Source: " + s(smb.Source.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "Source: nil\n"
+	}
+	// TODO: 2 LowLimit float64
+	_s += dw.p() + fmt.Sprintf("LowLimit: %T(%v)\n", smb.LowLimit, smb.LowLimit)
+	// TODO: 3 HighLimit float64
+	_s += dw.p() + fmt.Sprintf("HighLimit: %T(%v)\n", smb.HighLimit, smb.HighLimit)
+	_s += dw.p() + "LowInclusive: bool(" + fmt.Sprintf("%t", smb.LowInclusive) + ")\n"
+	_s += dw.p() + "HighInclusive: bool(" + fmt.Sprintf("%t", smb.HighInclusive) + ")\n"
+	_s += dw.p() + "Clamp: bool(" + fmt.Sprintf("%t", smb.Clamp) + ")\n"
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
 func (dw DebugWriter) VisitStreamMethodFill(smf *StreamMethodFill) (any, error) {
 	_s := "StreamMethodFill(\n"
 	dw.i()
@@ -495,6 +517,27 @@ func (dw DebugWriter) VisitStreamMethodGeneric(smg *StreamMethodGeneric) (any, e
 		_s += dw.p() + "Source: nil\n"
 	}
 	_s += dw.p() + "Call: string(" + smg.Call + ")\n"
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
+func (dw DebugWriter) VisitStreamMethodNotBetween(smnb *StreamMethodNotBetween) (any, error) {
+	_s := "StreamMethodNotBetween(\n"
+	dw.i()
+	// TODO: 0 Object itypes.Object
+	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", smnb.Object, smnb.Object)
+	if smnb.Source != nil {
+		_s += dw.p() + "Source: " + s(smnb.Source.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "Source: nil\n"
+	}
+	// TODO: 2 LowLimit float64
+	_s += dw.p() + fmt.Sprintf("LowLimit: %T(%v)\n", smnb.LowLimit, smnb.LowLimit)
+	// TODO: 3 HighLimit float64
+	_s += dw.p() + fmt.Sprintf("HighLimit: %T(%v)\n", smnb.HighLimit, smnb.HighLimit)
+	_s += dw.p() + "LowInclusive: bool(" + fmt.Sprintf("%t", smnb.LowInclusive) + ")\n"
+	_s += dw.p() + "HighInclusive: bool(" + fmt.Sprintf("%t", smnb.HighInclusive) + ")\n"
 	dw.o()
 	_s += dw.p() + ")\n"
 	return _s, nil
