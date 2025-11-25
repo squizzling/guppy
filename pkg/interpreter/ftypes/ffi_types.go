@@ -41,3 +41,24 @@ func NewThingOrMissingThing[T itypes.Object](thing T) ThingOrMissing[T] {
 		Thing: thing,
 	}
 }
+
+type IntOrDouble struct {
+	Int    *primitive.ObjectInt
+	Double *primitive.ObjectDouble
+}
+
+func (iod IntOrDouble) AsInt() int {
+	if iod.Int != nil {
+		return iod.Int.Value
+	} else {
+		return int(iod.Double.Value)
+	}
+}
+
+func (iod IntOrDouble) AsDouble() float64 {
+	if iod.Int != nil {
+		return float64(iod.Int.Value)
+	} else {
+		return iod.Double.Value
+	}
+}
