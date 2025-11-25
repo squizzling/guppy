@@ -83,14 +83,10 @@ var prototypeStreamDouble = itypes.NewObject(map[string]itypes.Object{
 	"__risnot__": methodStreamIs{itypes.NewObject(nil), true, true},
 })
 
-// Stream[Alert]
-func newStreamAlertObject() itypes.Object {
-	return itypes.NewObject(map[string]itypes.Object{
-		"publish": methodPublish{itypes.NewObject(nil)},
-	})
-}
+var prototypeStreamAlert = itypes.NewObject(map[string]itypes.Object{
+	"publish": methodPublish{itypes.NewObject(nil)},
+})
 
-// Stream[bool]
 var prototypeStreamBool = itypes.NewObject(map[string]itypes.Object{
 	"publish":   methodPublish{itypes.NewObject(nil)},
 	"timeshift": methodTimeShift{itypes.NewObject(nil)},
@@ -121,11 +117,6 @@ var prototypeStreamBool = itypes.NewObject(map[string]itypes.Object{
 	"__risnot__": methodStreamIs{itypes.NewObject(nil), true, true},
 })
 
-func newStreamBoolObject() itypes.Object {
-	return prototypeStreamBool
-}
-
-// Stream[Unspecified]
 var prototypeStreamObject = itypes.NewObject(map[string]itypes.Object{
 	// misc
 	"above":      methodAbove{itypes.NewObject(nil)},

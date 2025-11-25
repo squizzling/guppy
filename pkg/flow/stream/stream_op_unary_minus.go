@@ -16,6 +16,6 @@ func (msum methodStreamUnaryMinus) Call(i itypes.Interpreter) (itypes.Object, er
 	if self, err := itypes.ArgAs[Stream](i, "self"); err != nil {
 		return nil, err
 	} else {
-		return NewStreamUnaryOpMinus(newStreamObject(), unpublish(self)), nil
+		return NewStreamUnaryOpMinus(prototypeStreamDouble, unpublish(self)), nil
 	}
 }

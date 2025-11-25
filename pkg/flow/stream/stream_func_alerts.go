@@ -25,7 +25,7 @@ func (f FFIAlerts) Params(i itypes.Interpreter) (*itypes.Params, error) {
 func (f FFIAlerts) Call(i itypes.Interpreter) (itypes.Object, error) {
 	// TODO: Process arguments
 	// TODO: This doesn't have the usual stream methods
-	return NewStreamFuncAlerts(newStreamObject()), nil
+	return NewStreamFuncAlerts(prototypeStreamAlert), nil
 }
 
 var _ = itypes.FlowCall(FFIAlerts{})

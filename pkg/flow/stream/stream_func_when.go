@@ -65,7 +65,7 @@ func (f FFIWhen) Call(i itypes.Interpreter) (itypes.Object, error) {
 	} else if atLeast, err := f.resolveAtLeast(i); err != nil {
 		return nil, err
 	} else {
-		return NewStreamFuncWhen(newStreamBoolObject(), predicate, lasting, atLeast), nil
+		return NewStreamFuncWhen(prototypeStreamBool, predicate, lasting, atLeast), nil
 	}
 }
 

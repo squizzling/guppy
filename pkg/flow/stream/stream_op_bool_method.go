@@ -33,11 +33,11 @@ func (msob methodStreamOpBool) Call(i itypes.Interpreter) (itypes.Object, error)
 		} else {
 			switch right := right.(type) {
 			case Stream:
-				return NewStreamBinaryOpStream(newStreamBoolObject(), &ObjectStreamTernary{}, unpublish(selfStream), msob.op, unpublish(right)), nil
+				return NewStreamBinaryOpStream(prototypeStreamBool, &ObjectStreamTernary{}, unpublish(selfStream), msob.op, unpublish(right)), nil
 			case *primitive.ObjectInt:
-				return NewStreamBinaryOpInt(newStreamBoolObject(), &ObjectStreamTernary{}, unpublish(selfStream), msob.op, right.Value, msob.reverse), nil
+				return NewStreamBinaryOpInt(prototypeStreamBool, &ObjectStreamTernary{}, unpublish(selfStream), msob.op, right.Value, msob.reverse), nil
 			case *primitive.ObjectDouble:
-				return NewStreamBinaryOpDouble(newStreamBoolObject(), &ObjectStreamTernary{}, unpublish(selfStream), msob.op, right.Value, msob.reverse), nil
+				return NewStreamBinaryOpDouble(prototypeStreamBool, &ObjectStreamTernary{}, unpublish(selfStream), msob.op, right.Value, msob.reverse), nil
 			default:
 				return nil, fmt.Errorf("opBinaryCall[%s]: unknown type %T", msob.op, right)
 			}

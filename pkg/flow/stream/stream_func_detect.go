@@ -108,7 +108,7 @@ func (f FFIDetect) Call(i itypes.Interpreter) (itypes.Object, error) {
 	} else if autoResolveAfter, err := f.resolveAutoResolveAfter(i); err != nil {
 		return nil, err
 	} else {
-		return NewStreamFuncDetect(newStreamAlertObject(), on, off, mode, annotations, eventAnnotations, autoResolveAfter), nil
+		return NewStreamFuncDetect(prototypeStreamAlert, on, off, mode, annotations, eventAnnotations, autoResolveAfter), nil
 	}
 }
 
