@@ -23,6 +23,8 @@ func NewInterpreter(enableTrace bool) itypes.Interpreter {
 
 	_ = i.SetGlobal("filter", filter.NewFFIFilter())
 	_ = i.SetGlobal("partition_filter", filter.NewFFIPartitionFilter())
+
+	_ = i.SetGlobal("ceil", stream.NewFFICeil())
 	_ = i.SetGlobal("threshold", stream.NewFFIThreshold())
 
 	// Old style

@@ -10,6 +10,7 @@ import (
 type VisitorStream interface {
 	VisitStreamFuncAbs(sfa *StreamFuncAbs) (any, error)
 	VisitStreamFuncAlerts(sfa *StreamFuncAlerts) (any, error)
+	VisitStreamFuncCeil(sfc *StreamFuncCeil) (any, error)
 	VisitStreamFuncCombine(sfc *StreamFuncCombine) (any, error)
 	VisitStreamFuncConstDouble(sfcd *StreamFuncConstDouble) (any, error)
 	VisitStreamFuncConstInt(sfci *StreamFuncConstInt) (any, error)
@@ -100,6 +101,32 @@ func (sfa *StreamFuncAlerts) Accept(vs VisitorStream) (any, error) {
 func (sfa *StreamFuncAlerts) CloneTimeShift(amount time.Duration) Stream {
 	return &StreamFuncAlerts{
 		Object: sfa.Object,
+	}
+}
+
+type StreamFuncCeil struct {
+	itypes.Object
+	Source Stream
+}
+
+func NewStreamFuncCeil(
+	Object itypes.Object,
+	Source Stream,
+) *StreamFuncCeil {
+	return &StreamFuncCeil{
+		Object: Object,
+		Source: Source,
+	}
+}
+
+func (sfc *StreamFuncCeil) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamFuncCeil(sfc)
+}
+
+func (sfc *StreamFuncCeil) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamFuncCeil{
+		Object: sfc.Object,
+		Source: cloneTimeshift(sfc.Source, amount),
 	}
 }
 

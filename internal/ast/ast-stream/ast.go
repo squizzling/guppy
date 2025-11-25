@@ -23,6 +23,10 @@ var Interfaces = []ast.Interface{
 		{"FuncAlerts", true, []ast.Field{
 			{"Object", "itypes.Object", true},
 		}},
+		{"FuncCeil", true, []ast.Field{
+			{"Object", "itypes.Object", true},
+			{"Source", "Stream", false},
+		}},
 		{"FuncCombine", true, []ast.Field{
 			{"Object", "itypes.Object", true},
 			{"Source", "Stream", false},

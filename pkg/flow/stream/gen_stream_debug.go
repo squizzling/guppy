@@ -58,6 +58,21 @@ func (dw DebugWriter) VisitStreamFuncAlerts(sfa *StreamFuncAlerts) (any, error) 
 	return _s, nil
 }
 
+func (dw DebugWriter) VisitStreamFuncCeil(sfc *StreamFuncCeil) (any, error) {
+	_s := "StreamFuncCeil(\n"
+	dw.i()
+	// TODO: 0 Object itypes.Object
+	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sfc.Object, sfc.Object)
+	if sfc.Source != nil {
+		_s += dw.p() + "Source: " + s(sfc.Source.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "Source: nil\n"
+	}
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
 func (dw DebugWriter) VisitStreamFuncCombine(sfc *StreamFuncCombine) (any, error) {
 	_s := "StreamFuncCombine(\n"
 	dw.i()

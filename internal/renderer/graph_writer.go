@@ -134,6 +134,11 @@ func (g *GraphWriter) VisitStreamFuncAlerts(sfa *stream.StreamFuncAlerts) (any, 
 	panic("implement me")
 }
 
+func (g *GraphWriter) VisitStreamFuncCeil(sfc *stream.StreamFuncCeil) (any, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (g *GraphWriter) VisitStreamFuncCombine(sfc *stream.StreamFuncCombine) (any, error) {
 	if nodeId, ok := g.GetNode(sfc); ok {
 		return nodeId, nil
