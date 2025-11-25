@@ -29,7 +29,7 @@ func (f FFIAbs) Call(i itypes.Interpreter) (itypes.Object, error) {
 				return nil, fmt.Errorf("argument %d is %T not a Stream", idx, stream)
 			}
 		}
-		return NewStreamFuncAbs(newStreamObject(), streams), nil
+		return NewStreamFuncAbs(prototypeStreamDouble, streams), nil
 	}
 }
 

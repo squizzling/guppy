@@ -45,7 +45,7 @@ func (f FFISum) Call(i itypes.Interpreter) (itypes.Object, error) {
 	} else if len(streamValues) == 0 {
 		return primitive.NewObjectDouble(sumConstant), nil
 	} else {
-		return NewStreamFuncSum(newStreamObject(), streamValues, sumConstant), nil
+		return NewStreamFuncSum(prototypeStreamDouble, streamValues, sumConstant), nil
 	}
 }
 

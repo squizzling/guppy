@@ -41,6 +41,6 @@ func (ms methodScale) Call(i itypes.Interpreter) (itypes.Object, error) {
 	} else if multiple, err := ms.resolveMultiple(i); err != nil {
 		return nil, err
 	} else {
-		return NewStreamMethodScale(newStreamObject(), unpublish(self), multiple), nil
+		return NewStreamMethodScale(prototypeStreamDouble, unpublish(self), multiple), nil
 	}
 }

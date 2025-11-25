@@ -91,7 +91,7 @@ func newStreamAlertObject() itypes.Object {
 }
 
 // Stream[bool]
-var prototypeStreamBoolObject = itypes.NewObject(map[string]itypes.Object{
+var prototypeStreamBool = itypes.NewObject(map[string]itypes.Object{
 	"publish":   methodPublish{itypes.NewObject(nil)},
 	"timeshift": methodTimeShift{itypes.NewObject(nil)},
 
@@ -122,7 +122,7 @@ var prototypeStreamBoolObject = itypes.NewObject(map[string]itypes.Object{
 })
 
 func newStreamBoolObject() itypes.Object {
-	return prototypeStreamBoolObject
+	return prototypeStreamBool
 }
 
 // Stream[Unspecified]

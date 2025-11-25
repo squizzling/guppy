@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/squizzling/guppy/pkg/interpreter/itypes"
-	"github.com/squizzling/guppy/pkg/interpreter/primitive"
 )
 
 type methodStreamIs struct {
@@ -31,18 +30,7 @@ func (msi methodStreamIs) Call(i itypes.Interpreter) (itypes.Object, error) {
 		if selfStream, ok := self.(Stream); !ok {
 			return nil, fmt.Errorf("arg self is %T not Stream", self)
 		} else {
-			return NewStreamIsNone(newStreamObject(), &ObjectStreamTernary{}, selfStream, msi.invert), nil
+			return NewStreamIsNone(prototypeStreamBool, &ObjectStreamTernary{}, selfStream, msi.invert), nil
 		}
-	}
-}
-
-func (sin *StreamIsNone) resolveStream(o any) (Stream, error) {
-	switch o := o.(type) {
-	case Stream:
-		return o, nil
-	case *primitive.ObjectInt:
-		return NewStreamFuncConstInt(newStreamObject(), o.Value, nil), nil
-	default:
-		return nil, fmt.Errorf("StreamIsNone.resolveStream got %T expecting Stream", o)
 	}
 }

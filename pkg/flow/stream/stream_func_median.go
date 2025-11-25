@@ -46,7 +46,7 @@ func (f FFIMedian) Call(i itypes.Interpreter) (itypes.Object, error) {
 	}
 
 	// streamValues are already unpublished
-	return NewStreamFuncMedian(newStreamObject(), streamValues, medianConstants), nil
+	return NewStreamFuncMedian(prototypeStreamDouble, streamValues, medianConstants), nil
 }
 
 var _ = itypes.FlowCall(FFIMedian{})

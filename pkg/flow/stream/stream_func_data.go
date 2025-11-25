@@ -84,7 +84,7 @@ func (f FFIData) Call(i itypes.Interpreter) (itypes.Object, error) {
 	} else if maxExtrapolations, err := resolveMaxExtrapolations(i); err != nil {
 		return nil, err
 	} else {
-		return NewStreamFuncData(newStreamObject(), metricName, fltr, rollup, extrapolation, maxExtrapolations, 0), nil
+		return NewStreamFuncData(prototypeStreamDouble, metricName, fltr, rollup, extrapolation, maxExtrapolations, 0), nil
 	}
 }
 

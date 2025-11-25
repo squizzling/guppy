@@ -26,6 +26,6 @@ func (mb methodBelow) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if self, err := itypes.ArgAs[Stream](i, "self"); err != nil {
 		return nil, err
 	} else {
-		return NewStreamMethodBelow(newStreamObject(), unpublish(self)), nil
+		return NewStreamMethodBelow(prototypeStreamDouble, unpublish(self)), nil
 	}
 }

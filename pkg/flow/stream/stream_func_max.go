@@ -68,7 +68,7 @@ func (f FFIMax) Call(i itypes.Interpreter) (itypes.Object, error) {
 	}
 
 	// streamValues are already unpublished
-	return NewStreamFuncMax(newStreamObject(), streamValues, maxConstant), nil
+	return NewStreamFuncMax(prototypeStreamDouble, streamValues, maxConstant), nil
 }
 
 var _ = itypes.FlowCall(FFIMax{})

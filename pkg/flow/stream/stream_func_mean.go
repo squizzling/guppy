@@ -46,7 +46,7 @@ func (f FFIMean) Call(i itypes.Interpreter) (itypes.Object, error) {
 	}
 
 	// streamValues are already unpublished
-	return NewStreamFuncMean(newStreamObject(), streamValues, meanConstants), nil
+	return NewStreamFuncMean(prototypeStreamDouble, streamValues, meanConstants), nil
 }
 
 var _ = itypes.FlowCall(FFIMean{})

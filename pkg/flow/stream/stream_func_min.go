@@ -68,7 +68,7 @@ func (f FFIMin) Call(i itypes.Interpreter) (itypes.Object, error) {
 	}
 
 	// streamValues are already unpublished
-	return NewStreamFuncMin(newStreamObject(), streamValues, minConstant), nil
+	return NewStreamFuncMin(prototypeStreamDouble, streamValues, minConstant), nil
 }
 
 var _ = itypes.FlowCall(FFIMin{})

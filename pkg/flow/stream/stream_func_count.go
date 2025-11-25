@@ -29,7 +29,7 @@ func (f FFICount) Call(i itypes.Interpreter) (itypes.Object, error) {
 				return nil, fmt.Errorf("argument %d is %T not a Stream", idx, stream)
 			}
 		}
-		return NewStreamFuncCount(newStreamObject(), streams), nil
+		return NewStreamFuncCount(prototypeStreamDouble, streams), nil
 	}
 }
 

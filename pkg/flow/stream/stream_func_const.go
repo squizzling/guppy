@@ -58,9 +58,9 @@ func (f FFIConst) Call(i itypes.Interpreter) (itypes.Object, error) {
 	} else {
 		switch value := value.(type) {
 		case *primitive.ObjectInt:
-			return NewStreamFuncConstInt(newStreamObject(), value.Value, key), nil
+			return NewStreamFuncConstInt(prototypeStreamDouble, value.Value, key), nil
 		case *primitive.ObjectDouble:
-			return NewStreamFuncConstDouble(newStreamObject(), value.Value, key), nil
+			return NewStreamFuncConstDouble(prototypeStreamDouble, value.Value, key), nil
 		default:
 			return nil, fmt.Errorf("value is %T not *interpreter.ObjectInt, or *interpreter.ObjectDouble", value)
 		}
