@@ -3,9 +3,9 @@ package builtin
 import (
 	"fmt"
 
-	"guppy/pkg/interpreter/ffi"
-	"guppy/pkg/interpreter/itypes"
-	"guppy/pkg/interpreter/primitive"
+	"github.com/squizzling/guppy/pkg/interpreter/ffi"
+	"github.com/squizzling/guppy/pkg/interpreter/itypes"
+	"github.com/squizzling/guppy/pkg/interpreter/primitive"
 )
 
 type FFILen struct {

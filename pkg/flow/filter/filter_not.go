@@ -3,7 +3,7 @@ package filter
 import (
 	"fmt"
 
-	"guppy/pkg/interpreter/itypes"
+	"github.com/squizzling/guppy/pkg/interpreter/itypes"
 )
 
 type not struct {

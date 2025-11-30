@@ -1,7 +1,7 @@
 package astflow
 
 import (
-	"guppy/internal/ast"
+	"github.com/squizzling/guppy/internal/ast"
 )
 
 const Package = "ast"

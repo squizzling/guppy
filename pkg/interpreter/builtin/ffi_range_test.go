@@ -3,9 +3,9 @@ package builtin
 import (
 	"testing"
 
-	"guppy/pkg/interpreter"
-	"guppy/pkg/interpreter/ftypes"
-	"guppy/pkg/interpreter/primitive"
+	"github.com/squizzling/guppy/pkg/interpreter"
+	"github.com/squizzling/guppy/pkg/interpreter/ftypes"
+	"github.com/squizzling/guppy/pkg/interpreter/primitive"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

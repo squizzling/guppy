@@ -3,9 +3,9 @@ package stream
 import (
 	"time"
 
-	"guppy/pkg/flow/duration"
-	"guppy/pkg/interpreter"
-	"guppy/pkg/interpreter/itypes"
+	"github.com/squizzling/guppy/pkg/flow/duration"
+	"github.com/squizzling/guppy/pkg/interpreter"
+	"github.com/squizzling/guppy/pkg/interpreter/itypes"
 )
 
 type methodTimeShift struct {

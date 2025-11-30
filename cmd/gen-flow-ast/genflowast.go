@@ -6,8 +6,8 @@ import (
 	"strings"
 	"unicode"
 
-	"guppy/internal/ast"
-	"guppy/internal/ast/ast-flow"
+	"github.com/squizzling/guppy/internal/ast"
+	"github.com/squizzling/guppy/internal/ast/ast-flow"
 )
 
 func main() {
@@ -18,7 +18,7 @@ func defineAst(packageName string, interfaces ast.Interfaces) {
 	fmt.Printf("package %s\n", packageName)
 	fmt.Printf("\n")
 	fmt.Printf("import (\n")
-	fmt.Printf("\t\"guppy/pkg/parser/tokenizer\"\n")
+	fmt.Printf("\t\"github.com/squizzling/guppy/pkg/parser/tokenizer\"\n")
 	fmt.Printf(")\n")
 
 	for _, iface := range interfaces {

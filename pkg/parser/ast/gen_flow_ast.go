@@ -1,7 +1,7 @@
 package ast
 
 import (
-	"guppy/pkg/parser/tokenizer"
+	"github.com/squizzling/guppy/pkg/parser/tokenizer"
 )
 
 type VisitorData interface {

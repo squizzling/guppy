@@ -3,9 +3,9 @@ package flow
 import (
 	"fmt"
 
-	"guppy/pkg/parser/ast"
-	"guppy/pkg/parser/parser"
-	"guppy/pkg/parser/tokenizer"
+	"github.com/squizzling/guppy/pkg/parser/ast"
+	"github.com/squizzling/guppy/pkg/parser/parser"
+	"github.com/squizzling/guppy/pkg/parser/tokenizer"
 )
 
 var magicBinaryNames = map[tokenizer.TokenType]string{

@@ -1,8 +1,8 @@
 package primitive
 
 import (
-	"guppy/pkg/interpreter/ffi"
-	"guppy/pkg/interpreter/itypes"
+	"github.com/squizzling/guppy/pkg/interpreter/ffi"
+	"github.com/squizzling/guppy/pkg/interpreter/itypes"
 )
 
 type ObjectNone struct {

@@ -3,8 +3,8 @@ package stream
 import (
 	"time"
 
-	"guppy/pkg/flow/filter"
-	"guppy/pkg/interpreter/itypes"
+	"github.com/squizzling/guppy/pkg/flow/filter"
+	"github.com/squizzling/guppy/pkg/interpreter/itypes"
 )
 
 type VisitorStream interface {

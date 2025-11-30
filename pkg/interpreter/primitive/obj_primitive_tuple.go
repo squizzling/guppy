@@ -1,7 +1,7 @@
 package primitive
 
 import (
-	"guppy/pkg/interpreter/itypes"
+	"github.com/squizzling/guppy/pkg/interpreter/itypes"
 )
 
 // TODO: Proper interface

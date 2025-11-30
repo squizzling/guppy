@@ -3,7 +3,7 @@ package primitive_test
 import (
 	"testing"
 
-	"guppy/pkg/interpreter/primitive"
+	"github.com/squizzling/guppy/pkg/interpreter/primitive"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

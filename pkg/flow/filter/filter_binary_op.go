@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"guppy/pkg/interpreter/itypes"
+	"github.com/squizzling/guppy/pkg/interpreter/itypes"
 )
 
 type and struct {

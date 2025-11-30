@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"guppy/pkg/parser/parser"
-	"guppy/pkg/parser/tokenizer"
+	"github.com/squizzling/guppy/pkg/parser/parser"
+	"github.com/squizzling/guppy/pkg/parser/tokenizer"
 )
 
 func rebuildForFile[T any](

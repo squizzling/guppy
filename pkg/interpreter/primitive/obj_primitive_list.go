@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"guppy/pkg/interpreter/ffi"
-	"guppy/pkg/interpreter/itypes"
+	"github.com/squizzling/guppy/pkg/interpreter/ffi"
+	"github.com/squizzling/guppy/pkg/interpreter/itypes"
 )
 
 // TODO: Proper interface

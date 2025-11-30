@@ -3,7 +3,7 @@ package itypes
 import (
 	"fmt"
 
-	"guppy/pkg/parser/ast"
+	"github.com/squizzling/guppy/pkg/parser/ast"
 )
 
 type Interpreter interface {

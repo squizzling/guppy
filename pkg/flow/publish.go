@@ -1,8 +1,8 @@
 package flow
 
 import (
-	"guppy/pkg/flow/stream"
-	"guppy/pkg/interpreter/itypes"
+	"github.com/squizzling/guppy/pkg/flow/stream"
+	"github.com/squizzling/guppy/pkg/interpreter/itypes"
 )
 
 type Published struct {

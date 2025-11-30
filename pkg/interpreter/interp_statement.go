@@ -3,10 +3,10 @@ package interpreter
 import (
 	"fmt"
 
-	"guppy/pkg/interpreter/deferred"
-	"guppy/pkg/interpreter/itypes"
-	"guppy/pkg/interpreter/primitive"
-	"guppy/pkg/parser/ast"
+	"github.com/squizzling/guppy/pkg/interpreter/deferred"
+	"github.com/squizzling/guppy/pkg/interpreter/itypes"
+	"github.com/squizzling/guppy/pkg/interpreter/primitive"
+	"github.com/squizzling/guppy/pkg/parser/ast"
 )
 
 func (i *interpreter) VisitStatementAssert(sa ast.StatementAssert) (returnValue any, errOut error) {

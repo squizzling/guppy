@@ -3,9 +3,9 @@ package stream
 import (
 	"fmt"
 
-	"guppy/pkg/interpreter/itypes"
-	"guppy/pkg/interpreter/primitive"
-	"guppy/pkg/parser/ast"
+	"github.com/squizzling/guppy/pkg/interpreter/itypes"
+	"github.com/squizzling/guppy/pkg/interpreter/primitive"
+	"github.com/squizzling/guppy/pkg/parser/ast"
 )
 
 type ObjectStreamTernary struct{}

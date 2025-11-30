@@ -10,9 +10,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"guppy/pkg/parser/ast"
-	"guppy/pkg/parser/parser"
-	"guppy/pkg/parser/tokenizer"
+	"github.com/squizzling/guppy/pkg/parser/ast"
+	"github.com/squizzling/guppy/pkg/parser/parser"
+	"github.com/squizzling/guppy/pkg/parser/tokenizer"
 )
 
 func must(err error) {

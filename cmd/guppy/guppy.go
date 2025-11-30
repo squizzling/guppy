@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"os"
 
-	iflow "guppy/pkg/flow"
-	"guppy/pkg/parser/flow"
-	"guppy/pkg/parser/parser"
-	"guppy/pkg/parser/tokenizer"
+	iflow "github.com/squizzling/guppy/pkg/flow"
+	"github.com/squizzling/guppy/pkg/parser/flow"
+	"github.com/squizzling/guppy/pkg/parser/parser"
+	"github.com/squizzling/guppy/pkg/parser/tokenizer"
 )
 
 func main() {

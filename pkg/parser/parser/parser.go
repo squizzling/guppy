@@ -3,7 +3,7 @@ package parser
 import (
 	"slices"
 
-	"guppy/pkg/parser/tokenizer"
+	"github.com/squizzling/guppy/pkg/parser/tokenizer"
 )
 
 type Parser struct {

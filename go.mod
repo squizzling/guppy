@@ -1,4 +1,4 @@
-module guppy
+module github.com/squizzling/guppy
 
 go 1.23.6
 

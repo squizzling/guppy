@@ -3,8 +3,8 @@ package stream
 import (
 	"fmt"
 
-	"guppy/pkg/interpreter"
-	"guppy/pkg/interpreter/itypes"
+	"github.com/squizzling/guppy/pkg/interpreter"
+	"github.com/squizzling/guppy/pkg/interpreter/itypes"
 )
 
 type FFICombine struct {

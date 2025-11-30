@@ -3,8 +3,8 @@ package interpreter
 import (
 	"fmt"
 
-	"guppy/pkg/interpreter/itypes"
-	"guppy/pkg/interpreter/primitive"
+	"github.com/squizzling/guppy/pkg/interpreter/itypes"
+	"github.com/squizzling/guppy/pkg/interpreter/primitive"
 )
 
 func (i *interpreter) GetArg(argName string) (itypes.Object, error) {

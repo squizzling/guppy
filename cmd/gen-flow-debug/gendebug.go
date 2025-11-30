@@ -6,8 +6,8 @@ import (
 	"strings"
 	"unicode"
 
-	"guppy/internal/ast"
-	"guppy/internal/ast/ast-flow"
+	"github.com/squizzling/guppy/internal/ast"
+	"github.com/squizzling/guppy/internal/ast/ast-flow"
 )
 
 func main() {

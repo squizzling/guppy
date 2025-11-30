@@ -3,11 +3,11 @@ package interpreter
 import (
 	"fmt"
 
-	"guppy/pkg/interpreter/deferred"
-	"guppy/pkg/interpreter/itypes"
-	"guppy/pkg/interpreter/primitive"
-	"guppy/pkg/parser/ast"
-	"guppy/pkg/parser/tokenizer"
+	"github.com/squizzling/guppy/pkg/interpreter/deferred"
+	"github.com/squizzling/guppy/pkg/interpreter/itypes"
+	"github.com/squizzling/guppy/pkg/interpreter/primitive"
+	"github.com/squizzling/guppy/pkg/parser/ast"
+	"github.com/squizzling/guppy/pkg/parser/tokenizer"
 )
 
 func (i *interpreter) VisitExpressionBinary(eb ast.ExpressionBinary) (returnValue any, errOut error) {

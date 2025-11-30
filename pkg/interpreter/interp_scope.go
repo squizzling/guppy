@@ -1,7 +1,7 @@
 package interpreter
 
 import (
-	"guppy/pkg/interpreter/scope"
+	"github.com/squizzling/guppy/pkg/interpreter/scope"
 )
 
 func (i *interpreter) pushScope() {

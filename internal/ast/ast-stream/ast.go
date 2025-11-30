@@ -1,7 +1,7 @@
 package aststream
 
 import (
-	"guppy/internal/ast"
+	"github.com/squizzling/guppy/internal/ast"
 )
 
 const Package = "stream"
@@ -9,8 +9,8 @@ const Package = "stream"
 var Imports = []string{
 	"time",
 	"",
-	"guppy/pkg/flow/filter",
-	"guppy/pkg/interpreter/itypes",
+	"github.com/squizzling/guppy/pkg/flow/filter",
+	"github.com/squizzling/guppy/pkg/interpreter/itypes",
 }
 
 var Interfaces = []ast.Interface{

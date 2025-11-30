@@ -3,10 +3,10 @@ package stream
 import (
 	"fmt"
 
-	"guppy/pkg/flow/filter"
-	"guppy/pkg/interpreter"
-	"guppy/pkg/interpreter/itypes"
-	"guppy/pkg/interpreter/primitive"
+	"github.com/squizzling/guppy/pkg/flow/filter"
+	"github.com/squizzling/guppy/pkg/interpreter"
+	"github.com/squizzling/guppy/pkg/interpreter/itypes"
+	"github.com/squizzling/guppy/pkg/interpreter/primitive"
 )
 
 type FFIData struct {

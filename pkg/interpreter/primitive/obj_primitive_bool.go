@@ -1,9 +1,9 @@
 package primitive
 
 import (
-	"guppy/pkg/interpreter/ffi"
-	"guppy/pkg/interpreter/itypes"
-	"guppy/pkg/parser/ast"
+	"github.com/squizzling/guppy/pkg/interpreter/ffi"
+	"github.com/squizzling/guppy/pkg/interpreter/itypes"
+	"github.com/squizzling/guppy/pkg/parser/ast"
 )
 
 type ObjectBool struct {

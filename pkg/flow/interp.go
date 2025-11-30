@@ -1,15 +1,15 @@
 package flow
 
 import (
-	"guppy/pkg/flow/annotate"
-	"guppy/pkg/flow/debug"
-	"guppy/pkg/flow/duration"
-	"guppy/pkg/flow/filter"
-	"guppy/pkg/flow/stream"
-	"guppy/pkg/interpreter"
-	"guppy/pkg/interpreter/builtin"
-	"guppy/pkg/interpreter/itypes"
-	"guppy/pkg/interpreter/primitive"
+	"github.com/squizzling/guppy/pkg/flow/annotate"
+	"github.com/squizzling/guppy/pkg/flow/debug"
+	"github.com/squizzling/guppy/pkg/flow/duration"
+	"github.com/squizzling/guppy/pkg/flow/filter"
+	"github.com/squizzling/guppy/pkg/flow/stream"
+	"github.com/squizzling/guppy/pkg/interpreter"
+	"github.com/squizzling/guppy/pkg/interpreter/builtin"
+	"github.com/squizzling/guppy/pkg/interpreter/itypes"
+	"github.com/squizzling/guppy/pkg/interpreter/primitive"
 )
 
 func NewInterpreter(enableTrace bool) itypes.Interpreter {
