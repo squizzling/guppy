@@ -84,7 +84,7 @@ o = repr(filter('a', 'b', 'c', match_missing=const(1)))         #TypeError: <'fi
 =====
 o = repr(filter('a', 'b', 'c', match_missing=filter('d', 'e'))) #TypeError: <'filter function'> unsupported type 'filter' object for argument 'match_missing'
 -----
-*param `match_missing` for ffiFilter.MatchMissing is *filter.kv not *interpreter.ObjectMissing, or *primitive.ObjectBool
+*param `match_missing` for ffiFilter.MatchMissing is *filter.FilterKeyValue not *interpreter.ObjectMissing, or *primitive.ObjectBool
 =====
 o = repr(filter({}))                                            #: cannot create filter from an empty dictionary
 -----

@@ -3,7 +3,6 @@ package filter
 import (
 	"errors"
 	"fmt"
-	"strings"
 
 	"github.com/squizzling/guppy/pkg/interpreter/ffi"
 	"github.com/squizzling/guppy/pkg/interpreter/ftypes"
@@ -99,7 +98,7 @@ func (f ffiFilter) callString(i itypes.Interpreter) (itypes.Object, error) {
 	}
 
 	matchMissing := f.MatchMissing.Thing != nil && f.MatchMissing.Thing.Value
-	return NewKV(f.Field.String.Value, terms, matchMissing), nil
+	return NewFilterKeyValue(prototypeFilter, f.Field.String.Value, terms, matchMissing), nil
 }
 
 func (f ffiFilter) callDict(i itypes.Interpreter) (itypes.Object, error) {
@@ -136,9 +135,9 @@ func (f ffiFilter) callDict(i itypes.Interpreter) (itypes.Object, error) {
 			if err != nil {
 				return nil, err
 			} else {
-				nextFilter := NewKV(key.Value, items, false)
+				nextFilter := NewFilterKeyValue(prototypeFilter, key.Value, items, false)
 				if filter != nil {
-					filter = NewAnd(filter, nextFilter)
+					filter = newFilterAnd(filter, nextFilter)
 				} else {
 					filter = nextFilter
 				}
@@ -163,37 +162,6 @@ func (f ffiFilter) resolveTerms(items []itypes.Object) ([]string, error) {
 	return terms, nil
 }
 
-type kv struct {
-	itypes.Object
-
-	key          string
-	values       []string
-	matchMissing bool
-}
-
-func NewKV(key string, values []string, matchMissing bool) Filter {
-	return &kv{
-		Object:       prototypeFilter,
-		key:          key,
-		values:       values,
-		matchMissing: matchMissing,
-	}
-}
-
-func (fkv *kv) Repr() string {
-	var sb strings.Builder
-	sb.WriteString("filter('")
-	sb.WriteString(fkv.key)
-	sb.WriteString("'")
-	for _, v := range fkv.values {
-		sb.WriteString(", '")
-		sb.WriteString(v)
-		sb.WriteString("'")
-	}
-
-	if fkv.matchMissing {
-		sb.WriteString(", match_missing=True")
-	}
-	sb.WriteString(")")
-	return sb.String()
+func (fkv *FilterKeyValue) Repr() string {
+	return repr(fkv)
 }

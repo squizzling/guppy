@@ -4,6 +4,7 @@ gen:
 	go run ./cmd/gen-flow-debug   >pkg/parser/ast/gen_flow_debug.go
 	go run ./cmd/gen-stream-ast   >pkg/flow/stream/gen_stream_ast.go
 	go run ./cmd/gen-stream-debug >pkg/flow/stream/gen_stream_debug.go
+	go run ./cmd/gen-filter-ast   >pkg/flow/filter/gen_filter_ast.go
 
 
 .PHONY: imports

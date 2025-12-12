@@ -1,76 +1,48 @@
 package filter
 
 import (
-	"fmt"
-	"strings"
-
 	"github.com/squizzling/guppy/pkg/interpreter/itypes"
 )
 
-type and struct {
-	itypes.Object
-
-	filters []Filter
-}
-
-func NewAnd(left Filter, right Filter) Filter {
+func newFilterAnd(left Filter, right Filter) Filter {
 	var filters []Filter
-	if leftAnd, ok := left.(*and); ok {
-		filters = append(filters, leftAnd.filters...)
+	if leftAnd, ok := left.(*FilterAnd); ok {
+		filters = append(filters, leftAnd.Filters...)
 	} else {
 		filters = append(filters, left)
 	}
-	if rightAnd, ok := right.(*and); ok {
-		filters = append(filters, rightAnd.filters...)
+	if rightAnd, ok := right.(*FilterAnd); ok {
+		filters = append(filters, rightAnd.Filters...)
 	} else {
 		filters = append(filters, right)
 	}
 
-	return &and{
-		Object:  prototypeFilter,
-		filters: filters,
-	}
+	return NewFilterAnd(prototypeFilter, filters)
 }
 
-func (a *and) Repr() string {
-	var s []string
-	for _, f := range a.filters {
-		s = append(s, f.Repr())
-	}
-	return fmt.Sprintf("(%s)", strings.Join(s, " and "))
+func (fa *FilterAnd) Repr() string {
+	return repr(fa)
 }
 
-type or struct {
-	itypes.Object
-
-	filters []Filter
-}
-
-func NewOr(left Filter, right Filter) Filter {
+func newFilterOr(left Filter, right Filter) Filter {
 	var filters []Filter
-	if leftOr, ok := left.(*or); ok {
-		filters = append(filters, leftOr.filters...)
+	if leftOr, ok := left.(*FilterOr); ok {
+		filters = append(filters, leftOr.Filters...)
 	} else {
 		filters = append(filters, left)
 	}
-	if rightOr, ok := right.(*or); ok {
-		filters = append(filters, rightOr.filters...)
+
+	if rightOr, ok := right.(*FilterOr); ok {
+		filters = append(filters, rightOr.Filters...)
 	} else {
 		filters = append(filters, right)
 	}
 
-	return &or{
-		Object:  prototypeFilter,
-		filters: filters,
-	}
+	return NewFilterOr(prototypeFilter, filters)
 }
 
-func (o *or) Repr() string {
-	var s []string
-	for _, f := range o.filters {
-		s = append(s, f.Repr())
-	}
-	return fmt.Sprintf("(%s)", strings.Join(s, " or "))
+func (fo *FilterOr) Repr() string {
+	return repr(fo)
 }
 
 type ffiFilterBinaryOp struct {
@@ -83,8 +55,8 @@ type ffiFilterBinaryOp struct {
 func (f ffiFilterBinaryOp) Call(i itypes.Interpreter) (itypes.Object, error) {
 	switch f.op {
 	case 0:
-		return NewAnd(f.Self, f.Right), nil
+		return newFilterAnd(f.Self, f.Right), nil
 	default:
-		return NewOr(f.Self, f.Right), nil
+		return newFilterOr(f.Self, f.Right), nil
 	}
 }

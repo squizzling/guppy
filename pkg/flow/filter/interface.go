@@ -5,10 +5,6 @@ import (
 	"github.com/squizzling/guppy/pkg/interpreter/itypes"
 )
 
-type Filter interface {
-	itypes.Object
-}
-
 var prototypeFilter = itypes.NewObject(map[string]itypes.Object{
 	"__binary_and__":       ffi.NewFFI(ffiFilterBinaryOp{op: 0}),
 	"__binary_or__":        ffi.NewFFI(ffiFilterBinaryOp{op: 1}),
