@@ -210,7 +210,7 @@ func (i *interpreter) VisitStatementProgram(sp ast.StatementProgram) (returnValu
 	defer i.trace()(&returnValue, &errOut)
 
 	i.pushScope()
-	defer i.popScope()
+	defer i.PopScope()
 	if _, err := sp.Statements.Accept(i); err != nil {
 		return nil, err
 	} else if err := i.Scope.ResolveDeferred(i); err != nil {

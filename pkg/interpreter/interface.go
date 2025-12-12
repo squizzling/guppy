@@ -27,12 +27,16 @@ func (i *interpreter) SetGlobal(name string, value itypes.Object) error {
 	return i.Globals.Set(name, value)
 }
 
+func (i *interpreter) SetIntrinsic(name string, value itypes.Object) error {
+	return i.Intrinsics.Set(name, value)
+}
+
 func (i *interpreter) doAnd(left itypes.Object, right itypes.Object) (itypes.Object, error) {
 	if and, err := left.Member(i, left, "__binary_and__"); err != nil {
 		return nil, err
 	} else {
 		i.pushScope()
-		defer i.popScope()
+		defer i.PopScope()
 
 		if err := i.Scope.Set("self", left); err != nil {
 			return nil, err

@@ -13,6 +13,7 @@ type Interpreter interface {
 
 	SetGlobal(name string, value Object) error
 	GetGlobal(argName string) (Object, error)
+	SetIntrinsic(name string, value Object) error
 	Set(name string, value Object) error
 	Get(name string) (Object, error)
 	GetArg(name string) (Object, error)
@@ -20,6 +21,9 @@ type Interpreter interface {
 	DoString(o Object) (string, error)
 	DoParams(o Object) (*Params, error)
 	DoCall(o Object) (Object, error)
+
+	PushIntrinsicScope()
+	PopScope()
 }
 
 type Object interface {

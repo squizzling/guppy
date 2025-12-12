@@ -169,7 +169,7 @@ func (i *interpreter) VisitExpressionCall(ec ast.ExpressionCall) (returnValue an
 	} else {
 		i.pushClosure(i.Globals)
 	}
-	defer i.popScope()
+	defer i.PopScope()
 
 	if err := i.assignArgs(
 		paramName, paramValue,

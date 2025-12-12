@@ -13,8 +13,9 @@ import (
 )
 
 type interpreter struct {
-	Globals *scope.Scope
-	Scope   *scope.Scope
+	Globals    *scope.Scope
+	Intrinsics *scope.Scope
+	Scope      *scope.Scope
 
 	debugDepth  int
 	enableTrace bool
@@ -25,7 +26,10 @@ func NewInterpreter(enableTrace bool) itypes.Interpreter {
 		enableTrace: enableTrace,
 	}
 	i.pushScope()
+	i.Intrinsics = i.Scope
+	i.pushScope()
 	i.Globals = i.Scope
+
 	return i
 }
 

@@ -15,6 +15,14 @@ import (
 func NewInterpreter(enableTrace bool) itypes.Interpreter {
 	i := interpreter.NewInterpreter(enableTrace)
 
+	setIntrinsics(i)
+	setGlobals(i)
+
+	return i
+}
+
+func setGlobals(i itypes.Interpreter) {
+
 	// New style
 	_ = i.SetGlobal("len", builtin.NewFFILen())
 	_ = i.SetGlobal("range", builtin.NewFFIRange())
@@ -47,8 +55,8 @@ func NewInterpreter(enableTrace bool) itypes.Interpreter {
 	_ = i.SetGlobal("duration", &duration.FFIDuration{Object: itypes.NewObject(nil)})
 	_ = i.SetGlobal("union", &stream.FFIUnion{Object: itypes.NewObject(nil)})
 	_ = i.SetGlobal("when", &stream.FFIWhen{Object: itypes.NewObject(nil)})
+}
 
-	_ = i.Set("Args", primitive.NewObjectDict(nil))
-
-	return i
+func setIntrinsics(i itypes.Interpreter) {
+	_ = i.SetIntrinsic("Args", primitive.NewObjectDict(nil))
 }

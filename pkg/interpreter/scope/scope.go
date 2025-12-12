@@ -36,7 +36,7 @@ func (s *Scope) Child() *Scope {
 	}
 }
 
-func (s *Scope) Closure(lookup *Scope) *Scope {
+func (s *Scope) Lookup(lookup *Scope) *Scope {
 	return &Scope{
 		isDefined:      make(map[string]bool),
 		vars:           make(map[string]itypes.Object),
