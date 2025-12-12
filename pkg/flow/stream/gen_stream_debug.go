@@ -196,6 +196,21 @@ func (dw DebugWriter) VisitStreamFuncEvents(sfe *StreamFuncEvents) (any, error) 
 	return _s, nil
 }
 
+func (dw DebugWriter) VisitStreamFuncFloor(sff *StreamFuncFloor) (any, error) {
+	_s := "StreamFuncFloor(\n"
+	dw.i()
+	// TODO: 0 Object itypes.Object
+	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sff.Object, sff.Object)
+	if sff.Source != nil {
+		_s += dw.p() + "Source: " + s(sff.Source.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "Source: nil\n"
+	}
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
 func (dw DebugWriter) VisitStreamFuncMax(sfm *StreamFuncMax) (any, error) {
 	_s := "StreamFuncMax(\n"
 	dw.i()

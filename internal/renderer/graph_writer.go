@@ -270,6 +270,23 @@ func (g *GraphWriter) VisitStreamFuncEvents(sfe *stream.StreamFuncEvents) (any, 
 	panic("implement me")
 }
 
+func (g *GraphWriter) VisitStreamFuncFloor(sff *stream.StreamFuncFloor) (any, error) {
+	if nodeId, ok := g.GetNode(sff); ok {
+		return nodeId, nil
+	}
+
+	var sb strings.Builder
+	sb.WriteString("floor block\n")
+	nodeId := g.DefineNode(sff, sb.String())
+
+	sourceNodeId, err := sff.Source.Accept(g)
+	if err != nil {
+		return "", err
+	}
+	g.DefineEdge(nodeId, sourceNodeId.(string), "Source")
+	return nodeId, nil
+}
+
 func (g *GraphWriter) VisitStreamFuncMax(sfm *stream.StreamFuncMax) (any, error) {
 	if nodeId, ok := g.GetNode(sfm); ok {
 		return nodeId, nil

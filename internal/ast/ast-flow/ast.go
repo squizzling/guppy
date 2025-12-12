@@ -81,7 +81,6 @@ var Interfaces = ast.Interfaces{
 			{"Statement", "[]Statement", false},
 			{"StatementElse", "Statement", false},
 		}},
-
 		{"Function", false, []ast.Field{
 			{"Token", "string", false},
 			{"Params", "*DataParameterList", false},

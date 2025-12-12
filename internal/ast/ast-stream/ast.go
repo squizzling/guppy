@@ -67,6 +67,10 @@ var Interfaces = []ast.Interface{
 		{"FuncEvents", true, []ast.Field{
 			{"Object", "itypes.Object", true},
 		}},
+		{"FuncFloor", true, []ast.Field{
+			{"Object", "itypes.Object", true},
+			{"Source", "Stream", false},
+		}},
 		{"FuncMax", true, []ast.Field{
 			{"Object", "itypes.Object", true},
 			{"Sources", "[]Stream", false},

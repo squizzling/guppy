@@ -59,4 +59,5 @@ func setGlobals(i itypes.Interpreter) {
 
 func setIntrinsics(i itypes.Interpreter) {
 	_ = i.SetIntrinsic("Args", primitive.NewObjectDict(nil))
+	_ = i.SetIntrinsic("floor", stream.NewFFIFloor())
 }

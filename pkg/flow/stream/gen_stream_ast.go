@@ -18,6 +18,7 @@ type VisitorStream interface {
 	VisitStreamFuncData(sfd *StreamFuncData) (any, error)
 	VisitStreamFuncDetect(sfd *StreamFuncDetect) (any, error)
 	VisitStreamFuncEvents(sfe *StreamFuncEvents) (any, error)
+	VisitStreamFuncFloor(sff *StreamFuncFloor) (any, error)
 	VisitStreamFuncMax(sfm *StreamFuncMax) (any, error)
 	VisitStreamFuncMean(sfm *StreamFuncMean) (any, error)
 	VisitStreamFuncMedian(sfm *StreamFuncMedian) (any, error)
@@ -357,6 +358,32 @@ func (sfe *StreamFuncEvents) Accept(vs VisitorStream) (any, error) {
 func (sfe *StreamFuncEvents) CloneTimeShift(amount time.Duration) Stream {
 	return &StreamFuncEvents{
 		Object: sfe.Object,
+	}
+}
+
+type StreamFuncFloor struct {
+	itypes.Object
+	Source Stream
+}
+
+func NewStreamFuncFloor(
+	Object itypes.Object,
+	Source Stream,
+) *StreamFuncFloor {
+	return &StreamFuncFloor{
+		Object: Object,
+		Source: Source,
+	}
+}
+
+func (sff *StreamFuncFloor) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamFuncFloor(sff)
+}
+
+func (sff *StreamFuncFloor) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamFuncFloor{
+		Object: sff.Object,
+		Source: cloneTimeshift(sff.Source, amount),
 	}
 }
 
