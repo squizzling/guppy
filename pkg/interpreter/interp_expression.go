@@ -310,7 +310,10 @@ func (i *interpreter) VisitExpressionGrouping(eg ast.ExpressionGrouping) (return
 func (i *interpreter) VisitExpressionLambda(el ast.ExpressionLambda) (returnValue any, errOut error) {
 	defer i.trace()(&returnValue, &errOut)
 
-	panic("ExpressionLambda")
+	return NewObjectLambda(
+		el.Identifier,
+		el.Expr,
+	), nil
 }
 
 func (i *interpreter) VisitExpressionList(el ast.ExpressionList) (returnValue any, errOut error) {
