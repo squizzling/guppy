@@ -88,4 +88,9 @@ func (f FFIData) Call(i itypes.Interpreter) (itypes.Object, error) {
 	}
 }
 
+func (sfd StreamFuncData) Repr() string {
+	// TODO: Better
+	return "data()"
+}
+
 var _ = itypes.FlowCall(FFIData{})

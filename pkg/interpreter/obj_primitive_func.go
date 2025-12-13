@@ -1,6 +1,8 @@
 package interpreter
 
 import (
+	"fmt"
+
 	"github.com/squizzling/guppy/pkg/interpreter/itypes"
 	"github.com/squizzling/guppy/pkg/interpreter/primitive"
 	"github.com/squizzling/guppy/pkg/interpreter/scope"
@@ -42,4 +44,9 @@ func (of *ObjectFunction) Call(i itypes.Interpreter) (itypes.Object, error) {
 	} else {
 		return o.(itypes.Object), nil
 	}
+}
+
+func (of *ObjectFunction) Repr() string {
+	// TODO: More information
+	return fmt.Sprintf("func(%s)", of.name)
 }

@@ -1,6 +1,7 @@
 package stream
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/squizzling/guppy/pkg/flow/duration"
@@ -42,6 +43,10 @@ func (mts methodTimeShift) Call(i itypes.Interpreter) (itypes.Object, error) {
 	}
 }
 
+func (mts methodTimeShift) Repr() string {
+	return "methodTimeShift()"
+}
+
 func cloneTimeshift(s Stream, amount time.Duration) Stream {
 	if s == nil {
 		panic("I just want to see if this happens")
@@ -58,4 +63,9 @@ func cloneTimeshift(s Stream, amount time.Duration) Stream {
 	default:
 		return s.CloneTimeShift(amount)
 	}
+}
+
+func (smts *StreamMethodTimeShift) Repr() string {
+	// TODO: Better
+	return fmt.Sprintf("timeshift()")
 }

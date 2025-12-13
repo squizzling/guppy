@@ -29,3 +29,13 @@ func (ma methodAbove) Call(i itypes.Interpreter) (itypes.Object, error) {
 		return NewStreamMethodAbove(prototypeStreamDouble, unpublish(self)), nil
 	}
 }
+
+func (ma methodAbove) Repr() string {
+	// TODO: Better
+	return "methodAbove()"
+}
+
+func (sma *StreamMethodAbove) Repr() string {
+	// TODO: Better
+	return ".above()"
+}

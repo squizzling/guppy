@@ -43,3 +43,8 @@ func (mp methodPublish) Call(i itypes.Interpreter) (itypes.Object, error) {
 		return pub, nil
 	}
 }
+
+func (smp *StreamMethodPublish) Repr() string {
+	// TODO: Better
+	return ".publish()"
+}

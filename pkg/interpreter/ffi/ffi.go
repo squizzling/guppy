@@ -22,6 +22,8 @@ type ffi[T FFICall] struct {
 	params    *itypes.Params
 	setFields []funcFieldSetter
 	defaults  T
+
+	name string
 }
 
 func (f *ffi[T]) Params(i itypes.Interpreter) (*itypes.Params, error) {
@@ -140,7 +142,12 @@ func NewFFI[T FFICall](defaults T) itypes.FlowCall {
 		params:    params,
 		defaults:  defaults,
 		setFields: setFields,
+		name:      ffiDefaults.Type().Name(),
 	}
+}
+
+func (f *ffi[T]) Repr() string {
+	return fmt.Sprintf("ffi[%s]", f.name)
 }
 
 func singleHandler(idx int, argName string, structFieldName string, typeString string) funcFieldSetter {

@@ -1,6 +1,8 @@
 package stream
 
 import (
+	"fmt"
+
 	"github.com/squizzling/guppy/pkg/interpreter/itypes"
 	"github.com/squizzling/guppy/pkg/interpreter/primitive"
 )
@@ -29,4 +31,13 @@ func (mt methodTop) Call(i itypes.Interpreter) (itypes.Object, error) {
 	} else {
 		return NewStreamMethodTop(prototypeStreamDouble, unpublish(self)), nil
 	}
+}
+
+func (mt methodTop) Repr() string {
+	return "methodTop()"
+}
+
+func (smt *StreamMethodTop) Repr() string {
+	// TODO: Better
+	return fmt.Sprintf("top()")
 }

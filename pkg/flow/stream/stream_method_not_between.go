@@ -101,3 +101,13 @@ func (f ffiStreamNotBetweenMethod) Call(i itypes.Interpreter) (itypes.Object, er
 		f.HighInclusive.Thing != nil && f.HighInclusive.Thing.Value,
 	), nil
 }
+
+func (f ffiStreamNotBetweenMethod) Repr() string {
+	// TODO: Better
+	return "ffiStreamNotBetweenMethod()"
+}
+
+func (smnb *StreamMethodNotBetween) Repr() string {
+	// TODO: Better
+	return "StreamMethodNotBetween()"
+}

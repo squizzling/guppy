@@ -90,3 +90,13 @@ func (f ffiStreamMap) Call(i itypes.Interpreter) (itypes.Object, error) {
 		panic("unreachable")
 	}
 }
+
+func (f ffiStreamMap) Repr() string {
+	// TODO: Better
+	return "ffiStreamMap()"
+}
+
+func (smm *StreamMethodMap) Repr() string {
+	// TODO: Better
+	return "StreamMethodMap()"
+}

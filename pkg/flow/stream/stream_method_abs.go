@@ -25,3 +25,13 @@ func (m methodAbs) Call(i itypes.Interpreter) (itypes.Object, error) {
 		return NewStreamMethodAbs(prototypeStreamDouble, unpublish(self)), nil
 	}
 }
+
+func (ma methodAbs) Repr() string {
+	// TODO: Better
+	return "methodAbs()"
+}
+
+func (sma *StreamMethodAbs) Repr() string {
+	// TODO: Better
+	return ".abs()"
+}

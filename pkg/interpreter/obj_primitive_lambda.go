@@ -1,6 +1,8 @@
 package interpreter
 
 import (
+	"fmt"
+
 	"github.com/squizzling/guppy/pkg/interpreter/itypes"
 	"github.com/squizzling/guppy/pkg/parser/ast"
 )
@@ -30,4 +32,9 @@ func (ol *ObjectLambda) Call(i itypes.Interpreter) (itypes.Object, error) {
 	} else {
 		return o.(itypes.Object), nil
 	}
+}
+
+func (ol *ObjectLambda) Repr() string {
+	// TODO: More
+	return fmt.Sprintf("lambda(%s)", ol.Identifier)
 }

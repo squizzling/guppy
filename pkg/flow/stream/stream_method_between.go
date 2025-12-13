@@ -124,3 +124,13 @@ func (f ffiStreamBetweenMethod) Call(i itypes.Interpreter) (itypes.Object, error
 		f.Clamp.Value,
 	), nil
 }
+
+func (f ffiStreamBetweenMethod) Repr() string {
+	// TODO: Better
+	return "ffiStreamBetweenMethod()"
+}
+
+func (smb *StreamMethodBetween) Repr() string {
+	// TODO: Better
+	return "StreamMethodBetween"
+}

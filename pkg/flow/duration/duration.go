@@ -174,6 +174,10 @@ func (d *Duration) String(i itypes.Interpreter) (string, error) {
 	return d.Duration.String(), nil
 }
 
+func (d *Duration) Repr() string {
+	return d.Duration.String()
+}
+
 type methodDurationOp struct {
 	itypes.Object
 
@@ -249,4 +253,8 @@ func (mdu methodDurationOp) Call(i itypes.Interpreter) (itypes.Object, error) {
 			return nil, fmt.Errorf("methodDurationOp: unknown op %s", mdu.op)
 		}
 	}
+}
+
+func (mdo methodDurationOp) Repr() string {
+	return fmt.Sprintf("methodDurationOp(%s, %t)", mdo.op, mdo.reverse)
 }
