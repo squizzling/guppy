@@ -1,9 +1,12 @@
 package stream
 
 import (
+	"fmt"
+
 	"github.com/squizzling/guppy/pkg/interpreter"
 	"github.com/squizzling/guppy/pkg/interpreter/ffi"
 	"github.com/squizzling/guppy/pkg/interpreter/itypes"
+	"github.com/squizzling/guppy/pkg/interpreter/primitive"
 )
 
 type ffiStreamMap struct {
@@ -76,8 +79,12 @@ func (f ffiStreamMap) Call(i itypes.Interpreter) (itypes.Object, error) {
 			return nil, err
 		} else if o, err := f.MapFn.Lambda.Expression.Accept(i); err != nil {
 			return nil, err
+		} else if asDouble, ok := o.(*primitive.ObjectDouble); ok {
+			return NewStreamMethodMap(prototypeStreamDouble, f.Self, asDouble), nil
+		} else if asStream, ok := o.(Stream); ok {
+			return asStream, err
 		} else {
-			return o.(itypes.Object), err
+			return nil, fmt.Errorf("ffiStreamMap returned %T, expecting %T or %T", o, asDouble, asStream)
 		}
 	} else {
 		panic("unreachable")

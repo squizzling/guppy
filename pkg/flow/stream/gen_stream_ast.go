@@ -35,6 +35,7 @@ type VisitorStream interface {
 	VisitStreamMethodBetween(smb *StreamMethodBetween) (any, error)
 	VisitStreamMethodFill(smf *StreamMethodFill) (any, error)
 	VisitStreamMethodGeneric(smg *StreamMethodGeneric) (any, error)
+	VisitStreamMethodMap(smm *StreamMethodMap) (any, error)
 	VisitStreamMethodNotBetween(smnb *StreamMethodNotBetween) (any, error)
 	VisitStreamMethodPercentile(smp *StreamMethodPercentile) (any, error)
 	VisitStreamMethodPublish(smp *StreamMethodPublish) (any, error)
@@ -884,6 +885,36 @@ func (smg *StreamMethodGeneric) CloneTimeShift(amount time.Duration) Stream {
 		Object: smg.Object,
 		Source: cloneTimeshift(smg.Source, amount),
 		Call:   smg.Call,
+	}
+}
+
+type StreamMethodMap struct {
+	itypes.Object
+	Source   Stream
+	Constant itypes.Object
+}
+
+func NewStreamMethodMap(
+	Object itypes.Object,
+	Source Stream,
+	Constant itypes.Object,
+) *StreamMethodMap {
+	return &StreamMethodMap{
+		Object:   Object,
+		Source:   Source,
+		Constant: Constant,
+	}
+}
+
+func (smm *StreamMethodMap) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamMethodMap(smm)
+}
+
+func (smm *StreamMethodMap) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamMethodMap{
+		Object:   smm.Object,
+		Source:   cloneTimeshift(smm.Source, amount),
+		Constant: smm.Constant,
 	}
 }
 
