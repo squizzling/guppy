@@ -27,5 +27,6 @@ func (f *flowObject) Member(i Interpreter, obj Object, memberName string) (Objec
 func (f *flowObject) Repr() string {
 	// TODO: Can we make it so we don't provide this? Then we can force objects to properly
 	//       implement it universally instead of having a default.
-	panic("flowObject: Repr() not allowed on base object")
+	//panic("flowObject: Repr() not allowed on base object")
+	return fmt.Sprintf("%#v", f)
 }
