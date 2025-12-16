@@ -14,6 +14,8 @@ type ObjectBool struct {
 
 var prototypeObjectBool = itypes.NewObject(map[string]itypes.Object{
 	"__unary_binary_not__": ffi.NewFFI(ffiObjectBoolUnaryBinaryNot{}),
+	"__is__":               ffi.NewFFI(ffiObjectBoolIs{invert: false}),
+	"__isnot__":            ffi.NewFFI(ffiObjectBoolIs{invert: true}),
 })
 
 func NewObjectBool(v bool) *ObjectBool {
@@ -52,3 +54,18 @@ func (f ffiObjectBoolUnaryBinaryNot) Call(i itypes.Interpreter) (itypes.Object, 
 }
 
 var _ itypes.FlowTernary = (*ObjectBool)(nil)
+
+type ffiObjectBoolIs struct {
+	Self  *ObjectBool   `ffi:"self"`
+	Right itypes.Object `ffi:"right"`
+
+	invert bool
+}
+
+func (f ffiObjectBoolIs) Call(i itypes.Interpreter) (itypes.Object, error) {
+	if right, ok := f.Right.(*ObjectBool); ok {
+		return NewObjectBool((f.Self.Value == right.Value) != f.invert), nil
+	} else {
+		return NewObjectBool(f.invert), nil
+	}
+}
