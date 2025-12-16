@@ -128,8 +128,11 @@ func NewFFI[T FFICall](defaults T) itypes.FlowCall {
 			params.KWParams = append(params.KWParams, itypes.ParamDef{Name: argParts[0], Default: defaultValue})
 		case argParts[1] == "kwargs":
 			// TODO: We need to do type checking on the destination
-			panic("kwargs not yet supported")
-			params.StarParam = argParts[0]
+			params.KWParam = argParts[0]
+			if fieldType.Type.String() != "*primitive.ObjectDict" {
+				// Can't use the actual type due to import cycles
+				panic(fmt.Sprintf("NewFFI: %s must be *primitive.ObjectDict as it is a kw-args", structFieldName))
+			}
 		default:
 			panic("NewFFI: unrecognized param type: " + argParts[1])
 		}
