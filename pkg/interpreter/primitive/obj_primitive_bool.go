@@ -56,15 +56,18 @@ func (f ffiObjectBoolUnaryBinaryNot) Call(i itypes.Interpreter) (itypes.Object, 
 var _ itypes.FlowTernary = (*ObjectBool)(nil)
 
 type ffiObjectBoolIs struct {
-	Self  *ObjectBool   `ffi:"self"`
-	Right itypes.Object `ffi:"right"`
+	Self  *ObjectBool `ffi:"self"`
+	Right struct {
+		Bool   *ObjectBool
+		Object itypes.Object
+	} `ffi:"right"`
 
 	invert bool
 }
 
 func (f ffiObjectBoolIs) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if right, ok := f.Right.(*ObjectBool); ok {
-		return NewObjectBool((f.Self.Value == right.Value) != f.invert), nil
+	if f.Right.Bool != nil {
+		return NewObjectBool((f.Self.Value == f.Right.Bool.Value) != f.invert), nil
 	} else {
 		return NewObjectBool(f.invert), nil
 	}
