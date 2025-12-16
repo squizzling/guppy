@@ -1,3 +1,11 @@
 o = (1,)
 -----
 ?*primitive.ObjectTuple is not stringable
+=====
+o = repr((1,))
+-----
+tuple(int(1))
+=====
+o = repr((1,'foo'))
+-----
+tuple(int(1), string(foo))

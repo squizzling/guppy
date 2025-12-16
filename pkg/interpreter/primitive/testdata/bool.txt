@@ -45,3 +45,67 @@ True
 o = repr(False)
 -----
 False
+=====
+o = (True is '')
+-----
+False
+=====
+o = (True is 5)
+-----
+False
+=====
+o = (True is True)
+-----
+True
+=====
+o = (True is False)
+-----
+False
+=====
+o = (False is '')
+-----
+False
+=====
+o = (False is 5)
+-----
+False
+=====
+o = (False is True)
+-----
+False
+=====
+o = (False is False)
+-----
+True
+=====
+o = (True is not '')
+-----
+True
+=====
+o = (True is not 5)
+-----
+True
+=====
+o = (True is not True)
+-----
+False
+=====
+o = (True is not False)
+-----
+True
+=====
+o = (False is not '')
+-----
+True
+=====
+o = (False is not 5)
+-----
+True
+=====
+o = (False is not True)
+-----
+True
+=====
+o = (False is not False)
+-----
+False
