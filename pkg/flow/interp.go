@@ -24,14 +24,20 @@ func NewInterpreter(enableTrace bool) itypes.Interpreter {
 func setGlobals(i itypes.Interpreter) {
 
 	// New style
+	// Builtins
 	_ = i.SetGlobal("len", builtin.NewFFILen())
 	_ = i.SetGlobal("range", builtin.NewFFIRange())
 	_ = i.SetGlobal("repr", builtin.NewFFIRepr())
 	_ = i.SetGlobal("str", builtin.NewFFIStr())
 
+	// Stream sources
+	_ = i.SetGlobal("graphite", stream.NewFFIGraphite())
+
+	// Filtering
 	_ = i.SetGlobal("filter", filter.NewFFIFilter())
 	_ = i.SetGlobal("partition_filter", filter.NewFFIPartitionFilter())
 
+	// Stream processing
 	_ = i.SetGlobal("ceil", stream.NewFFICeil())
 	_ = i.SetGlobal("threshold", stream.NewFFIThreshold())
 

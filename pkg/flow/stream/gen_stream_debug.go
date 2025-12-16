@@ -211,6 +211,31 @@ func (dw DebugWriter) VisitStreamFuncFloor(sff *StreamFuncFloor) (any, error) {
 	return _s, nil
 }
 
+func (dw DebugWriter) VisitStreamFuncGraphite(sfg *StreamFuncGraphite) (any, error) {
+	_s := "StreamFuncGraphite(\n"
+	dw.i()
+	// TODO: 0 Object itypes.Object
+	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sfg.Object, sfg.Object)
+	_s += dw.p() + "MetricName: string(" + sfg.MetricName + ")\n"
+	// TODO: 2 Filter filter.Filter
+	_s += dw.p() + fmt.Sprintf("Filter: %T(%v)\n", sfg.Filter, sfg.Filter)
+	// TODO: 3 Offset time.Duration
+	_s += dw.p() + fmt.Sprintf("Offset: %T(%v)\n", sfg.Offset, sfg.Offset)
+	_s += dw.p() + "Rollup: string(" + sfg.Rollup + ")\n"
+	_s += dw.p() + "Extrapolation: string(" + sfg.Extrapolation + ")\n"
+	// TODO: 6 MaxExtrapolations int
+	_s += dw.p() + fmt.Sprintf("MaxExtrapolations: %T(%v)\n", sfg.MaxExtrapolations, sfg.MaxExtrapolations)
+	// TODO: 7 Resolution time.Duration
+	_s += dw.p() + fmt.Sprintf("Resolution: %T(%v)\n", sfg.Resolution, sfg.Resolution)
+	// TODO: 8 KWArgs map[string]int
+	_s += dw.p() + fmt.Sprintf("KWArgs: %T(%v)\n", sfg.KWArgs, sfg.KWArgs)
+	// TODO: 9 TimeShift time.Duration
+	_s += dw.p() + fmt.Sprintf("TimeShift: %T(%v)\n", sfg.TimeShift, sfg.TimeShift)
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
 func (dw DebugWriter) VisitStreamFuncMax(sfm *StreamFuncMax) (any, error) {
 	_s := "StreamFuncMax(\n"
 	dw.i()

@@ -19,6 +19,7 @@ type VisitorStream interface {
 	VisitStreamFuncDetect(sfd *StreamFuncDetect) (any, error)
 	VisitStreamFuncEvents(sfe *StreamFuncEvents) (any, error)
 	VisitStreamFuncFloor(sff *StreamFuncFloor) (any, error)
+	VisitStreamFuncGraphite(sfg *StreamFuncGraphite) (any, error)
 	VisitStreamFuncMax(sfm *StreamFuncMax) (any, error)
 	VisitStreamFuncMean(sfm *StreamFuncMean) (any, error)
 	VisitStreamFuncMedian(sfm *StreamFuncMedian) (any, error)
@@ -385,6 +386,64 @@ func (sff *StreamFuncFloor) CloneTimeShift(amount time.Duration) Stream {
 	return &StreamFuncFloor{
 		Object: sff.Object,
 		Source: cloneTimeshift(sff.Source, amount),
+	}
+}
+
+type StreamFuncGraphite struct {
+	itypes.Object
+	MetricName        string
+	Filter            filter.Filter
+	Offset            time.Duration
+	Rollup            string
+	Extrapolation     string
+	MaxExtrapolations int
+	Resolution        time.Duration
+	KWArgs            map[string]int
+	TimeShift         time.Duration
+}
+
+func NewStreamFuncGraphite(
+	Object itypes.Object,
+	MetricName string,
+	Filter filter.Filter,
+	Offset time.Duration,
+	Rollup string,
+	Extrapolation string,
+	MaxExtrapolations int,
+	Resolution time.Duration,
+	KWArgs map[string]int,
+	TimeShift time.Duration,
+) *StreamFuncGraphite {
+	return &StreamFuncGraphite{
+		Object:            Object,
+		MetricName:        MetricName,
+		Filter:            Filter,
+		Offset:            Offset,
+		Rollup:            Rollup,
+		Extrapolation:     Extrapolation,
+		MaxExtrapolations: MaxExtrapolations,
+		Resolution:        Resolution,
+		KWArgs:            KWArgs,
+		TimeShift:         TimeShift,
+	}
+}
+
+func (sfg *StreamFuncGraphite) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamFuncGraphite(sfg)
+}
+
+func (sfg *StreamFuncGraphite) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamFuncGraphite{
+		Object:            sfg.Object,
+		MetricName:        sfg.MetricName,
+		Filter:            sfg.Filter,
+		Offset:            sfg.Offset,
+		Rollup:            sfg.Rollup,
+		Extrapolation:     sfg.Extrapolation,
+		MaxExtrapolations: sfg.MaxExtrapolations,
+		Resolution:        sfg.Resolution,
+		KWArgs:            sfg.KWArgs,
+		TimeShift:         sfg.TimeShift,
 	}
 }
 

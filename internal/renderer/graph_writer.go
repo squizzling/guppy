@@ -288,6 +288,48 @@ func (g *GraphWriter) VisitStreamFuncFloor(sff *stream.StreamFuncFloor) (any, er
 	return nodeId, nil
 }
 
+func (g *GraphWriter) VisitStreamFuncGraphite(sfg *stream.StreamFuncGraphite) (any, error) {
+	if nodeId, ok := g.GetNode(sfg); ok {
+		return nodeId, nil
+	}
+
+	g.DataBlocks++
+
+	var sb strings.Builder
+	sb.WriteString("graphite block\n")
+	sb.WriteString("Metric: " + sfg.MetricName + "\n")
+	if sfg.Filter != nil {
+		sb.WriteString("Filter: " + sfg.Filter.Repr() + "\n")
+	}
+	if sfg.Offset != 0 {
+		sb.WriteString("Offset: " + sfg.Offset.String() + "\n")
+	}
+	if sfg.Rollup != "" {
+		sb.WriteString("Rollup: " + sfg.Rollup + "\n")
+	}
+	if sfg.Extrapolation != "null" {
+		sb.WriteString("Extrapolation: " + sfg.Extrapolation + "\n")
+		if sfg.MaxExtrapolations != -1 {
+			sb.WriteString("MaxExtrapolation: " + strconv.Itoa(sfg.MaxExtrapolations) + "\n")
+		}
+	}
+	if sfg.Resolution != 0 {
+		sb.WriteString("Resolution: " + sfg.Resolution.String() + "\n")
+	}
+	if len(sfg.KWArgs) > 0 {
+		sb.WriteString("KWArgs:\n")
+		for k, v := range sfg.KWArgs {
+			sb.WriteString(fmt.Sprintf("- %s: %d\n", k, v))
+		}
+	}
+	if sfg.TimeShift != 0 {
+		sb.WriteString("\n")
+		sb.WriteString("TimeShift: " + sfg.TimeShift.String() + "\n")
+	}
+
+	return g.DefineNode(sfg, sb.String(), Color("red")), nil
+}
+
 func (g *GraphWriter) VisitStreamFuncMax(sfm *stream.StreamFuncMax) (any, error) {
 	if nodeId, ok := g.GetNode(sfm); ok {
 		return nodeId, nil

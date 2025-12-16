@@ -71,6 +71,18 @@ var Interfaces = []ast.Interface{
 			{"Object", "itypes.Object", true},
 			{"Source", "Stream", false},
 		}},
+		{"FuncGraphite", true, []ast.Field{
+			{"Object", "itypes.Object", true},
+			{"MetricName", "string", false},
+			{"Filter", "filter.Filter", false},
+			{"Offset", "time.Duration", false},
+			{"Rollup", "string", false},
+			{"Extrapolation", "string", false},
+			{"MaxExtrapolations", "int", false},
+			{"Resolution", "time.Duration", false},
+			{"KWArgs", "map[string]int", false},
+			{"TimeShift", "time.Duration", false},
+		}},
 		{"FuncMax", true, []ast.Field{
 			{"Object", "itypes.Object", true},
 			{"Sources", "[]Stream", false},
