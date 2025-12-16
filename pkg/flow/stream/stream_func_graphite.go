@@ -356,7 +356,7 @@ func (f ffiGraphite) resolveFilter() filter.Filter {
 
 func (f ffiGraphite) resolveOffset() (time.Duration, error) {
 	if f.Offset.Missing == nil {
-		return 0, errors.New("ffiGraphite.resolveOffset: expected to be missing")
+		return 0, errors.New("ffiGraphite.resolveOffset: param `offset` is expected to be missing")
 	} else {
 		return 0, nil
 	}
@@ -365,24 +365,36 @@ func (f ffiGraphite) resolveOffset() (time.Duration, error) {
 func (f ffiGraphite) resolveRollup() (string, error) {
 	if f.Rollup.None != nil {
 		return "", nil
+	} else if f.Rollup.Thing.Value == "average" {
+		return "average", nil
 	} else if f.Rollup.Thing.Value == "count" {
 		return "count", nil
+	} else if f.Rollup.Thing.Value == "latest" {
+		return "latest", nil
+	} else if f.Rollup.Thing.Value == "max" {
+		return "max", nil
+	} else if f.Rollup.Thing.Value == "min" {
+		return "min", nil
+	} else if f.Rollup.Thing.Value == "rate" {
+		return "rate", nil
 	} else if f.Rollup.Thing.Value == "sum" {
 		return "sum", nil
 	} else {
-		return "", fmt.Errorf("ffiGraphite.resolveRollup: expecting [count, sum]")
+		return "", fmt.Errorf("ffiGraphite.resolveRollup: param `rollup` is %s, not [average, count, latest, max, min, rate, sum]", f.Rollup.Thing.Value)
 	}
 }
 
 func (f ffiGraphite) resolveExtrapolation() (string, error) {
 	if f.Extrapolation.None != nil {
 		return "null", nil
+	} else if f.Extrapolation.Thing.Value == "last_value" {
+		return "last_value", nil
 	} else if f.Extrapolation.Thing.Value == "null" {
 		return "null", nil
 	} else if f.Extrapolation.Thing.Value == "zero" {
 		return "zero", nil
 	} else {
-		return "", fmt.Errorf("ffiGraphite.resolveExtrapolation: expecting [null, zero]")
+		return "", fmt.Errorf("ffiGraphite.resolveExtrapolation: param `extrapolation` is %s, not [last_value, null, zero]", f.Extrapolation.Thing.Value)
 	}
 }
 
@@ -390,7 +402,7 @@ func (f ffiGraphite) resolveMaxExtrapolations() (int, error) {
 	if f.MaxExtrapolations.None != nil {
 		return -1, nil
 	} else if f.MaxExtrapolations.Thing.Value < -1 {
-		return 0, fmt.Errorf("ffiGraphite.resolveMaxExtrapolations: must be above -2")
+		return 0, fmt.Errorf("ffiGraphite.resolveMaxExtrapolations: param `maxExtrapolations` must be above -2, got %d", f.MaxExtrapolations.Thing.Value)
 	} else {
 		return f.MaxExtrapolations.Thing.Value, nil
 	}
@@ -404,7 +416,7 @@ func (f ffiGraphite) resolveResolution() (time.Duration, error) {
 	} else if f.Resolution.Duration != nil {
 		return f.Resolution.Duration.Duration, nil
 	} else if resolution, err := duration.ParseDuration(f.Resolution.String.Value); err != nil {
-		return 0, fmt.Errorf("ffiGraphite.resolveResolution: failed to parse resolution: %w", err)
+		return 0, fmt.Errorf("ffiGraphite.resolveResolution: param `resolution` failed to parse: %w", err)
 	} else {
 		return resolution, nil
 	}
