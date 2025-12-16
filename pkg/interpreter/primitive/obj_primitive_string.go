@@ -14,9 +14,11 @@ type ObjectString struct {
 }
 
 var prototypeObjectString = itypes.NewObject(map[string]itypes.Object{
-	"__add__": ffi.NewFFI(ffiObjectStringAdd{}),
-	"__eq__":  ffi.NewFFI(ffiObjectStringRelOp{op: 0, invert: false}),
-	"__ne__":  ffi.NewFFI(ffiObjectStringRelOp{op: 0, invert: true}),
+	"__add__":   ffi.NewFFI(ffiObjectStringAdd{}),
+	"__eq__":    ffi.NewFFI(ffiObjectStringRelOp{op: 0, invert: false}),
+	"__ne__":    ffi.NewFFI(ffiObjectStringRelOp{op: 0, invert: true}),
+	"__is__":    ffi.NewFFI(ffiObjectStringRelOp{op: 0, invert: false}), // is and eq are the same
+	"__isnot__": ffi.NewFFI(ffiObjectStringRelOp{op: 0, invert: true}),
 })
 
 func NewObjectString(s string) *ObjectString {

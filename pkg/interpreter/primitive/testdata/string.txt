@@ -41,3 +41,27 @@ True
 o = repr("foo")
 -----
 string(foo)
+=====
+o = "foo" is "foo"
+-----
+True
+=====
+o = "foo" is not "foo"
+-----
+False
+=====
+o = "foo" is "bar"
+-----
+False
+=====
+o = "foo" is not "bar"
+-----
+True
+=====
+o = "foo" is 5
+-----
+False
+=====
+o = "foo" is not 5
+-----
+True
