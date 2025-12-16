@@ -589,8 +589,6 @@ func (dw DebugWriter) VisitStreamMethodMap(smm *StreamMethodMap) (any, error) {
 	} else {
 		_s += dw.p() + "Source: nil\n"
 	}
-	// TODO: 2 Constant itypes.Object
-	_s += dw.p() + fmt.Sprintf("Constant: %T(%v)\n", smm.Constant, smm.Constant)
 	dw.o()
 	_s += dw.p() + ")\n"
 	return _s, nil

@@ -949,19 +949,16 @@ func (smg *StreamMethodGeneric) CloneTimeShift(amount time.Duration) Stream {
 
 type StreamMethodMap struct {
 	itypes.Object
-	Source   Stream
-	Constant itypes.Object
+	Source Stream
 }
 
 func NewStreamMethodMap(
 	Object itypes.Object,
 	Source Stream,
-	Constant itypes.Object,
 ) *StreamMethodMap {
 	return &StreamMethodMap{
-		Object:   Object,
-		Source:   Source,
-		Constant: Constant,
+		Object: Object,
+		Source: Source,
 	}
 }
 
@@ -971,9 +968,8 @@ func (smm *StreamMethodMap) Accept(vs VisitorStream) (any, error) {
 
 func (smm *StreamMethodMap) CloneTimeShift(amount time.Duration) Stream {
 	return &StreamMethodMap{
-		Object:   smm.Object,
-		Source:   cloneTimeshift(smm.Source, amount),
-		Constant: smm.Constant,
+		Object: smm.Object,
+		Source: cloneTimeshift(smm.Source, amount),
 	}
 }
 

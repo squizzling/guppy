@@ -173,7 +173,6 @@ var Interfaces = []ast.Interface{
 		{"MethodMap", true, []ast.Field{
 			{"Object", "itypes.Object", true},
 			{"Source", "Stream", false},
-			{"Constant", "itypes.Object", false},
 		}},
 		{"MethodNotBetween", true, []ast.Field{
 			{"Object", "itypes.Object", true},

@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/squizzling/guppy/pkg/flow/stream"
-	"github.com/squizzling/guppy/pkg/interpreter/itypes"
 	"github.com/squizzling/guppy/pkg/interpreter/primitive"
 )
 
@@ -562,7 +561,7 @@ func (g *GraphWriter) VisitStreamMethodMap(smm *stream.StreamMethodMap) (any, er
 
 	var sb strings.Builder
 	sb.WriteString("map block\n")
-	sb.WriteString(fmt.Sprintf("Constant: %s\n", itypes.Repr(smm.Constant)))
+	//sb.WriteString(fmt.Sprintf("Constant: %s\n", itypes.Repr(smm.Constant)))
 
 	nodeId := g.DefineNode(smm, sb.String())
 
