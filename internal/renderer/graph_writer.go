@@ -232,9 +232,11 @@ func (g *GraphWriter) VisitStreamFuncDetect(sfd *stream.StreamFuncDetect) (any, 
 	if sfd.Mode != "paired" {
 		sb.WriteString("Mode: " + sfd.Mode + "\n")
 	}
-	if sfd.Annotations != nil {
-		if _, isNone := sfd.Annotations.(*primitive.ObjectNone); !isNone {
-			sb.WriteString(fmt.Sprintf("Annotations: %T\n", sfd.Annotations))
+	if len(sfd.Annotations) > 0 {
+		sb.WriteString("Annotations:\n")
+		for _, annotation := range sfd.Annotations {
+			// TODO: More
+			sb.WriteString(fmt.Sprintf("- %#v\n", annotation.Label))
 		}
 	}
 	if sfd.EventAnnotations != nil {

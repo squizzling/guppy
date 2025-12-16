@@ -31,6 +31,7 @@ func setGlobals(i itypes.Interpreter) {
 	_ = i.SetGlobal("str", builtin.NewFFIStr())
 
 	// Stream sources
+	_ = i.SetGlobal("detect", stream.NewFFIDetect())
 	_ = i.SetGlobal("graphite", stream.NewFFIGraphite())
 
 	// Filtering
@@ -49,7 +50,6 @@ func setGlobals(i itypes.Interpreter) {
 	_ = i.SetGlobal("const", &stream.FFIConst{Object: itypes.NewObject(nil)})
 	_ = i.SetGlobal("count", &stream.FFICount{Object: itypes.NewObject(nil)})
 	_ = i.SetGlobal("data", &stream.FFIData{Object: itypes.NewObject(nil)})
-	_ = i.SetGlobal("detect", &stream.FFIDetect{Object: itypes.NewObject(nil)})
 	_ = i.SetGlobal("events", &stream.FFIEvents{Object: itypes.NewObject(nil)})
 	_ = i.SetGlobal("max", &stream.FFIMax{Object: itypes.NewObject(nil)})
 	_ = i.SetGlobal("mean", &stream.FFIMean{Object: itypes.NewObject(nil)})

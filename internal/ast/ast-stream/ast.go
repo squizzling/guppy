@@ -9,6 +9,7 @@ const Package = "stream"
 var Imports = []string{
 	"time",
 	"",
+	"github.com/squizzling/guppy/pkg/flow/annotate",
 	"github.com/squizzling/guppy/pkg/flow/filter",
 	"github.com/squizzling/guppy/pkg/interpreter/itypes",
 }
@@ -60,7 +61,7 @@ var Interfaces = []ast.Interface{
 			{"On", "Stream", false},
 			{"Off", "Stream", false},
 			{"Mode", "string", false},
-			{"Annotations", "itypes.Object", false},
+			{"Annotations", "[]*annotate.Annotated", false},
 			{"EventAnnotations", "itypes.Object", false},
 			{"AutoResolveAfter", "*time.Duration", false},
 		}},

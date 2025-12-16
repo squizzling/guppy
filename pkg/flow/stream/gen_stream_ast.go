@@ -3,6 +3,7 @@ package stream
 import (
 	"time"
 
+	"github.com/squizzling/guppy/pkg/flow/annotate"
 	"github.com/squizzling/guppy/pkg/flow/filter"
 	"github.com/squizzling/guppy/pkg/interpreter/itypes"
 )
@@ -300,7 +301,7 @@ type StreamFuncDetect struct {
 	On               Stream
 	Off              Stream
 	Mode             string
-	Annotations      itypes.Object
+	Annotations      []*annotate.Annotated
 	EventAnnotations itypes.Object
 	AutoResolveAfter *time.Duration
 }
@@ -310,7 +311,7 @@ func NewStreamFuncDetect(
 	On Stream,
 	Off Stream,
 	Mode string,
-	Annotations itypes.Object,
+	Annotations []*annotate.Annotated,
 	EventAnnotations itypes.Object,
 	AutoResolveAfter *time.Duration,
 ) *StreamFuncDetect {

@@ -175,7 +175,7 @@ func (dw DebugWriter) VisitStreamFuncDetect(sfd *StreamFuncDetect) (any, error) 
 		_s += dw.p() + "Off: nil\n"
 	}
 	_s += dw.p() + "Mode: string(" + sfd.Mode + ")\n"
-	// TODO: 4 Annotations itypes.Object
+	// TODO: 4 Annotations []*annotate.Annotated
 	_s += dw.p() + fmt.Sprintf("Annotations: %T(%v)\n", sfd.Annotations, sfd.Annotations)
 	// TODO: 5 EventAnnotations itypes.Object
 	_s += dw.p() + fmt.Sprintf("EventAnnotations: %T(%v)\n", sfd.EventAnnotations, sfd.EventAnnotations)
