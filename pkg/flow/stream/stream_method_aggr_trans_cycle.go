@@ -202,19 +202,11 @@ func (f ffiStreamAggregateTransformCycleMethod) callBy() (itypes.Object, error) 
 }
 
 func (f ffiStreamAggregateTransformCycleMethod) resolveCycle() (string, error) {
-	switch f.Cycle.String.Value {
-	case "hour":
-		return "hour", nil
-	case "day":
-		return "day", nil
-	case "week":
-		return "week", nil
-	case "month":
-		return "month", nil
-	case "quarter":
-		return "quarter", nil
+	switch cycle := strings.ToLower(f.Cycle.String.Value); cycle {
+	case "hour", "day", "week", "month", "quarter":
+		return cycle, nil
 	default:
-		return "", errors.New("ffiStreamAggregateTransformCycleMethod.resolveCycle: param `cycle` is not [hour, day, week, month, quarter]")
+		return "", fmt.Errorf("ffiStreamAggregateTransformCycleMethod.resolveCycle: param `cycle` is %s not [hour, day, week, month, quarter]", f.Cycle.String.Value)
 	}
 }
 
