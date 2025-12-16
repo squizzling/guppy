@@ -45,6 +45,8 @@ func (f *ffi[T]) Call(i itypes.Interpreter) (itypes.Object, error) {
 }
 
 func NewFFI[T FFICall](defaults T) itypes.FlowCall {
+	usedArgNames := map[string]string{}
+
 	ffiDefaults := reflect.ValueOf(defaults)
 	if ffiDefaults.Kind() == reflect.Pointer {
 		ffiDefaults = ffiDefaults.Elem()
@@ -74,6 +76,12 @@ func NewFFI[T FFICall](defaults T) itypes.FlowCall {
 		argName := argParts[0]
 
 		structFieldName := ffiDefaults.Type().Name() + "." + fieldType.Name
+
+		if firstFieldName, ok := usedArgNames[argName]; ok {
+			panic(fmt.Sprintf("NewFFI: %s has duplicate arg names for fields %s and %s: %s", ffiDefaults.Type().Name(), firstFieldName, fieldType.Name, argName))
+		} else {
+			usedArgNames[argName] = fieldType.Name
+		}
 
 		fieldValue := ffiDefaults.Field(idx)
 		var defaultValue itypes.Object
