@@ -104,6 +104,10 @@ var Interfaces = []ast.Interface{
 			{"Sources", "[]Stream", false},
 			{"Value", "itypes.Object", false},
 		}},
+		{"FuncSqrt", true, []ast.Field{
+			{"Object", "itypes.Object", true},
+			{"Source", "Stream", false},
+		}},
 		{"FuncSum", true, []ast.Field{
 			{"Object", "itypes.Object", true},
 			{"Sources", "[]Stream", false},

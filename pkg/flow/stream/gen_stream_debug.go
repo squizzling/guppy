@@ -336,6 +336,21 @@ func (dw DebugWriter) VisitStreamFuncMin(sfm *StreamFuncMin) (any, error) {
 	return _s, nil
 }
 
+func (dw DebugWriter) VisitStreamFuncSqrt(sfs *StreamFuncSqrt) (any, error) {
+	_s := "StreamFuncSqrt(\n"
+	dw.i()
+	// TODO: 0 Object itypes.Object
+	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sfs.Object, sfs.Object)
+	if sfs.Source != nil {
+		_s += dw.p() + "Source: " + s(sfs.Source.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "Source: nil\n"
+	}
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
 func (dw DebugWriter) VisitStreamFuncSum(sfs *StreamFuncSum) (any, error) {
 	_s := "StreamFuncSum(\n"
 	dw.i()

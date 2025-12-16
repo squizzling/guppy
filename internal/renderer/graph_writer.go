@@ -422,6 +422,23 @@ func (g *GraphWriter) VisitStreamFuncMin(sfm *stream.StreamFuncMin) (any, error)
 	return nodeId, nil
 }
 
+func (g *GraphWriter) VisitStreamFuncSqrt(sfs *stream.StreamFuncSqrt) (any, error) {
+	if nodeId, ok := g.GetNode(sfs); ok {
+		return nodeId, nil
+	}
+
+	var sb strings.Builder
+	sb.WriteString("sqrt block\n")
+	nodeId := g.DefineNode(sfs, sb.String())
+
+	sourceNodeId, err := sfs.Source.Accept(g)
+	if err != nil {
+		return "", err
+	}
+	g.DefineEdge(nodeId, sourceNodeId.(string), "Source")
+	return nodeId, nil
+}
+
 func (g *GraphWriter) VisitStreamFuncSum(sfs *stream.StreamFuncSum) (any, error) {
 	if nodeId, ok := g.GetNode(sfs); ok {
 		return nodeId, nil

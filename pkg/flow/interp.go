@@ -40,6 +40,7 @@ func setGlobals(i itypes.Interpreter) {
 
 	// Stream processing
 	_ = i.SetGlobal("ceil", stream.NewFFICeil())
+	_ = i.SetGlobal("sqrt", stream.NewFFISqrt())
 	_ = i.SetGlobal("threshold", stream.NewFFIThreshold())
 
 	// Old style
