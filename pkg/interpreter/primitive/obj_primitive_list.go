@@ -16,8 +16,9 @@ type ObjectList struct {
 }
 
 var prototypeObjectList = itypes.NewObject(map[string]itypes.Object{
-	"__add__":       ffi.NewFFI(ffiObjectListAdd{}),
-	"__subscript__": ffi.NewFFI(ffiObjectListSubscript{}),
+	"__add__":             ffi.NewFFI(ffiObjectListAdd{}),
+	"__subscript__":       ffi.NewFFI(ffiObjectListSubscript{}),
+	"__subscript_range__": ffi.NewFFI(ffiObjectListSubscriptRange{}),
 })
 
 func NewObjectList(items ...itypes.Object) *ObjectList {
@@ -63,5 +64,51 @@ func (f ffiObjectListSubscript) Call(i itypes.Interpreter) (itypes.Object, error
 		return nil, fmt.Errorf("index %d out of range (0 - %d)", f.Start.Value, len(f.Self.Items)-1)
 	} else {
 		return f.Self.Items[f.Start.Value], nil
+	}
+}
+
+type ffiObjectListSubscriptRange struct {
+	Self  *ObjectList `ffi:"self"`
+	Start struct {
+		None *ObjectNone
+		Int  *ObjectInt
+	} `ffi:"start"`
+	End struct {
+		None *ObjectNone
+		Int  *ObjectInt
+	} `ffi:"end"`
+}
+
+func clamp(minVal int, val int, maxVal int) int {
+	return max(minVal, min(maxVal, val))
+}
+
+func (f ffiObjectListSubscriptRange) Call(i itypes.Interpreter) (itypes.Object, error) {
+	var start int
+	if f.Start.Int == nil {
+		start = 0
+	} else if f.Start.Int.Value < 0 {
+		start = len(f.Self.Items) + f.Start.Int.Value
+	} else {
+		start = f.Start.Int.Value
+	}
+
+	var end int
+	if f.End.Int == nil {
+		end = len(f.Self.Items)
+	} else if f.End.Int.Value < 0 {
+		end = len(f.Self.Items) + f.End.Int.Value
+	} else {
+		end = f.End.Int.Value
+	}
+
+	// No IndexError for range
+	start = clamp(0, start, len(f.Self.Items))
+	end = clamp(0, end, len(f.Self.Items))
+
+	if end < start {
+		return NewObjectList(), nil
+	} else {
+		return NewObjectList(f.Self.Items[start:end]...), nil
 	}
 }
