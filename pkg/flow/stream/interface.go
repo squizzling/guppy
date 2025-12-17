@@ -42,13 +42,14 @@ var prototypeStreamDouble = itypes.NewObject(map[string]itypes.Object{
 	"variance":             methodGeneric{itypes.NewObject(nil), "variance"},
 
 	// Aggregations + transforms
-	"count":  NewFFIStreamAggregateTransformCycleMethod("count"),
-	"max":    NewFFIStreamAggregateTransformCycleMethod("max"),
-	"median": NewFFIStreamAggregateTransformCycleMethod("median"),
-	"min":    NewFFIStreamAggregateTransformCycleMethod("min"),
-	"mean":   NewFFIStreamAggregateTransformCycleMethod("mean"),
-	"size":   NewFFIStreamAggregateTransformCycleMethod("size"),
-	"sum":    NewFFIStreamAggregateTransformCycleMethod("sum"),
+	"count":         NewFFIStreamAggregateTransformCycleMethod("count"),
+	"max":           NewFFIStreamAggregateTransformCycleMethod("max"),
+	"median":        NewFFIStreamAggregateTransformCycleMethod("median"),
+	"min":           NewFFIStreamAggregateTransformCycleMethod("min"),
+	"mean":          NewFFIStreamAggregateTransformCycleMethod("mean"),
+	"sample_stddev": NewFFIStreamAggregateTransformCycleMethod("sample_stddev"),
+	"size":          NewFFIStreamAggregateTransformCycleMethod("size"),
+	"sum":           NewFFIStreamAggregateTransformCycleMethod("sum"),
 
 	// Math operations
 	"__add__":      methodStreamOp{itypes.NewObject(nil), "+", false},
