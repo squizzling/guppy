@@ -9,6 +9,7 @@ import (
 )
 
 type VisitorStream interface {
+	VisitStreamConstNone(scn *StreamConstNone) (any, error)
 	VisitStreamFuncAbs(sfa *StreamFuncAbs) (any, error)
 	VisitStreamFuncAlerts(sfa *StreamFuncAlerts) (any, error)
 	VisitStreamFuncCeil(sfc *StreamFuncCeil) (any, error)
@@ -59,6 +60,28 @@ type Stream interface {
 	itypes.Object
 	Accept(vs VisitorStream) (any, error)
 	CloneTimeShift(amount time.Duration) Stream
+}
+
+type StreamConstNone struct {
+	itypes.Object
+}
+
+func NewStreamConstNone(
+	Object itypes.Object,
+) *StreamConstNone {
+	return &StreamConstNone{
+		Object: Object,
+	}
+}
+
+func (scn *StreamConstNone) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamConstNone(scn)
+}
+
+func (scn *StreamConstNone) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamConstNone{
+		Object: scn.Object,
+	}
 }
 
 type StreamFuncAbs struct {

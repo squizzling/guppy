@@ -25,6 +25,16 @@ func s(a any, err error) string {
 	return a.(string)
 }
 
+func (dw DebugWriter) VisitStreamConstNone(scn *StreamConstNone) (any, error) {
+	_s := "StreamConstNone(\n"
+	dw.i()
+	// TODO: 0 Object itypes.Object
+	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", scn.Object, scn.Object)
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
 func (dw DebugWriter) VisitStreamFuncAbs(sfa *StreamFuncAbs) (any, error) {
 	_s := "StreamFuncAbs(\n"
 	dw.i()

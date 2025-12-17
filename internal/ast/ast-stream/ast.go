@@ -16,6 +16,12 @@ var Imports = []string{
 
 var Interfaces = []ast.Interface{
 	{"Stream", []ast.Node{
+		// Used for `_ if _ else None` to generate a stream of none.  Technically this should
+		// match the incoming stream.
+		{"ConstNone", true, []ast.Field{
+			{"Object", "itypes.Object", true},
+		}},
+
 		// Top level
 		{"FuncAbs", true, []ast.Field{
 			{"Object", "itypes.Object", true},
