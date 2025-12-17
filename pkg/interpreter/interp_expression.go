@@ -212,8 +212,11 @@ func (i *interpreter) resolveUnnamedArgs(exprFunction ast.Expression, unnamedArg
 				unnamedArgs = append(unnamedArgs, starArgs.Items...)
 			case *deferred.ObjectDeferred:
 				unnamedArgs = append(unnamedArgs, starArgs)
+			case *primitive.ObjectString:
+				unnamedArgs = append(unnamedArgs, starArgs)
 			default:
-				return nil, nil, fmt.Errorf("[resolveUnnamedArgs] expecting *interpreter.ObjectList or *interpreter.ObjectTuple got %T", starArgs)
+				// f(*'a') will do f('a'), not an error.  We don't know if there's any other magic types, so we explicitly list everything we accept.
+				return nil, nil, fmt.Errorf("[resolveUnnamedArgs] expecting *primitive.ObjectList, *primitive.ObjectTuple, or *primitive.ObjectString got %T", starArgs)
 			}
 		}
 	}
