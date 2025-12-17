@@ -16,10 +16,17 @@ var Imports = []string{
 
 var Interfaces = []ast.Interface{
 	{"Stream", []ast.Node{
-		// Used for `_ if _ else None` to generate a stream of none.  Technically this should
-		// match the incoming stream.
-		{"ConstNone", true, []ast.Field{
+		// TODO: These are a bit wonky.  The goal is to track the source stream, so we can be aware of the dimensions.
+		// Used for `_ if _ else None` to generate a stream of none.
+		{"Const", true, []ast.Field{
 			{"Object", "itypes.Object", true},
+			{"Constant", "itypes.Object", false},
+		}},
+		// Used in map(constant), where we have a source stream.
+		{"ConstSource", true, []ast.Field{
+			{"Object", "itypes.Object", true},
+			{"Source", "Stream", false},
+			{"Constant", "itypes.Object", false},
 		}},
 
 		// Top level

@@ -19,9 +19,9 @@ func (ost *ObjectStreamTernary) resolveStream(i itypes.Interpreter, e ast.Expres
 	case Stream:
 		return o, nil
 	case *primitive.ObjectInt:
-		return NewStreamFuncConstInt(prototypeStreamDouble, o.Value, nil), nil
+		return NewStreamConst(prototypeStreamDouble, o), nil
 	case *primitive.ObjectNone:
-		return NewStreamConstNone(prototypeStreamObject), nil
+		return NewStreamConst(prototypeStreamObject, o), nil
 	default:
 		return nil, fmt.Errorf("ObjectStreamTernary.resolveStream got %T expecting Stream", o)
 	}

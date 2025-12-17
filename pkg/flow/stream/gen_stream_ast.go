@@ -9,7 +9,8 @@ import (
 )
 
 type VisitorStream interface {
-	VisitStreamConstNone(scn *StreamConstNone) (any, error)
+	VisitStreamConst(sc *StreamConst) (any, error)
+	VisitStreamConstSource(scs *StreamConstSource) (any, error)
 	VisitStreamFuncAbs(sfa *StreamFuncAbs) (any, error)
 	VisitStreamFuncAlerts(sfa *StreamFuncAlerts) (any, error)
 	VisitStreamFuncCeil(sfc *StreamFuncCeil) (any, error)
@@ -62,25 +63,59 @@ type Stream interface {
 	CloneTimeShift(amount time.Duration) Stream
 }
 
-type StreamConstNone struct {
+type StreamConst struct {
 	itypes.Object
+	Constant itypes.Object
 }
 
-func NewStreamConstNone(
+func NewStreamConst(
 	Object itypes.Object,
-) *StreamConstNone {
-	return &StreamConstNone{
-		Object: Object,
+	Constant itypes.Object,
+) *StreamConst {
+	return &StreamConst{
+		Object:   Object,
+		Constant: Constant,
 	}
 }
 
-func (scn *StreamConstNone) Accept(vs VisitorStream) (any, error) {
-	return vs.VisitStreamConstNone(scn)
+func (sc *StreamConst) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamConst(sc)
 }
 
-func (scn *StreamConstNone) CloneTimeShift(amount time.Duration) Stream {
-	return &StreamConstNone{
-		Object: scn.Object,
+func (sc *StreamConst) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamConst{
+		Object:   sc.Object,
+		Constant: sc.Constant,
+	}
+}
+
+type StreamConstSource struct {
+	itypes.Object
+	Source   Stream
+	Constant itypes.Object
+}
+
+func NewStreamConstSource(
+	Object itypes.Object,
+	Source Stream,
+	Constant itypes.Object,
+) *StreamConstSource {
+	return &StreamConstSource{
+		Object:   Object,
+		Source:   Source,
+		Constant: Constant,
+	}
+}
+
+func (scs *StreamConstSource) Accept(vs VisitorStream) (any, error) {
+	return vs.VisitStreamConstSource(scs)
+}
+
+func (scs *StreamConstSource) CloneTimeShift(amount time.Duration) Stream {
+	return &StreamConstSource{
+		Object:   scs.Object,
+		Source:   cloneTimeshift(scs.Source, amount),
+		Constant: scs.Constant,
 	}
 }
 

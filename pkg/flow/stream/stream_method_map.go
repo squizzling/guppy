@@ -4,6 +4,7 @@ import (
 	"github.com/squizzling/guppy/pkg/interpreter"
 	"github.com/squizzling/guppy/pkg/interpreter/ffi"
 	"github.com/squizzling/guppy/pkg/interpreter/itypes"
+	"github.com/squizzling/guppy/pkg/interpreter/primitive"
 )
 
 type ffiStreamMap struct {
@@ -56,10 +57,10 @@ type ffiStreamMap struct {
 	Self  Stream `ffi:"self"`
 	MapFn struct {
 		Lambda *interpreter.ObjectLambda
-		/*Int    *primitive.ObjectInt
-		String *primitive.ObjectString
+		Int    *primitive.ObjectInt
+		//String *primitive.ObjectString
 		Double *primitive.ObjectDouble
-		Bool   *primitive.ObjectBool*/
+		//Bool   *primitive.ObjectBool
 	} `ffi:"mapfn"`
 }
 
@@ -69,27 +70,11 @@ func NewFFIStreamMap() itypes.FlowCall {
 
 func (f ffiStreamMap) Call(i itypes.Interpreter) (itypes.Object, error) {
 	if f.MapFn.Lambda != nil {
-		i.PushIntrinsicScope()
-		defer i.PopScope()
-
-		if err := i.Set(f.MapFn.Lambda.Identifier, f.Self); err != nil {
-			return nil, err
-		} else {
-			// TODO: I still don't love this model, for now we're just goign to say a map occurs.
-			return NewStreamMethodMap(prototypeStreamObject, f.Self), nil
-		}
-
-		/*} else if o, err := f.MapFn.Lambda.Expression.Accept(i); err != nil {
-			return nil, err
-		} else if asDouble, ok := o.(*primitive.ObjectDouble); ok {
-			return NewStreamMethodMap(prototypeStreamDouble, f.Self, asDouble), nil
-		} else if asStream, ok := o.(Stream); ok {
-			return asStream, err
-		} else {
-			return nil, fmt.Errorf("ffiStreamMap returned %T, expecting %T or %T", o, asDouble, asStream)
-		}*/
+		return NewStreamMethodMap(prototypeStreamObject, f.Self), nil
+	} else if f.MapFn.Int != nil {
+		return NewStreamConstSource(prototypeStreamDouble, f.Self, f.MapFn.Int), nil
 	} else {
-		panic("unreachable")
+		return NewStreamConstSource(prototypeStreamDouble, f.Self, f.MapFn.Double), nil
 	}
 }
 

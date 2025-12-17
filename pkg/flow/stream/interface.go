@@ -90,13 +90,14 @@ var prototypeStreamAlert = itypes.NewObject(map[string]itypes.Object{
 })
 
 var prototypeStreamBool = itypes.NewObject(map[string]itypes.Object{
+	"map": NewFFIStreamMap(),
+
 	"publish":   methodPublish{itypes.NewObject(nil)},
 	"timeshift": methodTimeShift{itypes.NewObject(nil)},
 
 	// generic
 	"dimensions": methodGeneric{itypes.NewObject(nil), "dimensions"},
 	"equals":     methodGeneric{itypes.NewObject(nil), "equals"},
-	"map":        methodGeneric{itypes.NewObject(nil), "map"},
 	"not_equals": methodGeneric{itypes.NewObject(nil), "not_equals"},
 	"promote":    methodGeneric{itypes.NewObject(nil), "promote"},
 
@@ -120,6 +121,8 @@ var prototypeStreamBool = itypes.NewObject(map[string]itypes.Object{
 })
 
 var prototypeStreamObject = itypes.NewObject(map[string]itypes.Object{
+	"map": NewFFIStreamMap(),
+
 	// misc
 	"above":      methodAbove{itypes.NewObject(nil)},
 	"abs":        methodAbs{itypes.NewObject(nil)},
@@ -144,7 +147,6 @@ var prototypeStreamObject = itypes.NewObject(map[string]itypes.Object{
 	"integrate":            methodGeneric{itypes.NewObject(nil), "integrate"},
 	"log10":                methodGeneric{itypes.NewObject(nil), "log10"},
 	"log":                  methodGeneric{itypes.NewObject(nil), "log"},
-	"map":                  methodGeneric{itypes.NewObject(nil), "map"},
 	"mean_plus_stddev":     methodGeneric{itypes.NewObject(nil), "mean_plus_stddev"},
 	"not_equals":           methodGeneric{itypes.NewObject(nil), "not_equals"},
 	"pow":                  methodGeneric{itypes.NewObject(nil), "pow"},

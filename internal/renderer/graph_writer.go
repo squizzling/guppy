@@ -110,15 +110,37 @@ func (g *GraphWriter) DefineEdge(to string, from string, label string) {
 	_, _ = g.Writer.Write([]byte(fmt.Sprintf("  %s -> %s [label=\"%s\"]\n", from, to, escape(label))))
 }
 
-func (g *GraphWriter) VisitStreamConstNone(scn *stream.StreamConstNone) (any, error) {
-	if nodeId, ok := g.GetNode(scn); ok {
+func (g *GraphWriter) VisitStreamConst(sc *stream.StreamConst) (any, error) {
+	if nodeId, ok := g.GetNode(sc); ok {
 		return nodeId, nil
 	}
 
 	var sb strings.Builder
 
-	sb.WriteString("const none block\n")
-	nodeId := g.DefineNode(scn, sb.String())
+	sb.WriteString("const block\n")
+	sb.WriteString("Constant: " + sc.Constant.Repr())
+	nodeId := g.DefineNode(sc, sb.String())
+	return nodeId, nil
+}
+
+func (g *GraphWriter) VisitStreamConstSource(scs *stream.StreamConstSource) (any, error) {
+	if nodeId, ok := g.GetNode(scs); ok {
+		return nodeId, nil
+	}
+
+	var sb strings.Builder
+
+	sb.WriteString("const source block\n")
+	sb.WriteString("Constant: " + scs.Constant.Repr())
+
+	nodeId := g.DefineNode(scs, sb.String())
+
+	if sourceNodeId, err := scs.Source.Accept(g); err != nil {
+		return nil, err
+	} else {
+		g.DefineEdge(nodeId, sourceNodeId.(string), "Source")
+	}
+
 	return nodeId, nil
 }
 

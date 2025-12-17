@@ -25,11 +25,30 @@ func s(a any, err error) string {
 	return a.(string)
 }
 
-func (dw DebugWriter) VisitStreamConstNone(scn *StreamConstNone) (any, error) {
-	_s := "StreamConstNone(\n"
+func (dw DebugWriter) VisitStreamConst(sc *StreamConst) (any, error) {
+	_s := "StreamConst(\n"
 	dw.i()
 	// TODO: 0 Object itypes.Object
-	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", scn.Object, scn.Object)
+	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", sc.Object, sc.Object)
+	// TODO: 1 Constant itypes.Object
+	_s += dw.p() + fmt.Sprintf("Constant: %T(%v)\n", sc.Constant, sc.Constant)
+	dw.o()
+	_s += dw.p() + ")\n"
+	return _s, nil
+}
+
+func (dw DebugWriter) VisitStreamConstSource(scs *StreamConstSource) (any, error) {
+	_s := "StreamConstSource(\n"
+	dw.i()
+	// TODO: 0 Object itypes.Object
+	_s += dw.p() + fmt.Sprintf("Object: %T(%v)\n", scs.Object, scs.Object)
+	if scs.Source != nil {
+		_s += dw.p() + "Source: " + s(scs.Source.Accept(dw)) // IsInterface
+	} else {
+		_s += dw.p() + "Source: nil\n"
+	}
+	// TODO: 2 Constant itypes.Object
+	_s += dw.p() + fmt.Sprintf("Constant: %T(%v)\n", scs.Constant, scs.Constant)
 	dw.o()
 	_s += dw.p() + ")\n"
 	return _s, nil
