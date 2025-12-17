@@ -84,6 +84,8 @@ var prototypeStreamDouble = itypes.NewObject(map[string]itypes.Object{
 })
 
 var prototypeStreamAlert = itypes.NewObject(map[string]itypes.Object{
+	"count": NewFFIStreamAggregateTransformCycleMethod("count"),
+
 	"publish": methodPublish{itypes.NewObject(nil)},
 })
 
