@@ -1,7 +1,6 @@
 package duration
 
 import (
-	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -69,7 +68,7 @@ func ParseDuration(s string) (time.Duration, error) {
 	readValue := true
 
 	if len(d) == 0 {
-		return 0, errors.New("empty duration")
+		return 0, nil
 	} else if d[0] < '0' || d[0] > '9' { // Make sure it starts with a digit, because it simplifies everything the main loop
 		return 0, fmt.Errorf("duration without value: %s", d)
 	}
