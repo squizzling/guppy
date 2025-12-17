@@ -22,13 +22,13 @@ var prototypeObjectInt = itypes.NewObject(map[string]itypes.Object{
 
 	"__unary_minus__": ffi.NewFFI(ffiObjectIntMathNeg{}),
 
-	"__lt__": ffi.NewFFI(ffiObjectIntRelOp{op: 0, invert: false}),
-	"__gt__": ffi.NewFFI(ffiObjectIntRelOp{op: 1, invert: false}),
-	"__eq__": ffi.NewFFI(ffiObjectIntRelOp{op: 2, invert: false}),
+	"__lt__": ffi.NewFFI(ffiObjectIntRelOp{op: 0, invert: false, reverseMethod: "__rlt__"}),
+	"__gt__": ffi.NewFFI(ffiObjectIntRelOp{op: 1, invert: false, reverseMethod: "__rgt__"}),
+	"__eq__": ffi.NewFFI(ffiObjectIntRelOp{op: 2, invert: false, reverseMethod: "__req__"}),
 
-	"__ge__": ffi.NewFFI(ffiObjectIntRelOp{op: 0, invert: true}),
-	"__le__": ffi.NewFFI(ffiObjectIntRelOp{op: 1, invert: true}),
-	"__ne__": ffi.NewFFI(ffiObjectIntRelOp{op: 2, invert: true}),
+	"__ge__": ffi.NewFFI(ffiObjectIntRelOp{op: 0, invert: true, reverseMethod: "__rge__"}),
+	"__le__": ffi.NewFFI(ffiObjectIntRelOp{op: 1, invert: true, reverseMethod: "__rle__"}),
+	"__ne__": ffi.NewFFI(ffiObjectIntRelOp{op: 2, invert: true, reverseMethod: "__rne__"}),
 })
 
 func NewObjectInt(i int) *ObjectInt {
@@ -51,19 +51,30 @@ type ffiObjectIntRelOp struct {
 	Right struct {
 		Int    *ObjectInt
 		Double *ObjectDouble
+		Object itypes.Object
 	} `ffi:"right"`
 
-	op     int
-	invert bool
+	op            int
+	invert        bool
+	reverseMethod string
 }
 
 func (f ffiObjectIntRelOp) Call(i itypes.Interpreter) (itypes.Object, error) {
 	var right int
 	if f.Right.Int != nil {
 		right = f.Right.Int.Value
-	} else {
+	} else if f.Right.Double != nil {
 		right = int(f.Right.Double.Value)
+	} else if reverseOp, err := f.Right.Object.Member(i, f.Right.Object, f.reverseMethod); err == nil {
+		// If it exists, we always use the reverse method, because it's more likely to be the intended behavior.
+		// We explicitly don't expose reverse methods for primitives though.
+		if reverseOpCall, ok := reverseOp.(itypes.FlowCall); ok {
+			return reverseOpCall.Call(i)
+		}
+	} else {
+		return nil, fmt.Errorf("param `right` for ffiObjectIntRelOp.Right is %T not *primitive.ObjectInt, *primitive.ObjectDouble, or an itypes.Object with %s", f.Right.Object, f.reverseMethod)
 	}
+
 	switch f.op {
 	case 0:
 		return NewObjectBool(f.Self.Value < right != f.invert), nil
