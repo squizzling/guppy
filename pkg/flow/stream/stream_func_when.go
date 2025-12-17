@@ -37,6 +37,9 @@ func (f FFIWhen) resolveLasting(i itypes.Interpreter) (*time.Duration, error) {
 		return nil, err
 	} else if _, isNone := lasting.(*primitive.ObjectNone); isNone {
 		return nil, nil
+	} else if objInt, isInt := lasting.(*primitive.ObjectInt); isInt {
+		p := time.Millisecond * time.Duration(objInt.Value)
+		return &p, nil
 	} else if dur, isDuration := lasting.(*duration.Duration); isDuration {
 		return &dur.Duration, nil
 	} else if objStr, ok := lasting.(*primitive.ObjectString); !ok {
