@@ -12,6 +12,9 @@ type paramSubscript struct {
 }
 
 func subscript(items []itypes.Object, start int) (itypes.Object, error) {
+	if start < 0 {
+		start = len(items) + start
+	}
 	if len(items) < start+1 || start < 0 {
 		// TODO: Flow supports x[-1]
 		return nil, fmt.Errorf("index %d out of range (0 - %d)", start, len(items)-1)
