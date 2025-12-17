@@ -62,26 +62,11 @@ func (f ffiObjectListSubscript) Call(i itypes.Interpreter) (itypes.Object, error
 }
 
 type ffiObjectListSubscriptRange struct {
-	Self  *ObjectList `ffi:"self"`
-	Start struct {
-		None *ObjectNone
-		Int  *ObjectInt
-	} `ffi:"start"`
-	End struct {
-		None *ObjectNone
-		Int  *ObjectInt
-	} `ffi:"end"`
+	Self  *ObjectList    `ffi:"self"`
+	Start paramSubscript `ffi:"start"`
+	End   paramSubscript `ffi:"end"`
 }
 
 func (f ffiObjectListSubscriptRange) Call(i itypes.Interpreter) (itypes.Object, error) {
-	var start *int
-	if f.Start.Int != nil {
-		start = &f.Start.Int.Value
-	}
-
-	var end *int
-	if f.End.Int != nil {
-		end = &f.End.Int.Value
-	}
-	return NewObjectList(subscriptRange(f.Self.Items, start, end)...), nil
+	return NewObjectList(subscriptRange(f.Self.Items, f.Start, f.End)...), nil
 }

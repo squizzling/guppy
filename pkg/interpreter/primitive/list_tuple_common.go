@@ -6,6 +6,11 @@ import (
 	"github.com/squizzling/guppy/pkg/interpreter/itypes"
 )
 
+type paramSubscript struct {
+	None *ObjectNone
+	Int  *ObjectInt
+}
+
 func subscript(items []itypes.Object, start int) (itypes.Object, error) {
 	if len(items) < start+1 || start < 0 {
 		// TODO: Flow supports x[-1]
@@ -15,23 +20,23 @@ func subscript(items []itypes.Object, start int) (itypes.Object, error) {
 	}
 }
 
-func subscriptRange(items []itypes.Object, pStart *int, pEnd *int) []itypes.Object {
+func subscriptRange(items []itypes.Object, pStart paramSubscript, pEnd paramSubscript) []itypes.Object {
 	var start int
-	if pStart == nil {
+	if pStart.None != nil {
 		start = 0
-	} else if *pStart < 0 {
-		start = len(items) + *pStart
+	} else if pStart.Int.Value < 0 {
+		start = len(items) + pStart.Int.Value
 	} else {
-		start = *pStart
+		start = pStart.Int.Value
 	}
 
 	var end int
-	if pEnd == nil {
+	if pEnd.None != nil {
 		end = len(items)
-	} else if *pEnd < 0 {
-		end = len(items) + *pEnd
+	} else if pEnd.Int.Value < 0 {
+		end = len(items) + pEnd.Int.Value
 	} else {
-		end = *pEnd
+		end = pEnd.Int.Value
 	}
 
 	// No IndexError for range
