@@ -122,7 +122,9 @@ var prototypeStreamBool = itypes.NewObject(map[string]itypes.Object{
 })
 
 var prototypeStreamObject = itypes.NewObject(map[string]itypes.Object{
-	"map": NewFFIStreamMap(),
+	"map":           NewFFIStreamMap(),
+	"not_between":   NewFFIStreamNotBetweenMethod(),
+	"sample_stddev": NewFFIStreamAggregateTransformCycleMethod("sample_stddev"),
 
 	// misc
 	"above":      methodAbove{itypes.NewObject(nil)},
