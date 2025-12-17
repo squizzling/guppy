@@ -19,6 +19,7 @@ type ffiStreamAggregateTransformCycleMethod struct {
 		None   *primitive.ObjectNone
 		String *primitive.ObjectString
 		List   *primitive.ObjectList
+		Tuple  *primitive.ObjectTuple
 	} `ffi:"by"`
 	AllowMissing struct {
 		None   *primitive.ObjectNone
@@ -63,6 +64,7 @@ func NewFFIStreamAggregateTransformCycleMethod(fn string) itypes.FlowCall {
 			None   *primitive.ObjectNone
 			String *primitive.ObjectString
 			List   *primitive.ObjectList
+			Tuple  *primitive.ObjectTuple
 		}{None: primitive.NewObjectNone()},
 		AllowMissing: struct {
 			None   *primitive.ObjectNone
@@ -126,22 +128,26 @@ func (f ffiStreamAggregateTransformCycleMethod) Call(i itypes.Interpreter) (ityp
 }
 
 func (f ffiStreamAggregateTransformCycleMethod) resolveBy() ([]string, error) {
-	// TODO: Can it take a tuple of strings?
-	if f.By.String != nil {
+	var objItems []itypes.Object
+	if f.By.None != nil {
+		return nil, nil
+	} else if f.By.String != nil {
 		return []string{f.By.String.Value}, nil
 	} else if f.By.List != nil {
-		var items []string
-		for idx, item := range f.By.List.Items {
-			if byItem, ok := item.(*primitive.ObjectString); !ok {
-				return nil, fmt.Errorf("ffiStreamAggregateTransformCycleMethod.resolveBy: index %d of by contains a %T not a *primitive.ObjectString", idx, item)
-			} else {
-				items = append(items, byItem.Value)
-			}
-		}
-		return items, nil
+		objItems = f.By.List.Items
 	} else {
-		return nil, nil
+		objItems = f.By.Tuple.Items
 	}
+
+	var items []string
+	for idx, item := range objItems {
+		if byItem, ok := item.(*primitive.ObjectString); !ok {
+			return nil, fmt.Errorf("ffiStreamAggregateTransformCycleMethod.resolveBy: index %d of by contains a %T not a *primitive.ObjectString", idx, item)
+		} else {
+			items = append(items, byItem.Value)
+		}
+	}
+	return items, nil
 }
 
 func (f ffiStreamAggregateTransformCycleMethod) resolveAllowMissing() (bool, []string, map[string]string, error) {
