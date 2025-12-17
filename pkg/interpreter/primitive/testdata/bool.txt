@@ -109,3 +109,35 @@ True
 o = (False is not False)
 -----
 False
+=====
+o = True and True
+-----
+True
+=====
+o = True and False
+-----
+False
+=====
+o = False and True
+-----
+False
+=====
+o = False and False
+-----
+False
+=====
+o = True or True
+-----
+True
+=====
+o = True or False
+-----
+True
+=====
+o = False or True
+-----
+True
+=====
+o = False or False
+-----
+False

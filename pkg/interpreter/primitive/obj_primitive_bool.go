@@ -13,6 +13,8 @@ type ObjectBool struct {
 }
 
 var prototypeObjectBool = itypes.NewObject(map[string]itypes.Object{
+	"__binary_and__":       ffi.NewFFI(ffiObjectBoolBinaryOp{op: 0}),
+	"__binary_or__":        ffi.NewFFI(ffiObjectBoolBinaryOp{op: 1}),
 	"__unary_binary_not__": ffi.NewFFI(ffiObjectBoolUnaryBinaryNot{}),
 	"__is__":               ffi.NewFFI(ffiObjectBoolIs{invert: false}),
 	"__isnot__":            ffi.NewFFI(ffiObjectBoolIs{invert: true}),
@@ -70,5 +72,21 @@ func (f ffiObjectBoolIs) Call(i itypes.Interpreter) (itypes.Object, error) {
 		return NewObjectBool((f.Self.Value == f.Right.Bool.Value) != f.invert), nil
 	} else {
 		return NewObjectBool(f.invert), nil
+	}
+}
+
+type ffiObjectBoolBinaryOp struct {
+	Self  *ObjectBool `ffi:"self"`
+	Right *ObjectBool `ffi:"right"`
+
+	op int
+}
+
+func (f ffiObjectBoolBinaryOp) Call(i itypes.Interpreter) (itypes.Object, error) {
+	switch f.op {
+	case 0:
+		return NewObjectBool(f.Self.Value && f.Right.Value), nil
+	default:
+		return NewObjectBool(f.Self.Value || f.Right.Value), nil
 	}
 }
