@@ -198,6 +198,9 @@ var prototypeStreamObject = itypes.NewObject(map[string]itypes.Object{
 	"__isnot__":  methodStreamIs{itypes.NewObject(nil), true, false},
 	"__ris__":    methodStreamIs{itypes.NewObject(nil), false, true},
 	"__risnot__": methodStreamIs{itypes.NewObject(nil), true, true},
+
+	"__binary_and__": methodStreamOpBool{itypes.NewObject(nil), "and", false},
+	"__binary_or__":  methodStreamOpBool{itypes.NewObject(nil), "or", false},
 })
 
 func newStreamObject() itypes.Object {
