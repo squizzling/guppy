@@ -391,7 +391,7 @@ func (i *interpreter) evalDataListFor(dlf *ast.DataListFor, expr ast.Expression)
 			return nil
 		})
 		if err != nil {
-			return
+			return nil, err
 		}
 	}
 	return primitive.NewObjectList(newValues...), nil
