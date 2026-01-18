@@ -17,7 +17,7 @@ func newFilterAnd(left Filter, right Filter) Filter {
 		filters = append(filters, right)
 	}
 
-	return NewFilterAnd(prototypeFilter, filters)
+	return NewFilterAnd(PrototypeFilter, filters)
 }
 
 func (fa *FilterAnd) Repr() string {
@@ -38,7 +38,7 @@ func newFilterOr(left Filter, right Filter) Filter {
 		filters = append(filters, right)
 	}
 
-	return NewFilterOr(prototypeFilter, filters)
+	return NewFilterOr(PrototypeFilter, filters)
 }
 
 func (fo *FilterOr) Repr() string {

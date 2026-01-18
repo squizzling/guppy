@@ -98,7 +98,7 @@ func (f ffiFilter) callString(i itypes.Interpreter) (itypes.Object, error) {
 	}
 
 	matchMissing := f.MatchMissing.Thing != nil && f.MatchMissing.Thing.Value
-	return NewFilterKeyValue(prototypeFilter, f.Field.String.Value, terms, matchMissing), nil
+	return NewFilterKeyValue(PrototypeFilter, f.Field.String.Value, terms, matchMissing), nil
 }
 
 func (f ffiFilter) callDict(i itypes.Interpreter) (itypes.Object, error) {
@@ -135,7 +135,7 @@ func (f ffiFilter) callDict(i itypes.Interpreter) (itypes.Object, error) {
 			if err != nil {
 				return nil, err
 			} else {
-				nextFilter := NewFilterKeyValue(prototypeFilter, key.Value, items, false)
+				nextFilter := NewFilterKeyValue(PrototypeFilter, key.Value, items, false)
 				if filter != nil {
 					filter = newFilterAnd(filter, nextFilter)
 				} else {

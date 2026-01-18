@@ -16,7 +16,7 @@ func NewFFIPartitionFilter() itypes.FlowCall {
 }
 
 func (f ffiPartitionFilter) Call(i itypes.Interpreter) (itypes.Object, error) {
-	return NewFilterPartition(prototypeFilter, f.Index.Value, f.Total.Value), nil
+	return NewFilterPartition(PrototypeFilter, f.Index.Value, f.Total.Value), nil
 }
 
 func (fp *FilterPartition) Repr() string {

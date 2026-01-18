@@ -5,7 +5,7 @@ import (
 	"github.com/squizzling/guppy/pkg/interpreter/itypes"
 )
 
-var prototypeFilter = itypes.NewObject(map[string]itypes.Object{
+var PrototypeFilter = itypes.NewObject(map[string]itypes.Object{
 	"__binary_and__":       ffi.NewFFI(ffiFilterBinaryOp{op: 0}),
 	"__binary_or__":        ffi.NewFFI(ffiFilterBinaryOp{op: 1}),
 	"__unary_binary_not__": ffi.NewFFI(ffiFilterUnaryBinaryNot{}),

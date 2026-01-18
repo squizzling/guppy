@@ -9,7 +9,7 @@ type ffiFilterUnaryBinaryNot struct {
 }
 
 func (f ffiFilterUnaryBinaryNot) Call(i itypes.Interpreter) (itypes.Object, error) {
-	return NewFilterNot(prototypeFilter, f.Self), nil
+	return NewFilterNot(PrototypeFilter, f.Self), nil
 }
 
 func (fn *FilterNot) Repr() string {
