@@ -59,7 +59,7 @@ func cloneTimeshift(s Stream, amount time.Duration) Stream {
 		newStream.TimeShift += amount
 		return newStream
 	case *StreamMethodPublish: // Remove Publish from the time-shifted graph
-		return s.Source.CloneTimeShift(amount)
+		return cloneTimeshift(s.Source, amount)
 	default:
 		return s.CloneTimeShift(amount)
 	}
