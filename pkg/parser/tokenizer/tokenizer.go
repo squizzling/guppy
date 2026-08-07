@@ -3,6 +3,7 @@ package tokenizer
 import (
 	"errors"
 	"fmt"
+	"slices"
 	"strconv"
 )
 
@@ -141,7 +142,7 @@ const (
 	TokenTypeImport
 	TokenTypeIn
 	TokenTypeIs
-	TokenTypeIsNot // This is not generated in the lexer, it's a synthetic token the parser uses
+	TokenTypeIsNot
 	TokenTypeLambda
 	TokenTypePass
 	TokenTypeReturn
@@ -533,7 +534,22 @@ func (t *Tokenizer) Peek(n int) Token {
 		}
 		t.tokensPending = append(t.tokensPending, tok)
 	}
-	return t.tokensPending[n]
+
+	// Combine TokenTypeIs and TokenTypeNot in to a single TokenTypeIsNot
+	retToken := t.tokensPending[n]
+	if retToken.Type == TokenTypeIs {
+		if len(t.tokensPending) <= n+1 {
+			t.tokensPending = append(t.tokensPending, t.getNext())
+		}
+
+		if t.tokensPending[n+1].Type == TokenTypeNot {
+			retToken.Type = TokenTypeIsNot
+			retToken.Lexeme = "is not"
+			t.tokensPending[n] = retToken
+			t.tokensPending = slices.Delete(t.tokensPending, n+1, n+2)
+		}
+	}
+	return retToken
 }
 
 func (t *Tokenizer) Get() Token {

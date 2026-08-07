@@ -653,11 +653,6 @@ func parseBinaryCall(
 	}
 
 	for op, ok := p.Capture(tokens...); ok; op, ok = p.Capture(tokens...) {
-		if op.Type == tokenizer.TokenTypeIs {
-			if p.Match(tokenizer.TokenTypeNot) {
-				op.Type = tokenizer.TokenTypeIsNot
-			}
-		}
 		member, ok := magicBinaryNames[op.Type]
 		if !ok {
 			return nil, parser.FailErrSkip(fmt.Errorf("unrecognized tokenType %s", op.Type), "", 1)
@@ -747,6 +742,7 @@ func parseComparison(p *parser.Parser) (ast.Expression, *parser.ParseError) {
 		tokenizer.TokenTypeGreater,
 		tokenizer.TokenTypeGreaterEqual,
 		tokenizer.TokenTypeIs,
+		tokenizer.TokenTypeIsNot,
 	)
 
 	/*leftExpression, err := parseExpression(p)
