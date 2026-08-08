@@ -4,7 +4,25 @@ import (
 	"fmt"
 	"strconv"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
+
+func TestIsNot(t *testing.T) {
+	tok := NewTokenizer("is not")
+	tok1 := tok.Peek(1)
+	assert.Equal(t, TokenTypeNewLine.String(), tok1.Type.String())
+
+	tok = NewTokenizer("is not is")
+	tok1 = tok.Peek(1)
+	assert.Equal(t, TokenTypeIs.String(), tok1.Type.String())
+
+	tok = NewTokenizer("is not is not")
+	tok1 = tok.Peek(2)
+	assert.Equal(t, TokenTypeNewLine.String(), tok1.Type.String())
+	tok1 = tok.Peek(0)
+	assert.Equal(t, TokenTypeIsNot.String(), tok1.Type.String())
+}
 
 func FuzzFloat(f *testing.F) {
 	// Technically this is fuzzing the entire lexer, but we're only looking at int and float outputs

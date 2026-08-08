@@ -3,7 +3,6 @@ package tokenizer
 import (
 	"errors"
 	"fmt"
-	"slices"
 	"strconv"
 )
 
@@ -508,6 +507,31 @@ func (t *Tokenizer) RemainingTokens() int {
 	return len(t.tokensPending)
 }
 
+func (t *Tokenizer) readStringAndNext(tokString Token) []Token {
+	for {
+		if tokNext := t.getNext(); tokNext.Type == TokenTypeString {
+			tokString.LiteralString += tokNext.LiteralString
+			tokString.Lexeme = tokString.Lexeme + " " + tokNext.Lexeme
+		} else if tokNext.Type == TokenTypeIs {
+			return append([]Token{tokString}, t.readIsAndNext(tokNext)...)
+		} else {
+			return []Token{tokString, tokNext}
+		}
+	}
+}
+
+func (t *Tokenizer) readIsAndNext(tokIs Token) []Token {
+	if tokNext := t.getNext(); tokNext.Type == TokenTypeNot {
+		tokIs.Type = TokenTypeIsNot
+		tokIs.Lexeme = "is not"
+		return []Token{tokIs}
+	} else if tokNext.Type == TokenTypeString {
+		return append([]Token{tokIs}, t.readStringAndNext(tokNext)...)
+	} else {
+		return []Token{tokIs, tokNext}
+	}
+}
+
 func (t *Tokenizer) Peek(n int) Token {
 	for len(t.tokensPending) <= n { // We need to read more.
 		// If we have anything in the buffer, and the last thing we read was an EOF or error, return it
@@ -517,39 +541,16 @@ func (t *Tokenizer) Peek(n int) Token {
 			}
 		}
 		// Read the next thing, if it's an EOF or error, we'll catch it next iteration
-		tok := t.getNext()
-		if tok.Type == TokenTypeString {
-			// Eat all the strings we can find
-			for {
-				tokNext := t.getNext()
-				if tokNext.Type == TokenTypeString {
-					tok.LiteralString += tokNext.LiteralString
-					tok.Lexeme = tok.Lexeme + " " + tokNext.Lexeme
-				} else {
-					t.tokensPending = append(t.tokensPending, tok)     // Add the string
-					t.tokensPending = append(t.tokensPending, tokNext) // Add the next token
-					return t.tokensPending[0]                          // Return the string
-				}
-			}
-		}
-		t.tokensPending = append(t.tokensPending, tok)
-	}
-
-	// Combine TokenTypeIs and TokenTypeNot in to a single TokenTypeIsNot
-	retToken := t.tokensPending[n]
-	if retToken.Type == TokenTypeIs {
-		if len(t.tokensPending) <= n+1 {
-			t.tokensPending = append(t.tokensPending, t.getNext())
-		}
-
-		if t.tokensPending[n+1].Type == TokenTypeNot {
-			retToken.Type = TokenTypeIsNot
-			retToken.Lexeme = "is not"
-			t.tokensPending[n] = retToken
-			t.tokensPending = slices.Delete(t.tokensPending, n+1, n+2)
+		if tok := t.getNext(); tok.Type == TokenTypeString {
+			t.tokensPending = append(t.tokensPending, t.readStringAndNext(tok)...)
+		} else if tok.Type == TokenTypeIs {
+			t.tokensPending = append(t.tokensPending, t.readIsAndNext(tok)...)
+		} else {
+			t.tokensPending = append(t.tokensPending, tok)
 		}
 	}
-	return retToken
+
+	return t.tokensPending[n]
 }
 
 func (t *Tokenizer) Get() Token {
