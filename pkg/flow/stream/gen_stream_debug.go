@@ -486,6 +486,10 @@ func (dw DebugWriter) VisitStreamMethodAbove(sma *StreamMethodAbove) (any, error
 	} else {
 		_s += dw.p() + "Source: nil\n"
 	}
+	// TODO: 2 Limit float64
+	_s += dw.p() + fmt.Sprintf("Limit: %T(%v)\n", sma.Limit, sma.Limit)
+	_s += dw.p() + "Inclusive: bool(" + fmt.Sprintf("%t", sma.Inclusive) + ")\n"
+	_s += dw.p() + "Clamp: bool(" + fmt.Sprintf("%t", sma.Clamp) + ")\n"
 	dw.o()
 	_s += dw.p() + ")\n"
 	return _s, nil

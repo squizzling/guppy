@@ -6,7 +6,7 @@ import (
 
 var prototypeStreamDouble = itypes.NewObject(map[string]itypes.Object{
 	// misc
-	"above":       methodAbove{itypes.NewObject(nil)},
+	"above":       NewFFIStreamAbove(),
 	"abs":         methodAbs{itypes.NewObject(nil)},
 	"below":       methodBelow{itypes.NewObject(nil)},
 	"between":     NewFFIStreamBetweenMethod(),
@@ -127,7 +127,7 @@ var prototypeStreamObject = itypes.NewObject(map[string]itypes.Object{
 	"sample_stddev": NewFFIStreamAggregateTransformCycleMethod("sample_stddev"),
 
 	// misc
-	"above":      methodAbove{itypes.NewObject(nil)},
+	"above":      NewFFIStreamAbove(),
 	"abs":        methodAbs{itypes.NewObject(nil)},
 	"below":      methodBelow{itypes.NewObject(nil)},
 	"percentile": methodPercentile{itypes.NewObject(nil)},

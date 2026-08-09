@@ -801,16 +801,25 @@ func (sfw *StreamFuncWhen) CloneTimeShift(amount time.Duration) Stream {
 
 type StreamMethodAbove struct {
 	itypes.Object
-	Source Stream
+	Source    Stream
+	Limit     float64
+	Inclusive bool
+	Clamp     bool
 }
 
 func NewStreamMethodAbove(
 	Object itypes.Object,
 	Source Stream,
+	Limit float64,
+	Inclusive bool,
+	Clamp bool,
 ) *StreamMethodAbove {
 	return &StreamMethodAbove{
-		Object: Object,
-		Source: Source,
+		Object:    Object,
+		Source:    Source,
+		Limit:     Limit,
+		Inclusive: Inclusive,
+		Clamp:     Clamp,
 	}
 }
 
@@ -820,8 +829,11 @@ func (sma *StreamMethodAbove) Accept(vs VisitorStream) (any, error) {
 
 func (sma *StreamMethodAbove) CloneTimeShift(amount time.Duration) Stream {
 	return &StreamMethodAbove{
-		Object: sma.Object,
-		Source: cloneTimeshift(sma.Source, amount),
+		Object:    sma.Object,
+		Source:    cloneTimeshift(sma.Source, amount),
+		Limit:     sma.Limit,
+		Inclusive: sma.Inclusive,
+		Clamp:     sma.Clamp,
 	}
 }
 
