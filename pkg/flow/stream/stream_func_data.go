@@ -2,89 +2,109 @@ package stream
 
 import (
 	"fmt"
+	"time"
 
+	"github.com/squizzling/guppy/pkg/flow/duration"
 	"github.com/squizzling/guppy/pkg/flow/filter"
-	"github.com/squizzling/guppy/pkg/interpreter"
+	"github.com/squizzling/guppy/pkg/interpreter/ffi"
+	"github.com/squizzling/guppy/pkg/interpreter/ftypes"
 	"github.com/squizzling/guppy/pkg/interpreter/itypes"
 	"github.com/squizzling/guppy/pkg/interpreter/primitive"
 )
 
-type FFIData struct {
-	itypes.Object
+type ffiData struct {
+	Metric            *primitive.ObjectString                     `ffi:"metric"`
+	Filter            ftypes.ThingOrNone[filter.Filter]           `ffi:"filter"`
+	Rollup            ftypes.ThingOrNone[*primitive.ObjectString] `ffi:"rollup"`
+	Extrapolation     *primitive.ObjectString                     `ffi:"extrapolation"`
+	MaxExtrapolations *primitive.ObjectInt                        `ffi:"maxExtrapolations"`
+	Resolution        struct {
+		None     *primitive.ObjectNone
+		Duration *duration.Duration
+		Int      *primitive.ObjectInt
+		String   *primitive.ObjectString
+	} `ffi:"resolution"`
 }
 
-func (f FFIData) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return &itypes.Params{
-		Params: []itypes.ParamDef{
-			{Name: "metric"},
-			{Name: "filter", Default: primitive.NewObjectNone()},
-			{Name: "rollup", Default: primitive.NewObjectNone()},
-			{Name: "extrapolation", Default: primitive.NewObjectString("null")},
-			{Name: "maxExtrapolations", Default: primitive.NewObjectInt(-1)},
-			{Name: "resolution", Default: primitive.NewObjectNone()}, // TODO: Handle
+func NewFFIData() itypes.FlowCall {
+	return ffi.NewFFI(ffiData{
+		Filter:            ftypes.NewThingOrNoneNone[filter.Filter](),
+		Rollup:            ftypes.NewThingOrNoneNone[*primitive.ObjectString](),
+		Extrapolation:     primitive.NewObjectString("null"),
+		MaxExtrapolations: primitive.NewObjectInt(-1),
+		Resolution: struct {
+			None     *primitive.ObjectNone
+			Duration *duration.Duration
+			Int      *primitive.ObjectInt
+			String   *primitive.ObjectString
+		}{
+			None: primitive.NewObjectNone(),
 		},
-	}, nil
+	})
 }
 
-func resolveFilter(i itypes.Interpreter) (filter.Filter, error) {
-	if fltr, err := i.GetArg("filter"); err != nil {
+func (f ffiData) Call(i itypes.Interpreter) (itypes.Object, error) {
+	if filter, err := f.resolveFilter(); err != nil {
+		return nil, err
+	} else if rollup, err := f.resolveRollup(); err != nil {
+		return nil, err
+	} else if extrapolation, err := f.resolveExtrapolation(); err != nil {
+		return nil, err
+	} else if maxExtrapolations, err := f.resolveMaxExtrapolations(); err != nil {
+		return nil, err
+	} else if resolution, err := f.resolveResolution(); err != nil {
 		return nil, err
 	} else {
-		switch fltr := fltr.(type) {
-		case *primitive.ObjectNone:
-			return nil, nil
-		case filter.Filter:
-			return fltr, nil
-		default:
-			return nil, fmt.Errorf("filter is %T not *interpreter.ObjectNone, or filter.Filter", fltr)
-		}
+		return NewStreamFuncData(
+			prototypeStreamDouble,
+			f.Metric.Value,
+			filter,
+			rollup,
+			extrapolation,
+			maxExtrapolations,
+			resolution,
+			0,
+		), nil
 	}
 }
 
-func resolveRollup(i itypes.Interpreter) (string, error) {
-	if rollup, err := i.GetArg("rollup"); err != nil {
-		return "", err
+func (f ffiData) resolveFilter() (filter.Filter, error) {
+	return f.Filter.Thing, nil
+}
+
+func (f ffiData) resolveRollup() (string, error) {
+	if f.Rollup.None != nil {
+		return "", nil
 	} else {
-		switch rollup := rollup.(type) {
-		case *primitive.ObjectNone:
-			return "", nil
-		case interpreter.FlowStringable:
-			return rollup.String(i)
-		default:
-			return "", fmt.Errorf("rollup is %T not *interpreter.ObjectNone, or interpreter.FlowStringable", rollup)
-		}
+		return f.Rollup.Thing.Value, nil
 	}
 }
 
-func resolveExtrapolation(i itypes.Interpreter) (string, error) {
-	if extrapolation, err := interpreter.ArgAsString(i, "extrapolation"); err != nil {
-		return "", err
-	} else {
-		return extrapolation, nil
+func (f ffiData) resolveExtrapolation() (string, error) {
+	switch f.Extrapolation.Value {
+	case "null", "last", "last_value", "zero":
+		return f.Extrapolation.Value, nil
+	default:
+		return "", fmt.Errorf("ffiData.resolveExtrapolation: param `extrapolation` is %s, expected [null, last, last_value, zero]", f.Extrapolation.Value)
 	}
 }
 
-func resolveMaxExtrapolations(i itypes.Interpreter) (int, error) {
-	if maxExtrapolations, err := itypes.ArgAs[*primitive.ObjectInt](i, "maxExtrapolations"); err != nil {
-		return 0, err
-	} else {
-		return maxExtrapolations.Value, nil
-	}
+func (f ffiData) resolveMaxExtrapolations() (int, error) {
+	return f.MaxExtrapolations.Value, nil
 }
 
-func (f FFIData) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if metricName, err := interpreter.ArgAsString(i, "metric"); err != nil {
-		return nil, err
-	} else if fltr, err := resolveFilter(i); err != nil {
-		return nil, err
-	} else if rollup, err := resolveRollup(i); err != nil {
-		return nil, err
-	} else if extrapolation, err := resolveExtrapolation(i); err != nil {
-		return nil, err
-	} else if maxExtrapolations, err := resolveMaxExtrapolations(i); err != nil {
-		return nil, err
+func (f ffiData) resolveResolution() (*time.Duration, error) {
+	if f.Resolution.None != nil {
+		return nil, nil
+	} else if f.Resolution.Int != nil {
+		d := time.Duration(f.Resolution.Int.Value) * time.Millisecond
+		return &d, nil
+	} else if f.Resolution.Duration != nil {
+		return &f.Resolution.Duration.Duration, nil
+	} else if d, err := duration.ParseDuration(f.Resolution.String.Value); err != nil {
+		return nil, fmt.Errorf("ffiData.resolveResolution: param `resolution` failed to parse: %w", err)
 	} else {
-		return NewStreamFuncData(prototypeStreamDouble, metricName, fltr, rollup, extrapolation, maxExtrapolations, 0), nil
+		return &d, nil
 	}
 }
 
@@ -92,5 +112,3 @@ func (sfd StreamFuncData) Repr() string {
 	// TODO: Better
 	return "data()"
 }
-
-var _ = itypes.FlowCall(FFIData{})

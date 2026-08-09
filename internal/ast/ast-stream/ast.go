@@ -67,6 +67,7 @@ var Interfaces = []ast.Interface{
 			{"Rollup", "string", false},
 			{"Extrapolation", "string", false},
 			{"MaxExtrapolations", "int", false},
+			{"Resolution", "*time.Duration", false},
 			{"TimeShift", "time.Duration", false},
 		}},
 		{"FuncDetect", true, []ast.Field{

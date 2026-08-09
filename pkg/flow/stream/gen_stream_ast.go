@@ -316,6 +316,7 @@ type StreamFuncData struct {
 	Rollup            string
 	Extrapolation     string
 	MaxExtrapolations int
+	Resolution        *time.Duration
 	TimeShift         time.Duration
 }
 
@@ -326,6 +327,7 @@ func NewStreamFuncData(
 	Rollup string,
 	Extrapolation string,
 	MaxExtrapolations int,
+	Resolution *time.Duration,
 	TimeShift time.Duration,
 ) *StreamFuncData {
 	return &StreamFuncData{
@@ -335,6 +337,7 @@ func NewStreamFuncData(
 		Rollup:            Rollup,
 		Extrapolation:     Extrapolation,
 		MaxExtrapolations: MaxExtrapolations,
+		Resolution:        Resolution,
 		TimeShift:         TimeShift,
 	}
 }
@@ -351,6 +354,7 @@ func (sfd *StreamFuncData) CloneTimeShift(amount time.Duration) Stream {
 		Rollup:            sfd.Rollup,
 		Extrapolation:     sfd.Extrapolation,
 		MaxExtrapolations: sfd.MaxExtrapolations,
+		Resolution:        sfd.Resolution,
 		TimeShift:         sfd.TimeShift,
 	}
 }

@@ -181,7 +181,9 @@ func (dw DebugWriter) VisitStreamFuncData(sfd *StreamFuncData) (any, error) {
 	_s += dw.p() + "Extrapolation: string(" + sfd.Extrapolation + ")\n"
 	// TODO: 5 MaxExtrapolations int
 	_s += dw.p() + fmt.Sprintf("MaxExtrapolations: %T(%v)\n", sfd.MaxExtrapolations, sfd.MaxExtrapolations)
-	// TODO: 6 TimeShift time.Duration
+	// TODO: 6 Resolution *time.Duration
+	_s += dw.p() + fmt.Sprintf("Resolution: %T(%v)\n", sfd.Resolution, sfd.Resolution)
+	// TODO: 7 TimeShift time.Duration
 	_s += dw.p() + fmt.Sprintf("TimeShift: %T(%v)\n", sfd.TimeShift, sfd.TimeShift)
 	dw.o()
 	_s += dw.p() + ")\n"
