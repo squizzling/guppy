@@ -170,6 +170,9 @@ var Interfaces = []ast.Interface{
 		{"MethodBelow", true, []ast.Field{
 			{"Object", "itypes.Object", true},
 			{"Source", "Stream", false},
+			{"Limit", "float64", false},
+			{"Inclusive", "bool", false},
+			{"Clamp", "bool", false},
 		}},
 		{"MethodBetween", true, []ast.Field{
 			{"Object", "itypes.Object", true},

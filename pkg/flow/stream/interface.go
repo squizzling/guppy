@@ -8,7 +8,7 @@ var prototypeStreamDouble = itypes.NewObject(map[string]itypes.Object{
 	// misc
 	"above":       NewFFIStreamAbove(),
 	"abs":         methodAbs{itypes.NewObject(nil)},
-	"below":       methodBelow{itypes.NewObject(nil)},
+	"below":       NewFFIStreamBelow(),
 	"between":     NewFFIStreamBetweenMethod(),
 	"map":         NewFFIStreamMap(),
 	"not_between": NewFFIStreamNotBetweenMethod(),
@@ -129,7 +129,7 @@ var prototypeStreamObject = itypes.NewObject(map[string]itypes.Object{
 	// misc
 	"above":      NewFFIStreamAbove(),
 	"abs":        methodAbs{itypes.NewObject(nil)},
-	"below":      methodBelow{itypes.NewObject(nil)},
+	"below":      NewFFIStreamBelow(),
 	"percentile": methodPercentile{itypes.NewObject(nil)},
 	"publish":    methodPublish{itypes.NewObject(nil)},
 	"timeshift":  methodTimeShift{itypes.NewObject(nil)},

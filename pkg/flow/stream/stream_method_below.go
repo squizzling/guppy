@@ -1,41 +1,28 @@
 package stream
 
 import (
+	"github.com/squizzling/guppy/pkg/interpreter/ffi"
+	"github.com/squizzling/guppy/pkg/interpreter/ftypes"
 	"github.com/squizzling/guppy/pkg/interpreter/itypes"
 	"github.com/squizzling/guppy/pkg/interpreter/primitive"
 )
 
-// TODO: All of this.
+// TODO: Probably explore the space, for now it's just MVP.
 
-type methodBelow struct {
-	itypes.Object
+type ffiStreamBelow struct {
+	Self      Stream                `ffi:"self"`
+	Limit     ftypes.IntOrDouble    `ffi:"limit"`
+	Inclusive *primitive.ObjectBool `ffi:"inclusive"`
+	Clamp     *primitive.ObjectBool `ffi:"clamp"`
 }
 
-func (mb methodBelow) Params(i itypes.Interpreter) (*itypes.Params, error) {
-	return &itypes.Params{
-		Params: []itypes.ParamDef{
-			{Name: "self"},
-			{Name: "limit", Default: primitive.NewObjectNone()},
-			{Name: "inclusive", Default: primitive.NewObjectNone()},
-			{Name: "clamp", Default: primitive.NewObjectNone()},
-		},
-	}, nil
+func NewFFIStreamBelow() itypes.FlowCall {
+	return ffi.NewFFI(ffiStreamBelow{
+		Inclusive: primitive.NewObjectBool(false),
+		Clamp:     primitive.NewObjectBool(false),
+	})
 }
 
-func (mb methodBelow) Call(i itypes.Interpreter) (itypes.Object, error) {
-	if self, err := itypes.ArgAs[Stream](i, "self"); err != nil {
-		return nil, err
-	} else {
-		return NewStreamMethodBelow(prototypeStreamDouble, unpublish(self)), nil
-	}
-}
-
-func (mb methodBelow) Repr() string {
-	// TODO: Better
-	return "methodBelow()"
-}
-
-func (smb *StreamMethodBelow) Repr() string {
-	// TODO: Better
-	return ".below()"
+func (f ffiStreamBelow) Call(i itypes.Interpreter) (itypes.Object, error) {
+	return NewStreamMethodBelow(prototypeStreamDouble, f.Self, f.Limit.AsDouble(), f.Inclusive.Value, f.Clamp.Value), nil
 }
